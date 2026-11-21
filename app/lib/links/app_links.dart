@@ -22,9 +22,9 @@
 // Reserved hosts: `share` (分享码, lib/share_code), `forum` (community login,
 // e.g. `dshgo://forum/auth?payload=…`), `open` (a page of the app,
 // links/page_links.dart), and the share host's own name for
-// hosted conversation links (`dshgo://go.dshtui.com/c/…`,
+// hosted conversation links (`dshgo://share/c/…`,
 // https links; registered by [LinkHost] itself, lib/ui/share_hosted/) and
-// the official market's plugin pages (`dshgo://go.dshtui.com/p/…`,
+// plugin pages (`dshgo://p/…`,
 // links/plugin_links.dart).
 //
 // ── Delivery ────────────────────────────────────────────────────────────────

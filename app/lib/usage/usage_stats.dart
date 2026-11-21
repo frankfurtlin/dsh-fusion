@@ -45,7 +45,7 @@ class UsageStatsState {
 // Seams: tests set the clock, the network, the phone and the app's front.
 final usageClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 final usageHttpProvider = Provider<UsageHttp>((ref) => const IoUsageHttp());
-final usageEndpointProvider = Provider<Uri>((ref) => usageEndpoint);
+final usageEndpointProvider = Provider<Uri?>((ref) => usageEndpoint);
 final usageDeviceProvider = Provider<Future<UsageDevice> Function()>((ref) => const UsageDeviceChannel().read);
 final usageLanguageProvider = Provider<String Function()>(
   (ref) =>
@@ -258,6 +258,7 @@ class UsageStatsController extends Notifier<UsageStatsState> {
     final iid = _currentIid(now);
     final http = ref.read(usageHttpProvider);
     final endpoint = ref.read(usageEndpointProvider);
+    if (endpoint == null) return;
     final lang = ref.read(usageLanguageProvider)();
     for (final day in due) {
       final record = _ledger.days[day];

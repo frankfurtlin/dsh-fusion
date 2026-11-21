@@ -1,6 +1,6 @@
-// A plugin's page in the official market: `https://go.dshtui.com/p/<name>`
+// A plugin's page in the market: `<origin>/p/<name>`
 // (docs/design/plugin-market.md §6). The page itself is the share host's;
-// its 「用 DSH Go 打开」 hands over `dshgo://go.dshtui.com/p/<name>`, the
+// its 「用 App 打开」 hands over `dshgo://p/<name>`, the
 // same scheme as hosted conversation links, and both open the plugin's
 // detail sheet here.
 
