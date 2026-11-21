@@ -160,7 +160,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dshgo-${{ steps.flags.outputs.mode || 'release' }}-${{ github.sha }}
+          name: dsh-fusion-${{ steps.flags.outputs.mode || 'release' }}-${{ github.sha }}
           path: out/*.apk
           if-no-files-found: warn
           retention-days: 14
