@@ -17,12 +17,9 @@ import 'share_models.dart';
 /// also need the manifest and an assetlinks.json on that domain.
 const shareLandingUrl = '$shareHostOrigin/share/';
 
-/// Where the landing page used to live. That site stays up, so links made
-/// there keep opening in browsers, and the app still reads them.
-const legacyShareLandingUrls = ['https://ccch1mneyyy.github.io/dsh-go/share/'];
-
-/// The current landing page first, then the old ones.
-const _landingUrls = [shareLandingUrl, ...legacyShareLandingUrls];
+/// The landing pages this app recognises. Only its own: it never handed out
+/// links under another host, so there is nothing legacy to keep reading.
+const _landingUrls = [shareLandingUrl];
 
 /// Host of the app links.
 const shareLinkHost = 'share';
