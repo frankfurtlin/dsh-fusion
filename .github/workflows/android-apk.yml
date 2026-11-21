@@ -152,7 +152,11 @@ jobs:
             fi
             echo "$out" | sed -n '1,8p'
             echo "$out" | grep -q "CN=dsh-Go" || { echo "::error::$f 未使用 dsh-Go 发布证书签名"; fail=1; }
-            echo "$out" | grep -qi "E5:30:D8:AD" || { echo "::error::$f 证书指纹与发布密钥不一致"; fail=1; }
+            # apksigner prints the digest as bare lowercase hex, never with
+            # colons — matching "E5:30:D8:AD" here failed every correctly
+            # signed APK. Compare the full SHA-256 instead.
+            echo "$out" | grep -qi "e530d8ad73cb6eafe4b9d3d6e44ac095acfd2d11a5f6c2742ce1c5d17031706f" \
+              || { echo "::error::$f 证书指纹与发布密钥不一致"; fail=1; }
           done
           exit $fail
 
