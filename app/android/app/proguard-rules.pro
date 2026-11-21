@@ -8,13 +8,13 @@
 # 不打扰模式: the privileged process is started by class name, outside R8's
 # view (Shizuku UserService, `app_process … PrivilegedDisplayMain` over self-ADB),
 # and talks to the app through a hand-written Binder and Parcel/Bundle protocol.
--keep class io.github.ccch1mneyyy.dsh_app.phone.background.** { *; }
+-keep class top.frankfurtlin.dshfusion.phone.background.** { *; }
 
 # Independent Shizuku service and self-ADB/app_process command entry points.
--keep class io.github.ccch1mneyyy.dsh_app.phone.shell.** { *; }
+-keep class top.frankfurtlin.dshfusion.phone.shell.** { *; }
 
 # The one-attempt self-update UserService is loaded by Shizuku outside R8 references.
--keep class io.github.ccch1mneyyy.dsh_app.update.privileged.** { *; }
+-keep class top.frankfurtlin.dshfusion.update.privileged.** { *; }
 
 # ONNX JNI looks up exception/value classes and constructors by their original names.
 # Without these, an inference error aborts the process instead of throwing OrtException.
@@ -30,7 +30,7 @@
 # Agent/phone bridge (ported from dsh-mobile): the foreground service, its ops and the
 # Flutter plugin are all reached by name from the framework (Service/FlutterPlugin), and
 # OkHttp's WebSocket listener is invoked reflectively by its own internals.
--keep class io.github.ccch1mneyyy.dsh_app.bridge.** { *; }
+-keep class top.frankfurtlin.dshfusion.bridge.** { *; }
 -keep class okhttp3.** { *; }
 -dontwarn okhttp3.**
 -dontwarn okio.**
