@@ -1,0 +1,421 @@
+{
+  "schema": 1,
+  "id": "lulu",
+  "name": "水豚噜噜",
+  "author": "frankfurtlin",
+  "license": "MIT",
+  "source": "https://github.com/frankfurtlin/dsh-pet",
+  "pixelArt": false,
+  "scale": 1,
+  "canvas": {
+    "w": 192,
+    "h": 208
+  },
+  "anchor": {
+    "x": 96,
+    "baseline": 204
+  },
+  "contentBox": {
+    "x": 28,
+    "y": 5,
+    "w": 135,
+    "h": 199
+  },
+  "animations": {
+    "idle": {
+      "sheet": "idle.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 6,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 280
+        },
+        {
+          "i": 1,
+          "ms": 110
+        },
+        {
+          "i": 2,
+          "ms": 110
+        },
+        {
+          "i": 3,
+          "ms": 140
+        },
+        {
+          "i": 4,
+          "ms": 140
+        },
+        {
+          "i": 5,
+          "ms": 320
+        }
+      ]
+    },
+    "run-right": {
+      "sheet": "run-right.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 8,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 120
+        },
+        {
+          "i": 1,
+          "ms": 120
+        },
+        {
+          "i": 2,
+          "ms": 120
+        },
+        {
+          "i": 3,
+          "ms": 120
+        },
+        {
+          "i": 4,
+          "ms": 120
+        },
+        {
+          "i": 5,
+          "ms": 120
+        },
+        {
+          "i": 6,
+          "ms": 120
+        },
+        {
+          "i": 7,
+          "ms": 220
+        }
+      ]
+    },
+    "run-left": {
+      "sheet": "run-left.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 8,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 120
+        },
+        {
+          "i": 1,
+          "ms": 120
+        },
+        {
+          "i": 2,
+          "ms": 120
+        },
+        {
+          "i": 3,
+          "ms": 120
+        },
+        {
+          "i": 4,
+          "ms": 120
+        },
+        {
+          "i": 5,
+          "ms": 120
+        },
+        {
+          "i": 6,
+          "ms": 120
+        },
+        {
+          "i": 7,
+          "ms": 220
+        }
+      ]
+    },
+    "wave": {
+      "sheet": "wave.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 4,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": false,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 140
+        },
+        {
+          "i": 1,
+          "ms": 140
+        },
+        {
+          "i": 2,
+          "ms": 140
+        },
+        {
+          "i": 3,
+          "ms": 280
+        }
+      ]
+    },
+    "jump": {
+      "sheet": "jump.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 5,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": false,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 140
+        },
+        {
+          "i": 1,
+          "ms": 140
+        },
+        {
+          "i": 2,
+          "ms": 140
+        },
+        {
+          "i": 3,
+          "ms": 140
+        },
+        {
+          "i": 4,
+          "ms": 280
+        }
+      ]
+    },
+    "failed": {
+      "sheet": "failed.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 8,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": false,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 140
+        },
+        {
+          "i": 1,
+          "ms": 140
+        },
+        {
+          "i": 2,
+          "ms": 140
+        },
+        {
+          "i": 3,
+          "ms": 140
+        },
+        {
+          "i": 4,
+          "ms": 140
+        },
+        {
+          "i": 5,
+          "ms": 140
+        },
+        {
+          "i": 6,
+          "ms": 140
+        },
+        {
+          "i": 7,
+          "ms": 240
+        }
+      ]
+    },
+    "waiting": {
+      "sheet": "waiting.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 6,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 150
+        },
+        {
+          "i": 1,
+          "ms": 150
+        },
+        {
+          "i": 2,
+          "ms": 150
+        },
+        {
+          "i": 3,
+          "ms": 150
+        },
+        {
+          "i": 4,
+          "ms": 150
+        },
+        {
+          "i": 5,
+          "ms": 260
+        }
+      ]
+    },
+    "working": {
+      "sheet": "working.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 6,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 120
+        },
+        {
+          "i": 1,
+          "ms": 120
+        },
+        {
+          "i": 2,
+          "ms": 120
+        },
+        {
+          "i": 3,
+          "ms": 120
+        },
+        {
+          "i": 4,
+          "ms": 120
+        },
+        {
+          "i": 5,
+          "ms": 220
+        }
+      ]
+    },
+    "review": {
+      "sheet": "review.png",
+      "frameW": 192,
+      "frameH": 208,
+      "cols": 6,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 208
+      },
+      "loop": true,
+      "frames": [
+        {
+          "i": 0,
+          "ms": 150
+        },
+        {
+          "i": 1,
+          "ms": 150
+        },
+        {
+          "i": 2,
+          "ms": 150
+        },
+        {
+          "i": 3,
+          "ms": 150
+        },
+        {
+          "i": 4,
+          "ms": 150
+        },
+        {
+          "i": 5,
+          "ms": 280
+        }
+      ]
+    }
+  },
+  "states": {
+    "idle": [
+      "idle",
+      "waiting"
+    ],
+    "thinking": [
+      "review"
+    ],
+    "working": [
+      "working"
+    ],
+    "juggling": [
+      "run-right"
+    ],
+    "sweeping": [
+      "run-left"
+    ],
+    "notification": [
+      "wave"
+    ],
+    "attention": [
+      "wave"
+    ],
+    "error": [
+      "failed"
+    ]
+  },
+  "reactions": {
+    "tapLeft": "wave",
+    "tapRight": "jump",
+    "drag": "idle"
+  }
+}

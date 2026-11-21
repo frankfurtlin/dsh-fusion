@@ -1,0 +1,474 @@
+/**
+ * Model-facing tool surface. Each tool is a thin adapter over one phone
+ * operation so the model never sees transport vocabulary.
+ *
+ * @module dsh-mobile-bridge/tools
+ */
+
+/** JSON Schema for the optional device selector shared by every phone tool. */
+const DEVICE_PROPERTY = {
+  device: { type: 'string', description: 'Target phone id from phone_list. Omit when exactly one phone is online.' },
+}
+
+/**
+ * Build the tool list bound to a registry.
+ *
+ * @param {import('./phones.js').PhoneRegistry} phones live phone registry
+ * @returns {Array<{ name: string, description: string, inputSchema: object, handler: (args: Record<string, unknown>) => Promise<unknown> }>} tools
+ */
+export function createTools(phones) {
+  return [
+    {
+      name: 'phone_list',
+      description:
+        'List phones that are currently connected to this server. Call this first to learn which phone ids are online and which operations they support.',
+      inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+      async handler() {
+        const list = phones.list()
+        return { online: list.length, phones: list }
+      },
+    },
+    {
+      name: 'phone_info',
+      description: 'Describe one connected phone: model, declared capabilities, connection age and last activity.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        const conn = phones.resolve(args.device)
+        return { id: conn.id, name: conn.name, model: conn.model, caps: conn.caps, since_ms: Date.now() - conn.since }
+      },
+    },
+    {
+      name: 'phone_ping',
+      description: 'Round-trip one call to a phone to measure reachability and latency in milliseconds.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        const started = Date.now()
+        const data = await phones.call(args.device, 'ping', {}, 10_000)
+        return { ok: true, rtt_ms: Date.now() - started, phone: data ?? null }
+      },
+    },
+    {
+      name: 'phone_shares',
+      description: 'List items the user shared into DSH Mobile from other apps (files and text), newest first.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, limit: { type: 'integer', minimum: 1, maximum: 50, description: 'Maximum items to return (default 20).' } },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const limit = Number(args.limit ?? 20)
+        const data = await phones.call(args.device, 'shares', { limit })
+        const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : []
+        return { count: items.length, items: items.slice(0, limit) }
+      },
+    },
+    {
+      name: 'phone_clipboard_get',
+      description: 'Read the current text clipboard of the phone.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        const data = await phones.call(args.device, 'clipboard.get', {})
+        return { text: typeof data?.text === 'string' ? data.text : '' }
+      },
+    },
+    {
+      name: 'phone_clipboard_set',
+      description: 'Put text on the phone clipboard so the user can paste it anywhere.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, text: { type: 'string', description: 'Text to place on the clipboard.' } },
+        required: ['text'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        await phones.call(args.device, 'clipboard.set', { text: String(args.text) })
+        return { ok: true, bytes: Buffer.byteLength(String(args.text)) }
+      },
+    },
+    {
+      name: 'phone_notify',
+      description: 'Show a notification on the phone (and vibrate) so the user notices an agent result.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, title: { type: 'string' }, text: { type: 'string' } },
+        required: ['text'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        await phones.call(args.device, 'notify', { title: String(args.title ?? 'DSH'), text: String(args.text) })
+        return { ok: true }
+      },
+    },
+    {
+      name: 'phone_files_save',
+      description:
+        'Save a file onto the phone so the user can open it: into Downloads/DSH (default), Pictures/DSH, Movies/DSH, Music/DSH or Documents/DSH. Provide exactly one source: base64 `data`, a URL the phone downloads, or a `path` on the phone. Returns the content URI, which phone_files_open can open.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          name: { type: 'string', description: 'File name with extension, for example report.pdf.' },
+          mime: { type: 'string', description: 'MIME type; guessed from the name when omitted.' },
+          dest: { type: 'string', enum: ['downloads', 'pictures', 'movies', 'audio', 'documents'], description: 'Public collection to save into.' },
+          data: { type: 'string', description: 'Base64 file content (data: URLs accepted).' },
+          url: { type: 'string', description: 'URL the phone downloads, using its own DSH session.' },
+          path: { type: 'string', description: 'Absolute path on the phone.' },
+        },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const sources = ['data', 'url', 'path'].filter((key) => typeof args[key] === 'string' && args[key].length > 0)
+        if (sources.length !== 1) throw new Error('provide exactly one of data, url or path')
+        const result = await phones.call(args.device, 'files.save', {
+          name: args.name,
+          mime: args.mime,
+          dest: args.dest,
+          [sources[0]]: args[sources[0]],
+        })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_files_open',
+      description:
+        'Open a file that lives on the phone with the phone\'s own viewer app, so the user sees it on screen. Pass the content URI returned by phone_files_save, a file name already saved in Downloads/DSH, or an absolute path.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          uri: { type: 'string', description: 'content:// or file:// URI on the phone.' },
+          name: { type: 'string', description: 'File name previously saved in Downloads/DSH.' },
+          path: { type: 'string', description: 'Absolute path on the phone.' },
+          mime: { type: 'string', description: 'MIME type; guessed from the URI or name when omitted.' },
+        },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const sources = ['uri', 'name', 'path'].filter((key) => typeof args[key] === 'string' && args[key].length > 0)
+        if (sources.length !== 1) throw new Error('provide exactly one of uri, name or path')
+        const result = await phones.call(args.device, 'files.open', {
+          uri: args.uri,
+          name: args.name,
+          path: args.path,
+          mime: args.mime,
+        })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_fs_roots',
+      description:
+        'List the folders on the phone that the agent may browse. Two roots exist: `tree:` is the folder the user opened in DSH Mobile (absent until they pick one) and `downloads:` is always available (Downloads/DSH). Call this before phone_fs_list: every path is root-relative, for example `tree:/Documents/report.pdf` or `downloads:/notes/todo.md`.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const result = await phones.call(args.device, 'fs.roots', {})
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_fs_list',
+      description:
+        'List one folder on the phone. Each entry has name, path, kind ("file" or "directory"), size and modified time (ms). Use `tree:/` for the folder the user opened (see phone_fs_roots) or `downloads:/` for Downloads/DSH; `..` is rejected, so reads stay inside those two roots.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          path: { type: 'string', description: 'Root-relative path, for example `tree:/` or `downloads:/notes`.' },
+        },
+        required: ['path'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const result = await phones.call(args.device, 'fs.list', { path: args.path })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_fs_read',
+      description:
+        'Read one file the user has made browsable. UTF-8 text comes back in `text`; binary content comes back in `data` with `encoding: "base64"` (use phone_files_save to copy it elsewhere or phone_files_open to show it to the user). Files larger than 1 MiB are truncated.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          path: { type: 'string', description: 'Root-relative path, for example `tree:/notes/todo.md`.' },
+        },
+        required: ['path'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const result = await phones.call(args.device, 'fs.read', { path: args.path })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_fs_write',
+      description:
+        'Write a file on the phone inside one of the browsable roots: pass `path` (for example `tree:/notes/todo.md`) and `data`. Missing parent folders are created and an existing file is overwritten. `data` is UTF-8 text unless `encoding` is "base64". Only the user-opened folder and Downloads/DSH can be written, and every write needs the root to exist (check phone_fs_roots first).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          path: { type: 'string', description: 'Root-relative path of the file to write, for example `tree:/notes/todo.md`.' },
+          data: { type: 'string', description: 'File content, UTF-8 text or base64 when encoding is "base64".' },
+          encoding: { type: 'string', enum: ['utf8', 'base64'], description: 'How to decode `data`; defaults to utf8.' },
+          mime: { type: 'string', description: 'MIME type to record with the file; guessed from the name when omitted.' },
+        },
+        required: ['path', 'data'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const result = await phones.call(args.device, 'fs.write', {
+          path: args.path,
+          data: args.data,
+          encoding: args.encoding,
+          mime: args.mime,
+        })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_fs_mkdir',
+      description:
+        'Create a folder (and any missing parents) inside a browsable root, for example `tree:/notes/2026`. Fails when the path already exists as a file.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          path: { type: 'string', description: 'Root-relative folder path, for example `tree:/notes/2026`.' },
+        },
+        required: ['path'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const result = await phones.call(args.device, 'fs.mkdir', { path: args.path })
+        return { ok: true, ...result }
+      },
+    },
+    {
+      name: 'phone_open',
+      description: 'Open a URL on the phone in its browser or in the app that handles the scheme (http, https, or an app scheme).',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, url: { type: 'string', description: 'Absolute URL or app scheme URI to open.' } },
+        required: ['url'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const url = String(args.url)
+        if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url)) throw new Error('url must be absolute, for example https://example.com')
+        await phones.call(args.device, 'open', { url })
+        return { ok: true, url }
+      },
+    },
+    {
+      name: 'phone_a11y_status',
+      description: 'Report whether the phone can be driven by accessibility automation: whether the Android service is on and whether the user allows it.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        return await phones.call(args.device, 'a11y.status', {})
+      },
+    },
+    {
+      name: 'phone_apps',
+      description: 'List the apps on the phone that can be launched from its home screen. Call this before phone_launch.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        const data = await phones.call(args.device, 'apps.list', {})
+        return { count: data?.apps?.length ?? 0, apps: data?.apps ?? [] }
+      },
+    },
+    {
+      name: 'phone_launch',
+      description: 'Launch an app on the phone by its package name, taken from phone_apps.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, package: { type: 'string', description: 'Android package name, for example com.tencent.mm.' } },
+        required: ['package'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        return await phones.call(args.device, 'apps.launch', { package: String(args.package) })
+      },
+    },
+    {
+      name: 'phone_ui_tree',
+      description:
+        'Read the controls currently on the phone screen: text, content description, view id, class, bounds and tap centre. Call it before phone_tap so coordinates come from the live screen instead of a guess.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, max_nodes: { type: 'integer', description: 'Cap on returned nodes (default 400, max 2000).' } },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const data = await phones.call(args.device, 'a11y.tree', { max_nodes: args.max_nodes })
+        return data?.tree ?? data
+      },
+    },
+    {
+      name: 'phone_screenshot',
+      description: 'Take a screenshot of the phone screen. Returns the image plus its pixel size; use phone_ui_tree when you need tap coordinates.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, max_bytes: { type: 'integer', description: 'Byte budget for the JPEG (default 600000; the transport caps one message at 1 MiB).' } },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const data = await phones.call(args.device, 'a11y.screenshot', { max_bytes: args.max_bytes })
+        if (!data?.image) throw new Error('the phone did not return an image')
+        return { image: { data: data.image, mimeType: data.mime ?? 'image/jpeg' }, width: data.width, height: data.height, bytes: data.bytes }
+      },
+    },
+    {
+      name: 'phone_tap',
+      description: 'Tap a point on the phone screen, in screen pixels. Take x and y from phone_ui_tree (each node carries its tap centre).',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, x: { type: 'integer', description: 'Screen x in pixels.' }, y: { type: 'integer', description: 'Screen y in pixels.' } },
+        required: ['x', 'y'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const x = Math.round(Number(args.x))
+        const y = Math.round(Number(args.y))
+        if (!Number.isFinite(x) || !Number.isFinite(y)) throw new Error('phone_tap needs numeric x and y')
+        return await phones.call(args.device, 'a11y.tap', { x, y })
+      },
+    },
+    {
+      name: 'phone_swipe',
+      description: 'Swipe on the phone screen from one point to another, in screen pixels. Use it to scroll a list or dismiss a card.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          x1: { type: 'integer', description: 'Start x in pixels.' },
+          y1: { type: 'integer', description: 'Start y in pixels.' },
+          x2: { type: 'integer', description: 'End x in pixels.' },
+          y2: { type: 'integer', description: 'End y in pixels.' },
+          duration_ms: { type: 'integer', description: 'Gesture duration in milliseconds (default 300).' },
+        },
+        required: ['x1', 'y1', 'x2', 'y2'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const points = ['x1', 'y1', 'x2', 'y2'].map((key) => Math.round(Number(args[key])))
+        if (points.some((value) => !Number.isFinite(value))) throw new Error('phone_swipe needs numeric x1, y1, x2 and y2')
+        return await phones.call(args.device, 'a11y.swipe', {
+          x1: points[0],
+          y1: points[1],
+          x2: points[2],
+          y2: points[3],
+          duration_ms: args.duration_ms,
+        })
+      },
+    },
+    {
+      name: 'phone_global',
+      description: 'Press a system control on the phone: back, home, recents, notifications, quick_settings or lock.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, action: { type: 'string', enum: ['back', 'home', 'recents', 'notifications', 'quick_settings', 'lock'] } },
+        required: ['action'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const allowed = ['back', 'home', 'recents', 'notifications', 'quick_settings', 'lock']
+        const action = String(args.action)
+        if (!allowed.includes(action)) throw new Error(`unknown global action: ${action}`)
+        return await phones.call(args.device, 'a11y.global', { action })
+      },
+    },
+    {
+      name: 'phone_find',
+      description:
+        'Find controls on the phone screen by their text or content description and get the point that taps each one. Prefer this over phone_ui_tree when you already know the label: it returns fewer nodes and the tap centre directly.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          text: { type: 'string', description: 'Text or content description to look for.' },
+          exact: { type: 'boolean', description: 'Match the whole text/description instead of a substring (default false).' },
+          max: { type: 'integer', description: 'Cap on returned nodes (default 10, max 50).' },
+        },
+        required: ['text'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const text = String(args.text ?? '')
+        if (text.length === 0) throw new Error('phone_find needs a text to look for')
+        const data = await phones.call(args.device, 'a11y.find', { text, exact: Boolean(args.exact), max: args.max })
+        const nodes = Array.isArray(data?.nodes) ? data.nodes : []
+        return { count: data?.count ?? nodes.length, nodes }
+      },
+    },
+    {
+      name: 'phone_type',
+      description:
+        'Type text into the input field that currently has keyboard focus on the phone. Tap the field first (phone_find then phone_tap); an empty string clears it.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, text: { type: 'string', description: 'Text to put in the focused field; an empty string clears it.' } },
+        required: ['text'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const text = String(args.text ?? '')
+        const data = await phones.call(args.device, 'a11y.text', { text })
+        return { ok: data?.ok === true, length: data?.length ?? text.length }
+      },
+    },
+    {
+      name: 'phone_device_status',
+      description:
+        'Read the phone state in one call: battery percent and charging, screen on/off and pixel size, network type (wifi/cellular/none), and whether accessibility automation is ready.',
+      inputSchema: { type: 'object', properties: { ...DEVICE_PROPERTY }, additionalProperties: false },
+      async handler(args) {
+        return await phones.call(args.device, 'device.status', {})
+      },
+    },
+    {
+      name: 'phone_latest_media',
+      description:
+        'Return metadata for the newest photos, screenshots or videos on the phone (read-only; no image bytes). Fails with a clear message when the app has no media-read permission instead of returning nothing.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...DEVICE_PROPERTY,
+          limit: { type: 'integer', minimum: 1, maximum: 20, description: 'How many items to return (default 1).' },
+          kind: { type: 'string', enum: ['image', 'video', 'any'], description: 'Media type to list; defaults to image.' },
+        },
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const kind = String(args.kind ?? 'image')
+        if (!['image', 'video', 'any'].includes(kind)) throw new Error(`unknown media kind: ${kind}`)
+        const requested = Number(args.limit ?? 1)
+        if (!Number.isFinite(requested)) throw new Error('phone_latest_media needs a numeric limit')
+        const limit = Math.max(1, Math.min(Math.round(requested), 20))
+        const data = await phones.call(args.device, 'media.latest', { limit, kind })
+        const items = Array.isArray(data?.items) ? data.items : []
+        return { count: data?.count ?? items.length, items }
+      },
+    },
+    {
+      name: 'phone_call',
+      description:
+        'Escape hatch: invoke any operation the connected phone declares, by name with a JSON argument object. Prefer the dedicated tools; use this for newly added phone capabilities.',
+      inputSchema: {
+        type: 'object',
+        properties: { ...DEVICE_PROPERTY, op: { type: 'string', description: 'Operation name, for example "shares".' }, args: { type: 'object', description: 'Arguments passed to the operation.' } },
+        required: ['op'],
+        additionalProperties: false,
+      },
+      async handler(args) {
+        const data = await phones.call(args.device, String(args.op), args.args ?? {})
+        return { ok: true, data: data ?? null }
+      },
+    },
+  ]
+}
