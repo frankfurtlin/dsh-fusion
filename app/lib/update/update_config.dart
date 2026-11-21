@@ -6,7 +6,7 @@
 /// GitHub and the public accelerators, and the rate-limited GitHub API last.
 /// Beta builds carry a channel token (`--dart-define=DSH_BETA_CHANNEL_TOKEN`,
 /// put in by `tooling/build-apk.sh`): they ask the beta channel before all of
-/// that ([UpdateChannel], `go.dshtui.com/beta/update.json`,
+/// that ([UpdateChannel], `<beta origin>/beta/update.json`,
 /// docs/design/share-links.md) and download from it with the token.
 ///
 /// Build-time overrides (no code change needed):
@@ -38,14 +38,14 @@ Uri githubLatestAsset(String name) => Uri.parse('https://github.com/$updateRepo/
 Uri githubReleaseAsset(String tag, String name) =>
     Uri.parse('https://github.com/$updateRepo/releases/download/$tag/$name');
 
-/// The share host (services/share-worker). It serves the beta channel under
-/// `/beta/`; public files come from [updateDownloadOrigin].
-const updateMirrorOrigin = 'https://go.dshtui.com';
+/// Where the beta channel lives. Empty: this project runs no beta host, so
+/// beta builds must name one with `DSH_BETA_CHANNEL_ORIGIN`.
+const updateMirrorOrigin = '';
 
-/// Our public copy of the release files (an R2 bucket): `/update.json`, the
-/// latest public manifest with absolute asset URLs, and
-/// `/download/<version>/<file>` for every file of every release.
-const updateDownloadOrigin = 'https://dl.dshtui.com';
+/// A self-hosted copy of the release files. Empty: this project publishes no
+/// such copy, so updates come from GitHub releases (plus the public
+/// accelerators below, each verified against the release's SHA-256).
+const updateDownloadOrigin = '';
 
 /// The beta channel: `<origin>/beta/update.json` and `<origin>/beta/<version>/<file>`,
 /// both behind `Authorization: Bearer <token>`. The token is compiled into beta

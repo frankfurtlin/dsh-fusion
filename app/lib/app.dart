@@ -21,7 +21,6 @@ import 'ui/launch/launch_overlay.dart';
 import 'ui/shell/root_gate.dart';
 import 'ui/theme/theme.dart';
 import 'ui_config/ui_config_state.dart';
-import 'usage/usage_stats.dart';
 
 class DshApp extends ConsumerStatefulWidget {
   const DshApp({super.key, this.home});

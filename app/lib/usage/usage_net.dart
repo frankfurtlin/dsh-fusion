@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../state/app_info.dart';
@@ -17,11 +16,10 @@ import 'usage_ledger.dart';
 /// statistics on in a debug or profile build.
 const _endpointOverride = String.fromEnvironment('DSH_USAGE_ENDPOINT');
 
-/// The share host's endpoint (services/share-worker), contracts v1 to v3.
-final defaultUsageEndpoint = Uri.parse('https://go.dshtui.com/api/usage/v1');
-
-/// [defaultUsageEndpoint], or the build's override when it is usable.
-Uri get usageEndpoint => usageEndpointFrom(_endpointOverride) ?? defaultUsageEndpoint;
+/// The endpoint this build reports to: only what the build names with
+/// `--dart-define=DSH_USAGE_ENDPOINT=…`. Null when it names none, which is the
+/// default — this project sends its statistics nowhere.
+Uri? get usageEndpoint => usageEndpointFrom(_endpointOverride);
 
 /// [text] as an endpoint: HTTPS, or HTTP to loopback. Null otherwise.
 Uri? usageEndpointFrom(String text) {

@@ -186,15 +186,13 @@ final marketCatalogProvider = FutureProvider<MarketCatalog>((ref) async {
 
 // ── Official index ───────────────────────────────────────────────────────────
 
-/// The official market (docs/design/plugin-market.md): a format-1 index with
-/// one pinned version per plugin, and the DSH Go sidecar (`dsh-go.json`)
-/// beside it, read from [officialMarketBases]. Wherever it was read, the
-/// index is the Worker's (this URL resolves its links).
-const officialIndexUrl = 'https://go.dshtui.com/market/index.json';
+/// There is no catalogue this project publishes: a build that wants one
+/// points [officialMarketBases] at its own index. With no bases the market
+/// reads as empty instead of asking a third-party host.
+const officialIndexUrl = '';
 
-/// Where both files are read, in turn: the public bucket the Worker's cron
-/// writes (no Worker request), then the Worker.
-const officialMarketBases = ['https://dl.dshtui.com/market/', 'https://go.dshtui.com/market/'];
+/// Where the index and its sidecar are read, in turn. Empty by default.
+const officialMarketBases = <String>[];
 
 /// How long the copy on the phone is used without asking the server.
 const officialMarketFresh = Duration(hours: 6);
@@ -301,8 +299,8 @@ Future<MarketCatalog> fetchOfficialMarket({MarketFileFetcher get = fetchMarketFi
     }
   }
   if (copy != null) return _officialCatalog(copy.index, parseMarketSidecarText(copy.sidecar));
-  if (_notPublished(failure)) {
-    return MarketCatalog(MarketIndex(url: Uri.parse(officialIndexUrl), title: LocalizedText.plain('go.dshtui.com')));
+  if (officialMarketBases.isEmpty || _notPublished(failure)) {
+    return MarketCatalog(MarketIndex(url: Uri.parse(officialIndexUrl), title: LocalizedText.plain('Plugin market')));
   }
   throw failure!;
 }

@@ -19,7 +19,7 @@ import 'app_info.dart';
 /// Our own deployment unless the build names another; an empty value builds
 /// without a Workshop. Never an implicit third-party host.
 final workshopOriginProvider = Provider<Uri?>((ref) {
-  const configured = String.fromEnvironment('DSH_WORKSHOP_ORIGIN', defaultValue: 'https://go.dshtui.com');
+  const configured = String.fromEnvironment('DSH_WORKSHOP_ORIGIN');
   if (configured.isEmpty) return null;
   final parsed = Uri.tryParse(configured);
   if (parsed == null) workshopInvalid('workshop_untrusted_origin');
