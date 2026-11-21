@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Agent/phone bridge: the second accessibility service the bridge drives (bridge/A11yService.java).
+     Kept separate from phone_a11y (dsh-Go's own screen control) on purpose: that one is wired to the
+     local engine's tool set, this one answers the bridge-server's a11y.* operations. -->
+<resources>
+    <string name="bridge_a11y_label">DSH 手机桥 · 无障碍</string>
+    <string name="bridge_a11y_summary">让 DSH 读取屏幕内容并模拟点击/滑动（无需 root）</string>
+    <string name="bridge_a11y_description">开启后，你信任的 DSH 服务器可以读取当前屏幕的控件树、截图，并模拟点击、滑动和返回等操作，用来替你完成手机上的重复操作。</string>
+</resources>
