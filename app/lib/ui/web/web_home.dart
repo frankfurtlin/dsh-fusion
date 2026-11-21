@@ -11,7 +11,7 @@
 //                      paste; what the page can't take: the text to the
 //                      clipboard and one short line. Share codes and hosted
 //                      conversation links still open their native pages.
-//   links              LinkHost / ForumLinkHost, as on the native home
+//   links              LinkHost, as on the native home
 //   the floating pet   its states and its 「宠物设置」, as on the native home
 //
 // The page reports the conversation on screen back to the app
@@ -39,7 +39,6 @@ import '../../state/settings_state.dart';
 import '../../state/ui_mode_state.dart';
 import '../common/discard_guard.dart';
 import '../common/empty_view.dart';
-import '../forum/forum_link_host.dart';
 import '../notify/chat_alert_host.dart';
 import '../pets/pet_settings_page.dart';
 import '../shell/page_frame.dart';
@@ -177,7 +176,7 @@ class _WebHomeState extends ConsumerState<WebHome> {
     return ChatAlertHost(
       child: Stack(
         fit: StackFit.expand,
-        children: [page, const LinkHost(), const WebEntryHost(), const ForumLinkHost(), const _PetHost()],
+        children: [page, const LinkHost(), const WebEntryHost(), const _PetHost()],
       ),
     );
   }
