@@ -32,13 +32,13 @@ import kotlin.concurrent.thread
  * Images from chats into the phone's gallery (「保存到相册」): MethodChannel `dsh/media`.
  *
  * - `saveImage {bytes, name, mime}` → where it landed, as the gallery shows it
- *   (`Pictures/DSH Go/x.png`). Android 10+: MediaStore Images under `Pictures/DSH Go`,
+ *   (`Pictures/DSH Pocket/x.png`). Android 10+: MediaStore Images under `Pictures/DSH Pocket`,
  *   which needs no permission for the app's own pictures. Android 8–9: the public
  *   Pictures directory plus a media scan, after asking for the storage permission
  *   (this app targets SDK 28, so it is a runtime grant). On 10+ the permission is
  *   asked for only if MediaStore turns the app away; asked once per save.
  * - `saveVideoFile {path, name}` streams a local file into MediaStore Video
- *   under Movies/DSH Go, sharing the image permission queue and retry flow.
+ *   under Movies/DSH Pocket, sharing the image permission queue and retry flow.
  * - `openSettings` → the app's system settings page (to grant storage after a
  *   "don't ask again").
  *
@@ -297,9 +297,9 @@ class MediaPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandle
     companion object {
         const val CHANNEL = "dsh/media"
 
-        /** The gallery album: `Pictures/DSH Go`, the app's name as galleries show it (downloads go to
+        /** The gallery album: `Pictures/DSH Pocket`, the app's name as galleries show it (downloads go to
          *  `Download/DSH-Go`, a path the agent types). */
-        private const val ALBUM = "DSH Go"
+        private const val ALBUM = "DSH Pocket"
         private const val STORAGE_REQUEST = 0x5d7
 
         /** Own the chosen name before writing; another save must choose its own target. */

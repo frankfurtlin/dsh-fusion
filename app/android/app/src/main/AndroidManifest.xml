@@ -53,7 +53,7 @@
          TODO(targetSdk >= 31): also configure dataExtractionRules. -->
     <application
         android:allowBackup="false"
-        android:label="DSH Fusion"
+        android:label="DSH Pocket"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

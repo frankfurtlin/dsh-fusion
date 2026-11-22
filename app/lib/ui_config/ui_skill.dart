@@ -57,7 +57,12 @@ const companionAdaptSkillName = 'companion-adapt';
 const petThemeSkillName = 'pet-theme';
 
 /// The managed line inside SKILL.md's front matter.
-const uiSkillManagedMarker = '# dsh-go:managed';
+const uiSkillManagedMarker = '# dsh-pocket:managed';
+
+/// Markers that make a skill folder "managed" (safe to overwrite): the current
+/// one plus the one earlier releases wrote, so installs from before the rename
+/// keep getting updated instead of counting as user-owned.
+const uiSkillManagedMarkers = [uiSkillManagedMarker, '# dsh-go:managed'];
 
 final _safePath = RegExp(r'^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$');
 
@@ -109,7 +114,9 @@ Future<UiSkillBundle> loadUiSkillBundle([UiAssetReader? read, String name = uiSk
 bool isManagedUiSkill(String skillMd) {
   final match = RegExp(r'^---\r?\n([\s\S]*?)\r?\n---').firstMatch(skillMd);
   if (match == null) return false;
-  return match.group(1)!.split('\n').any((line) => line.trimLeft().startsWith(uiSkillManagedMarker));
+  return match.group(1)!
+      .split('\n')
+      .any((line) => uiSkillManagedMarkers.any((m) => line.trimLeft().startsWith(m)));
 }
 
 enum UiSkillInstallResult {
@@ -385,7 +392,8 @@ String uiSkillShellScript(UiSkillBundle bundle) {
     ..writeln('set -e')
     ..writeln('d="\${DSH_HOME:-\$HOME/.dsh}/skills/${bundle.name}"')
     ..writeln(
-      'if [ -f "\$d/SKILL.md" ] && ! grep -q \'^ *$uiSkillManagedMarker\' "\$d/SKILL.md"; then '
+      'if [ -f "\$d/SKILL.md" ] && ! grep -q -e \'^ *$uiSkillManagedMarker\' '
+      "-e '^ *${uiSkillManagedMarkers[1]}' \"\$d/SKILL.md\"; then "
       "echo 'DSHAPP skill=user-owned'; exit 0; fi",
     );
   final dirs = {

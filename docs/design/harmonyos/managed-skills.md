@@ -13,7 +13,7 @@
 | `requestId` | 非空字符串，最多 200 个 UTF-16 单元，同一 owner 未结束请求不能重名 |
 | `expectedRoot` / `expectedToken` | 非空字符串，各最多 4096 个单元；root 在 IO 阶段比较 canonical path，token 只在内存比较 |
 | `expectedGeneration` | 已公布的正安全整数，必须与 owner 当前许可相等 |
-| `name` | 仅 `dsh-fusion-ui`、`dsh-fusion-plugin`、`dsh-fusion-guide`、`dsh-fusion-support` |
+| `name` | 仅 `dsh-pocket-ui`、`dsh-pocket-plugin`、`dsh-pocket-guide`、`dsh-pocket-support` |
 | `files` | 1–64 项字符串 Map，必须含 `SKILL.md`；路径最多 512 字符，只允许 ASCII 字母、数字、下划线、连字符开头的安全段，禁止绝对路径、空段、`.` 和 `..` |
 | 文本预算 | 每项 UTF-16 单元先限 512 Ki，总量先限 1 Mi；严格编码后仍分别限 UTF-8 512 KiB / 1 MiB，不截断 |
 

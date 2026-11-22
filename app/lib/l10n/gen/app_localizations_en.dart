@@ -21,10 +21,10 @@ class L10nEn extends L10n {
 
   @override
   String get a11yRestoreNotice =>
-      'Once authorized, accessibility will be turned back on if disabled in system settings. To stop phone control, turn it off in DSH Go.';
+      'Once authorized, accessibility will be turned back on if disabled in system settings. To stop phone control, turn it off in DSH Pocket.';
 
   @override
-  String get a11yRestoreForceStop => 'After a force stop, reopen DSH Go to restore the service.';
+  String get a11yRestoreForceStop => 'After a force stop, reopen DSH Pocket to restore the service.';
 
   @override
   String get a11yRestoreGrant => 'Authorize and enable';
@@ -60,7 +60,7 @@ class L10nEn extends L10n {
   String get a11yRestoreCopied => 'Command copied';
 
   @override
-  String get accessPickTitle => 'What should DSH Go help with?';
+  String get accessPickTitle => 'What should DSH Pocket help with?';
 
   @override
   String get accessPickMessage => 'Pick any, then turn each one on';
@@ -183,7 +183,7 @@ class L10nEn extends L10n {
   String get accessAutostartTitle => 'Allow auto-start';
 
   @override
-  String get accessAutostartWhy => 'Lets DSH Go come back after the system clears it';
+  String get accessAutostartWhy => 'Lets DSH Pocket come back after the system clears it';
 
   @override
   String accessVivoAutostartPath(String app) {
@@ -205,7 +205,7 @@ class L10nEn extends L10n {
   String get accessPopupTitle => 'Allow pop-ups in background';
 
   @override
-  String get accessPopupWhy => 'Brings you back to DSH Go when phone control is done';
+  String get accessPopupWhy => 'Brings you back to DSH Pocket when phone control is done';
 
   @override
   String accessVivoPopupPath(String app) {
@@ -2920,7 +2920,7 @@ class L10nEn extends L10n {
   String get botsForumSubtitle => 'Ask, share, connect';
 
   @override
-  String get botsProjectHome => 'DSH Go project home';
+  String get botsProjectHome => 'DSH Pocket project home';
 
   @override
   String get botsOpenSource => 'Open-source project';
@@ -3700,6 +3700,39 @@ class L10nEn extends L10n {
 
   @override
   String get bridgeUnavailable => 'This build has no phone bridge; the switches below only do something on Android.';
+
+  @override
+  String get bridgeTokenFromWeb => 'Read from web sign-in';
+
+  @override
+  String get bridgeTokenFromWebEmpty =>
+      'No sign-in found yet: log into the gateway in the app\'s Web page mode first, then come back';
+
+  @override
+  String get bridgeLoginSection => 'Gateway sign-in';
+
+  @override
+  String get bridgeLoginFooter =>
+      'Sign in once with the dsh-passwords gateway account; the token is exchanged for dsh_gateway_token and kept on this phone.';
+
+  @override
+  String get bridgeLoginUsername => 'Username';
+
+  @override
+  String get bridgeLoginPassword => 'Password';
+
+  @override
+  String get bridgeLoginButton => 'Sign in and save token';
+
+  @override
+  String get bridgeLoginFailed => 'Sign-in failed';
+
+  @override
+  String get bridgeA11yAllow => 'Allow the bridge to use accessibility';
+
+  @override
+  String get bridgeA11yAllowHint =>
+      'Two gates: this switch and the system service. Both must be on for remote automation.';
 
   @override
   String get catalogCurrentChat => 'Current chat';
@@ -4604,7 +4637,7 @@ class L10nEn extends L10n {
   String get chatOpenInDefaultApp => 'Open in default app';
 
   @override
-  String get chatDownloadsFolderHint => 'Downloads/DSH-Go folder';
+  String get chatDownloadsFolderHint => 'Downloads/DSH-Pocket folder';
 
   @override
   String chatSavedToDownloadsPath(String path) {
@@ -6635,7 +6668,7 @@ class L10nEn extends L10n {
   String get engineAccountFinishInBrowser => 'Finish sign-in in your browser';
 
   @override
-  String get engineAccountReturnToDsh => 'Return to DSH Go after signing in';
+  String get engineAccountReturnToDsh => 'Return to DSH Pocket after signing in';
 
   @override
   String get engineAccountFinishingSignIn => 'Finishing sign-in';
@@ -8838,7 +8871,7 @@ class L10nEn extends L10n {
   String get featuresExportSaveDownloads => 'Save to Downloads';
 
   @override
-  String get featuresExportDownloadsHint => 'Save in Downloads/DSH-Go';
+  String get featuresExportDownloadsHint => 'Save in Downloads/DSH-Pocket';
 
   @override
   String get featuresExportContents => 'All records and attachments from this chat and its subagents';
@@ -9155,7 +9188,7 @@ class L10nEn extends L10n {
 
   @override
   String get harmonyNotificationSettingsFailed =>
-      'Couldn’t open system settings. Turn on notifications in Settings → Notifications & status bar → DSH Go.';
+      'Couldn’t open system settings. Turn on notifications in Settings → Notifications & status bar → DSH Pocket.';
 
   @override
   String get harmonySearchUnavailable => 'This isn\'t available in this version';
@@ -9300,7 +9333,7 @@ class L10nEn extends L10n {
   String get harmonyLiveBlockedTitle => 'The system isn\'t allowing progress notifications';
 
   @override
-  String get harmonyLiveBlockedText => 'Turn on notifications for DSH Go in system settings';
+  String get harmonyLiveBlockedText => 'Turn on notifications for DSH Pocket in system settings';
 
   @override
   String get harmonyAlertsOffTitle => 'Alert notifications are off';
@@ -9568,7 +9601,7 @@ class L10nEn extends L10n {
 
   @override
   String get hubSettingsStorageDenied =>
-      'Storage access wasn’t granted. Allow “All files access” for DSH Go in system settings, then try again.';
+      'Storage access wasn’t granted. Allow “All files access” for DSH Pocket in system settings, then try again.';
 
   @override
   String get hubSettingsRestartRequired => 'Takes effect after restarting the engine';
@@ -9961,10 +9994,10 @@ class L10nEn extends L10n {
   String get hubTableTintNoneHint => 'Grid lines only, the lightest';
 
   @override
-  String get hubAbout => 'About DSH Go';
+  String get hubAbout => 'About DSH Pocket';
 
   @override
-  String get hubAboutAuthor => 'Original author of DSH Go';
+  String get hubAboutAuthor => 'Original author of DSH Pocket';
 
   @override
   String get hubAboutBilibili => 'Bilibili profile';
@@ -10047,7 +10080,7 @@ class L10nEn extends L10n {
   String get iosSaveToFiles => 'Save to Files';
 
   @override
-  String get iosFilesFolderHint => 'DSH Go folder in the Files app';
+  String get iosFilesFolderHint => 'DSH Pocket folder in the Files app';
 
   @override
   String get iosSavingToFiles => 'Saving to Files…';
@@ -10060,7 +10093,7 @@ class L10nEn extends L10n {
 
   @override
   String get iosNotificationSettingsFailed =>
-      'Couldn’t open system settings. Turn on notifications in Settings → DSH Go → Notifications.';
+      'Couldn’t open system settings. Turn on notifications in Settings → DSH Pocket → Notifications.';
 
   @override
   String get iosVoiceSystemHint => 'Use the system’s speech recognition';
@@ -10527,7 +10560,7 @@ class L10nEn extends L10n {
 
   @override
   String get iconShortcutNote =>
-      'Android doesn’t let an app use any picture as its icon, so this adds a separate shortcut that opens DSH Go. Some home screens put a small badge on its corner.';
+      'Android doesn’t let an app use any picture as its icon, so this adds a separate shortcut that opens DSH Pocket. Some home screens put a small badge on its corner.';
 
   @override
   String get iconShortcutAdded => 'Added to your home screen';
@@ -10536,7 +10569,7 @@ class L10nEn extends L10n {
   String get iconShortcutConfirm => 'Confirm in the dialog that appears';
 
   @override
-  String get iconShortcutNoDialog => 'No dialog? Allow DSH Go to create home screen shortcuts in system settings.';
+  String get iconShortcutNoDialog => 'No dialog? Allow DSH Pocket to create home screen shortcuts in system settings.';
 
   @override
   String get iconShortcutSettings => 'Settings';
@@ -10775,11 +10808,11 @@ class L10nEn extends L10n {
   String get liveUnsupported => 'This phone\'s system doesn\'t support live activities yet';
 
   @override
-  String get liveBlockedTitle => 'Live activities are off for DSH Go';
+  String get liveBlockedTitle => 'Live activities are off for DSH Pocket';
 
   @override
   String get liveBlockedText =>
-      'Turn on live activities for DSH Go in system settings (some phones call it “Show on Live Alerts”)';
+      'Turn on live activities for DSH Pocket in system settings (some phones call it “Show on Live Alerts”)';
 
   @override
   String get localeTitle => 'Language';
@@ -10931,7 +10964,7 @@ class L10nEn extends L10n {
   String get marketSectionOfficial => 'Official';
 
   @override
-  String get marketSectionAdapted => 'Made for DSH Go';
+  String get marketSectionAdapted => 'Made for DSH Pocket';
 
   @override
   String get marketSectionAll => 'All';
@@ -10949,7 +10982,7 @@ class L10nEn extends L10n {
   String get marketTierOfficial => 'Official';
 
   @override
-  String get marketTierAdapted => 'Made for DSH Go';
+  String get marketTierAdapted => 'Made for DSH Pocket';
 
   @override
   String get marketRiskMedium => 'Medium risk';
@@ -10996,10 +11029,11 @@ class L10nEn extends L10n {
   String get marketFlagObfuscatedBody => 'Has large minified or obfuscated files; hard to tell what they do';
 
   @override
-  String get marketFlagNotAdapted => 'Not made for DSH Go';
+  String get marketFlagNotAdapted => 'Not made for DSH Pocket';
 
   @override
-  String get marketFlagNotAdaptedBody => 'Declares no DSH Go native protocol, so it has no native screens in the app';
+  String get marketFlagNotAdaptedBody =>
+      'Declares no DSH Pocket native protocol, so it has no native screens in the app';
 
   @override
   String get marketFlagOtherBody => 'Another trait the automatic checks reported';
@@ -11035,11 +11069,11 @@ class L10nEn extends L10n {
   String get marketPinnedVersion => 'Pinned version';
 
   @override
-  String get marketRequiresApp => 'Requires DSH Go';
+  String get marketRequiresApp => 'Requires DSH Pocket';
 
   @override
   String marketNeedsApp(String version) {
-    return 'Needs DSH Go $version or later';
+    return 'Needs DSH Pocket $version or later';
   }
 
   @override
@@ -11840,7 +11874,7 @@ class L10nEn extends L10n {
   String get phoneDiagnosticsSave => 'Save to Downloads';
 
   @override
-  String get phoneDiagnosticsSaveHint => 'Save in Downloads/DSH-Go';
+  String get phoneDiagnosticsSaveHint => 'Save in Downloads/DSH-Pocket';
 
   @override
   String get phoneDiagnosticsNote =>
@@ -11886,7 +11920,7 @@ class L10nEn extends L10n {
   String get phoneEngineLogs => 'Logs';
 
   @override
-  String get phoneEngineAutoStart => 'Start when DSH Go opens';
+  String get phoneEngineAutoStart => 'Start when DSH Pocket opens';
 
   @override
   String get phoneEngineKeepAlive => 'Background running';
@@ -12200,7 +12234,7 @@ class L10nEn extends L10n {
 
   @override
   String get phoneDndShizukuPermissionFailed =>
-      'Permission not granted. Allow DSH Go in Shizuku’s “Application management”.';
+      'Permission not granted. Allow DSH Pocket in Shizuku’s “Application management”.';
 
   @override
   String get phoneDndPairedConnect => 'Paired. Tap “Connect”.';
@@ -12306,11 +12340,11 @@ class L10nEn extends L10n {
 
   @override
   String get phoneDndRootConnected =>
-      'Root is connected. If it drops, choose it here again; DSH Go asks for root on its own only with “Keep root channel” enabled under More settings.';
+      'Root is connected. If it drops, choose it here again; DSH Pocket asks for root on its own only with “Keep root channel” enabled under More settings.';
 
   @override
   String get phoneDndRootConnectedKept =>
-      'Root is connected. If it drops, DSH Go asks your root manager again on its own.';
+      'Root is connected. If it drops, DSH Pocket asks your root manager again on its own.';
 
   @override
   String get phoneDndRootRetry => 'Ask for root again';
@@ -12326,10 +12360,10 @@ class L10nEn extends L10n {
       'Open Shizuku and follow “Start via Wireless debugging” (requires Wi-Fi). This page refreshes when you return.';
 
   @override
-  String get phoneDndGrantShizukuHint => 'Shizuku is running. Allow DSH Go to use it next.';
+  String get phoneDndGrantShizukuHint => 'Shizuku is running. Allow DSH Pocket to use it next.';
 
   @override
-  String get phoneDndGrantShizuku => 'Allow DSH Go';
+  String get phoneDndGrantShizuku => 'Allow DSH Pocket';
 
   @override
   String get phoneDndShizukuAllSet => 'Shizuku is running and authorized. Connect the background screen next.';
@@ -12341,7 +12375,7 @@ class L10nEn extends L10n {
   String get phoneDndShizukuRunning => 'Shizuku running';
 
   @override
-  String get phoneDndShizukuGranted => 'DSH Go allowed';
+  String get phoneDndShizukuGranted => 'DSH Pocket allowed';
 
   @override
   String get phoneDndShizukuCompatibility =>
@@ -12455,7 +12489,7 @@ class L10nEn extends L10n {
   String get phoneOpenAccessibilityFailed => 'Can’t open settings. Find DSH in Settings → Accessibility.';
 
   @override
-  String get phoneOpenAppInfoFailed => 'Can’t open app info. Find DSH Go in Settings → Apps.';
+  String get phoneOpenAppInfoFailed => 'Can’t open app info. Find DSH Pocket in Settings → Apps.';
 
   @override
   String get phoneStopFailed => 'Couldn’t stop. Tap “Stop” on the floating bar or notification.';
@@ -12715,14 +12749,14 @@ class L10nEn extends L10n {
 
   @override
   String get phoneRestrictedTryOverlay =>
-      'First try turning on DSH Go in floating window settings. When “Restricted setting” appears, tap “OK”. The option below appears only after this step.';
+      'First try turning on DSH Pocket in floating window settings. When “Restricted setting” appears, tap “OK”. The option below appears only after this step.';
 
   @override
-  String get phoneRestrictedBackOverlay => 'Return to floating window settings and turn on DSH Go.';
+  String get phoneRestrictedBackOverlay => 'Return to floating window settings and turn on DSH Pocket.';
 
   @override
   String get phoneRestrictedHuaweiOverlay =>
-      'HarmonyOS 4 and earlier usually skip this step. Turn on DSH Go directly in floating window settings.';
+      'HarmonyOS 4 and earlier usually skip this step. Turn on DSH Pocket directly in floating window settings.';
 
   @override
   String get phoneRestrictedHuaweiAccessibility =>
@@ -13249,7 +13283,7 @@ class L10nEn extends L10n {
   String get phoneControlEnabledPending => 'On · Takes effect when the engine starts';
 
   @override
-  String get phoneReturnAfterDone => 'Back to DSH Go when done';
+  String get phoneReturnAfterDone => 'Back to DSH Pocket when done';
 
   @override
   String get phoneReturnAfterDoneHint => 'Closes the bar, opens the chat';
@@ -13486,7 +13520,7 @@ class L10nEn extends L10n {
   String get phoneSelfCheckSaving => 'Saving…';
 
   @override
-  String get phoneSelfCheckSaved => 'Report saved to Downloads/DSH-Go.';
+  String get phoneSelfCheckSaved => 'Report saved to Downloads/DSH-Pocket.';
 
   @override
   String get phoneSelfCheckSaveFailed => 'Could not save the report.';
@@ -13794,15 +13828,15 @@ class L10nEn extends L10n {
 
   @override
   String get phoneBackgroundGuideBody =>
-      'When a step needs your decision, a DSH Go card appears. If the card is unavailable, the app tries a notification or returns here. Allow phone-control notifications and pop-up alerts in system settings.';
+      'When a step needs your decision, a DSH Pocket card appears. If the card is unavailable, the app tries a notification or returns here. Allow phone-control notifications and pop-up alerts in system settings.';
 
   @override
   String get phoneBackgroundOemHint =>
-      'In the system permissions for DSH Go, check “Display pop-up windows while running in the background”, if available. Allowing it can help the app return automatically. Menu names vary by system version.';
+      'In the system permissions for DSH Pocket, check “Display pop-up windows while running in the background”, if available. Allowing it can help the app return automatically. Menu names vary by system version.';
 
   @override
   String get phoneBackgroundReturnHint =>
-      'If the app does not return when a task finishes, tap “Task complete · View result”. If system notifications or background windows are blocked, you may need to open DSH Go yourself.';
+      'If the app does not return when a task finishes, tap “Task complete · View result”. If system notifications or background windows are blocked, you may need to open DSH Pocket yourself.';
 
   @override
   String get phoneBackgroundGotIt => 'Got it';
@@ -13815,7 +13849,7 @@ class L10nEn extends L10n {
 
   @override
   String get phonePrivilegedUpgrade =>
-      'This app build does not support that privileged channel. Update DSH Go to use it.';
+      'This app build does not support that privileged channel. Update DSH Pocket to use it.';
 
   @override
   String get phonePrivilegedSui => 'Sui';
@@ -13850,11 +13884,11 @@ class L10nEn extends L10n {
   String get phonePrivilegedSuggested => 'Suggested';
 
   @override
-  String get phonePrivilegedRootRiskTitle => 'Give DSH Go root access?';
+  String get phonePrivilegedRootRiskTitle => 'Give DSH Pocket root access?';
 
   @override
   String get phonePrivilegedRootRiskBody =>
-      'Your root manager (Magisk, KernelSU or APatch) will ask you. If you allow it, DSH Go runs its own background service as root. It asks again on its own after a disconnect or restart only with “Keep root channel” on.';
+      'Your root manager (Magisk, KernelSU or APatch) will ask you. If you allow it, DSH Pocket runs its own background service as root. It asks again on its own after a disconnect or restart only with “Keep root channel” on.';
 
   @override
   String phoneKeepTitle(String mode) {
@@ -13870,15 +13904,15 @@ class L10nEn extends L10n {
 
   @override
   String get phoneKeepRootDescription =>
-      'After a drop, an app restart or a reboot, DSH Go asks your root manager again by itself. The manager still decides.';
+      'After a drop, an app restart or a reboot, DSH Pocket asks your root manager again by itself. The manager still decides.';
 
   @override
   String get phoneKeepSharedDescription =>
-      'After a drop, an app restart or a reboot, DSH Go reconnects with the permission it already has. It never asks for permission.';
+      'After a drop, an app restart or a reboot, DSH Pocket reconnects with the permission it already has. It never asks for permission.';
 
   @override
   String get phoneKeepAdbDescription =>
-      'After a drop, an app restart or a reboot, DSH Go reconnects over Wi‑Fi with the existing pairing. With the permission from “Restore accessibility automatically”, it also tries once to turn on wireless debugging.';
+      'After a drop, an app restart or a reboot, DSH Pocket reconnects over Wi‑Fi with the existing pairing. With the permission from “Restore accessibility automatically”, it also tries once to turn on wireless debugging.';
 
   @override
   String get phoneKeepRestoring => 'Reconnecting';
@@ -14028,7 +14062,7 @@ class L10nEn extends L10n {
 
   @override
   String get phoneModeAutoNote =>
-      'System settings and permission pages, passwords and verification codes, and DSH Go itself stay with you. Banking and payment apps are off limits by default; you can change that in Settings.';
+      'System settings and permission pages, passwords and verification codes, and DSH Pocket itself stay with you. Banking and payment apps are off limits by default; you can change that in Settings.';
 
   @override
   String get phoneModeAutoUnlockNote =>
@@ -14047,7 +14081,7 @@ class L10nEn extends L10n {
   String get phoneYoursSecrets => 'Passwords and verification codes';
 
   @override
-  String get phoneYoursOwnApp => 'DSH Go itself';
+  String get phoneYoursOwnApp => 'DSH Pocket itself';
 
   @override
   String get phoneYoursDenyList => 'Apps set to Hands off in App rules, banking and payment by default';
@@ -14071,10 +14105,10 @@ class L10nEn extends L10n {
   String get phoneUnlockSecretsHint => 'Fill in passwords, verification and payment codes';
 
   @override
-  String get phoneUnlockOwnApp => 'DSH Go itself';
+  String get phoneUnlockOwnApp => 'DSH Pocket itself';
 
   @override
-  String get phoneUnlockOwnAppHint => 'Tap and type inside DSH Go';
+  String get phoneUnlockOwnAppHint => 'Tap and type inside DSH Pocket';
 
   @override
   String get phoneUnlockBusy => 'Can’t turn on while a task is running';
@@ -14107,7 +14141,7 @@ class L10nEn extends L10n {
   String get phoneUnlockConfirmSecretsTitle => 'Let AI fill in passwords and codes?';
 
   @override
-  String get phoneUnlockConfirmOwnAppTitle => 'Let AI operate DSH Go itself?';
+  String get phoneUnlockConfirmOwnAppTitle => 'Let AI operate DSH Pocket itself?';
 
   @override
   String get phoneUnlockCanTitle => 'Once on, AI can';
@@ -14153,10 +14187,10 @@ class L10nEn extends L10n {
   String get phoneUnlockSecretsRisk2 => 'It could complete a payment or transfer you didn’t intend';
 
   @override
-  String get phoneUnlockOwnAppCan1 => 'Tap and type inside DSH Go, including changing settings';
+  String get phoneUnlockOwnAppCan1 => 'Tap and type inside DSH Pocket, including changing settings';
 
   @override
-  String get phoneUnlockOwnAppCan2 => 'Read conversations and settings on DSH Go’s screens';
+  String get phoneUnlockOwnAppCan2 => 'Read conversations and settings on DSH Pocket’s screens';
 
   @override
   String get phoneUnlockOwnAppRisk1 =>
@@ -14173,7 +14207,7 @@ class L10nEn extends L10n {
 
   @override
   String get phoneUnlockDisclaimer3 =>
-      'Any resulting loss to your accounts, money, data or device is yours to bear. DSH Go and its developers accept no liability.';
+      'Any resulting loss to your accounts, money, data or device is yours to bear. DSH Pocket and its developers accept no liability.';
 
   @override
   String get phoneUnlockDisclaimer4 => 'Turn it on only when you need it, and off when you’re done.';
@@ -14676,7 +14710,7 @@ class L10nEn extends L10n {
   String get pluginsFileWriteFailed => 'Couldn’t write the file';
 
   @override
-  String get pluginsProfileTitle => 'DSH Go settings';
+  String get pluginsProfileTitle => 'DSH Pocket settings';
 
   @override
   String get pluginsGistTokenInvalid => 'GitHub token is invalid or lacks Gist permission';
@@ -15274,7 +15308,7 @@ class L10nEn extends L10n {
 
   @override
   String get pluginsNotificationSettingsFailed =>
-      'Couldn’t open system settings. Turn on notifications in Settings → Apps → DSH Go → Notifications.';
+      'Couldn’t open system settings. Turn on notifications in Settings → Apps → DSH Pocket → Notifications.';
 
   @override
   String get pluginsSystemNotificationsOff => 'System notifications are off';
@@ -15552,7 +15586,7 @@ class L10nEn extends L10n {
   String get pluginsShareOpenFailed => 'Couldn’t open this share code';
 
   @override
-  String get pluginsPluginShareTitle => 'DSH Go plugin';
+  String get pluginsPluginShareTitle => 'DSH Pocket plugin';
 
   @override
   String get pluginsShareSheetOpenFailed => 'Couldn’t open sharing';
@@ -15721,6 +15755,9 @@ class L10nEn extends L10n {
   String get pluginsLoadRemoteLogs => 'Check the engine logs on this host.';
 
   @override
+  String get pluginsOpenMarketFailed => 'Could not open the plugin market — check that a browser is available.';
+
+  @override
   String get plugslotsSurfaceComposerTools => 'Plus panel tools';
 
   @override
@@ -15829,7 +15866,7 @@ class L10nEn extends L10n {
 
   @override
   String plugslotsIssueNeedsApp(String version) {
-    return 'Needs DSH Go $version or later';
+    return 'Needs DSH Pocket $version or later';
   }
 
   @override
@@ -16327,7 +16364,7 @@ class L10nEn extends L10n {
   String get remoteErrHostNotOwned => 'Host isn’t in your DSH Remote account';
 
   @override
-  String get remoteErrUpdateNeeded => 'Version mismatch. Update DSH Go and the host’s remote plugin';
+  String get remoteErrUpdateNeeded => 'Version mismatch. Update DSH Pocket and the host’s remote plugin';
 
   @override
   String get remoteErrVersionIncompatible => 'Update DSH or the remote plugin on the host';
@@ -17863,7 +17900,7 @@ class L10nEn extends L10n {
 
   @override
   String get remotePairNeedsDeepSeekBody =>
-      'Pairing needs the DeepSeek account signed in on DSH Go. Only its account ID goes along, to label this phone; no password, cookie or token.';
+      'Pairing needs the DeepSeek account signed in on DSH Pocket. Only its account ID goes along, to label this phone; no password, cookie or token.';
 
   @override
   String get remotePairScanHint => 'Point the camera at the pairing code the Remote plugin shows on your computer';
@@ -17961,7 +17998,7 @@ class L10nEn extends L10n {
 
   @override
   String remotePairOtherServerBody(String server) {
-    return 'This code is from $server, not the Remote server DSH Go uses now. Switch to it and continue? Each server keeps its own sign-in.';
+    return 'This code is from $server, not the Remote server DSH Pocket uses now. Switch to it and continue? Each server keeps its own sign-in.';
   }
 
   @override
@@ -17971,7 +18008,7 @@ class L10nEn extends L10n {
   String get remotePairScanAgain => 'Scan again';
 
   @override
-  String get remotePairErrInvalidCode => 'That isn’t a DSH Go pairing code';
+  String get remotePairErrInvalidCode => 'That isn’t a DSH Pocket pairing code';
 
   @override
   String get remotePairErrOtherServer => 'This code is from another Remote server';
@@ -18119,7 +18156,7 @@ class L10nEn extends L10n {
 
   @override
   String get riskPetOverlayBody =>
-      'Turn on “Display over other apps” for DSH Go in system settings so your pet can appear outside the app.';
+      'Turn on “Display over other apps” for DSH Pocket in system settings so your pet can appear outside the app.';
 
   @override
   String get riskPetOverlayAction => 'Open settings';
@@ -18135,19 +18172,19 @@ class L10nEn extends L10n {
 
   @override
   String askAiAboutApp(String question) {
-    return 'About the DSH Go app: $question';
+    return 'About the DSH Pocket app: $question';
   }
 
   @override
   String askAiWithGuide(String question) {
-    return 'About the DSH Go app: $question\nPlease answer from the attached guide.';
+    return 'About the DSH Pocket app: $question\nPlease answer from the attached guide.';
   }
 
   @override
-  String get askAiNoGuide => 'This host doesn’t have the DSH Go guide, so answers may be off';
+  String get askAiNoGuide => 'This host doesn’t have the DSH Pocket guide, so answers may be off';
 
   @override
-  String get askAiQuestionOverview => 'What can DSH Go do, and where should I start?';
+  String get askAiQuestionOverview => 'What can DSH Pocket do, and where should I start?';
 
   @override
   String get askAiQuestionPhoneControl => 'How does phone control work, and what are the risks?';
@@ -18269,9 +18306,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwAppRules => 'apps,blocklist,allowlist,deny,app list';
-
-  @override
-  String get searchKwBridge => 'phone bridge,bridge,remote,connect server,websocket,token';
 
   @override
   String get searchKwDnd => 'dnd,shizuku,sui,root,adb,background';
@@ -18574,6 +18608,9 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwQuickPanel => 'swipe,left swipe,shortcuts,gesture,quick panel,quick access';
+
+  @override
+  String get searchKwBridge => 'phone bridge,bridge,remote,connect server,websocket,token';
 
   @override
   String get selfUpdateTransport => 'Installation route';
@@ -19752,7 +19789,7 @@ class L10nEn extends L10n {
 
   @override
   String shellSkillInstallPrompt(String skill) {
-    return 'Install the DSH Go interface skill $skill on this host:';
+    return 'Install the DSH Pocket interface skill $skill on this host:';
   }
 
   @override
@@ -20247,16 +20284,16 @@ class L10nEn extends L10n {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
-      other: 'I’ve kept you company in DSH Go for $hours hours now~',
-      one: 'I’ve kept you company in DSH Go for an hour now~',
-      zero: 'I’ve kept you company in DSH Go for half an hour now~',
+      other: 'I’ve kept you company in DSH Pocket for $hours hours now~',
+      one: 'I’ve kept you company in DSH Pocket for an hour now~',
+      zero: 'I’ve kept you company in DSH Pocket for half an hour now~',
     );
     return '$_temp0';
   }
 
   @override
   String get starPromptBody =>
-      'DSH Go is free and open source. If it’s made your phone a little nicer to use, please give it a Star — it means so much to this little whale!';
+      'DSH Pocket is free and open source. If it’s made your phone a little nicer to use, please give it a Star — it means so much to this little whale!';
 
   @override
   String get starPromptPlea => 'Pretty please~ It really matters!!';
@@ -20271,7 +20308,7 @@ class L10nEn extends L10n {
   String get starPromptLater => 'Maybe later';
 
   @override
-  String get starSettingsTitle => 'Star DSH Go on GitHub';
+  String get starSettingsTitle => 'Star DSH Pocket on GitHub';
 
   @override
   String get hubStartPage => 'Start page';
@@ -20302,7 +20339,7 @@ class L10nEn extends L10n {
       'The startup token arrived, but the local service port did not become ready. Check the logs.';
 
   @override
-  String get stateDiagnosticsSubject => 'DSH Go diagnostics bundle';
+  String get stateDiagnosticsSubject => 'DSH Pocket diagnostics bundle';
 
   @override
   String get stateStoragePermission => 'No storage permission to save to Downloads';
@@ -21631,7 +21668,7 @@ class L10nEn extends L10n {
   String get systemActionsWaitingEngine => 'On, waiting for the local engine';
 
   @override
-  String get systemActionsOffScreen => 'On, works once you\'re back in DSH Go';
+  String get systemActionsOffScreen => 'On, works once you\'re back in DSH Pocket';
 
   @override
   String get systemActionsConnecting => 'Connecting';
@@ -21652,11 +21689,11 @@ class L10nEn extends L10n {
   String get systemActionsRemoteHint => 'System actions only work in the local engine\'s chats';
 
   @override
-  String get systemActionsOnScreenTitle => 'Only works with DSH Go on screen';
+  String get systemActionsOnScreenTitle => 'Only works with DSH Pocket on screen';
 
   @override
   String get systemActionsOnScreenBody =>
-      'The system doesn\'t let background apps do these. After the AI opens another app, it can\'t go on until you\'re back in DSH Go.';
+      'The system doesn\'t let background apps do these. After the AI opens another app, it can\'t go on until you\'re back in DSH Pocket.';
 
   @override
   String get systemActionsCanTitle => 'What it can do';
@@ -21763,7 +21800,7 @@ class L10nEn extends L10n {
 
   @override
   String get systemActionsDisclosureWhenBody =>
-      'Only when a chat calls for it and DSH Go is on screen. It asks each time by default, and not in chats with full access.';
+      'Only when a chat calls for it and DSH Pocket is on screen. It asks each time by default, and not in chats with full access.';
 
   @override
   String get systemActionsDisclosureWhoTitle => 'Who gets what';
@@ -21789,7 +21826,7 @@ class L10nEn extends L10n {
 
   @override
   String get systemActionsHandoffNote =>
-      'When you\'re done, come back to DSH Go and press Continue. That only says you confirmed; the AI can\'t see what happened in other apps.';
+      'When you\'re done, come back to DSH Pocket and press Continue. That only says you confirmed; the AI can\'t see what happened in other apps.';
 
   @override
   String get systemActionsHandoffFailed => 'That didn\'t count. If the prompt is still here, press it again';
@@ -21819,7 +21856,7 @@ class L10nEn extends L10n {
   String get systemActionsResultUnsupported => 'HarmonyOS doesn\'t support this action. Nothing ran.';
 
   @override
-  String get systemActionsResultOffScreen => 'DSH Go wasn\'t on screen. Nothing ran.';
+  String get systemActionsResultOffScreen => 'DSH Pocket wasn\'t on screen. Nothing ran.';
 
   @override
   String get systemActionsResultUnavailable =>
@@ -22986,7 +23023,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get tavernStorybookMadeWith => 'Written in the DSH Go tavern';
+  String get tavernStorybookMadeWith => 'Written in the DSH Pocket tavern';
 
   @override
   String get tavernStorybookContents => 'Contents';
@@ -25927,7 +25964,7 @@ class L10nEn extends L10n {
 
   @override
   String get updateSettingsOpenFailedMessage =>
-      'Allow “Install unknown apps” in Settings → Apps → DSH Go, then return to install.';
+      'Allow “Install unknown apps” in Settings → Apps → DSH Pocket, then return to install.';
 
   @override
   String get updateInstallCancelled => 'Installation cancelled';
@@ -25947,7 +25984,7 @@ class L10nEn extends L10n {
 
   @override
   String get updateSignatureMismatchMessage =>
-      'The DSH Go on your phone has a different signature (usually a test build). Uninstall it before installing this version. Uninstalling erases your chats, Linux environment, and settings.';
+      'The DSH Pocket on your phone has a different signature (usually a test build). Uninstall it before installing this version. Uninstalling erases your chats, Linux environment, and settings.';
 
   @override
   String get updateWrongPackage => 'This isn’t a DSH package';
@@ -26012,7 +26049,7 @@ class L10nEn extends L10n {
   String get updateNoReleaseNotes => 'No release notes for this version.';
 
   @override
-  String get updateInstallKeepsData => 'DSH Go closes to install. Your chats and settings stay.';
+  String get updateInstallKeepsData => 'DSH Pocket closes to install. Your chats and settings stay.';
 
   @override
   String get updateNoCompatiblePackage => 'No package for this phone';
@@ -26047,7 +26084,7 @@ class L10nEn extends L10n {
   String get updateReadyToInstall => 'Verified and ready to install.';
 
   @override
-  String get updateAllowInstall => 'Allow DSH Go to install apps';
+  String get updateAllowInstall => 'Allow DSH Pocket to install apps';
 
   @override
   String get updateAllowInstallMessage =>
@@ -26076,7 +26113,7 @@ class L10nEn extends L10n {
 
   @override
   String get updateExportApkMessage =>
-      'Copies the package downloaded and verified now into Downloads/DSH-Go, so you can sign it yourself (MT Manager and the like) and install that.\n\nA package you signed has a different signature from ours: in-app updates then always report a signature mismatch, and every later version has to be signed and installed by hand.\n\nIf the system simply blocks the install (Xiaomi and other vendors), try Shizuku or on-device ADB under Installation route first; that needs no signing.';
+      'Copies the package downloaded and verified now into Downloads/DSH-Pocket, so you can sign it yourself (MT Manager and the like) and install that.\n\nA package you signed has a different signature from ours: in-app updates then always report a signature mismatch, and every later version has to be signed and installed by hand.\n\nIf the system simply blocks the install (Xiaomi and other vendors), try Shizuku or on-device ADB under Installation route first; that needs no signing.';
 
   @override
   String updateExportApkDone(String path) {
@@ -26121,7 +26158,7 @@ class L10nEn extends L10n {
   String get usageStatsTitle => 'Send anonymous usage stats';
 
   @override
-  String get usageStatsSection => 'Improve DSH Go';
+  String get usageStatsSection => 'Improve DSH Pocket';
 
   @override
   String get usageStatsFooter =>
@@ -26131,7 +26168,8 @@ class L10nEn extends L10n {
   String get usageNoticeBody => 'No chats or personal info.\nTurn off anytime.';
 
   @override
-  String get usageUpgradeNotice => 'New: anonymous usage stats, to help improve DSH Go.\nNo chats or personal info.';
+  String get usageUpgradeNotice =>
+      'New: anonymous usage stats, to help improve DSH Pocket.\nNo chats or personal info.';
 
   @override
   String get usageUpgradeLearn => 'Learn more';
@@ -26276,7 +26314,7 @@ class L10nEn extends L10n {
   String get viewBalanceNoAlert => 'Off';
 
   @override
-  String get viewBalanceBannerHidden => 'Balance alert hidden until DSH Go restarts';
+  String get viewBalanceBannerHidden => 'Balance alert hidden until DSH Pocket restarts';
 
   @override
   String get viewBalanceTurnOff => 'Turn off';
@@ -26889,7 +26927,7 @@ class L10nEn extends L10n {
   String get viewTipKeyboard => 'With a keyboard: Ctrl+Enter sends, Esc twice stops';
 
   @override
-  String get viewTipShareIn => 'Share text or images to DSH Go from another app to start a new chat with them';
+  String get viewTipShareIn => 'Share text or images to DSH Pocket from another app to start a new chat with them';
 
   @override
   String get viewTipShareSelect => 'When sharing a chat, long-press and slide to pick several messages at once';
@@ -27130,7 +27168,7 @@ class L10nEn extends L10n {
 
   @override
   String viewContinueHeader(String value) {
-    return '> Shared DSH Go chat · $value\n';
+    return '> Shared DSH Pocket chat · $value\n';
   }
 
   @override
@@ -27185,7 +27223,7 @@ class L10nEn extends L10n {
 
   @override
   String viewShareLinkText(String first, String second) {
-    return '“$first” · DSH Go chat\n$second';
+    return '“$first” · DSH Pocket chat\n$second';
   }
 
   @override
@@ -27204,7 +27242,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get viewShareFileHint => 'Replay and continue in DSH Go';
+  String get viewShareFileHint => 'Replay and continue in DSH Pocket';
 
   @override
   String get viewShareWebHint => 'Opens in any browser, even offline';
@@ -28266,7 +28304,7 @@ class L10nEn extends L10n {
 
   @override
   String workshopMinApp(String version) {
-    return 'Needs DSH Go $version or later.';
+    return 'Needs DSH Pocket $version or later.';
   }
 
   @override
@@ -29278,40 +29316,4 @@ class L10nEn extends L10n {
   @override
   String get workspaceRecoveryFailed =>
       'The operation did not finish. Check the local engine status and logs. This page shows whether the index mode changed.';
-
-  @override
-  String get bridgeTokenFromWeb => 'Read from web sign-in';
-
-  @override
-  String get bridgeTokenFromWebEmpty =>
-      'No sign-in found yet: log into the gateway in the app\'s Web page mode first, then come back';
-
-  @override
-  String get bridgeLoginSection => 'Gateway sign-in';
-
-  @override
-  String get bridgeLoginFooter =>
-      'Sign in once with the dsh-passwords gateway account; the token is exchanged for dsh_gateway_token and kept on this phone.';
-
-  @override
-  String get bridgeLoginUsername => 'Username';
-
-  @override
-  String get bridgeLoginPassword => 'Password';
-
-  @override
-  String get bridgeLoginButton => 'Sign in and save token';
-
-  @override
-  String get bridgeLoginFailed => 'Sign-in failed';
-
-  @override
-  String get bridgeA11yAllow => 'Allow the bridge to use accessibility';
-
-  @override
-  String get bridgeA11yAllowHint =>
-      'Two gates: this switch and the system service. Both must be on for remote automation.';
-
-  @override
-  String get pluginsOpenMarketFailed => 'Could not open the plugin market — check that a browser is available.';
 }
