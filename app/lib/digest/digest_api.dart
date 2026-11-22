@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../diagnostics/pocket_log.dart';
+
 /// 服务端「兴趣摘要」里的一条内容。
 class DigestItem {
   const DigestItem({
@@ -97,7 +99,12 @@ class DigestApi {
   static Future<DigestSnapshot> refresh() async {
     final result = await _channel.invokeMapMethod<String, Object?>('refresh');
     final json = result?['json'] as String? ?? '';
-    return DigestSnapshot.parse(json, enabled: true);
+    final snapshot = DigestSnapshot.parse(json, enabled: true);
+    PocketLog.instance.log('digest_refresh', {
+      'fresh': result?['fresh'],
+      'items': snapshot.items.length,
+    });
+    return snapshot;
   }
 
   static Future<bool> setEnabled(bool enabled) async {

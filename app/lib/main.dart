@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'diagnostics/pocket_log.dart';
+import 'state/app_info.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,6 +29,9 @@ Future<void> _startApp() async {
   if (!frameProbeEnabled) SteadyFrameBinding();
   WidgetsFlutterBinding.ensureInitialized();
   appErrorCapture.install();
+  // 操作日志（可选）：CI 构建用 --dart-define=POCKET_LOG_TOKEN 打开，本地构建为空 =
+  // 整个模块空操作。攒批上报，失败留在队列里。
+  unawaited(PocketLog.instance.start(deviceId: await _deviceId(), appVersion: AppInfo.version));
   // The first frame is already in the chosen language (设置 → 语言), and is the launch
   // window's own picture (启动画面, lib/launch/launch_state.dart).
   await Future.wait([AppLanguageController.load(), LaunchController.begin(), LocalPaths.load()]);
@@ -41,4 +48,15 @@ Future<void> _startApp() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(dshSystemOverlay(PlatformDispatcher.instance.platformBrightness));
   runApp(const ProviderScope(child: DshApp()));
+}
+
+/// 稳定但不敏感的设备标识：装一次生成，之后一直用它归类日志。
+Future<String> _deviceId() async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'pocket.deviceId';
+  final existing = prefs.getString(key);
+  if (existing != null && existing.length >= 8) return existing;
+  final created = 'dev-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+  await prefs.setString(key, created);
+  return created;
 }

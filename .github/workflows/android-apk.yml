@@ -101,6 +101,10 @@ jobs:
           if [ "$ABI" != "all" ]; then
             FLAGS="$FLAGS --target-platform $ABI"
           fi
+          # 操作日志上报的令牌（只用于写入本机日志口；为空 = 该功能关闭）
+          if [ -n "${{ secrets.POCKET_LOG_TOKEN }}" ]; then
+            FLAGS="$FLAGS --dart-define=POCKET_LOG_TOKEN=${{ secrets.POCKET_LOG_TOKEN }}"
+          fi
           echo "flags=$FLAGS" >> "$GITHUB_OUTPUT"
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
 
