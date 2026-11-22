@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Themed-icon (Android 13+) layer: silhouette of the DSH Fusion mark (a geometric F), same
-     placement as mipmap/ic_launcher_foreground. -->
+<!-- Themed-icon (Android 13+) layer: the dsh-fusion mark (terminal prompt) on the 108 grid,
+     the same placement as mipmap/ic_launcher_foreground. Authored by tool/make_brand_assets.py. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -8,5 +8,8 @@
     android:viewportHeight="108">
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M36,28 H72 V42 H52 V48 H64 V62 H52 V80 H36 Z" />
+        android:pathData="M30.91,40.221L50.41,57.721L57.09,50.279L37.59,32.779ZM50.41,50.279L30.91,67.779L37.59,75.221L57.09,57.721ZM29.25,36.5a5,5 0 1,0 10,0a5,5 0 1,0 -10,0ZM29.25,71.5a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M60.75,76.5L73.75,76.5L73.75,66.5L60.75,66.5ZM55.75,71.5a5,5 0 1,0 10,0a5,5 0 1,0 -10,0ZM68.75,71.5a5,5 0 1,0 10,0a5,5 0 1,0 -10,0Z" />
 </vector>
