@@ -44,7 +44,16 @@ source /root/toolchain/env.sh && tools/build-apk.sh --debug
 - **常驻在后台**，任何新增的定时器、心跳、轮询都要说清频率和退出条件——这是这个
   App 的耗电大头。
 
-## 构建
+## 构建（2026-11-23 起，硬规则）
 
-正式包走 GitHub Actions（`.github/workflows/android-apk.yml`），本机只做 debug
-增量。真机行为（手机桥、无障碍、通知、后台保活）只有装机才能证明，桌面测试不算。
+- **只在本地构建**，不要用 GitHub Actions 做日常构建。跨云链路实测不可靠
+  （GitHub runner → COS 传 66MB 卡死；本机 → GitHub 下载 0 B/s）。
+- **开发阶段用 debug**：`tools/build-apk.sh /root/workspace/dsh-fusion/app`
+- 发到手机一条命令：`tools/pocket/publish_local.sh [debug|release]`（传 COS 并打印
+  直链 + 字节数 + sha256）。
+- debug 与 release **同密钥签名**，可互相覆盖安装且保留数据；换包不用卸载。
+- R8 **默认关闭**（1.0.1 开过一次，真机一启动就退）；要开必须真机验证主要路径。
+- CI 只留给正式发布（mode=release）：建 Release + 更新 COS 的 `update.json`。
+
+细节、环境坑、版本号约定见 [`docs/build.md`](docs/build.md)。
+真机行为（手机桥、无障碍、通知、后台保活）只有装机才能证明，桌面测试不算。
