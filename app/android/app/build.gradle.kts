@@ -132,12 +132,14 @@ android {
         release {
             // Use the release key when configured; local builds without key.properties fall back to debug.
             signingConfig = signingConfigs.getByName(if (keyProps.isEmpty) "debug" else "release")
-            // `-PfastBuild` trades APK size for speed: R8 (minify + resource shrinking) is the
-            // slowest step on a small machine (20-40 min). Iteration builds skip it.
-            if (project.hasProperty("fastBuild")) {
-                isMinifyEnabled = false
-                isShrinkResources = false
-            }
+            // R8 (minify + resource shrinking) is the slowest step on a small machine
+            // (20-40 min), so iteration builds skip it with `-PfastBuild`; `-PnoMinify`
+            // keeps an unminified build around when something is only reachable by name
+            // at runtime and R8 has to be bisected. Release builds minify by default —
+            // without this the `proguard-rules.pro` keep rules below never applied.
+            val skipShrink = project.hasProperty("fastBuild") || project.hasProperty("noMinify")
+            isMinifyEnabled = !skipShrink
+            isShrinkResources = !skipShrink
             // Ours on top of Flutter's: phone control's privileged process and
             // its TLS libraries are reached by class name (see the file).
             proguardFiles("proguard-rules.pro")

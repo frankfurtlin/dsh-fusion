@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- FileProvider roots for files/FilesPlugin.kt ("打开" on a chat artifact).
-     A URI is only ever granted for the one file the user opens. -->
+     A URI is only ever granted for the one file the user opens, and contentUri()
+     in that plugin copies anything outside these roots into the cache, so the
+     roots stay as narrow as the feature needs.
+     2026-11-22: dropped the local-engine rootfs root (that feature is gone) and
+     narrowed external storage from all of it to the folders the app writes. -->
 <paths>
-    <!-- Local engine: files inside the Linux environment (filesDir/runtime/rootfs). -->
-    <files-path name="rootfs" path="runtime/rootfs/" />
     <!-- Downloaded copies of remote hosts' files, and copies made to open anything else. -->
     <cache-path name="artifacts" path="artifacts/" />
     <!-- 应用内更新: a downloaded package opened in the system installer (update/UpdatePlugin.kt). -->
     <cache-path name="updates" path="updates/" />
-    <!-- "访问手机文件": files the agent wrote to shared storage (e.g. Download/DSH-Go). -->
-    <external-path name="storage" path="." />
+    <!-- "访问手机文件": files the agent wrote to shared storage (Download/DSH-Pocket, saved pictures). -->
+    <external-path name="downloads" path="Download/" />
+    <external-path name="pictures" path="Pictures/" />
+    <external-path name="movies" path="Movies/" />
+    <external-path name="dcim" path="DCIM/" />
 </paths>
