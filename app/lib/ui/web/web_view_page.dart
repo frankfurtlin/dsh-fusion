@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import '../../l10n/l10n.dart';
 import '../common/empty_view.dart';
@@ -673,14 +674,24 @@ class _WebViewPageState extends State<WebViewPage> {
   }
 
   Future<void> _setUp(WebViewController controller) async {
+    // Same hardening as the remote web page: no local file/content access (the
+    // file chooser above is the only upload path) and no third-party cookies.
+    final platform = controller.platform;
+    if (platform is AndroidWebViewController) {
+      await platform.setAllowFileAccess(false);
+      await platform.setAllowContentAccess(false);
+      await platform.setMixedContentMode(MixedContentMode.neverAllow);
+      final cookies = WebViewCookieManager().platform as AndroidWebViewCookieManager;
+      await cookies.setAcceptThirdPartyCookies(platform, false);
+    }
     await Future.wait(
       [
         controller.setJavaScriptMode(JavaScriptMode.unrestricted),
         _files.attach(controller),
         controller.setNavigationDelegate(
           NavigationDelegate(
-            // DSH Web keeps to its own origin; other pages open in the browser.
-            onNavigationRequest: widget.dshWeb ? _onDshWebNavigation : null,
+            // DSH Web keeps to its own origin; other pages stay on http(s).
+            onNavigationRequest: widget.dshWeb ? _onDshWebNavigation : _onPlainNavigation,
             onPageStarted: (_) {
               if (!mounted || _gone || controller != _controller) return;
               _files.invalidate();
@@ -767,6 +778,16 @@ class _WebViewPageState extends State<WebViewPage> {
       _open();
     });
     _syncLook();
+  }
+
+  /// Pages that are not DSH Web: stay on http(s). Anything else (file://,
+  /// content://, intent://, javascript:) would reach local storage or hand the
+  /// URL to another app, which a page in the browser preview has no business
+  /// doing.
+  NavigationDecision _onPlainNavigation(NavigationRequest request) {
+    final uri = Uri.tryParse(request.url);
+    final ok = uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
+    return ok ? NavigationDecision.navigate : NavigationDecision.prevent;
   }
 
   NavigationDecision _onDshWebNavigation(NavigationRequest request) {

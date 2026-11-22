@@ -180,6 +180,11 @@ class MarketCatalog {
 
 /// Fetched once per app session (kept in memory); `ref.invalidate` reloads.
 final marketCatalogProvider = FutureProvider<MarketCatalog>((ref) async {
+  // No index configured (the default): read as an empty catalogue rather than
+  // asking a host this project does not run.
+  if (dshfindIndexUrl.isEmpty) {
+    return MarketCatalog(MarketIndex(url: Uri(), title: LocalizedText.plain('Plugin market')));
+  }
   final index = await ref.watch(marketIndexFetcherProvider)(Uri.parse(dshfindIndexUrl));
   return MarketCatalog(index);
 }, retry: (_, _) => null);

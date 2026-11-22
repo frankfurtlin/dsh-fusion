@@ -143,7 +143,7 @@ export class PhoneRegistry {
       }
       return conn
     }
-    if (this.byDevice.size === 0) throw new Error('no phone is online; open DSH Mobile and let it connect')
+    if (this.byDevice.size === 0) throw new Error('no phone is online; open the DSH app and let it connect')
     if (this.byDevice.size > 1) {
       const ids = [...this.byDevice.keys()].join(', ')
       throw new Error(`${this.byDevice.size} phones are online; pass device (one of: ${ids})`)

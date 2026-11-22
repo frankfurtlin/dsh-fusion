@@ -38,8 +38,9 @@ part 'plugins/plugin_install_queue.dart';
 /// it works on hosts without the experimental `pluginMarket` bundle and over
 /// the relay.
 
-/// Default market: dshfind's format-1 index (attribution "数据来自 dshfind").
-const dshfindIndexUrl = 'https://api.dshfind.com/market/dsh-index.json';
+/// No catalogue is fetched by default: this project points at no third-party
+/// host. A build that wants one sets [dshfindIndexUrl] (a format-1 index).
+const dshfindIndexUrl = '';
 
 /// Profile `dsh web` runs with; the app starts every host it drives that way.
 const pluginProfile = 'web';

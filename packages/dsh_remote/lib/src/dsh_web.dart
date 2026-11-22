@@ -15,7 +15,7 @@ class RemoteDshWebException implements Exception {
 
 /// Trust comes from application configuration, never from a Host response.
 /// Each configured parent authorizes exactly one independent tunnel subdomain.
-bool isTrustedDshWebRoot(Uri uri, {Set<String> trustedTunnelDomains = const {'hostc.4ba.io'}}) {
+bool isTrustedDshWebRoot(Uri uri, {Set<String> trustedTunnelDomains = const {}}) {
   if (uri.scheme != 'https' ||
       uri.host.isEmpty ||
       uri.hasPort ||

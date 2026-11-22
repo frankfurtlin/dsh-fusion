@@ -30,7 +30,7 @@ class _RemoteWebLauncher {
 
 /// The current Remote Host's DSH Web, not the Remote account console.
 class RemoteWebEntry extends ConsumerWidget {
-  const RemoteWebEntry({super.key, this.trustedTunnelDomains = const {'hostc.4ba.io'}});
+  const RemoteWebEntry({super.key, this.trustedTunnelDomains = const {}});
 
   /// Trusted application configuration only; never learn domains from open RPC.
   final Set<String> trustedTunnelDomains;

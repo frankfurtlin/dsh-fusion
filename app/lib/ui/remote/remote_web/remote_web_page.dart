@@ -33,7 +33,7 @@ class RemoteWebPage extends ConsumerStatefulWidget {
     super.key,
     required this.carrier,
     required this.session,
-    this.trustedTunnelDomains = const {'hostc.4ba.io'},
+    this.trustedTunnelDomains = const {},
   });
 
   final RemoteTunnelCarrier carrier;
