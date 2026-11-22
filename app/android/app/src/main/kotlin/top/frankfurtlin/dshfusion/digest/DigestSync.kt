@@ -1,13 +1,12 @@
 package top.frankfurtlin.dshfusion.digest
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -110,12 +109,11 @@ object DigestSync {
         prefs(context).edit().putString(KEY_CACHE, body).apply()
 
         val known = seen(context)
-        val fresh = buildList {
-            for (i in 0 until items.length()) {
-                val item = items.optJSONObject(i) ?: continue
-                val id = item.optString("id")
-                if (id.isNotEmpty() && id !in known) add(item)
-            }
+        val fresh = mutableListOf<JSONObject>()
+        for (i in 0 until items.length()) {
+            val item = items.optJSONObject(i) ?: continue
+            val id = item.optString("id")
+            if (id.isNotEmpty() && id !in known) fresh += item
         }
         if (fresh.isEmpty()) return 0
 
@@ -157,21 +155,18 @@ object DigestSync {
             context, NOTIFY_ID, intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        val notification = NotificationCompat.Builder(context, CHANNEL)
+        val big = fresh.joinToString("\n") { "· " + it.optString("title") }
+        val notification = Notification.Builder(context, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("为你挑了 ${fresh.size} 条")
             .setContentText(text.take(120))
-            .setStyle(
-                NotificationCompat.BigTextStyle().bigText(
-                    fresh.joinToString("\n") { "· " + it.optString("title") },
-                ),
-            )
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setStyle(Notification.BigTextStyle().bigText(big))
             .setAutoCancel(true)
             .setContentIntent(pending)
             .build()
         try {
-            NotificationManagerCompat.from(context).notify(NOTIFY_ID, notification)
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager)
+                ?.notify(NOTIFY_ID, notification)
         } catch (_: SecurityException) {
             // 没有通知权限：不打扰用户，页面里仍能看到内容
         }
