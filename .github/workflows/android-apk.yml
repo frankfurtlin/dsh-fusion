@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   FLUTTER_VERSION: "3.50.0"

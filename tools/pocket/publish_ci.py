@@ -37,6 +37,21 @@ def sha256(path: str) -> str:
     return h.hexdigest()
 
 
+def release_asset(tag: str, apk: str, asset_name: str) -> str:
+    """把 APK 传到 GitHub Release 并返回浏览器可下载的地址。"""
+    import subprocess
+    repo = os.environ.get('GITHUB_REPOSITORY', 'frankfurtlin/dsh-fusion')
+    subprocess.run(['gh', 'release', 'view', tag, '-R', repo], capture_output=True)
+    view = subprocess.run(['gh', 'release', 'view', tag, '-R', repo], capture_output=True, text=True)
+    if view.returncode != 0:
+        subprocess.run(['gh', 'release', 'create', tag, '-R', repo,
+                        '--title', tag, '--notes', os.environ.get('COMMIT_TITLE', '')],
+                       check=True, capture_output=True)
+    subprocess.run(['gh', 'release', 'upload', tag, apk,
+                    '--clobber', '-R', repo], check=True, capture_output=True)
+    return f'https://github.com/{repo}/releases/download/{tag}/{asset_name}'
+
+
 def main() -> int:
     app_dir = os.environ.get('APP_DIR', 'app')
     apk = os.path.join('out', 'app-arm64-release.apk')
@@ -64,16 +79,13 @@ def main() -> int:
     bucket = os.environ['COS_BUCKET']
     eo = os.environ['COS_EO_DOMAIN'].rstrip('/')
 
-    print(f'上传 {asset_name}（{size / 1048576:.1f} MB）')
-    # 单次 PUT：multipart 在这条链路上会被反复重试卡住（实测 25 分钟没完）。
-    started = time.time()
-    with open(apk, 'rb') as body:
-        client.put_object(
-            Bucket=bucket, Key=key, Body=body, ContentLength=str(size),
-            ContentType='application/vnd.android.package-archive',
-            CacheControl='public, max-age=31536000, immutable',
-        )
-    print(f'APK 上传完成 {time.time() - started:.1f}s')
+    # APK 不放 COS：GitHub runner → 广州 COS 的 66MB 上传实测会卡死（25 分钟未完成），
+    # 而本机到 COS 是 86 MB/s —— 说明是跨云链路问题，不是 COS。改成把 APK 挂在
+    # GitHub Release 上（同一云，快），App 侧用仓库里已有的加速镜像下载并校验 sha256；
+    # COS/EO 只托管这份几 KB 的清单。
+    tag = f'v{version.split("+")[0]}'
+    asset_url = release_asset(tag, apk, asset_name)
+    print(f'Release 资产：{asset_url}')
 
     manifest = {
         'schema': 1,
@@ -82,7 +94,7 @@ def main() -> int:
         'assets': {
             'arm64': {
                 'name': asset_name,
-                'url': f'{eo}/{key}',
+                'url': asset_url,
                 'size': size,
                 'sha256': digest,
             },
