@@ -62,6 +62,7 @@ enum SpotCondition {
 /// The settings pages, each with one home: its [SettingsPageMeta.parent].
 enum SettingsPageId {
   hub,
+  digest,
   models,
   permission,
   personalization,
@@ -380,6 +381,14 @@ String _help(L10n l) => l.hubGroupHelp;
 
 final _pages = <SettingsPageMeta>[
   SettingsPageMeta(SettingsPageId.hub, title: (l) => l.commonSettings, parent: null, links: const ['settings']),
+  SettingsPageMeta(
+    SettingsPageId.digest,
+    title: (l) => l.digestTitle,
+    group: _ai,
+    keywords: (l) => l.digestPushTitle,
+    freq: Freq.low,
+    links: const ['digest'],
+  ),
   // AI
   SettingsPageMeta(
     SettingsPageId.models,

@@ -47,3 +47,6 @@ app/ios/Engine/
 
 # the fusion's Node bridge server (packages/bridge-server) installs deps in place
 packages/bridge-server/node_modules/
+
+# 兴趣推送的发布路径（不可枚举，等同密钥，不入库）
+tools/pocket/publish.json

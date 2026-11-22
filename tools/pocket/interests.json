@@ -1,0 +1,84 @@
+{
+  "_note": "兴趣推送的选材配置。由用户画像（/root/.agents/USER.md）推导，可直接改；改完下一次运行生效。",
+  "max_items": 6,
+  "ai_window_hours": 30,
+  "arxiv_days": 3,
+  "topics": [
+    {
+      "id": "dsh",
+      "label": "DSH / agent 基建",
+      "weight": 3,
+      "keywords": [
+        "dsh",
+        "deepseek harness",
+        "cordis",
+        "agent",
+        "mcp",
+        "tool use",
+        "coding agent"
+      ]
+    },
+    {
+      "id": "ai-eng",
+      "label": "AI 工程",
+      "weight": 2,
+      "keywords": [
+        "llm",
+        "model",
+        "openai",
+        "anthropic",
+        "gemini",
+        "claude",
+        "gpt",
+        "release",
+        "inference",
+        "模型"
+      ]
+    },
+    {
+      "id": "frontend",
+      "label": "前端体验",
+      "weight": 2,
+      "keywords": [
+        "ui",
+        "frontend",
+        "flutter",
+        "react",
+        "design",
+        "css"
+      ]
+    },
+    {
+      "id": "market",
+      "label": "A 股与资源品",
+      "weight": 2,
+      "keywords": [
+        "a股",
+        "上证",
+        "有色",
+        "黄金",
+        "稀土",
+        "铜",
+        "铝",
+        "锂",
+        "行情",
+        "财报",
+        "央行"
+      ]
+    },
+    {
+      "id": "oss",
+      "label": "开源与工具",
+      "weight": 1,
+      "keywords": [
+        "open source",
+        "github",
+        "cli",
+        "tool",
+        "self-host",
+        "homelab",
+        "开源"
+      ]
+    }
+  ]
+}

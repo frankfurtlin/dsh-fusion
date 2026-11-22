@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../digest/digest_page.dart';
+
 import '../../account/account_page.dart';
 import '../../../bridge/bridge_settings_page.dart';
 import '../../engine/engine_screen.dart';
@@ -52,6 +54,7 @@ export 'spots.dart';
 /// shows its preset).
 Widget settingsPage(SettingsPageId id, {String? sessionId}) => switch (id) {
   SettingsPageId.hub => const SettingsScreen(),
+  SettingsPageId.digest => const DigestPage(),
   SettingsPageId.appearance => const AppearancePage(),
   SettingsPageId.pets => const PetSettingsPage(),
   SettingsPageId.performance => const PerformancePage(),

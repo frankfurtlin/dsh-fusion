@@ -186,5 +186,6 @@ dependencies {
     implementation("org.bouncycastle:bcpkix-jdk15to18:1.81")
     implementation("androidx.webkit:webkit:1.15.0") // Apache-2.0: web islands' force dark (webview_flutter's own version)
     // Apache-2.0: the agent/phone bridge (ported from dsh-mobile) speaks WebSocket through OkHttp.
+    implementation("androidx.work:work-runtime-ktx:2.9.1") // Apache-2.0: 兴趣推送的周期任务
     implementation("com.squareup.okhttp3:okhttp:4.12.0") // Apache-2.0: web islands' force dark (webview_flutter's own version)
 }
