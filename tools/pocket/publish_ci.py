@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import sys
 import time
 from datetime import datetime, timezone, timedelta
@@ -48,9 +49,11 @@ def release_asset(tag: str, apk: str, asset_name: str) -> str:
                         '--title', tag, '--notes', os.environ.get('COMMIT_TITLE', '') or f'DSH Pocket {tag}',
                         '--target', os.environ.get('GITHUB_SHA', 'main')],
                        check=True, capture_output=True)
-    # `path#name`：不指定的话 gh 用本地文件名（app-arm64-release.apk），
-    # 和清单里的带版本名字对不上，下载会 404。
-    subprocess.run(['gh', 'release', 'upload', tag, f'{apk}#{asset_name}',
+    # gh release upload 用本地文件名当资产名，而 API 改名后 CDN 路径会 404
+    # （实测 v1.0.2）。所以上传前先把文件复制成目标名字，一次到位。
+    named = os.path.join('out', asset_name)
+    shutil.copyfile(apk, named)
+    subprocess.run(['gh', 'release', 'upload', tag, named,
                     '--clobber', '-R', repo], check=True, capture_output=True)
     return f'https://github.com/{repo}/releases/download/{tag}/{asset_name}'
 
