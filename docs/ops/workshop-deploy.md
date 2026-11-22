@@ -1,5 +1,8 @@
 # 创意工坊上线与日常维护
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 本文给负责上线和审稿的 owner 使用，对应 `services/share-worker` 中的创意工坊（状态层、GitHub 账号身份、审核台）。命令在电脑的 **Bash 终端**执行；Windows 用户使用具备下列工具的 WSL/Linux 环境。手机用于打开审核台，不用于执行部署命令。
 
 下文命令里的“Worker 目录”指仓库的 `services/share-worker/`。尚未验证的内容集中写在第 9 节，上线前先读一遍。
@@ -18,7 +21,7 @@
 | 管理密钥文件 | 首次开通脚本自动生成；默认 `~/.config/keys/dshgo-share-admin.txt` | 文件路径可用 `ADMIN_FILE` 改，正文采用默认路径 |
 | KV ID | 首次 `apply` 发现或创建后写入 `~/keys/dshgo-cloudflare-kv-quota-id` | 不要填随机值；已有同名 KV 时必须核对其真实 ID |
 
-不要把本文的 `example.com`、仓库的 `dshtui.com` 或任何全零 ID 当成自己的配置。如果你正维护仓库默认账号和域名，可保留经你确认的默认域名；新账号必须填自己的值。
+不要把本文的 `example.com`、仓库的 `<upstream service>` 或任何全零 ID 当成自己的配置。如果你正维护仓库默认账号和域名，可保留经你确认的默认域名；新账号必须填自己的值。
 
 账号 ID / KV ID 的真实值通过环境变量或仓库外的文件传入。**不要把公开 `wrangler.jsonc` 中的两个全零占位符直接拿去部署。** 现有脚本（`services/share-worker/scripts/cloudflare.sh`）用临时配置副本填真实 ID，退出时删除副本。
 
@@ -66,7 +69,7 @@
 | `UPLOADS_PER_HOUR` | 既有分享链接的每客户端小时额度，当前 `20` | **不能用它关闭工坊投稿**；工坊按操作把计数值设为自己的 5/20 |
 | `MAX_BYTES` | 既有分享 API 大小上限，当前 20 MiB | 不改变工坊固定 50 MiB ZIP 上限 |
 | `DOWNLOAD_ACCESS` | 既有 App 安装包下载方式，当前 `public` | 保持部署方原政策；不是工坊审核/下载开关 |
-| `DL_BASE_URL` | 公开下载桶的 HTTPS 基址，当前 `https://dl.dshtui.com/` | 与你已创建的公开桶域名一致 |
+| `DL_BASE_URL` | 公开下载桶的 HTTPS 基址，当前 `<download bucket>/` | 与你已创建的公开桶域名一致 |
 | `CN_BASE_URL` | 可选香港下载桶基址，当前空 | 未配置该下载线路时保持空 |
 | `BETA_SECRET` | 既有内测密钥哈希/下载签名 secret | 工坊不使用它；已有 beta 服务按原政策保留，生成由 `scripts/beta-keys.sh init` 完成，见 `docs/release.md` |
 | `USAGE_SECRET` | 既有 App 使用统计的哈希 secret | 工坊不使用它；开启统计时按 `docs/release.md` 的“统计”一节用 32 个随机字节生成、保存私有文件并上传 secret，不放进 `vars` |
@@ -165,7 +168,7 @@ export CF_ACCOUNT_ID='替换成自己的32位十六进制账号ID'
 export ZONE_NAME='替换成自己的域名'
 ```
 
-例如填 `example.com`，不是 `https://example.com/`。脚本会核对 zone 与账号是否一致。不设置时脚本默认用 `dshtui.com`，所以新账号必须设置。
+例如填 `example.com`，不是 `https://example.com/`。脚本会核对 zone 与账号是否一致。不设置时脚本默认用 `<upstream service>`，所以新账号必须设置。
 
 **C10 — 固定管理员密钥文件路径。**
 

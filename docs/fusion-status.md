@@ -1,5 +1,8 @@
 # fusion 现状（2026-11-20）
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 把 dsh-Go（Flutter 原生客户端）与 dsh-mobile（作者自己的 Capacitor 套壳）合成的工作仓库。
 架构决策见 [merge-architecture.md](merge-architecture.md)，逐文件移植方案见 [port-map.md](port-map.md)，
 源码核实记录见 [verify-notes.md](verify-notes.md)，工具链见 [toolchain.md](toolchain.md)。
@@ -25,10 +28,10 @@
   「关于」页的更新项与 `Spots.updateCheck/updateAuto` 索引项删除。理由：它查的是上游仓库，会引导安装原版 App。
 - **去掉上游作者信息**：「关于」页的 Bilibili / X / GitHub 作者条目与该页对应 helper 删除。
 - **匿名使用统计已关闭**：原来 `app.dart` 在启动时就会起 `usageStatsProvider`，release 包里
-  `UsageBuild.active` 恒为 true，每天 `POST https://go.dshtui.com/api/usage/v1` 上报
+  `UsageBuild.active` 恒为 true，每天 `POST <market origin>/api/usage/v1` 上报
   「发了几条消息 / 用了几次语音 / 几次手机操作 / 几次分享 / 几次生成」。现在 `UsageBuild.active = false`、
   启动不再起控制器、设置里的开关置灰显示「关闭」。
-- **插件市场**：内置市场（go.dshtui.com 的 index.json + dshfind 目录）不再随 App 提供；
+- **插件市场**：内置市场（<market origin> 的 index.json + dshfind 目录）不再随 App 提供；
   插件页的「浏览」改为打开**你自己 DSH 上的 dsh-market**（`https://dsh.frankfurtlin.top/dsh-market`，
   可在 `lib/links/dsh_market.dart` 或 `--dart-define=DSH_MARKET_ORIGIN=…` 改）。
 - **托管分享链接已移除**：`conversationLinkMakerProvider` 恒为 null，「分享」面板不再出现「链接」；
@@ -36,7 +39,7 @@
 - **论坛 / 社区已移除**：功能目录里的论坛卡片、社区页的论坛入口、`dshgo://` 论坛链接处理都删了
   （社区页本身取的是上游仓库的 community.json，也一并去掉入口）。
 - **保留的功能**：分享卡与对话回放、酒馆、远程主机与中继、手机桥、无障碍、文件与相册能力。
-  这些不会被砍，但其中「插件市场 / 托管分享链接 / 论坛」仍指向作者的 `go.dshtui.com`，
+  这些不会被砍，但其中「插件市场 / 托管分享链接 / 论坛」仍指向作者的 `<market origin>`，
   属于用到才联网的功能（不是后台上报）。
 
 ## 和原版 dsh-Go 的代码差异

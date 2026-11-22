@@ -169,7 +169,7 @@ HomeShell = [ChatScreen] + [SessionsDrawer 左] + [QuickPanel 右] + [SystemEntr
 > `theme.mode`、`composer.quickActions`、`hide.pluginCapsule`、`plugins.seats`；
 > `header.actions`、`emptyState.suggestions`、`drawer.*`、`density`、`shortcuts`、`pet` 已解析但 lib 内无消费者。
 > 改 parser ≠ 生效，先全局搜 provider 符号。
-> `app/assets/skills/dsh-go-ui/schema.json` 与 `ui_config_schema.dart` 必须同步（`app/test/ui_config/schema_sync_test.dart`）。
+> `app/assets/skills/dsh-fusion-ui/schema.json` 与 `ui_config_schema.dart` 必须同步（`app/test/ui_config/schema_sync_test.dart`）。
 
 ### 2.5 依赖方向、生成物与 l10n
 
@@ -288,7 +288,7 @@ iOS 仍有明确缺口：内置视频预览、通话实时 PCM 字幕、网页�
 | OH 专属 JS | `runtime/ohos/{process,lifecycle,capabilities,publication,linux,net,plugins,preload.mjs}` | 只进 OH 组成物，Android 运行时字节不受影响 |
 | Dart 分支 | `state/android_features.dart` | `operatingSystemProvider`、`androidSystemFeaturesProvider`；另有少量 `*_ohos.dart`（语音、Linux、附件、空闲诊断） |
 | 无 OH 版的插件 | `app/ohos/pubspec_overrides.ohos.yaml`、`tooling/ohos/vendor_platform_switches.py`、`patch_framework.py` | 只在构建 HAP 时生效，不影响 Android |
-| 用户指南 | `docs/guide/harmony/` | 鸿蒙版单独一套，`guide_sync.py` 生成 `app/assets/skills/dsh-go-guide/harmony-*` |
+| 用户指南 | `docs/guide/harmony/` | 鸿蒙版单独一套，`guide_sync.py` 生成 `app/assets/skills/dsh-fusion-guide/harmony-*` |
 
 规则：
 

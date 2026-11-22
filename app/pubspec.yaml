@@ -185,10 +185,10 @@ flutter:
     # 伙伴小屋's page (lib/ui/companion). Its Live2D runtime and models are a
     # separate download, see docs/design/companion.md.
     - assets/companion/
-    - assets/skills/dsh-go-ui/
-    - assets/skills/dsh-go-plugin/
-    - assets/skills/dsh-go-guide/
-    - assets/skills/dsh-go-support/
+    - assets/skills/dsh-fusion-ui/
+    - assets/skills/dsh-fusion-plugin/
+    - assets/skills/dsh-fusion-guide/
+    - assets/skills/dsh-fusion-support/
     - assets/skills/companion-adapt/
     - assets/skills/pet-theme/
 

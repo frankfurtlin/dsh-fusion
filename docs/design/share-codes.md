@@ -1,5 +1,8 @@
 # 分享码
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 > 2026-10-24。把一个插件或一份 DSH 配置做成链接 / 二维码 / 文件；对方打开后看到确认弹层，一下装进手机里的 DSH 或连着的远程 DSH。没有后端：链接要么指向公开来源（npm / GitHub），要么自己带着内容。
 
 代码位置：
@@ -18,7 +21,7 @@
 |---|---|---|
 | App 链接 | `dshgo://share/<kind>?p=<code>` | App 之间直接打开 |
 | 大配置 | `dshgo://share/profile?gist=<id>&c=<sum>` | 内容放在私密 Gist 里 |
-| 着陆页 | `https://go.dshtui.com/share/#p=<code>`、`…/#gist=<id>&c=<sum>`（旧地址 `https://ccch1mneyyy.github.io/dsh-go/share/` 仍能打开） | 复制链接、二维码、发到微信 |
+| 着陆页 | `<market origin>/share/#p=<code>`、`…/#gist=<id>&c=<sum>`（旧地址 `https://ccch1mneyyy.github.io/dsh-go/share/` 仍能打开） | 复制链接、二维码、发到微信 |
 | 文件 | `dsh-go-profile-20261024.dshgo`（`application/vnd.dshgo+json`） | 分享面板、存为文件、微信里转发 |
 
 - `<kind>`：`plugin` / `profile` / `conversation`（对话见 §8，链接走托管，不内联）。着陆页链接不带 kind，解码后才知道。

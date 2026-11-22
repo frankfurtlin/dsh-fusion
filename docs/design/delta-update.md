@@ -1,5 +1,8 @@
 # 增量更新（DSHDLT01 补丁）
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 新版 APK 相对旧版往往只换了少数几个 zip 条目（Dart 代码 `libapp.so`、`classes.dex`、几份资源）。发版时为最近几个旧版各做一个补丁；装着其中某一版的 App 只下补丁，用手机上的旧 APK 拼出新 APK，SHA-256 对上了再照常安装。拼不出来、对不上，一律回到整包。
 
 | 部分 | 位置 |
@@ -52,7 +55,7 @@ COPY 的正确性不依赖对 zip 结构的理解：只要旧 APK 那一段和�
 
 - 没有补丁时没有 `patches` 字段；`--delta-from 0` 不联网、不出补丁。旧版 App 不认识这个字段，照常下整包。
 
-`publish-release.sh` 把 `SHA256SUMS` 里的每个文件（APK 和补丁）传到每条线路并逐个下载回来核对；三份清单（R2 `beta/update.json`、公开桶 `dl.dshtui.com/update.json`、GitHub 的 `update.json`）都带同样的 `patches`。GitHub Release 正文说明 `*.dshdelta` 不用手动下载。
+`publish-release.sh` 把 `SHA256SUMS` 里的每个文件（APK 和补丁）传到每条线路并逐个下载回来核对；三份清单（R2 `beta/update.json`、公开桶 `<download bucket>/update.json`、GitHub 的 `update.json`）都带同样的 `patches`。GitHub Release 正文说明 `*.dshdelta` 不用手动下载。
 
 ## App 端的规则（契约）
 
