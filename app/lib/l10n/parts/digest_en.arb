@@ -1,0 +1,9 @@
+{
+  "digestTitle": "Discover",
+  "digestRefresh": "Refresh",
+  "digestPushTitle": "Interest push",
+  "digestPushSubtitle": "Every 6 hours, only when there is something new",
+  "digestError": "Couldn't fetch new items this time; what's cached is still here.",
+  "digestEmptyTitle": "Nothing yet",
+  "digestEmptyDetail": "The server builds this every 6 hours. Pull down to refresh now."
+}

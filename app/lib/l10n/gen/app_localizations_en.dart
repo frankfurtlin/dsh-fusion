@@ -6523,6 +6523,27 @@ class L10nEn extends L10n {
       'Memory only; cleared on restart. A new capture replaces old evidence. Included only in manual AI diagnostics or ZIP exports. Clearing does not retract snapshots or files already exported.';
 
   @override
+  String get digestTitle => 'Discover';
+
+  @override
+  String get digestRefresh => 'Refresh';
+
+  @override
+  String get digestPushTitle => 'Interest push';
+
+  @override
+  String get digestPushSubtitle => 'Every 6 hours, only when there is something new';
+
+  @override
+  String get digestError => 'Couldn\'t fetch new items this time; what\'s cached is still here.';
+
+  @override
+  String get digestEmptyTitle => 'Nothing yet';
+
+  @override
+  String get digestEmptyDetail => 'The server builds this every 6 hours. Pull down to refresh now.';
+
+  @override
   String get engineNewChatDefaultsLast => 'New chat defaults (last choice)';
 
   @override

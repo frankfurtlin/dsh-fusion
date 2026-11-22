@@ -6153,6 +6153,27 @@ class L10nZh extends L10n {
   String get systemImeMemory => '证据仅存内存，重启清除；新采集会替换旧证据。仅手动“让 AI 看诊断”或导出 ZIP 时包含。清除不会撤回已写入的快照或导出文件。';
 
   @override
+  String get digestTitle => '发现';
+
+  @override
+  String get digestRefresh => '刷新';
+
+  @override
+  String get digestPushTitle => '兴趣推送';
+
+  @override
+  String get digestPushSubtitle => '每 6 小时按你的兴趣方向挑几条，有新的才提醒';
+
+  @override
+  String get digestError => '这次没拉到新内容，稍后再试；已有的还是能看。';
+
+  @override
+  String get digestEmptyTitle => '还没有内容';
+
+  @override
+  String get digestEmptyDetail => '服务器每 6 小时生成一次。下拉可以立即刷新。';
+
+  @override
   String get engineNewChatDefaultsLast => '新对话默认（上次选择）';
 
   @override

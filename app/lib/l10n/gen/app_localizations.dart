@@ -11468,6 +11468,48 @@ abstract class L10n {
   /// **'证据仅存内存，重启清除；新采集会替换旧证据。仅手动“让 AI 看诊断”或导出 ZIP 时包含。清除不会撤回已写入的快照或导出文件。'**
   String get systemImeMemory;
 
+  /// No description provided for @digestTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现'**
+  String get digestTitle;
+
+  /// No description provided for @digestRefresh.
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新'**
+  String get digestRefresh;
+
+  /// No description provided for @digestPushTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'兴趣推送'**
+  String get digestPushTitle;
+
+  /// No description provided for @digestPushSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'每 6 小时按你的兴趣方向挑几条，有新的才提醒'**
+  String get digestPushSubtitle;
+
+  /// No description provided for @digestError.
+  ///
+  /// In zh, this message translates to:
+  /// **'这次没拉到新内容，稍后再试；已有的还是能看。'**
+  String get digestError;
+
+  /// No description provided for @digestEmptyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有内容'**
+  String get digestEmptyTitle;
+
+  /// No description provided for @digestEmptyDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器每 6 小时生成一次。下拉可以立即刷新。'**
+  String get digestEmptyDetail;
+
   /// No description provided for @engineNewChatDefaultsLast.
   ///
   /// In zh, this message translates to:

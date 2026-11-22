@@ -1,0 +1,9 @@
+{
+  "digestTitle": "发现",
+  "digestRefresh": "刷新",
+  "digestPushTitle": "兴趣推送",
+  "digestPushSubtitle": "每 6 小时按你的兴趣方向挑几条，有新的才提醒",
+  "digestError": "这次没拉到新内容，稍后再试；已有的还是能看。",
+  "digestEmptyTitle": "还没有内容",
+  "digestEmptyDetail": "服务器每 6 小时生成一次。下拉可以立即刷新。"
+}
