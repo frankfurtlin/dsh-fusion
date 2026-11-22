@@ -114,8 +114,8 @@ test('ability reattach consumes the launch once but intentional repeated warm UR
   f.plugin.onDetachedFromAbility();
   f.plugin.onAttachedToAbility(f.binding);
   assert.equal(f.sent.length, 1);
-  f.plugin.onNewWant(view('https://go.dshtui.com/c/123'), {});
-  f.plugin.onNewWant(view('https://go.dshtui.com/c/123'), {});
+  f.plugin.onNewWant(view('https://share.invalid/c/123'), {});
+  f.plugin.onNewWant(view('https://share.invalid/c/123'), {});
   assert.equal(f.sent.length, 3);
   assert.equal(f.listeners.size, 1);
 });
