@@ -68,7 +68,7 @@ class MainActivity : FlutterActivity() {
             engine.plugins.add(top.frankfurtlin.dshfusion.web.WebFilesPlugin())
             engine.plugins.add(top.frankfurtlin.dshfusion.launch.LaunchPlugin())
             engine.plugins.add(top.frankfurtlin.dshfusion.launch.LaunchClipPlugin())
-            engine.plugins.add(top.frankfurtlin.dshfusion.digest.DigestPlugin(applicationContext))
+            engine.plugins.add(top.frankfurtlin.dshfusion.digest.DigestPlugin())
             engine.plugins.add(top.frankfurtlin.dshfusion.icons.PictureShortcutPlugin())
             engine.plugins.add(top.frankfurtlin.dshfusion.usage.UsagePlugin())
             engine.plugins.add(top.frankfurtlin.dshfusion.companion.CompanionVoicePlugin())
