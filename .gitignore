@@ -50,3 +50,4 @@ packages/bridge-server/node_modules/
 
 # 兴趣推送的发布路径（不可枚举，等同密钥，不入库）
 tools/pocket/publish.json
+tools/pocket/.publish-state.json
