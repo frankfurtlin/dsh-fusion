@@ -42,10 +42,10 @@ Uri githubReleaseAsset(String tag, String name) =>
 /// beta builds must name one with `DSH_BETA_CHANNEL_ORIGIN`.
 const updateMirrorOrigin = '';
 
-/// A self-hosted copy of the release files. Empty: this project publishes no
-/// such copy, so updates come from GitHub releases (plus the public
-/// accelerators below, each verified against the release's SHA-256).
-const updateDownloadOrigin = '';
+/// Where this project publishes its own builds: COS behind the EdgeOne domain
+/// (tools/pocket/publish_apk.py uploads the APK and the manifest). The app asks
+/// `<origin>/update.json`; assets in that manifest carry absolute URLs.
+const updateDownloadOrigin = 'https://static.frankfurtlin.top/pocket';
 
 /// The beta channel: `<origin>/beta/update.json` and `<origin>/beta/<version>/<file>`,
 /// both behind `Authorization: Bearer <token>`. The token is compiled into beta
