@@ -24,6 +24,11 @@ const { version } = require('../package.json')
  * @param {{ log?: (line: string) => void }} [options] optional logger
  * @returns {{ server: import('node:http').Server, phones: PhoneRegistry, wss: WebSocketServer }} composed pieces
  */
+const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1'])
+
+/** Whether [address] is the loopback interface. */
+const isLoopback = (address) => LOOPBACK.has(address ?? '')
+
 export function createServer(config, options = {}) {
   const log = options.log ?? ((line) => console.log(`[bridge] ${line}`))
   const phones = new PhoneRegistry({ callTimeoutMs: config.callTimeoutMs, maxMessageBytes: config.maxMessageBytes })
@@ -38,6 +43,14 @@ export function createServer(config, options = {}) {
       return
     }
     if (path === config.mcpPath) {
+      // The MCP endpoint carries no session check: it exists for the DSH process on
+      // this host. Refuse anything that did not arrive over loopback, so changing
+      // the bind address or putting a proxy in front cannot expose it.
+      if (!isLoopback(req.socket.remoteAddress)) {
+        log(`mcp refused from ${req.socket.remoteAddress ?? 'unknown'}`)
+        res.writeHead(403, { 'content-type': 'text/plain; charset=utf-8' }).end('mcp is loopback-only\n')
+        return
+      }
       mcp(req, res).catch((error) => {
         log(`mcp failure: ${String(error)}`)
         if (!res.headersSent) res.writeHead(500).end()

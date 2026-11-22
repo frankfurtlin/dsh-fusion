@@ -49,7 +49,7 @@ export function createTools(phones) {
     },
     {
       name: 'phone_shares',
-      description: 'List items the user shared into DSH Mobile from other apps (files and text), newest first.',
+      description: 'List items the user shared into the DSH app from other apps (files and text), newest first.',
       inputSchema: {
         type: 'object',
         properties: { ...DEVICE_PROPERTY, limit: { type: 'integer', minimum: 1, maximum: 50, description: 'Maximum items to return (default 20).' } },
@@ -158,7 +158,7 @@ export function createTools(phones) {
     {
       name: 'phone_fs_roots',
       description:
-        'List the folders on the phone that the agent may browse. Two roots exist: `tree:` is the folder the user opened in DSH Mobile (absent until they pick one) and `downloads:` is always available (Downloads/DSH). Call this before phone_fs_list: every path is root-relative, for example `tree:/Documents/report.pdf` or `downloads:/notes/todo.md`.',
+        'List the folders on the phone that the agent may browse. Two roots exist: `tree:` is the folder the user opened in the DSH app (absent until they pick one) and `downloads:` is always available (Downloads/DSH). Call this before phone_fs_list: every path is root-relative, for example `tree:/Documents/report.pdf` or `downloads:/notes/todo.md`.',
       inputSchema: {
         type: 'object',
         properties: { ...DEVICE_PROPERTY },

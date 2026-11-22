@@ -22,7 +22,7 @@
 | Flutter 原生 DSH 客户端 | 原生 UI、纯 Dart 客户端、SSH / mux 传输、会话与工作区 API |
 | 早期 Capacitor 套壳版 | 手机桥（桥服务、端点/凭据、文件与无障碍）、移动端交互经验 |
 
-合并后的取舍与逐文件移植记录见 [FUSION.md](FUSION.md) 与 `docs/`。
+当前实现状态与真机验证记录见 [`docs/fusion-status.md`](docs/fusion-status.md)，其余设计文档在 `docs/`。
 
 ## 构建
 

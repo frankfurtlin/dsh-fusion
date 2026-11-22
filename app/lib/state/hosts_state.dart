@@ -473,7 +473,9 @@ class _RelayServerActions {
   }
 }
 
-const defaultRelayServer = 'https://dsh.r2049.cn';
+/// Reserved `.invalid` host: the relay is not part of this project, so the
+/// default can never reach a server. A build that wants one passes its own.
+const defaultRelayServer = 'https://relay.invalid';
 
 final relayServerProvider = NotifierProvider<RelayServerController, String?>(RelayServerController.new);
 
