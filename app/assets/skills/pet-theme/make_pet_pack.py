@@ -15,7 +15,8 @@ Two source formats, both mapped onto Clawd on Desk's states (our pet protocol):
   assets/. Frames are decoded in order and each keeps its own delay, read straight
   from the APNG's fcTL chunks. states / workingTiers / jugglingTiers /
   idleAnimations / reactions / timings come from theme.json.
-* Whale-girl sticker set (pet_src/whale-girl/, from https://dshtui.com/pets/whale-girl-emoji/;
+* Whale-girl sticker set (pet_src/whale-girl/; its origin is recorded in the generated
+  pack.json's source field;
   rig/ is the layered master, kept for reference): sheets/<key>.png are 1x strips (69x66
   cells); per-frame durations come from index.html's `set-data` JSON and are
   cross-checked against gifs/NN-<key>.gif (8x export: the GIF merges consecutive

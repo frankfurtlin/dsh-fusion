@@ -1,5 +1,8 @@
 # App 创意工坊：数据层、导出与页面
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 2026-11-12。**未在真机上验证**，下面的行为依据源码和单元测试，真机要看的步骤在文末。接口以 [Worker v1 合同](../../services/share-worker/docs/workshop-api.md) 为准，Worker 一侧的实现见 [workshop-worker.md](workshop-worker.md)。本文记录 App 侧数据层（`app/lib/workshop/`）、伙伴包的完整性检查与换包门、导出和投稿的约定，以及页面（`app/lib/ui/workshop/`）怎么用它们。
 
 ## 目录与缓存
@@ -168,7 +171,7 @@ token 的本地格式门与 Worker 一致，为 1–255 个 `[A-Za-z0-9_]` 字�
 
 ## 页面
 
-页面在 `app/lib/ui/workshop/`，只画 `app/lib/state/workshop_*.dart` 给出的状态，不自己判断能不能装、能不能卸、能不能投。入口有两处：宠物设置页和伙伴小屋菜单各一行「创意工坊」。工坊地址默认是 `https://go.dshtui.com`，构建时用 `--dart-define=DSH_WORKSHOP_ORIGIN=<地址>` 换成别的部署；设成空串时 `workshopAvailableProvider` 为假，两行都不出现。
+页面在 `app/lib/ui/workshop/`，只画 `app/lib/state/workshop_*.dart` 给出的状态，不自己判断能不能装、能不能卸、能不能投。入口有两处：宠物设置页和伙伴小屋菜单各一行「创意工坊」。工坊地址默认是 `<market origin>`，构建时用 `--dart-define=DSH_WORKSHOP_ORIGIN=<地址>` 换成别的部署；设成空串时 `workshopAvailableProvider` 为假，两行都不出现。
 
 `WorkshopScreen` 是一个列表页，三个页签：
 

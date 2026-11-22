@@ -1,15 +1,18 @@
 # 托管对话链接（分享链接）
 
-> 2026-10-25 上线：`https://go.dshtui.com`。服务端代码在 `services/share-worker/`；对话文件格式、查看器源码、分享面板归 [share-codes.md](share-codes.md)。本文只讲托管这一侧：服务、加密、限速、过期、成本和运维。
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
+> 2026-10-25 上线：`<market origin>`。服务端代码在 `services/share-worker/`；对话文件格式、查看器源码、分享面板归 [share-codes.md](share-codes.md)。本文只讲托管这一侧：服务、加密、限速、过期、成本和运维。
 
 ## 1. 架构
 
 ```
 App（分享面板「链接」）
   → .dshgo 文件字节 → gzip → AES-256-GCM（手机上加密，随机密钥）
-  → POST https://go.dshtui.com/api/v1/c        只上传密文
+  → POST <market origin>/api/v1/c        只上传密文
   ← {id, deleteToken, expiresAt}
-  → 链接 https://go.dshtui.com/c/<id>#k=<key>   密钥只在 # 后面
+  → 链接 <market origin>/c/<id>#k=<key>   密钥只在 # 后面
 
 微信里点开链接
   → GET /c/<id>             Worker 返回查看器（构建出的 c.html，静态）
@@ -32,7 +35,7 @@ App（分享面板「链接」）
 
 ## 2. 域名与页面
 
-- 域名：`go.dshtui.com`（Workers Custom Domain，DNS 记录由 Cloudflare 自动建）。被占用时退到 `s.dshtui.com`，由 `provision.sh` 自动判断。不用 `*.workers.dev`，它在大陆被污染。
+- 域名：`<market origin>`（Workers Custom Domain，DNS 记录由 Cloudflare 自动建）。被占用时退到 `s.<upstream service>`，由 `provision.sh` 自动判断。不用 `*.workers.dev`，它在大陆被污染。
 - 页面：
 
 | 路径 | 内容 |
@@ -44,7 +47,7 @@ App（分享面板「链接」）
 
 - 首页、着陆页和它们的文件是静态资源，**不经过 Worker**（不计 Worker 请求数）：`build-site.mjs` 把每个文件的安全头写进 `public/_headers`（逐个路径，不用通配），`/` 和 `/share/` 由 `public/_redirects` 的 200 改写指到 `index.html`。只有 Worker 自己的路由先进 Worker（`wrangler.jsonc` 的 `run_worker_first` 列表：`/api/*`、`/c/*`、`/market*`、`/p*`、`/beta*`、`/download*`、`/share`（301 到 `/share/`），以及要藏起来的 `/c.html`、`/index.html`）。路径按字面匹配（`html_handling: none`）；没有对应文件的路径也落到 Worker，返回同样的 404。
 - 和全部走 Worker 时相比，头部逐项相同（`wrangler dev` 对比过 111 个请求）；只差两处无关紧要的：对静态文件用 GET/HEAD 以外的方法，405 由资源服务直接给（不带 `Allow`，带该文件的安全头）；304 也带上该文件的 `Cache-Control`。
-- 旧着陆页 `https://ccch1mneyyy.github.io/dsh-go/share/` 保留不下线：已经发出去的分享码链接照常能开，App 也继续认（`legacyShareLandingUrls`）。新生成的分享码链接都用 `go.dshtui.com/share/`。
+- 旧着陆页 `https://ccch1mneyyy.github.io/dsh-go/share/` 保留不下线：已经发出去的分享码链接照常能开，App 也继续认（`legacyShareLandingUrls`）。新生成的分享码链接都用 `<market origin>/share/`。
 - 安全头：
   - HTML：CSP 与页面自带的 `<meta>` 一致，再加 `frame-ancestors 'none'`（构建时从页面里提取，没有 CSP 或允许 `unsafe-inline` 脚本时构建失败）；另有 `X-Frame-Options: DENY`、`Referrer-Policy: no-referrer`、`nosniff`、`COOP`、`Permissions-Policy`、`noindex`。
   - 首页：`default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`。没有内联脚本；开场动画靠内联 `style` 属性里的 CSS 变量，所以只放开 `style-src-attr`（不认识它的旧浏览器退回 `style-src` 的 `'unsafe-inline'`）。首页和它的文件不带 `noindex`，其余头部同上；HTML `no-cache`，其余文件一小时。
@@ -118,10 +121,10 @@ App（分享面板「链接」）
 | 来路 | 走法 |
 |---|---|
 | 别的 App 分享进来的文字（微信转发） | `IncomingShare.hostedLink` → `SystemEntryHost` 交给 LinkRouter |
-| 网页查看器的「用 dsh-go 打开」 | `dshgo://go.dshtui.com/c/<id>#k=<key>`（和 https 链接同一条路由） |
-| App Links（以后） | `https://go.dshtui.com/c/…`；需要清单里的 `autoVerify` intent-filter 和本域名的 `/.well-known/assetlinks.json`，等发布签名定了再加 |
+| 网页查看器的「用 dsh-go 打开」 | `dshgo://<market origin>/c/<id>#k=<key>`（和 https 链接同一条路由） |
+| App Links（以后） | `<market origin>/c/…`；需要清单里的 `autoVerify` intent-filter 和本域名的 `/.well-known/assetlinks.json`，等发布签名定了再加 |
 
-- LinkHost 启动时调 `registerHostedLinks` 注册 `go.dshtui.com/c`；收到链接后取回密文、在手机上解密、进回放页。超过 0.6 秒才提示「正在打开…」。
+- LinkHost 启动时调 `registerHostedLinks` 注册 `<market origin>/c`；收到链接后取回密文、在手机上解密、进回放页。超过 0.6 秒才提示「正在打开…」。
 - 只从自己的域名取（`hostedOrigins`）；已删除或过期提示「链接已过期或被删除」，密钥不对提示「链接不完整或已损坏」。
 
 ## 8. 部署
@@ -138,14 +141,14 @@ CF_TOKEN_FILE=<token 文件> scripts/provision.sh apply   # 建 R2 + 生命周�
 | 资源 | 名字 |
 |---|---|
 | Worker | `dshgo-share` |
-| Custom Domain | `go.dshtui.com` |
+| Custom Domain | `<market origin>` |
 | R2 bucket | `dshgo-share`（私有；规则 `expire-7d`、`expire-30d`、`abort-multipart`） |
-| R2 bucket | `dshgo-dl`（公开读，放发版文件和插件市场的 `market/`，自定义域名 `dl.dshtui.com`；后台建，脚本不建，§14；Worker 绑定为 `DL`，只写 `market/`） |
+| R2 bucket | `dshgo-dl`（公开读，放发版文件和插件市场的 `market/`，自定义域名 `<download bucket>`；后台建，脚本不建，§14；Worker 绑定为 `DL`，只写 `market/`） |
 | KV | `dshgo-share-quota`（id 在 `~/keys/dshgo-cloudflare-kv-quota-id` 或 `CF_KV_QUOTA_ID`；`provision.sh apply` 发现或新建时写这个文件） |
 | Rate Limiting 命名空间 | `42001`（上传）、`42002`（读取）、`42003`（App 使用统计，§15）；账号内唯一，别的 Worker 不要复用 |
 | Analytics Engine 数据集 | `wrangler.jsonc` 绑定 `dshgo_downloads`、`dshgo_checks`、`dshgo_usage`（第一次写入时自动建）；`provision.sh` 默认带上，没开通 Analytics Engine 的账号用 `--no-analytics`（§15） |
 | Cron Trigger | 每 10 分钟一次，把插件市场写到 `dshgo-dl` 的 `market/`（[plugin-market.md](plugin-market.md) §3） |
-| Redirect Rule（zone 级，单条重定向） | 描述 `dshgo-share: plugin market from the public bucket`：`go.dshtui.com/market/index.json`、`/market/dsh-go.json` → 302 `https://dl.dshtui.com/market/<同名>`（带 `Origin` 头的请求不跳）；`provision.sh` 在 `dl` 上的文件和 Worker 一致后按描述建或改，不碰别的规则 |
+| Redirect Rule（zone 级，单条重定向） | 描述 `dshgo-share: plugin market from the public bucket`：`<market origin>/market/index.json`、`/market/dsh-go.json` → 302 `<download bucket>/market/<同名>`（带 `Origin` 头的请求不跳）；`provision.sh` 在 `dl` 上的文件和 Worker 一致后按描述建或改，不碰别的规则 |
 | Durable Object | `BetaGuard`（migration `v1`）、`StatsSalt`（`v2`，§15） |
 | Worker secret | `ADMIN_KEY`（管理员删除用；`provision.sh apply` 生成并设置，本地副本默认 `~/.config/keys/dshgo-share-admin.txt`（`ADMIN_FILE`），权限 600，放在仓库外） |
 | Worker secret | `BETA_SECRET`（内测发包，§14；`scripts/beta-keys.sh init` 生成并设置，本地副本默认 `~/keys/dshgo-beta-secret`（`BETA_SECRET_FILE`），权限 600） |
@@ -160,7 +163,7 @@ CF_TOKEN_FILE=<token 文件> scripts/provision.sh apply   # 建 R2 + 生命周�
 
 | 项 | 免费额度 | 本服务用量 | 够用到 |
 |---|---|---|---|
-| Worker 请求 | 10 万 / 天 | 打开一次 2 次（查看器、密文；图标等静态文件不算），上传 1 次；首页、着陆页不算；插件市场在 `dl.dshtui.com`，不算 | 约 4 万次打开 / 天 |
+| Worker 请求 | 10 万 / 天 | 打开一次 2 次（查看器、密文；图标等静态文件不算），上传 1 次；首页、着陆页不算；插件市场在 `<download bucket>`，不算 | 约 4 万次打开 / 天 |
 | Worker CPU | 10 ms / 次 | 以 I/O 为主；20 MB 上传的拷贝在毫秒级 | — |
 | R2 存储 | 10 GB-月 | 每条约 50 KB（纯文字）到几 MB（带图） | 约几万条存活链接 |
 | R2 写（A 类） | 100 万 / 月 | 上传 1 次（删除不收费） | 约 3 万次上传 / 天 |
@@ -178,7 +181,7 @@ CF_TOKEN_FILE=<token 文件> scripts/provision.sh apply   # 建 R2 + 生命周�
 服务器看不到内容，判断靠举报人提供的完整链接（带 `#k`）。确认违规后：
 
 ```bash
-curl -X DELETE "https://go.dshtui.com/api/v1/c/<id>" \
+curl -X DELETE "<market origin>/api/v1/c/<id>" \
   -H "X-Admin-Key: $(cat <ADMIN_KEY 文件>)"
 # 204：已删除；404：已不存在
 ```
@@ -207,7 +210,7 @@ CLOUDFLARE_API_TOKEN="$(cat <token 文件>)" npx wrangler secret put ADMIN_KEY <
 - 回滚代码：`CLOUDFLARE_API_TOKEN="$(cat <token 文件>)" npx wrangler rollback`（回到上一个版本；`wrangler deployments list` 查看历史）。不影响 R2 里的数据。
 - 暂停上传：把 `UPLOADS_PER_HOUR` 设为 `0` 后部署（读取和删除照常）。
 - App 侧关闭入口：不覆盖 `conversationLinkMakerProvider`（保持 `null`），分享面板就不出现「链接」。
-- 整体下线（不可逆，链接全部失效）：删除 Custom Domain → 删除 Worker `dshgo-share` → 清空并删除 bucket `dshgo-share` → 删除 KV `dshgo-share-quota`。下载桶 `dshgo-dl`（和它的 `dl.dshtui.com`）与分享无关，单独处理。
+- 整体下线（不可逆，链接全部失效）：删除 Custom Domain → 删除 Worker `dshgo-share` → 清空并删除 bucket `dshgo-share` → 删除 KV `dshgo-share-quota`。下载桶 `dshgo-dl`（和它的 `<download bucket>`）与分享无关，单独处理。
 
 ## 13. 测试
 
@@ -215,7 +218,7 @@ CLOUDFLARE_API_TOKEN="$(cat <token 文件>)" npx wrangler secret put ADMIN_KEY <
 |---|---|---|
 | Worker 单测 | `npm test` | id 与过期档、IPv6 /64、上传校验与大小上限、分钟与小时限速、失败放行、读取头部、过期 404、删除权限、管理员删除、页面路由与 CSP；首页的 CSP、文件类型与缓存、页面引用的文件都在、`robots.txt`；Star 数（模拟 GitHub：缓存 10 分钟、出错给旧数、从没拿到时 503、token） |
 | 本地冒烟 | `npm run smoke` | 真实 workerd + 本地 R2 / KV / 限速，跑完整 e2e 和分钟限速；内测部分按密钥模式跑（`--var DOWNLOAD_ACCESS:key`） |
-| 线上 e2e | `node scripts/e2e.mjs https://go.dshtui.com [--admin-key-file …]` | 上传 → 取回 → node 解密 → 查看器解密 → `/c/<id>` → `/share/` → `/`（首页 CSP、`image/webp`） → 删除 → 404 |
+| 线上 e2e | `node scripts/e2e.mjs <market origin> [--admin-key-file …]` | 上传 → 取回 → node 解密 → 查看器解密 → `/c/<id>` → `/share/` → `/`（首页 CSP、`image/webp`） → 删除 → 404 |
 | Dart | `flutter test test/share_hosted/` | WebCrypto 向量互通、双向解密、篡改与炸弹、客户端错误映射、删除与撤销、管理页交互、行几何、浅深 golden |
 | 内测发包 | `npm test`（`test/beta.test.ts`）、`npm run smoke` | 页面头部与 CSP、微信 / QQ 提示页、密钥对错 / 吊销 / 过期同一答复、输入归一、错误限流与封禁、签名链接过期与篡改、Range（206 / 416）、边缘副本只在鉴权后可达、通道令牌 401 / 200、密钥模式下 `/download`、`/update.json` 404 |
 | 下载线路与公开模式 | `npm test`（`test/download.test.ts`） | 线路选择（CN / 非 CN / `?via=` / 国内未配置 / 清单没传到）、海外线路指向公开下载桶（清单有 `dl` 且配了 `DL_BASE_URL`；否则仍是 `/download/…`；密钥模式仍是签名链接）、`DOWNLOAD_ACCESS` 开关、`/beta` 302 到 `/download`、通道与签名链接不受影响、公开文件的 Range 与缓存头、边缘副本共用、读限流、更新说明转义、中英 |
@@ -225,7 +228,7 @@ CLOUDFLARE_API_TOKEN="$(cat <token 文件>)" npx wrangler secret put ADMIN_KEY <
 
 ## 14. 内测发包（凭密钥下载）
 
-内测包不公开发布：人凭**密钥**在 `https://go.dshtui.com/beta` 下载，已装的 App 凭构建时编进去的**通道令牌**检查更新、App 内下载。之前的公开镜像（`/download`、`/update.json`）已撤下：`/update.json` 恒为 404，`/download` 只在公测开关打开后作为公开下载页回来（见本节末「公测：三条线路与公开下载」）。发版步骤见 `docs/release.md`「内测通道」「发版到三条线路」。
+内测包不公开发布：人凭**密钥**在 `<market origin>/beta` 下载，已装的 App 凭构建时编进去的**通道令牌**检查更新、App 内下载。之前的公开镜像（`/download`、`/update.json`）已撤下：`/update.json` 恒为 404，`/download` 只在公测开关打开后作为公开下载页回来（见本节末「公测：三条线路与公开下载」）。发版步骤见 `docs/release.md`「内测通道」「发版到三条线路」。
 
 **地址**
 
@@ -277,11 +280,11 @@ CLOUDFLARE_API_TOKEN="$(cat <token 文件>)" npx wrangler secret put ADMIN_KEY <
 | 线路 | 地址 | 出现条件 | 默认给 |
 |---|---|---|---|
 | 国内 `cn` | `<CN_BASE_URL><版本>/<文件>`（香港对象存储，公共读） | 变量 `CN_BASE_URL` 是 https 地址，且清单 `routes` 含 `cn` | `request.cf.country == "CN"` |
-| 海外 `global` | 密钥模式：签名链接；公开模式：`<DL_BASE_URL>download/<版本>/<文件>`（公开下载桶 `dl.dshtui.com`，字节不经 Worker），清单 `routes` 没有 `dl` 或没配 `DL_BASE_URL` 时是 `/download/<版本>/<文件>` | 总有 | 其他地区 |
+| 海外 `global` | 密钥模式：签名链接；公开模式：`<DL_BASE_URL>download/<版本>/<文件>`（公开下载桶 `<download bucket>`，字节不经 Worker），清单 `routes` 没有 `dl` 或没配 `DL_BASE_URL` 时是 `/download/<版本>/<文件>` | 总有 | 其他地区 |
 | GitHub `github` | `github.com/ccch1mneyyy/dsh-go/releases/download/v<版本>/<文件>` | 清单 `routes` 含 `github` | — |
 
 - `routes` 由 `publish-release.sh` 在每条线路下载核对之后写进 `beta/update.json`，所以页面不会给出还没传上去的线路。`?via=` 可指定线路；切换是单选按钮 + CSS，公开页不跑脚本。
-- 公开下载桶 `dshgo-dl`（`DL_BASE_URL`，默认 `https://dl.dshtui.com/`）：`download/<版本>/<文件>` 放每个发版文件（APK、增量补丁、`SHA256SUMS`、这一版的 `update.json`，都是 `immutable`），根目录 `update.json` 是最新正式版的清单（`max-age=300`，给 App）。和放分享链接的 `dshgo-share` 分开，`dshgo-share` 保持私有：公开了的话，拿到对象键的人能绕过 Worker 的过期和额度。`routes` 里的 `dl` 只说明文件也在这个桶，页面上不是单独一条线路。
+- 公开下载桶 `dshgo-dl`（`DL_BASE_URL`，默认 `<download bucket>/`）：`download/<版本>/<文件>` 放每个发版文件（APK、增量补丁、`SHA256SUMS`、这一版的 `update.json`，都是 `immutable`），根目录 `update.json` 是最新正式版的清单（`max-age=300`，给 App）。和放分享链接的 `dshgo-share` 分开，`dshgo-share` 保持私有：公开了的话，拿到对象键的人能绕过 Worker 的过期和额度。`routes` 里的 `dl` 只说明文件也在这个桶，页面上不是单独一条线路。
 - 开关 `DOWNLOAD_ACCESS`（Worker 变量，默认 `key`）。`public` 时：`/download` 无需密钥直接给出三条线路，按钮先经过 `/download/get` 计数再 302（§15）；`/download/<版本>/<文件>` 公开提供 APK 和 `SHA256SUMS`（同一 R2 对象，`READ_LIMIT` 键 `dl:<ip>`；海外线路改指公开桶以后，留给已经发出去的链接）；`/beta`、`/beta/` 302 到 `/download`。通道令牌、`/beta/update.json`、签名链接、解锁接口在两种模式下都不变。
 - 公开 APK 的响应：`Cache-Control: public, max-age=31536000, immutable`（版本内的 APK 不会变，脚本拒绝覆盖），和通道共用同一份边缘副本（`/__edge/beta/<版本>/<文件>`），Range 续传从副本回 206。通道和签名链接即使命中副本也仍是 `private, no-store`。`SHA256SUMS` 一小时。
 

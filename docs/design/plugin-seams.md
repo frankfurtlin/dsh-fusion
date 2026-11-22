@@ -324,7 +324,7 @@ ctx.dshGoPanels.register({
 |---|---|---|
 | 路径 | `$DSH_HOME/dsh-go/ui.json`，即 rootfs 内 `/root/.dsh/dsh-go/ui.json`，App 侧是 `filesDir/runtime/rootfs/root/.dsh/dsh-go/ui.json` | 对方的 `$DSH_HOME/dsh-go/ui.json` |
 | 读 | App 直接读文件（Dart） | `workspaceFiles/read`（`packages/dsh_client/lib/src/workspace_api.dart` 已封装）。这个端点接受工作区外的绝对路径，权限由对方文件系统组合决定；需要带一个会话 id（`workspaceFileScopeId`），取最近一个对话；主机上一个对话都没有时暂不读 |
-| 找到 `$DSH_HOME` | 固定 `/root/.dsh` | ① SSH 主机：启动时读远端环境变量；② 其他主机：`skills/list`（`features_api.dart:493`）里 `dsh-go-ui` 技能的 `path` 往上三级（`<dshHome>/skills/dsh-go-ui/SKILL.md`）；③ 都拿不到 → 设置里显示「这台主机还没装界面技能」+ 安装入口（§10.5） |
+| 找到 `$DSH_HOME` | 固定 `/root/.dsh` | ① SSH 主机：启动时读远端环境变量；② 其他主机：`skills/list`（`features_api.dart:493`）里 `dsh-fusion-ui` 技能的 `path` 往上三级（`<dshHome>/skills/dsh-fusion-ui/SKILL.md`）；③ 都拿不到 → 设置里显示「这台主机还没装界面技能」+ 安装入口（§10.5） |
 | 自动重读 | `Directory('<rootfs>/root/.dsh/dsh-go').watch()`（inotify；目录不存在时 App 先建），加上回到前台时补读一次；去抖 300 ms | `workspaceFiles/changes` 流（文件监听沿用文件读权限，可在工作区外）；不支持时退回前台每 60 秒一次 `stat` 比对 `version`；重连和回到前台时补读 |
 | 写 | App 不写 ui.json（只读）。可选：本机 App 把读取结果写到 `$DSH_HOME/dsh-go/ui.status.json`，供 agent 自查 | 远程只读（`dsh-api-workspace-files` 不提供写操作） |
 
@@ -416,18 +416,18 @@ class FromUiJsonBadge extends StatelessWidget { … }     // 「来自 ui.json�
   - 用户根是 `<dshHome>/skills`（rank 400，跳过 `.system` 子目录）；
   - 目录形式 `<name>/SKILL.md`，YAML frontmatter 必填 `name`（kebab-case）和 `description`，可选 `whenToUse`；
   - 根目录受监视，**新增无需重启**。
-- **内容**：`$DSH_HOME/skills/dsh-go-ui/`：
+- **内容**：`$DSH_HOME/skills/dsh-fusion-ui/`：
   - `SKILL.md`：何时用（「把手机 App 的 XX 改成 YY」）、文件路径、改法（读 → 改 → 写回 → 自查）、动作集合、限制、常见示例。
   - `schema.json`：v1 的 JSON Schema，与 App 的 Dart 校验同源。
   - `examples/*.json`。
-  - `scripts/check.mjs`：零依赖校验器，`node $DSH_HOME/skills/dsh-go-ui/scripts/check.mjs` 输出与 App 相同的 Pointer 错误。
+  - `scripts/check.mjs`：零依赖校验器，`node $DSH_HOME/skills/dsh-fusion-ui/scripts/check.mjs` 输出与 App 相同的 Pointer 错误。
   - 本机另可读 `ui.status.json`。
   - 两套校验共用 `app/test/ui_config/fixtures/`。
 - **本机自动安装**：每次引擎启动前由 Dart 写入 rootfs（与 `GuestSetup.writeAgentsMd` 同样的「受管标记」做法：`SKILL.md` 首行带 `<!-- dsh-go:managed -->`，用户删掉这行后不再覆盖）。不改 `GuestSetup.kt`。
 - **远程安装**（必须用户确认）：
   - ① SSH 主机：经已有的 SSH 通道写文件。
   - ② 其他主机：App 准备一条消息（含技能文件内容和写入指令），放进输入框由用户点发送，让对方 agent 用自己的工具写入。
-  - 装好后 `skills/list` 能看到 `dsh-go-ui`，同时解决 `$DSH_HOME` 定位（§10.1）。
+  - 装好后 `skills/list` 能看到 `dsh-fusion-ui`，同时解决 `$DSH_HOME` 定位（§10.1）。
 
 ### 10.6 重置与升级会不会清掉（核实结果）
 
@@ -447,7 +447,7 @@ class FromUiJsonBadge extends StatelessWidget { … }     // 「来自 ui.json�
 
 ## 11. 实现顺序与上线门槛
 
-接缝内核与清单（`app/lib/plugins/seams/`）、网页岛运行时（`app/lib/ui/plugins/islands/`、`app/assets/islands/`）、宿主桥接与路由守卫（`runtime/bridge/dsh-go-bridge/`、运行时补丁）、`ui.json` 内核（`app/lib/ui_config/`、`app/assets/skills/dsh-go-ui/`）互不依赖，可以并行。整页岛接入依赖前三者；聊天页面板岛、`ui.json` 在各界面的接入排在其后；浮层岛和声明式面板服务属于 P2。
+接缝内核与清单（`app/lib/plugins/seams/`）、网页岛运行时（`app/lib/ui/plugins/islands/`、`app/assets/islands/`）、宿主桥接与路由守卫（`runtime/bridge/dsh-go-bridge/`、运行时补丁）、`ui.json` 内核（`app/lib/ui_config/`、`app/assets/skills/dsh-fusion-ui/`）互不依赖，可以并行。整页岛接入依赖前三者；聊天页面板岛、`ui.json` 在各界面的接入排在其后；浮层岛和声明式面板服务属于 P2。
 
 **上线门槛**：G1 路由守卫随运行时出包之前，本机引擎的整页岛不对用户开放。远程主机的整页岛可先开，那里的风险与现在的「网页版」入口相同。
 
@@ -462,7 +462,7 @@ class FromUiJsonBadge extends StatelessWidget { … }     // 「来自 ui.json�
 | G1 守卫 | 路由守卫 | 构建期列出全部路由：无 cookie 401 / 403；网页版、插件页面、App 原生功能回归全部正常 |
 | `__DSH_BOOT__` 解析 | 接缝内核 | 本机与 SSH 主机都能列出带浏览器半侧的包 |
 | 远程读 ui.json | `ui.json` | 工作区外绝对路径 `read` + `changes` 在 SSH 主机可用；对方沙箱策略拒绝时给出明确提示 |
-| 技能热加载 | `ui.json` | 写入 `skills/dsh-go-ui/` 后不重启，下一轮对话 `skills/list` 可见 |
+| 技能热加载 | `ui.json` | 写入 `skills/dsh-fusion-ui/` 后不重启，下一轮对话 `skills/list` 可见 |
 
 ## 附录 A：slot 目录与抽样数据的来源
 

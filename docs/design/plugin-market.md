@@ -1,5 +1,8 @@
 # DSH Go 插件市场
 
+> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
+> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+
 > 2026-10-30。研究在 [../research/plugin-market.md](../research/plugin-market.md)，App 现有市场在 `app/lib/state/plugins_state.dart`（读 dshfind 的格式 1 索引）和 `app/lib/ui/plugins/market_tab.dart`。生图生视频插件见 [media-generation.md](media-generation.md)。
 
 ## 1. 已定的事（owner，10-30）
@@ -33,14 +36,14 @@ GitHub Pages
              （application/json; charset=utf-8，Cache-Control: public, max-age=300），
              同一份快照也存进 Worker 自己的缓存（KV）
       失败 → 什么都不写，桶里和缓存里还是上一份
-  → https://dl.dshtui.com/market/…   App 1.0.9 起先读这里（CDN 按 max-age 缓存，不经过 Worker）
-  → https://go.dshtui.com/market/…   Worker 照常提供同一份快照，作为后备；
+  → <download bucket>/market/…   App 1.0.9 起先读这里（CDN 按 max-age 缓存，不经过 Worker）
+  → <market origin>/market/…   Worker 照常提供同一份快照，作为后备；
                                       旧版 App 来这里会被 zone 的 Redirect Rule 302 到 dl（带 Origin 头的网页请求不跳，
                                       照旧拿 Worker 的 CORS 头）
 ```
 
-- `https://go.dshtui.com/market/index.json`（= `https://dl.dshtui.com/market/index.json`）：**格式 1**，必须通过 DSH 0.2.1 官方校验器（`dsh-plugin-market-index`）。DSH 网页版、dsh-TUI 也能直接添加这个地址。每个插件**只列锁定的那一个版本**。
-- `https://go.dshtui.com/market/dsh-go.json`（= `https://dl.dshtui.com/market/dsh-go.json`）：格式 1 装不下的东西，App 用。
+- `<market origin>/market/index.json`（= `<download bucket>/market/index.json`）：**格式 1**，必须通过 DSH 0.2.1 官方校验器（`dsh-plugin-market-index`）。DSH 网页版、dsh-TUI 也能直接添加这个地址。每个插件**只列锁定的那一个版本**。
+- `<market origin>/market/dsh-go.json`（= `<download bucket>/market/dsh-go.json`）：格式 1 装不下的东西，App 用。
 - 两个文件在 CDN 上各自缓存，目录变化后的 5 分钟内可能拿到新旧不配套的一对：App 照常显示（版本对不上的 sidecar 条目不用），但不存下来，下次再取（§6）。
 
 ```jsonc
@@ -123,13 +126,13 @@ scripts/build.mjs                         生成 index.json + dsh-go.json
 ## 6. App 侧
 
 - 市场页三个分区：官方 / 适配 DSH Go / 全部。前两个来自官方索引，第三个是 dshfind。
-- 读官方索引（1.0.9 起，`app/lib/state/plugins_state.dart` `fetchOfficialMarket`）：先 `https://dl.dshtui.com/market/`，不行再 `https://go.dshtui.com/market/`。最近一份读得通、且每个插件都有锁定版本的 listing 的目录，连同两个文件的 ETag 存在手机上（SharedPreferences `market.official`）：6 小时内直接用，不发请求；过了 6 小时带 `If-None-Match` 重新验证（304 就续期）；下拉刷新和「重试」总是重新验证；两个地址都连不上时用手机上那份（不论多旧）。手机上没有时照旧：哪儿都没发布（404）是空市场，其余是错误。
+- 读官方索引（1.0.9 起，`app/lib/state/plugins_state.dart` `fetchOfficialMarket`）：先 `<download bucket>/market/`，不行再 `<market origin>/market/`。最近一份读得通、且每个插件都有锁定版本的 listing 的目录，连同两个文件的 ETag 存在手机上（SharedPreferences `market.official`）：6 小时内直接用，不发请求；过了 6 小时带 `If-None-Match` 重新验证（304 就续期）；下拉刷新和「重试」总是重新验证；两个地址都连不上时用手机上那份（不论多旧）。手机上没有时照旧：哪儿都没发布（404）是空市场，其余是错误。
 - 卡片：分区标记 + 风险标签（low 不显示，medium 黄色，high 红色）。
 - 详情页：截图、中文介绍、风险逐条解释、版本、来源链接。
 - 安装：装到当前主机，用索引锁定的版本（`name@version`），装前核对 integrity。medium / high 先弹确认，列出风险。
 - 更新：已装的官方索引插件，索引里的版本更新时显示「有更新」。装的版本在 `blockedVersions` 里时显示警告和卸载入口。
 - 提交：市场页底部「提交插件」，打开市场仓库的提交说明。
-- 分享：插件详情可以分享链接 `https://go.dshtui.com/p/<包名>`，网页显示卡片，点开唤起 App 进入详情。
+- 分享：插件详情可以分享链接 `<market origin>/p/<包名>`，网页显示卡片，点开唤起 App 进入详情。
 - 生图生视频：当前主机没装媒体插件、但官方索引里有时，「生成」入口照常显示，点开是「在此主机上安装」（`MediaPluginState.installable`），不再整个隐藏。
 
 ### 安装校验边界（App 实现）
@@ -138,7 +141,7 @@ App 在删除旧版本或开始安装之前，通过现有 `ShareNet.npmFacts` �
 
 这只能核对**注册表的版本元数据**。现有 `pluginManager/inspect`、`installBundle` 参数和返回值都不支持传递预期 integrity 或回报实际下载包的摘要；主机端 pnpm 依据其使用的注册表验证 tarball，App 不能证明那份 tarball 与市场检查过的包一致。要闭合端到端校验，需要宿主安装 API 接受并强制校验预期 integrity。sidecar 缺失、损坏或版本不匹配时不显示其检查标记；这些条目使用原有安装路径，不声称完成市场校验。
 
-插件分享沿用已有 `dshgo://` scheme：网页把 `https://go.dshtui.com/p/<编码包名>` 交接为 `dshgo://go.dshtui.com/p/<编码包名>`，App 打开详情。App 内打开同路径 HTTPS 链接也可解析；Android 系统直接接管 HTTPS 仍取决于后端的 App Links 验证配置。
+插件分享沿用已有 `dshgo://` scheme：网页把 `<market origin>/p/<编码包名>` 交接为 `dshgo://<market origin>/p/<编码包名>`，App 打开详情。App 内打开同路径 HTTPS 链接也可解析；Android 系统直接接管 HTTPS 仍取决于后端的 App Links 验证配置。
 
 ## 7. 分工
 
