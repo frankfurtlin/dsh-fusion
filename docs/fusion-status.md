@@ -1,7 +1,7 @@
 # fusion 现状（2026-11-20）
 
-> **注**：本文记录的是上游设计，其中提到的第三方托管服务（市场目录、下载桶、
-> 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
+> **2026-11-22**：上游那套第三方托管服务（论坛、官方插件市场目录、分享托管、创意工坊后端、
+> 更新镜像）已全部关停，代码里的端点已移除或置空。包名、仓库名、内置技能包统一改为 `dsh-fusion`。
 
 把 dsh-Go（Flutter 原生客户端）与 dsh-mobile（作者自己的 Capacitor 套壳）合成的工作仓库。
 架构决策见 [merge-architecture.md](merge-architecture.md)，逐文件移植方案见 [port-map.md](port-map.md)，
@@ -75,20 +75,25 @@ tools/verify-bridge.sh --watch  # 等手机连上再报
 判定「手机上这套真能用」的链路：
 1. App 里「手机桥」填 origin + 网关令牌 → 连接；
 2. 服务器 `curl 127.0.0.1:3082/healthz` 的 `phones` 变成 1；
-3. `journalctl -u dsh-mobile-bridge` 里 `phone connected` 的 `caps=` 有 22 项（含 `a11y.tree`），与旧 DSH Mobile 的 caps 相同，区分靠设备名（App 里填的那个）；
+3. `journalctl -u dsh-fusion-bridge` 里 `phone connected` 的 `caps=` 有 **26** 项（含 `a11y.find`、`a11y.text`、`device.status`、`media.latest`）。旧包是 22 项 —— **caps 数是判断装没装上新包的硬指标**；
 4. 任一 dsh 会话里调用 `phone_ping` / `phone_info` 拿到响应。
 
-## 已发布的可安装包（/srv/hermes/dshfusion/，公网 https://hermes.frankfurtlin.top/dshfusion/）
+## 当前可安装包
 
-| 文件 | 大小 | 说明 |
-|---|---|---|
-| `dshfusion-release-arm64.apk` | 66,824,043 | R8 release，v2 签名，体积最小 |
-| `dshfusion-release-v23-arm64.apk` | 66,876,394 | 旧代码，重签 v2+v3（小米挑剔签名时试） |
-| `DSH-Fusion-1.0.0-arm64.apk` | 66,748,154 | v1+v2+v3 正式签名（CN=DSH Fusion），去掉了「发送匿名使用统计」入口 | **当前交付物**（改名 DSH Fusion、去 star/去更新检查、桥+登录+无障碍），sha256 `9b9a0d45…a729` |
-| `dshfusion-release3-arm64.apk` | 66,931,803 | 旧版（未改名、含 star/更新检查）：网关登录 + 读网页登录态 + 无障碍 22 op，sha256 `393774d4…accf` —— 装这个 |
-| `dshfusion-release2-arm64.apk` | 66,926,607 | 少无障碍，上一版 |
-| `dshfusion-debug3-arm64.apk` | 153,661,759 | debug，**含「网关登录」+「从网页登录态读取」**，sha256 `36763d6f…84c6` —— 推荐先用这个完成首次配置 |
-| `dshfusion-debug2-arm64.apk` | 153,651,695 | 上一版，只有「从网页登录态读取」 |
+公网地址（免登录，Caddy 静态直出）：
+
+```
+https://hermes.frankfurtlin.top/dshfusion/DSH-Fusion-arm64-release-65caf86.apk
+```
+
+| 项 | 值 |
+|---|---|
+| 文件 | `DSH-Fusion-arm64-release-65caf86.apk` |
+| 大小 | 66 MB（R8 release，v1+v2+v3 签名，CN=dsh-Go） |
+| sha256 | `c7dde67b6d63f2105fccca116ea6011ef2381dfc249ed0422cfb6297a63e3f65` |
+| 来源 | GitHub Actions `65caf86`，签名校验由 CI 把关 |
+
+服务器上同时留了一份在 `dist/apk/`，桥的 `/bridge/download/<file>` 也能取（那条口要求网关登录态）。
 
 ## 连接方式只剩一种
 
@@ -103,10 +108,23 @@ tools/verify-bridge.sh --watch  # 等手机连上再报
 
 底层的中继/本机代码仍在（未删），只是没有任何入口。
 
+## 真机验证（2026-11-22，小米 24031PN0DC）
+
+| 项 | 结果 | 依据 |
+|---|---|---|
+| 安装与升级 | 通过 | 覆盖安装后 SharedPreferences 保留；无障碍需重开（namespace 由 `io.github.ccch1mneyyy.dsh_app` 改为 `top.frankfurtlin.dshfusion`，组件完整名变了） |
+| 远程主机（SSH 只连接） | 通过 | 服务端有 publickey 登录记录，3080 上活跃 mux 连接 |
+| DSH 登录令牌 | 可用 | 取自 `dsh web: http://127.0.0.1:3080/?token=<token>`；**每次 dsh 重启都会变** |
+| 宠物包「水豚噜噜」 | 通过 | 设置 → 宠物里可见 |
+| 文件预览 | 通过 | `workspace/test-preview/` 下 11 种文件（txt/md/csv/xlsx/json/png/jpg/pdf/3.4M 大文本/二进制/无扩展名）全部正常 |
+
+### 预览那个 bug 的结论
+
+旧构建在 `_openFile` 里传的是 `workspaceHostPath(root, rel)`（主机绝对路径），换成本地相对路径后正常。
+服务端实测两种写法都接受（连工作区外的绝对路径都放行），所以这不是服务端拒绝，而是客户端把路径拼错了。
+
 ## 尚未完成
 
-- 真机安装（小米报 `packageinfo is null`，已换 66MB release 包重试）。
-- 网关令牌：三条路都已实现（账号密码登录 / 从网页登录态读 / 粘贴）。release 包（R8）还停在旧代码，
-  需要用 `tools/build-apk.sh --release` 重打一次才带登录功能；这台 7GB 机器跑 R8 很慢，留到验证完再做。
-- 无障碍已进源码并编译通过，等下一次打包上机验证（系统里会出现第二个无障碍服务「DSH 手机桥 · 无障碍」）。
-- 仓库还没整理成干净的 git 历史（当前 `.git` 是半残的 partial clone）。
+- **手机桥暂不启用**（用户 2026-11-22 决定）。服务端 `dsh-fusion-bridge` 仍在跑，随时可开。
+- 后台耗电未测：桥不用了就没有 WSS 常驻负担；若以后再开，按「客户端不 ping + SSH keepalive 45s + 服务端心跳 60s」观察。
+- `dshgo` 这个 URL scheme 与 `.dshgo` 分享文件扩展名仍是旧名（改会破坏已有分享链接与文件，需要单独决策）。
