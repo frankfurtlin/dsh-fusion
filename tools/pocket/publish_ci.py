@@ -45,7 +45,8 @@ def release_asset(tag: str, apk: str, asset_name: str) -> str:
     view = subprocess.run(['gh', 'release', 'view', tag, '-R', repo], capture_output=True, text=True)
     if view.returncode != 0:
         subprocess.run(['gh', 'release', 'create', tag, '-R', repo,
-                        '--title', tag, '--notes', os.environ.get('COMMIT_TITLE', '')],
+                        '--title', tag, '--notes', os.environ.get('COMMIT_TITLE', '') or f'DSH Pocket {tag}',
+                        '--target', os.environ.get('GITHUB_SHA', 'main')],
                        check=True, capture_output=True)
     subprocess.run(['gh', 'release', 'upload', tag, apk,
                     '--clobber', '-R', repo], check=True, capture_output=True)
