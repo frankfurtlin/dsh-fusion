@@ -4,7 +4,7 @@
  * separate upload channel. Files are restricted to one flat directory — the
  * request never supplies a path, only a file name.
  *
- * @module dsh-mobile-bridge/download
+ * @module dsh-fusion-bridge/download
  */
 
 import { createReadStream } from 'node:fs'

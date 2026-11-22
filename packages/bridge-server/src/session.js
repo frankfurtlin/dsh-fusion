@@ -7,7 +7,7 @@
  * answers `302` to `/gateway/login`; an authenticated one is proxied to the
  * upstream web app and answers `200`.
  *
- * @module dsh-mobile-bridge/session
+ * @module dsh-fusion-bridge/session
  */
 
 import { createHash } from 'node:crypto'

@@ -14,7 +14,7 @@
 set -uo pipefail
 
 BRIDGE=http://127.0.0.1:3082/healthz
-UNIT=dsh-mobile-bridge
+UNIT=dsh-fusion-bridge
 PROFILE_PATCH=/root/.dsh/profiles/web/cordis.patch.yml
 WATCH=0
 [ "${1:-}" = "--watch" ] && WATCH=1
