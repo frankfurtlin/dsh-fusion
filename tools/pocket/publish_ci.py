@@ -69,7 +69,7 @@ def main() -> int:
     started = time.time()
     with open(apk, 'rb') as body:
         client.put_object(
-            Bucket=bucket, Key=key, Body=body, ContentLength=size,
+            Bucket=bucket, Key=key, Body=body, ContentLength=str(size),
             ContentType='application/vnd.android.package-archive',
             CacheControl='public, max-age=31536000, immutable',
         )
