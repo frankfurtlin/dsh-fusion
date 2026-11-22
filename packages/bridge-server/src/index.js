@@ -2,7 +2,7 @@
 /**
  * Bridge entry point: MCP endpoint for the DSH agent plus the phone WebSocket.
  *
- * @module dsh-mobile-bridge
+ * @module dsh-fusion-bridge
  */
 
 import { loadConfig } from './config.js'

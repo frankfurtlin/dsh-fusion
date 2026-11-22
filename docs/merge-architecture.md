@@ -1,5 +1,10 @@
 # dshgo-fusion 合并架构
 
+
+> 本文记录当时的合并方案与路径。**实现已经变化**：Android 包名已改为
+> `top.frankfurtlin.dshfusion`，仓库目录为 `/root/workspace/dsh-fusion`，
+> 技能包为 `dsh-fusion-*`。阅读时以当前代码为准。
+
 把 **DSH Go**（ccch1mneyyy/dsh-Go，Flutter 原生客户端）与 **DSH Mobile**（/root/workspace/dsh-mobile，作者本人的 Capacitor 套壳）合成一个新项目：
 界面与连接层用 DSH Go，手机能力桥与外设接入层用 DSH Mobile 已被验证的实现。
 

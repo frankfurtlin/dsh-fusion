@@ -21,10 +21,10 @@
 ```bash
 source /root/toolchain/env.sh          # 之后 java / sdkmanager / adb / flutter / dart 都可用
 
-# 一键构建（默认目标 /root/workspace/dshgo-fusion/app）
-/root/workspace/dshgo-fusion/tools/build-apk.sh                       # debug APK
-/root/workspace/dshgo-fusion/tools/build-apk.sh --release <项目目录>   # release APK
-/root/workspace/dshgo-fusion/tools/build-apk.sh --detach              # 后台 systemd 单元，防断连
+# 一键构建（默认目标 /root/workspace/dsh-fusion/app）
+/root/workspace/dsh-fusion/tools/build-apk.sh                       # debug APK
+/root/workspace/dsh-fusion/tools/build-apk.sh --release <项目目录>   # release APK
+/root/workspace/dsh-fusion/tools/build-apk.sh --detach              # 后台 systemd 单元，防断连
 ```
 
 产物：`<项目>/build/app/outputs/flutter-apk/app-debug.apk`
@@ -110,7 +110,7 @@ mkdir -p /root/toolchain/flutter && tar -xJf flutter.tar.xz -C /root/toolchain/f
 （目录名 = base36(md5(distributionUrl))，Gradle 就是这么算的）：
 
 ```bash
-/root/workspace/dshgo-fusion/tools/seed-gradle-dist.sh <项目>/android
+/root/workspace/dsh-fusion/tools/seed-gradle-dist.sh <项目>/android
 ```
 脚本会自动读 `gradle/wrapper/gradle-wrapper.properties` 里的版本，从
 `mirrors.cloud.tencent.com/gradle/`（失败再试 `mirrors.huaweicloud.com/gradle/`）拉包并解压到
@@ -151,11 +151,11 @@ journalctl -u my-build -f          # 跟日志
 |---|---|---|
 | `/root/toolchain/hello`（`flutter create` 空工程） | `flutter build apk --debug` | ✅ `Built build/app/outputs/flutter-apk/app-debug.apk`（157MB，47s，含 debug 全 ABI） |
 
-`/root/workspace/dshgo-fusion/app` 的真实工程构建结论见下一节。
+`/root/workspace/dsh-fusion/app` 的真实工程构建结论见下一节。
 
 ## 真实工程（dshgo-fusion）现状
 
-**阻塞点不在工具链，在源码**：`/root/workspace/dshgo-fusion` 是
+**阻塞点不在工具链，在源码**：`/root/workspace/dsh-fusion` 是
 `git clone --filter=blob:none --sparse --depth 1` 来的（对象库里只有 tree，没有 blob），
 `app/` 目录一直没被 checkout 出来（工作区里只有 `docs/`、`tools/`）。
 补 checkout 需要回 github 拉 blob，而到 github.com / raw.githubusercontent.com 的连接是超时的。
@@ -165,8 +165,8 @@ journalctl -u my-build -f          # 跟日志
 
 ```bash
 source /root/toolchain/env.sh
-/root/workspace/dshgo-fusion/tools/build-apk.sh --pub-get-only /root/workspace/dshgo-fusion/app   # 先验证依赖解析
-/root/workspace/dshgo-fusion/tools/build-apk.sh /root/workspace/dshgo-fusion/app                 # 再构建
+/root/workspace/dsh-fusion/tools/build-apk.sh --pub-get-only /root/workspace/dsh-fusion/app   # 先验证依赖解析
+/root/workspace/dsh-fusion/tools/build-apk.sh /root/workspace/dsh-fusion/app                 # 再构建
 ```
 
 已知的工程级风险（不是本机环境问题，构建时才会暴露）：
