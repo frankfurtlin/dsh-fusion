@@ -48,7 +48,9 @@ def release_asset(tag: str, apk: str, asset_name: str) -> str:
                         '--title', tag, '--notes', os.environ.get('COMMIT_TITLE', '') or f'DSH Pocket {tag}',
                         '--target', os.environ.get('GITHUB_SHA', 'main')],
                        check=True, capture_output=True)
-    subprocess.run(['gh', 'release', 'upload', tag, apk,
+    # `path#name`：不指定的话 gh 用本地文件名（app-arm64-release.apk），
+    # 和清单里的带版本名字对不上，下载会 404。
+    subprocess.run(['gh', 'release', 'upload', tag, f'{apk}#{asset_name}',
                     '--clobber', '-R', repo], check=True, capture_output=True)
     return f'https://github.com/{repo}/releases/download/{tag}/{asset_name}'
 
