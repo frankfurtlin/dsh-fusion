@@ -17,6 +17,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timezone, timedelta
 
 TZ = timezone(timedelta(hours=8))
@@ -64,12 +65,15 @@ def main() -> int:
     eo = os.environ['COS_EO_DOMAIN'].rstrip('/')
 
     print(f'上传 {asset_name}（{size / 1048576:.1f} MB）')
-    client.upload_file(
-        Bucket=bucket, Key=key, LocalFilePath=apk,
-        ContentType='application/vnd.android.package-archive',
-        CacheControl='public, max-age=31536000, immutable',
-        EnableMD5=False, MAXThread=4,
-    )
+    # 单次 PUT：multipart 在这条链路上会被反复重试卡住（实测 25 分钟没完）。
+    started = time.time()
+    with open(apk, 'rb') as body:
+        client.put_object(
+            Bucket=bucket, Key=key, Body=body, ContentLength=size,
+            ContentType='application/vnd.android.package-archive',
+            CacheControl='public, max-age=31536000, immutable',
+        )
+    print(f'APK 上传完成 {time.time() - started:.1f}s')
 
     manifest = {
         'schema': 1,
@@ -89,11 +93,11 @@ def main() -> int:
     mp = 'out/update.json'
     with open(mp, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
-    client.upload_file(
-        Bucket=bucket, Key=f'{PREFIX}/update.json', LocalFilePath=mp,
-        ContentType='application/json', CacheControl='public, max-age=60',
-        EnableMD5=False, MAXThread=1,
-    )
+    with open(mp, 'rb') as body:
+        client.put_object(
+            Bucket=bucket, Key=f'{PREFIX}/update.json', Body=body,
+            ContentType='application/json', CacheControl='public, max-age=60',
+        )
     print(f'完成：{eo}/{PREFIX}/update.json')
     return 0
 
