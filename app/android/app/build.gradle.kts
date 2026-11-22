@@ -137,9 +137,12 @@ android {
             // keeps an unminified build around when something is only reachable by name
             // at runtime and R8 has to be bisected. Release builds minify by default —
             // without this the `proguard-rules.pro` keep rules below never applied.
-            val skipShrink = project.hasProperty("fastBuild") || project.hasProperty("noMinify")
-            isMinifyEnabled = !skipShrink
-            isShrinkResources = !skipShrink
+            // 2026-11-23：R8 第一次开启后 1.0.1 在真机上一启动就退出（大概率是
+            // 按名字反射引用的类被砍：WorkManager 的 Initializer、DigestWorker）。
+            // 先退回不压缩保证可用，keep 规则已补齐；等真机验证过再开 -Pminify。
+            val shrink = project.hasProperty("minify") && !project.hasProperty("fastBuild")
+            isMinifyEnabled = shrink
+            isShrinkResources = shrink
             // Ours on top of Flutter's: phone control's privileged process and
             // its TLS libraries are reached by class name (see the file).
             proguardFiles("proguard-rules.pro")

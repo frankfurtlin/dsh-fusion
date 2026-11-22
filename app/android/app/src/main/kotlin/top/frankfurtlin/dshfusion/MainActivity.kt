@@ -93,7 +93,9 @@ class MainActivity : FlutterActivity() {
         // 「打开 App 时自动启动」: DSH boots while Flutter starts, not after its first frame.
         LaunchStart.onActivityCreate(this)
         // 兴趣推送：每次冷启动确认周期任务在（用户关掉时 ensureScheduled 自己会取消）。
-        top.frankfurtlin.dshfusion.digest.DigestSync.ensureScheduled(this)
+        // 这里必须吞掉一切异常：WorkManager 初始化失败不该让整个 App 起不来。
+        runCatching { top.frankfurtlin.dshfusion.digest.DigestSync.ensureScheduled(this) }
+            .onFailure { android.util.Log.w("DigestSync", "schedule failed", it) }
         // 启动画面: the first activity of a cold start hands the system's launch window to Dart's.
         LaunchScreen.onActivityCreate(this, coldDart = FlutterEngineCache.getInstance().get(ENGINE_ID) == null)
         // Recreated, or reopened from recents: the launch intent is an old notification tap or

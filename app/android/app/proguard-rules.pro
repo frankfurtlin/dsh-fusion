@@ -34,3 +34,11 @@
 -keep class okhttp3.** { *; }
 -dontwarn okhttp3.**
 -dontwarn okio.**
+
+# WorkManager / androidx.startup：Initializer 与 Worker 都是按类名反射实例化的，
+# 被 R8 改名或删除后进程一启动就崩（2026-11-23 的事故）。
+-keep class androidx.work.** { *; }
+-keep class androidx.startup.** { *; }
+-keep class * extends androidx.work.ListenableWorker { *; }
+-keepnames class * extends androidx.work.ListenableWorker
+-keep class top.frankfurtlin.dshfusion.digest.** { *; }
