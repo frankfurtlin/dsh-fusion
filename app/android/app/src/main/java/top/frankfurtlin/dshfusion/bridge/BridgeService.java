@@ -714,7 +714,7 @@ public class BridgeService extends Service {
     boolean wantImages = !"video".equals(kind);
     boolean wantVideos = !"image".equals(kind);
     if (!mediaReadable()) {
-      throw new IllegalStateException("this app may not read photos: allow photos/videos for DSH Fusion in Android settings (READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE)");
+      throw new IllegalStateException("this app may not read photos: allow photos/videos for DSH Pocket in Android settings (READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE)");
     }
     StringBuilder where = new StringBuilder(MediaStore.Files.FileColumns.MEDIA_TYPE).append(" IN (");
     java.util.ArrayList<String> whereArgs = new java.util.ArrayList<>();

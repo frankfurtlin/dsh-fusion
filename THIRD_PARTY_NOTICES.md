@@ -1,11 +1,11 @@
 # 第三方声明（Third-Party Notices）
 
-本文件集中列出 dsh-go 复制或改写进源码的第三方代码与素材，以及随 App 一起分发的字体、原生库和 Linux 运行时组件。源文件头用 `SPDX-FileCopyrightText` / `SPDX-License-Identifier` 标记版权与许可，并指向本文件；各项目的派生关系见各条目。
+本文件集中列出 DSH Pocket 复制或改写进源码的第三方代码与素材，以及随 App 一起分发的字体、原生库和 Linux 运行时组件。源文件头用 `SPDX-FileCopyrightText` / `SPDX-License-Identifier` 标记版权与许可，并指向本文件；各项目的派生关系见各条目。
 
 - App 内「设置 › 开源许可」页随 APK 分发同样的声明（`app/lib/ui/common/third_party_licenses.dart`，字体在 `app/lib/ui/settings/font_licenses.dart`）。
 - Dart / Flutter 依赖应按 `app/pubspec.lock`（以及本地包的 lock）核对直接与传递依赖；Flutter 从包根 `LICENSE` 收集许可并显示在许可证页。这里不逐包重复，发行前仍须核验实际 APK 的许可资产，不能仅凭依赖声明认定已收录。
 - 许可证全文见文末「许可证全文」。
-- 本项目自己的许可见 `LICENSE`（AGPL-3.0）；品牌标识和吉祥物美术不属于第三方，也不在 AGPL 授权范围内，见 `ASSETS.md`。
+- 本项目自己的许可见 `LICENSE`（AGPL-3.0）；品牌标识和吉祥物美术不属于第三方，也不在本项目的 AGPL 授权范围内；随包素材的来源与授权见「二、素材」以及各宠物包内的 `pack.json`。
 
 ## 一、复制或改写进源码的代码
 
@@ -43,7 +43,10 @@ Portions of the phone control feature are derived from Phase
 used under the MIT License with the author's permission.
 ```
 
-### go.dshtui.com 首页（作者交付使用）
+### go.dshtui.com 首页（作者交付使用；2026-11 已随站点下线移除）
+
+> 该网站与配套素材曾随旧版本分发，现已在重做中整体删除，不再包含在本仓库或安装包中。
+> 此处保留条目与作者署名以记录来源。
 
 | 项 | 内容 |
 |---|---|
@@ -52,7 +55,7 @@ used under the MIT License with the author's permission.
 | 许可 | 作者交付给本项目用于 go.dshtui.com；交付包未附许可证声明，不在本仓库的 AGPL-3.0 授权范围内 |
 | 用途 | `https://go.dshtui.com/` 首页 |
 
-本仓库位置：`site/home/`。在交付版本上的改动：产品名统一写作「DSH Go」，填写作者、下载、仓库、贡献者和分享元信息（`dist/site-config.js`），加入页面 CSP、下载二维码、第二个下载链接和 Star 数（`dist/index.html`、`dist/author-ui.js`、`dist/refinements.css` 末尾），统一换行符；没有发布的工作文件（作者说明、备份脚本、未用到的图片）未收入。功能展示图依据 DSH Go 的界面截图制作，含 DSH Go 的品牌图形和鲸娘形象（见 `ASSETS.md`）。页底保留作者的「网页开发」署名。
+本仓库位置：`site/home/`。在交付版本上的改动：产品名统一写作「DSH Go」，填写作者、下载、仓库、贡献者和分享元信息（`dist/site-config.js`），加入页面 CSP、下载二维码、第二个下载链接和 Star 数（`dist/index.html`、`dist/author-ui.js`、`dist/refinements.css` 末尾），统一换行符；没有发布的工作文件（作者说明、备份脚本、未用到的图片）未收入。功能展示图依据当时产品的界面截图制作，含其品牌图形和鲸娘形象。页底保留作者的「网页开发」署名。
 
 ### PiPilot（MIT）
 
@@ -289,6 +292,17 @@ Libraries.dev metal-fx, translated to Flutter GLSL.
 | 用途 | 代码字体，随 App 分发，也注入网页版 |
 | 文件 | `app/assets/fonts/JetBrainsMono-*.ttf` |
 
+### 鲸娘贴纸（星标提示用）
+
+| 项 | 内容 |
+|---|---|
+| 作品 | `app/assets/star/star_whale.webp`，App 内「给个星标」提示里的鲸娘贴纸 |
+| 来源 | 与内置宠物包 `whale-girl` 同一套素材（作者交付，见 `app/assets/pets/whale-girl/pack.json` 的 `source` 字段） |
+| 授权 | 随该套素材一同交付给本项目使用；不在本项目的 AGPL-3.0 授权范围内 |
+
+该素材此前未单独列在此文件中，2026-11-22 补录。授权文字写于本项目叫另用一个名字的时候，
+改名不扩大也不缩小当初的授权范围。
+
 ## 三、随 App 分发的原生库
 
 以下库作为 Gradle 依赖打包进 APK，未复制进源码。
@@ -423,7 +437,7 @@ C710 新增的 `image` 4.12.0 是 MIT 许可 pub 依赖；其原许可由 Flutte
 
 ## 五、格式兼容与致谢（未复制代码）
 
-- **Clawd on Desk**（https://github.com/rullerzhou-afk/clawd-on-desk，AGPL-3.0）：桌宠的主题包格式、状态名、优先级与时长默认值与它兼容，宠物包可以在两边通用。本项目没有复制它的代码。
+- **Clawd on Desk**（https://github.com/rullerzhou-afk/clawd-on-desk，AGPL-3.0）：桌宠的主题包格式、状态名、优先级与时长默认值与它兼容，宠物包可以在两边通用。本项目没有复制它的代码；随包的「Deepy 小鲸鱼」宠物素材取自该主题包 v1.0.0，授权情况见 `app/assets/pets/deepy-whale/pack.json`。
 - **Streamdown**（https://github.com/vercel/streamdown）：`app/lib/ui/chat/render/stream_repair.dart` 修补流式 Markdown 末尾的方式参照了它的 `remend`。
 - **DS Bot**：dsh-ui 组件的名称与 DS Bot 一致。
 - **Open-Meteo**（https://open-meteo.com，数据 CC BY 4.0）：示例插件 `examples/plugins/dsh-go-example-weather` 使用它的天气数据，卡片上注明来源。

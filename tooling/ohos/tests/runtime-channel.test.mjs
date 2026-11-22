@@ -947,11 +947,11 @@ async function managedChannelCase(name) {
   native.state.phase = 'running'; native.state.baseUrl = 'http://127.0.0.1:3080'; native.state.token = 'fixture-managed-token';
   const request = async (connection, id, text = '中文技能') => ({ requestId: id,
     expectedRoot: c.controller.paths.guestRoot, expectedToken: native.state.token,
-    expectedGeneration: (await connection.invoke('getStatus')).get('managedSkillGeneration'), name: 'dsh-fusion-ui',
-    files: new Map([['notes/readme.txt', text], ['SKILL.md', '---\n# dsh-go:managed\nname: dsh-fusion-ui\n---\n' + text + '\n']]),
+    expectedGeneration: (await connection.invoke('getStatus')).get('managedSkillGeneration'), name: 'dsh-pocket-ui',
+    files: new Map([['notes/readme.txt', text], ['SKILL.md', '---\n# dsh-go:managed\nname: dsh-pocket-ui\n---\n' + text + '\n']]),
   });
   return { ...c, ...attached, attach, request,
-    directory: c.controller.paths.dshHome + '/skills/dsh-fusion-ui',
+    directory: c.controller.paths.dshHome + '/skills/dsh-pocket-ui',
     close() {
       for (const [plugin, binding] of bindings) plugin.onDetachedFromEngine(binding);
       RuntimeController.shared = previous;

@@ -20,7 +20,7 @@
 │ PRoot Ubuntu 24.04 用户态                                                    │
 │   dsh web --patch /etc/dsh-app/dsh-web.patch.yml --host 127.0.0.1 --port …  │
 │     ├─ 官方 DSH 引擎（runtime/patches 打了补丁）                              │
-│     └─ dsh-go-bridge（Cordis 插件：/dsh-go/v1/*，原生插件协议/伙伴/删除/配置） │
+│     └─ dsh-pocket-bridge（Cordis 插件：/dsh-go/v1/*，原生插件协议/伙伴/删除/配置） │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -169,7 +169,7 @@ HomeShell = [ChatScreen] + [SessionsDrawer 左] + [QuickPanel 右] + [SystemEntr
 > `theme.mode`、`composer.quickActions`、`hide.pluginCapsule`、`plugins.seats`；
 > `header.actions`、`emptyState.suggestions`、`drawer.*`、`density`、`shortcuts`、`pet` 已解析但 lib 内无消费者。
 > 改 parser ≠ 生效，先全局搜 provider 符号。
-> `app/assets/skills/dsh-fusion-ui/schema.json` 与 `ui_config_schema.dart` 必须同步（`app/test/ui_config/schema_sync_test.dart`）。
+> `app/assets/skills/dsh-pocket-ui/schema.json` 与 `ui_config_schema.dart` 必须同步（`app/test/ui_config/schema_sync_test.dart`）。
 
 ### 2.5 依赖方向、生成物与 l10n
 
@@ -214,7 +214,7 @@ Android/iOS 后台执行的机制、系统回收恢复和三方方案取舍见 [
 `SafetyGate`（最终审批门）→ 执行器：`a11y/`（无障碍读屏与操作、OCR、浮层、受保护页面）、
 `background/`（不打扰模式特权虚拟屏/Shizuku/ADB）、`shell/`（Android shell 会话）。
 技能录放在 `phone/skills/`；自检在 `phone/selfcheck/`。
-手机工具与提示词由 Kotlin 侧注入：`PhoneGuest.kt` 启动时往 rootfs 写 `/opt/dsh-app/phone/{relay.cjs,phone.patch.yml}`，用 `--patch` 挂上 `@deepseek-ai/dsh-mcp-client`（serverName=phone）；`PhoneToolCatalog.kt` 定义固定工具集；`GuestSetup.kt` 把 `PhoneGuest.AGENTS_SECTION` 写进 `$DSH_HOME/AGENTS.md`。`dsh-go-bridge/lib/native/` 只实现原生插件协议（contributions/views/stream/invoke），与手机工具无关。
+手机工具与提示词由 Kotlin 侧注入：`PhoneGuest.kt` 启动时往 rootfs 写 `/opt/dsh-app/phone/{relay.cjs,phone.patch.yml}`，用 `--patch` 挂上 `@deepseek-ai/dsh-mcp-client`（serverName=phone）；`PhoneToolCatalog.kt` 定义固定工具集；`GuestSetup.kt` 把 `PhoneGuest.AGENTS_SECTION` 写进 `$DSH_HOME/AGENTS.md`。`dsh-pocket-bridge/lib/native/` 只实现原生插件协议（contributions/views/stream/invoke），与手机工具无关。
 
 ### 3.4 其余原生块
 
@@ -269,7 +269,7 @@ iOS 仍有明确缺口：内置视频预览、通话实时 PCM 字幕、网页�
 │        phone/（系统操作）  companion/ formability/ widget/（伙伴桌面卡片）         │
 │   └─ NativeHost 首次按需加载 libdsh_host.so（Ark N-API）                          │
 │        └─ C ABI → libnode.so：Node 24.22.1 --jitless，独立线程，一进程只启动一次  │
-│             dsh web + dsh-go-bridge，补丁 = 公共链 + OH 覆盖补丁                  │
+│             dsh web + dsh-pocket-bridge，补丁 = 公共链 + OH 覆盖补丁                  │
 │             虚拟进程 runtime/ohos/process：just-bash、JS rg、isomorphic-git、     │
 │             node 脚本走 Worker；可选 Linux 客体（TinyEMU，libdsh_linux.so）       │
 └──────────────────────────────────────────────────────────────────────────────────┘
@@ -288,7 +288,7 @@ iOS 仍有明确缺口：内置视频预览、通话实时 PCM 字幕、网页�
 | OH 专属 JS | `runtime/ohos/{process,lifecycle,capabilities,publication,linux,net,plugins,preload.mjs}` | 只进 OH 组成物，Android 运行时字节不受影响 |
 | Dart 分支 | `state/android_features.dart` | `operatingSystemProvider`、`androidSystemFeaturesProvider`；另有少量 `*_ohos.dart`（语音、Linux、附件、空闲诊断） |
 | 无 OH 版的插件 | `app/ohos/pubspec_overrides.ohos.yaml`、`tooling/ohos/vendor_platform_switches.py`、`patch_framework.py` | 只在构建 HAP 时生效，不影响 Android |
-| 用户指南 | `docs/guide/harmony/` | 鸿蒙版单独一套，`guide_sync.py` 生成 `app/assets/skills/dsh-fusion-guide/harmony-*` |
+| 用户指南 | `docs/guide/harmony/` | 鸿蒙版单独一套，`guide_sync.py` 生成 `app/assets/skills/dsh-pocket-guide/harmony-*` |
 
 规则：
 

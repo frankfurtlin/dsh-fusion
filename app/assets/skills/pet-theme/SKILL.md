@@ -1,5 +1,5 @@
 ---
-# dsh-go:managed — delete this line to keep your own edits.
+# dsh-pocket:managed — delete this line to keep your own edits.
 name: pet-theme
 description: 把宠物素材做成 dsh-go 可导入的宠物包：clawd-on-desk 主题、GIF/PNG/WebP 表情包、逐帧目录、Aseprite 导出或单张图片。用于「把这个主题做成宠物」「把表情包做成宠物」「这个能导入吗」和 /pet-theme。
 ---

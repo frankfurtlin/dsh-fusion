@@ -19,10 +19,10 @@ class L10nZh extends L10n {
   String get a11yRestoreNeedsGrant => '需要授权';
 
   @override
-  String get a11yRestoreNotice => '开启后，在系统设置里关掉无障碍会被自动打开；要关闭手机操控，请在 DSH Go 里关。';
+  String get a11yRestoreNotice => '开启后，在系统设置里关掉无障碍会被自动打开；要关闭手机操控，请在 DSH Pocket 里关。';
 
   @override
-  String get a11yRestoreForceStop => '被强制停止后，重新打开 DSH Go 才能恢复。';
+  String get a11yRestoreForceStop => '被强制停止后，重新打开 DSH Pocket 才能恢复。';
 
   @override
   String get a11yRestoreGrant => '授权并开启';
@@ -58,7 +58,7 @@ class L10nZh extends L10n {
   String get a11yRestoreCopied => '授权命令已复制';
 
   @override
-  String get accessPickTitle => '想让 DSH Go 帮你做哪些事';
+  String get accessPickTitle => '想让 DSH Pocket 帮你做哪些事';
 
   @override
   String get accessPickMessage => '选好后逐项开启';
@@ -203,7 +203,7 @@ class L10nZh extends L10n {
   String get accessPopupTitle => '允许后台弹出界面';
 
   @override
-  String get accessPopupWhy => '手机操控做完能回到 DSH Go';
+  String get accessPopupWhy => '手机操控做完能回到 DSH Pocket';
 
   @override
   String accessVivoPopupPath(String app) {
@@ -2760,7 +2760,7 @@ class L10nZh extends L10n {
   String get botsForumSubtitle => '提问、分享、找同好';
 
   @override
-  String get botsProjectHome => 'DSH Go 项目主页';
+  String get botsProjectHome => 'DSH Pocket 项目主页';
 
   @override
   String get botsOpenSource => '开源项目';
@@ -3510,6 +3510,36 @@ class L10nZh extends L10n {
 
   @override
   String get bridgeUnavailable => '这个版本没有内置手机桥，下面的开关只在 Android 上生效。';
+
+  @override
+  String get bridgeTokenFromWeb => '从网页登录态读取';
+
+  @override
+  String get bridgeTokenFromWebEmpty => '还没读到登录态：先在 App 的「网页」里登录一次网关，再回来点这里';
+
+  @override
+  String get bridgeLoginSection => '网关登录';
+
+  @override
+  String get bridgeLoginFooter => '用 dsh-passwords 网关的账号密码登录一次，令牌会自动换成 dsh_gateway_token 存在这台手机上。';
+
+  @override
+  String get bridgeLoginUsername => '用户名';
+
+  @override
+  String get bridgeLoginPassword => '密码';
+
+  @override
+  String get bridgeLoginButton => '登录并保存令牌';
+
+  @override
+  String get bridgeLoginFailed => '登录失败';
+
+  @override
+  String get bridgeA11yAllow => '允许手机桥使用无障碍';
+
+  @override
+  String get bridgeA11yAllowHint => '和系统里的服务开关是两道门，两个都开，远程自动化才能执行。';
 
   @override
   String get catalogCurrentChat => '当前对话';
@@ -4365,7 +4395,7 @@ class L10nZh extends L10n {
   String get chatOpenInDefaultApp => '用默认应用打开';
 
   @override
-  String get chatDownloadsFolderHint => '下载/DSH-Go 文件夹';
+  String get chatDownloadsFolderHint => '下载/DSH-Pocket 文件夹';
 
   @override
   String chatSavedToDownloadsPath(String path) {
@@ -6258,7 +6288,7 @@ class L10nZh extends L10n {
   String get engineAccountFinishInBrowser => '在浏览器中完成登录';
 
   @override
-  String get engineAccountReturnToDsh => '登录完成后回到 DSH Go';
+  String get engineAccountReturnToDsh => '登录完成后回到 DSH Pocket';
 
   @override
   String get engineAccountFinishingSignIn => '正在完成登录';
@@ -8403,7 +8433,7 @@ class L10nZh extends L10n {
   String get featuresExportSaveDownloads => '存到「下载」';
 
   @override
-  String get featuresExportDownloadsHint => '存进 下载/DSH-Go';
+  String get featuresExportDownloadsHint => '存进 下载/DSH-Pocket';
 
   @override
   String get featuresExportContents => '含这个对话和子代理的全部记录与附件';
@@ -8677,7 +8707,7 @@ class L10nZh extends L10n {
   String get harmonyPageUnavailable => '这个版本没有这个页面';
 
   @override
-  String get harmonyNotificationSettingsFailed => '没能打开系统设置。到「设置 → 通知和状态栏 → DSH Go」里开启';
+  String get harmonyNotificationSettingsFailed => '没能打开系统设置。到「设置 → 通知和状态栏 → DSH Pocket」里开启';
 
   @override
   String get harmonySearchUnavailable => '这个版本没有这项功能';
@@ -8810,7 +8840,7 @@ class L10nZh extends L10n {
   String get harmonyLiveBlockedTitle => '系统没有允许进度通知';
 
   @override
-  String get harmonyLiveBlockedText => '在系统设置里为 DSH Go 打开通知';
+  String get harmonyLiveBlockedText => '在系统设置里为 DSH Pocket 打开通知';
 
   @override
   String get harmonyAlertsOffTitle => '提醒通知已关闭';
@@ -9067,7 +9097,7 @@ class L10nZh extends L10n {
   String get hubSettingsStorageAllow => '允许读写';
 
   @override
-  String get hubSettingsStorageDenied => '没有拿到存储权限。到系统设置里给 DSH Go 开启「所有文件访问」后再试';
+  String get hubSettingsStorageDenied => '没有拿到存储权限。到系统设置里给 DSH Pocket 开启「所有文件访问」后再试';
 
   @override
   String get hubSettingsRestartRequired => '重启引擎后生效';
@@ -9428,10 +9458,10 @@ class L10nZh extends L10n {
   String get hubTableTintNoneHint => '只剩网格线，最轻';
 
   @override
-  String get hubAbout => '关于 DSH Go';
+  String get hubAbout => '关于 DSH Pocket';
 
   @override
-  String get hubAboutAuthor => 'DSH Go 原作者';
+  String get hubAboutAuthor => 'DSH Pocket 原作者';
 
   @override
   String get hubAboutBilibili => 'B站主页';
@@ -9510,7 +9540,7 @@ class L10nZh extends L10n {
   String get iosSaveToFiles => '存到「文件」';
 
   @override
-  String get iosFilesFolderHint => '文件 App 的 DSH Go 文件夹';
+  String get iosFilesFolderHint => '文件 App 的 DSH Pocket 文件夹';
 
   @override
   String get iosSavingToFiles => '正在存到「文件」…';
@@ -9522,7 +9552,7 @@ class L10nZh extends L10n {
   String get iosEnableBanners => '横幅不弹时，到系统设置打开「横幅」';
 
   @override
-  String get iosNotificationSettingsFailed => '没能打开系统设置。到「设置 → DSH Go → 通知」里开启';
+  String get iosNotificationSettingsFailed => '没能打开系统设置。到「设置 → DSH Pocket → 通知」里开启';
 
   @override
   String get iosVoiceSystemHint => '使用系统的语音识别';
@@ -9968,7 +9998,7 @@ class L10nZh extends L10n {
   String get iconShortcutAdd => '添加到桌面';
 
   @override
-  String get iconShortcutNote => '系统不允许把桌面图标换成任意图片，这里会另放一个打开 DSH Go 的快捷方式；部分桌面会在它的角上加一个小标';
+  String get iconShortcutNote => '系统不允许把桌面图标换成任意图片，这里会另放一个打开 DSH Pocket 的快捷方式；部分桌面会在它的角上加一个小标';
 
   @override
   String get iconShortcutAdded => '已添加到桌面';
@@ -9977,7 +10007,7 @@ class L10nZh extends L10n {
   String get iconShortcutConfirm => '在弹出的窗口里确认';
 
   @override
-  String get iconShortcutNoDialog => '没有弹窗？在系统设置里允许 DSH Go 创建桌面快捷方式';
+  String get iconShortcutNoDialog => '没有弹窗？在系统设置里允许 DSH Pocket 创建桌面快捷方式';
 
   @override
   String get iconShortcutSettings => '去设置';
@@ -10206,7 +10236,7 @@ class L10nZh extends L10n {
   String get liveBlockedTitle => '系统没有允许实时活动';
 
   @override
-  String get liveBlockedText => '在系统设置里为 DSH Go 打开「实时活动」（有的手机叫「在流体云中显示」）';
+  String get liveBlockedText => '在系统设置里为 DSH Pocket 打开「实时活动」（有的手机叫「在流体云中显示」）';
 
   @override
   String get localeTitle => '语言';
@@ -10356,7 +10386,7 @@ class L10nZh extends L10n {
   String get marketSectionOfficial => '官方';
 
   @override
-  String get marketSectionAdapted => '适配 DSH Go';
+  String get marketSectionAdapted => '适配 DSH Pocket';
 
   @override
   String get marketSectionAll => '全部';
@@ -10374,7 +10404,7 @@ class L10nZh extends L10n {
   String get marketTierOfficial => '官方';
 
   @override
-  String get marketTierAdapted => '适配 DSH Go';
+  String get marketTierAdapted => '适配 DSH Pocket';
 
   @override
   String get marketRiskMedium => '中风险';
@@ -10419,10 +10449,10 @@ class L10nZh extends L10n {
   String get marketFlagObfuscatedBody => '有压缩或混淆过的大文件，看不出它做什么';
 
   @override
-  String get marketFlagNotAdapted => '未适配 DSH Go';
+  String get marketFlagNotAdapted => '未适配 DSH Pocket';
 
   @override
-  String get marketFlagNotAdaptedBody => '没有声明 DSH Go 原生协议，在 App 里没有原生界面';
+  String get marketFlagNotAdaptedBody => '没有声明 DSH Pocket 原生协议，在 App 里没有原生界面';
 
   @override
   String get marketFlagOtherBody => '自动检查报告的其他特征';
@@ -10458,11 +10488,11 @@ class L10nZh extends L10n {
   String get marketPinnedVersion => '锁定版本';
 
   @override
-  String get marketRequiresApp => '需要 DSH Go';
+  String get marketRequiresApp => '需要 DSH Pocket';
 
   @override
   String marketNeedsApp(String version) {
-    return '需要 DSH Go $version 或更高版本';
+    return '需要 DSH Pocket $version 或更高版本';
   }
 
   @override
@@ -11240,7 +11270,7 @@ class L10nZh extends L10n {
   String get phoneDiagnosticsSave => '存到「下载」';
 
   @override
-  String get phoneDiagnosticsSaveHint => '存进 下载/DSH-Go';
+  String get phoneDiagnosticsSaveHint => '存进 下载/DSH-Pocket';
 
   @override
   String get phoneDiagnosticsNote => '含版本、设备、日志和最近一次崩溃，不含 Key 和令牌';
@@ -11596,7 +11626,7 @@ class L10nZh extends L10n {
   String get phoneDndEnabled => '不打扰模式已启用';
 
   @override
-  String get phoneDndShizukuPermissionFailed => '没有拿到授权。可以在 Shizuku 的「应用管理」里给 DSH Go 授权';
+  String get phoneDndShizukuPermissionFailed => '没有拿到授权。可以在 Shizuku 的「应用管理」里给 DSH Pocket 授权';
 
   @override
   String get phoneDndPairedConnect => '配对成功，点「连接」';
@@ -11698,10 +11728,10 @@ class L10nZh extends L10n {
   String get phoneDndRootWaiting => '正在等待 root 授权，请在 root 管理器的弹窗里选择。';
 
   @override
-  String get phoneDndRootConnected => 'root 已连接。断开后要回到这里再选一次；打开「更多设置」中的「保持 root 通道」，DSH Go 才会自己再去申请。';
+  String get phoneDndRootConnected => 'root 已连接。断开后要回到这里再选一次；打开「更多设置」中的「保持 root 通道」，DSH Pocket 才会自己再去申请。';
 
   @override
-  String get phoneDndRootConnectedKept => 'root 已连接。断开后 DSH Go 会自己向 root 管理器再次申请。';
+  String get phoneDndRootConnectedKept => 'root 已连接。断开后 DSH Pocket 会自己向 root 管理器再次申请。';
 
   @override
   String get phoneDndRootRetry => '重新申请 root 授权';
@@ -11716,10 +11746,10 @@ class L10nZh extends L10n {
   String get phoneDndStartShizuku => '打开 Shizuku，按里面「通过无线调试启动」的说明做一遍（要连 Wi‑Fi）。回到这里会自动刷新。';
 
   @override
-  String get phoneDndGrantShizukuHint => 'Shizuku 已在运行，还要给 DSH Go 授权。';
+  String get phoneDndGrantShizukuHint => 'Shizuku 已在运行，还要给 DSH Pocket 授权。';
 
   @override
-  String get phoneDndGrantShizuku => '授权给 DSH Go';
+  String get phoneDndGrantShizuku => '授权给 DSH Pocket';
 
   @override
   String get phoneDndShizukuAllSet => 'Shizuku 已启动并授权，接下来连接后台屏。';
@@ -11731,7 +11761,7 @@ class L10nZh extends L10n {
   String get phoneDndShizukuRunning => 'Shizuku 正在运行';
 
   @override
-  String get phoneDndShizukuGranted => '已授权给 DSH Go';
+  String get phoneDndShizukuGranted => '已授权给 DSH Pocket';
 
   @override
   String get phoneDndShizukuCompatibility => '这版 Android 与官方版 Shizuku 存在兼容问题。';
@@ -11839,7 +11869,7 @@ class L10nZh extends L10n {
   String get phoneOpenAccessibilityFailed => '打不开系统设置，请到「设置 → 无障碍」里找到 DSH';
 
   @override
-  String get phoneOpenAppInfoFailed => '打不开应用信息，请到「设置 → 应用」里找到 DSH Go';
+  String get phoneOpenAppInfoFailed => '打不开应用信息，请到「设置 → 应用」里找到 DSH Pocket';
 
   @override
   String get phoneStopFailed => '没能停止，可以点悬浮条或通知上的「停止」';
@@ -12088,13 +12118,13 @@ class L10nZh extends L10n {
   String get phoneRestrictedMenuStep => '点右上角的三个点，选「允许受限制的设置」，按提示验证锁屏密码。';
 
   @override
-  String get phoneRestrictedTryOverlay => '先去「悬浮窗」设置里点一次 DSH Go 的开关，看到「受限制的设置」提示后点「确定」。做过这一步，下面的选项才会出现。';
+  String get phoneRestrictedTryOverlay => '先去「悬浮窗」设置里点一次 DSH Pocket 的开关，看到「受限制的设置」提示后点「确定」。做过这一步，下面的选项才会出现。';
 
   @override
-  String get phoneRestrictedBackOverlay => '回到「悬浮窗」设置，打开 DSH Go。';
+  String get phoneRestrictedBackOverlay => '回到「悬浮窗」设置，打开 DSH Pocket。';
 
   @override
-  String get phoneRestrictedHuaweiOverlay => '华为 HarmonyOS 4 及更早的系统大多没有这一步，直接去「悬浮窗」设置打开 DSH Go。';
+  String get phoneRestrictedHuaweiOverlay => '华为 HarmonyOS 4 及更早的系统大多没有这一步，直接去「悬浮窗」设置打开 DSH Pocket。';
 
   @override
   String get phoneRestrictedHuaweiAccessibility => '华为 HarmonyOS 4 及更早的系统大多没有这一步，直接去「无障碍」打开 DSH。';
@@ -12580,7 +12610,7 @@ class L10nZh extends L10n {
   String get phoneControlEnabledPending => '已开启，引擎启动后生效';
 
   @override
-  String get phoneReturnAfterDone => '完成后返回 DSH Go';
+  String get phoneReturnAfterDone => '完成后返回 DSH Pocket';
 
   @override
   String get phoneReturnAfterDoneHint => '收起悬浮条，回到对话看结果';
@@ -12802,7 +12832,7 @@ class L10nZh extends L10n {
   String get phoneSelfCheckSaving => '保存中…';
 
   @override
-  String get phoneSelfCheckSaved => '报告已存入下载/DSH-Go。';
+  String get phoneSelfCheckSaved => '报告已存入下载/DSH-Pocket。';
 
   @override
   String get phoneSelfCheckSaveFailed => '报告保存失败。';
@@ -13094,13 +13124,13 @@ class L10nZh extends L10n {
   String get phoneBackgroundGuideSubtitle => '让确认卡和任务结果及时出现';
 
   @override
-  String get phoneBackgroundGuideBody => '需要你确认时，会显示 DSH Go 卡片。卡片不可用时会尝试通知或回到 App。请在系统设置中允许手机操控通知和弹出提醒。';
+  String get phoneBackgroundGuideBody => '需要你确认时，会显示 DSH Pocket 卡片。卡片不可用时会尝试通知或回到 App。请在系统设置中允许手机操控通知和弹出提醒。';
 
   @override
-  String get phoneBackgroundOemHint => '在 DSH Go 的系统权限页检查「后台弹出界面」（若提供）。允许后可改善自动返回；菜单名称随系统版本变化。';
+  String get phoneBackgroundOemHint => '在 DSH Pocket 的系统权限页检查「后台弹出界面」（若提供）。允许后可改善自动返回；菜单名称随系统版本变化。';
 
   @override
-  String get phoneBackgroundReturnHint => '如果任务完成后没有自动返回，可点通知「任务完成 · 查看结果」。系统关闭通知或限制后台弹出时，可能需要手动打开 DSH Go。';
+  String get phoneBackgroundReturnHint => '如果任务完成后没有自动返回，可点通知「任务完成 · 查看结果」。系统关闭通知或限制后台弹出时，可能需要手动打开 DSH Pocket。';
 
   @override
   String get phoneBackgroundGotIt => '知道了';
@@ -13112,7 +13142,7 @@ class L10nZh extends L10n {
   String get phoneBackgroundNotificationBlocked => '请允许手机操控通知的弹出提醒';
 
   @override
-  String get phonePrivilegedUpgrade => '此版本尚不支持该特权通道，请更新 DSH Go 后使用。';
+  String get phonePrivilegedUpgrade => '此版本尚不支持该特权通道，请更新 DSH Pocket 后使用。';
 
   @override
   String get phonePrivilegedSui => 'Sui';
@@ -13145,11 +13175,11 @@ class L10nZh extends L10n {
   String get phonePrivilegedSuggested => '建议';
 
   @override
-  String get phonePrivilegedRootRiskTitle => '给 DSH Go root 权限？';
+  String get phonePrivilegedRootRiskTitle => '给 DSH Pocket root 权限？';
 
   @override
   String get phonePrivilegedRootRiskBody =>
-      'root 管理器（Magisk、KernelSU 或 APatch）会弹窗问你。允许后，DSH Go 以 root 运行自己的后台服务；只有打开「保持 root 通道」，断开或重启后才会自己再去申请。';
+      'root 管理器（Magisk、KernelSU 或 APatch）会弹窗问你。允许后，DSH Pocket 以 root 运行自己的后台服务；只有打开「保持 root 通道」，断开或重启后才会自己再去申请。';
 
   @override
   String phoneKeepTitle(String mode) {
@@ -13164,13 +13194,13 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get phoneKeepRootDescription => '断开、重开 App 或重启手机后，DSH Go 会自己再向 root 管理器申请；给不给仍由管理器决定。';
+  String get phoneKeepRootDescription => '断开、重开 App 或重启手机后，DSH Pocket 会自己再向 root 管理器申请；给不给仍由管理器决定。';
 
   @override
-  String get phoneKeepSharedDescription => '断开、重开 App 或重启手机后，DSH Go 用已有的授权自己连回去，不会替你申请授权。';
+  String get phoneKeepSharedDescription => '断开、重开 App 或重启手机后，DSH Pocket 用已有的授权自己连回去，不会替你申请授权。';
 
   @override
-  String get phoneKeepAdbDescription => '断开、重开 App 或重启手机后，DSH Go 用已有的配对在 Wi‑Fi 下自己连回去；有「自动恢复无障碍」的权限时，还会试着打开一次无线调试。';
+  String get phoneKeepAdbDescription => '断开、重开 App 或重启手机后，DSH Pocket 用已有的配对在 Wi‑Fi 下自己连回去；有「自动恢复无障碍」的权限时，还会试着打开一次无线调试。';
 
   @override
   String get phoneKeepRestoring => '正在重新连接';
@@ -13309,7 +13339,7 @@ class L10nZh extends L10n {
   String get phoneModeAutoNoteTitle => '这些仍由你来操作';
 
   @override
-  String get phoneModeAutoNote => '系统设置和权限页面、密码和验证码、DSH Go 自身仍由你来操作；银行、支付类 App 默认不碰，可在设置里调整。';
+  String get phoneModeAutoNote => '系统设置和权限页面、密码和验证码、DSH Pocket 自身仍由你来操作；银行、支付类 App 默认不碰，可在设置里调整。';
 
   @override
   String get phoneModeAutoUnlockNote => '如需让 AI 操作系统设置、密码等，可在 设置 › 手机操控 › 解除限制 中开启。';
@@ -13327,7 +13357,7 @@ class L10nZh extends L10n {
   String get phoneYoursSecrets => '密码和验证码';
 
   @override
-  String get phoneYoursOwnApp => 'DSH Go 自身';
+  String get phoneYoursOwnApp => 'DSH Pocket 自身';
 
   @override
   String get phoneYoursDenyList => '应用名单里「不碰」的 App，默认含银行、支付类';
@@ -13351,10 +13381,10 @@ class L10nZh extends L10n {
   String get phoneUnlockSecretsHint => '填写密码、验证码和支付密码';
 
   @override
-  String get phoneUnlockOwnApp => 'DSH Go 自身';
+  String get phoneUnlockOwnApp => 'DSH Pocket 自身';
 
   @override
-  String get phoneUnlockOwnAppHint => '在 DSH Go 里点按和输入';
+  String get phoneUnlockOwnAppHint => '在 DSH Pocket 里点按和输入';
 
   @override
   String get phoneUnlockBusy => '任务进行中，结束后才能开启';
@@ -13387,7 +13417,7 @@ class L10nZh extends L10n {
   String get phoneUnlockConfirmSecretsTitle => '允许 AI 填写密码和验证码？';
 
   @override
-  String get phoneUnlockConfirmOwnAppTitle => '允许 AI 操作 DSH Go 自身？';
+  String get phoneUnlockConfirmOwnAppTitle => '允许 AI 操作 DSH Pocket 自身？';
 
   @override
   String get phoneUnlockCanTitle => '开启后，AI 可以';
@@ -13429,10 +13459,10 @@ class L10nZh extends L10n {
   String get phoneUnlockSecretsRisk2 => '可能完成你并不想要的付款或转账';
 
   @override
-  String get phoneUnlockOwnAppCan1 => '在 DSH Go 里点按和输入，包括修改设置';
+  String get phoneUnlockOwnAppCan1 => '在 DSH Pocket 里点按和输入，包括修改设置';
 
   @override
-  String get phoneUnlockOwnAppCan2 => '读取 DSH Go 界面上的对话和设置';
+  String get phoneUnlockOwnAppCan2 => '读取 DSH Pocket 界面上的对话和设置';
 
   @override
   String get phoneUnlockOwnAppRisk1 => '恶意指令可能诱导 AI 批准它自己发起的操作，或关掉确认';
@@ -13447,7 +13477,7 @@ class L10nZh extends L10n {
   String get phoneUnlockDisclaimer2 => 'AI 可能被网页、消息或文件中的内容误导。';
 
   @override
-  String get phoneUnlockDisclaimer3 => '由此造成的账号、资金、数据或设备损失由你自行承担，DSH Go 及其开发者不承担责任。';
+  String get phoneUnlockDisclaimer3 => '由此造成的账号、资金、数据或设备损失由你自行承担，DSH Pocket 及其开发者不承担责任。';
 
   @override
   String get phoneUnlockDisclaimer4 => '建议只在需要时临时开启，用完关闭。';
@@ -13946,7 +13976,7 @@ class L10nZh extends L10n {
   String get pluginsFileWriteFailed => '没能写入文件';
 
   @override
-  String get pluginsProfileTitle => 'DSH Go 配置';
+  String get pluginsProfileTitle => 'DSH Pocket 配置';
 
   @override
   String get pluginsGistTokenInvalid => 'GitHub 令牌无效或没有 Gist 权限';
@@ -14530,7 +14560,7 @@ class L10nZh extends L10n {
   String get pluginsNotifications => '通知';
 
   @override
-  String get pluginsNotificationSettingsFailed => '没能打开系统设置。到「设置 → 应用 → DSH Go → 通知」里开启';
+  String get pluginsNotificationSettingsFailed => '没能打开系统设置。到「设置 → 应用 → DSH Pocket → 通知」里开启';
 
   @override
   String get pluginsSystemNotificationsOff => '系统通知已关闭';
@@ -14784,7 +14814,7 @@ class L10nZh extends L10n {
   String get pluginsShareOpenFailed => '没能打开这个分享码';
 
   @override
-  String get pluginsPluginShareTitle => 'DSH Go 插件';
+  String get pluginsPluginShareTitle => 'DSH Pocket 插件';
 
   @override
   String get pluginsShareSheetOpenFailed => '没能打开分享';
@@ -14937,6 +14967,9 @@ class L10nZh extends L10n {
   String get pluginsLoadRemoteLogs => '请在这台主机上查看引擎日志。';
 
   @override
+  String get pluginsOpenMarketFailed => '没能打开插件市场，请确认浏览器可用。';
+
+  @override
   String get plugslotsSurfaceComposerTools => '加号面板';
 
   @override
@@ -15044,7 +15077,7 @@ class L10nZh extends L10n {
 
   @override
   String plugslotsIssueNeedsApp(String version) {
-    return '需要 DSH Go $version 或更新版本';
+    return '需要 DSH Pocket $version 或更新版本';
   }
 
   @override
@@ -15527,7 +15560,7 @@ class L10nZh extends L10n {
   String get remoteErrHostNotOwned => '主机不在你的 DSH Remote 账号下';
 
   @override
-  String get remoteErrUpdateNeeded => '版本不匹配，请更新 DSH Go 和主机上的远程插件';
+  String get remoteErrUpdateNeeded => '版本不匹配，请更新 DSH Pocket 和主机上的远程插件';
 
   @override
   String get remoteErrVersionIncompatible => '主机上的 DSH 或远程插件需要更新';
@@ -16961,7 +16994,8 @@ class L10nZh extends L10n {
   String get remotePairNeedsDeepSeek => '先登录 DeepSeek 账号';
 
   @override
-  String get remotePairNeedsDeepSeekBody => '扫码配对要先在 DSH Go 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。';
+  String get remotePairNeedsDeepSeekBody =>
+      '扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。';
 
   @override
   String get remotePairScanHint => '对准电脑上 Remote 插件显示的配对二维码';
@@ -17055,7 +17089,7 @@ class L10nZh extends L10n {
 
   @override
   String remotePairOtherServerBody(String server) {
-    return '这个二维码来自 $server，和 DSH Go 现在用的 Remote 服务器不同。切换过去继续吗？两个服务器的登录各自保留。';
+    return '这个二维码来自 $server，和 DSH Pocket 现在用的 Remote 服务器不同。切换过去继续吗？两个服务器的登录各自保留。';
   }
 
   @override
@@ -17065,7 +17099,7 @@ class L10nZh extends L10n {
   String get remotePairScanAgain => '重新扫码';
 
   @override
-  String get remotePairErrInvalidCode => '这不是 DSH Go 的配对二维码';
+  String get remotePairErrInvalidCode => '这不是 DSH Pocket 的配对二维码';
 
   @override
   String get remotePairErrOtherServer => '这个二维码来自另一个 Remote 服务器';
@@ -17202,7 +17236,7 @@ class L10nZh extends L10n {
   String get riskPetOverlayTitle => '显示在其他应用上层？';
 
   @override
-  String get riskPetOverlayBody => '要在系统设置里为 DSH Go 打开「显示在其他应用上层」，宠物才能出现在别的 App 上。';
+  String get riskPetOverlayBody => '要在系统设置里为 DSH Pocket 打开「显示在其他应用上层」，宠物才能出现在别的 App 上。';
 
   @override
   String get riskPetOverlayAction => '去设置';
@@ -17218,19 +17252,19 @@ class L10nZh extends L10n {
 
   @override
   String askAiAboutApp(String question) {
-    return '关于 DSH Go App：$question';
+    return '关于 DSH Pocket App：$question';
   }
 
   @override
   String askAiWithGuide(String question) {
-    return '关于 DSH Go App：$question\n请按附件里的使用说明回答。';
+    return '关于 DSH Pocket App：$question\n请按附件里的使用说明回答。';
   }
 
   @override
-  String get askAiNoGuide => '这台主机没有 DSH Go 使用说明，回答可能不准确';
+  String get askAiNoGuide => '这台主机没有 DSH Pocket 使用说明，回答可能不准确';
 
   @override
-  String get askAiQuestionOverview => 'DSH Go 能做什么？我该从哪里开始？';
+  String get askAiQuestionOverview => 'DSH Pocket 能做什么？我该从哪里开始？';
 
   @override
   String get askAiQuestionPhoneControl => '手机操控是怎么工作的？有什么风险？';
@@ -17343,9 +17377,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwAppRules => '名单,黑名单,白名单,禁止,应用';
-
-  @override
-  String get searchKwBridge => '手机桥,桥,远程,连接服务器,bridge,WebSocket,令牌,token';
 
   @override
   String get searchKwDnd => '免打扰,Shizuku,Sui,root,ADB,后台操作';
@@ -17645,6 +17676,9 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwQuickPanel => '左滑,快捷入口,手势,滑动,目录,自定义目录,快捷,常用入口';
+
+  @override
+  String get searchKwBridge => '手机桥,桥,远程,连接服务器,bridge,WebSocket,令牌,token';
 
   @override
   String get selfUpdateTransport => '安装路线';
@@ -18719,7 +18753,7 @@ class L10nZh extends L10n {
 
   @override
   String shellSkillInstallPrompt(String skill) {
-    return '请在这台主机上安装 DSH Go 的界面技能 $skill：';
+    return '请在这台主机上安装 DSH Pocket 的界面技能 $skill：';
   }
 
   @override
@@ -19176,9 +19210,9 @@ class L10nZh extends L10n {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
-      other: '本鱼已经在 DSH Go 里陪你 $hours 个小时啦⁠~',
-      one: '本鱼已经在 DSH Go 里陪你一个小时啦⁠~',
-      zero: '本鱼已经在 DSH Go 里陪你半个小时啦⁠~',
+      other: '本鱼已经在 DSH Pocket 里陪你 $hours 个小时啦⁠~',
+      one: '本鱼已经在 DSH Pocket 里陪你一个小时啦⁠~',
+      zero: '本鱼已经在 DSH Pocket 里陪你半个小时啦⁠~',
     );
     return '$_temp0';
   }
@@ -19199,7 +19233,7 @@ class L10nZh extends L10n {
   String get starPromptLater => '下次再说';
 
   @override
-  String get starSettingsTitle => '给 DSH Go 点个 star';
+  String get starSettingsTitle => '给 DSH Pocket 点个 star';
 
   @override
   String get hubStartPage => '起始页';
@@ -19228,7 +19262,7 @@ class L10nZh extends L10n {
   String get phoneStartupPortNotReady => '已收到启动标记，但本机服务端口尚未就绪，请查看日志';
 
   @override
-  String get stateDiagnosticsSubject => 'DSH Go 诊断包';
+  String get stateDiagnosticsSubject => 'DSH Pocket 诊断包';
 
   @override
   String get stateStoragePermission => '没有存储权限，存不进「下载」';
@@ -20489,7 +20523,7 @@ class L10nZh extends L10n {
   String get systemActionsWaitingEngine => '已开启，等本机引擎启动';
 
   @override
-  String get systemActionsOffScreen => '已开启，回到 DSH Go 才能用';
+  String get systemActionsOffScreen => '已开启，回到 DSH Pocket 才能用';
 
   @override
   String get systemActionsConnecting => '正在连接';
@@ -20510,10 +20544,10 @@ class L10nZh extends L10n {
   String get systemActionsRemoteHint => '系统操作只在本机引擎的对话里有效';
 
   @override
-  String get systemActionsOnScreenTitle => '只在 DSH Go 在屏幕上时有效';
+  String get systemActionsOnScreenTitle => '只在 DSH Pocket 在屏幕上时有效';
 
   @override
-  String get systemActionsOnScreenBody => '系统不让后台应用做这些。AI 打开别的应用后，要等你回到 DSH Go 才能接着做。';
+  String get systemActionsOnScreenBody => '系统不让后台应用做这些。AI 打开别的应用后，要等你回到 DSH Pocket 才能接着做。';
 
   @override
   String get systemActionsCanTitle => '能做的';
@@ -20615,7 +20649,7 @@ class L10nZh extends L10n {
   String get systemActionsDisclosureWhenTitle => '什么时候做';
 
   @override
-  String get systemActionsDisclosureWhenBody => '只在对话用到、DSH Go 在屏幕上时。默认每次先问你，选了完全权限的对话不问。';
+  String get systemActionsDisclosureWhenBody => '只在对话用到、DSH Pocket 在屏幕上时。默认每次先问你，选了完全权限的对话不问。';
 
   @override
   String get systemActionsDisclosureWhoTitle => '发给谁';
@@ -20639,7 +20673,7 @@ class L10nZh extends L10n {
   String get systemActionsHandoffTitle => '轮到你来操作';
 
   @override
-  String get systemActionsHandoffNote => '做完回到 DSH Go 点继续。继续只表示你确认了，AI 看不到其他应用里发生了什么。';
+  String get systemActionsHandoffNote => '做完回到 DSH Pocket 点继续。继续只表示你确认了，AI 看不到其他应用里发生了什么。';
 
   @override
   String get systemActionsHandoffFailed => '这次没算上，提示如果还在可以再点一次';
@@ -20666,7 +20700,7 @@ class L10nZh extends L10n {
   String get systemActionsResultUnsupported => '鸿蒙版不支持这个动作，没有执行。';
 
   @override
-  String get systemActionsResultOffScreen => 'DSH Go 不在屏幕上，没有执行。';
+  String get systemActionsResultOffScreen => 'DSH Pocket 不在屏幕上，没有执行。';
 
   @override
   String get systemActionsResultUnavailable => '系统操作没开或暂时连不上，没有执行。到「设置 → 系统操作」看看。';
@@ -21770,7 +21804,7 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get tavernStorybookMadeWith => '用 DSH Go 酒馆写成';
+  String get tavernStorybookMadeWith => '用 DSH Pocket 酒馆写成';
 
   @override
   String get tavernStorybookContents => '目录';
@@ -24598,7 +24632,7 @@ class L10nZh extends L10n {
   String get updateSettingsOpenFailed => '没能打开系统设置';
 
   @override
-  String get updateSettingsOpenFailedMessage => '到「设置 → 应用 → DSH Go」里允许「安装未知应用」，再回来安装。';
+  String get updateSettingsOpenFailedMessage => '到「设置 → 应用 → DSH Pocket」里允许「安装未知应用」，再回来安装。';
 
   @override
   String get updateInstallCancelled => '已取消安装';
@@ -24616,7 +24650,7 @@ class L10nZh extends L10n {
   String get updateSignatureMismatch => '签名不一致，不能直接覆盖';
 
   @override
-  String get updateSignatureMismatchMessage => '手机上的 DSH Go 签名不同（多半是测试包），需要先卸载旧版再装新版。卸载会清空对话、Linux 环境和设置。';
+  String get updateSignatureMismatchMessage => '手机上的 DSH Pocket 签名不同（多半是测试包），需要先卸载旧版再装新版。卸载会清空对话、Linux 环境和设置。';
 
   @override
   String get updateWrongPackage => '不是 DSH 的安装包';
@@ -24679,7 +24713,7 @@ class L10nZh extends L10n {
   String get updateNoReleaseNotes => '这个版本没有写更新说明。';
 
   @override
-  String get updateInstallKeepsData => '安装时 DSH Go 会退出，对话和设置都会保留';
+  String get updateInstallKeepsData => '安装时 DSH Pocket 会退出，对话和设置都会保留';
 
   @override
   String get updateNoCompatiblePackage => '没有适合本机的安装包';
@@ -24714,7 +24748,7 @@ class L10nZh extends L10n {
   String get updateReadyToInstall => '校验通过，可以安装了。';
 
   @override
-  String get updateAllowInstall => '允许 DSH Go 安装应用';
+  String get updateAllowInstall => '允许 DSH Pocket 安装应用';
 
   @override
   String get updateAllowInstallMessage => '在系统设置里打开「安装未知应用」，回来后自动继续。';
@@ -24742,7 +24776,7 @@ class L10nZh extends L10n {
 
   @override
   String get updateExportApkMessage =>
-      '会把这次下载并校验过的安装包复制到「下载/DSH-Go」，可以用 MT 管理器之类的工具重新签名后再装。\n\n重新签名后，手机上的签名和官方包不同，App 内更新会一直提示「签名不一致」，以后每次更新都要这样手动重签安装。\n\n如果只是系统拦着装不上（小米等机型），先试「安装路线」里的 Shizuku 或本机 ADB，那条路不用重新签名。';
+      '会把这次下载并校验过的安装包复制到「下载/DSH-Pocket」，可以用 MT 管理器之类的工具重新签名后再装。\n\n重新签名后，手机上的签名和官方包不同，App 内更新会一直提示「签名不一致」，以后每次更新都要这样手动重签安装。\n\n如果只是系统拦着装不上（小米等机型），先试「安装路线」里的 Shizuku 或本机 ADB，那条路不用重新签名。';
 
   @override
   String updateExportApkDone(String path) {
@@ -24787,7 +24821,7 @@ class L10nZh extends L10n {
   String get usageStatsTitle => '发送匿名使用统计';
 
   @override
-  String get usageStatsSection => '改进 DSH Go';
+  String get usageStatsSection => '改进 DSH Pocket';
 
   @override
   String get usageStatsFooter =>
@@ -24797,7 +24831,7 @@ class L10nZh extends L10n {
   String get usageNoticeBody => '不含对话和个人信息，可随时关闭';
 
   @override
-  String get usageUpgradeNotice => '新增匿名使用统计，帮助改进 DSH Go。\n不含对话和个人信息';
+  String get usageUpgradeNotice => '新增匿名使用统计，帮助改进 DSH Pocket。\n不含对话和个人信息';
 
   @override
   String get usageUpgradeLearn => '了解';
@@ -25479,7 +25513,7 @@ class L10nZh extends L10n {
   String get viewTipKeyboard => '接了键盘：Ctrl+Enter 发送，连按两次 Esc 停止';
 
   @override
-  String get viewTipShareIn => '在别的 App 里分享文字或图片给 DSH Go，会填进新对话';
+  String get viewTipShareIn => '在别的 App 里分享文字或图片给 DSH Pocket，会填进新对话';
 
   @override
   String get viewTipShareSelect => '分享对话时长按再滑动，可以一次选中多条消息';
@@ -25716,7 +25750,7 @@ class L10nZh extends L10n {
 
   @override
   String viewContinueHeader(String value) {
-    return '> 分享的 DSH Go 对话 · $value\n';
+    return '> 分享的 DSH Pocket 对话 · $value\n';
   }
 
   @override
@@ -25770,7 +25804,7 @@ class L10nZh extends L10n {
 
   @override
   String viewShareLinkText(String first, String second) {
-    return '「$first」· DSH Go 对话\n$second';
+    return '「$first」· DSH Pocket 对话\n$second';
   }
 
   @override
@@ -25787,7 +25821,7 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get viewShareFileHint => '在 DSH Go 里回放、接着聊';
+  String get viewShareFileHint => '在 DSH Pocket 里回放、接着聊';
 
   @override
   String get viewShareWebHint => '任何浏览器都能打开，不用联网';
@@ -26812,7 +26846,7 @@ class L10nZh extends L10n {
 
   @override
   String workshopMinApp(String version) {
-    return '需要 DSH Go $version 或更新的版本。';
+    return '需要 DSH Pocket $version 或更新的版本。';
   }
 
   @override
@@ -27775,37 +27809,4 @@ class L10nZh extends L10n {
 
   @override
   String get workspaceRecoveryFailed => '操作未完成，请查看本机引擎状态和日志。已切换的模式可在本页确认。';
-
-  @override
-  String get bridgeTokenFromWeb => '从网页登录态读取';
-
-  @override
-  String get bridgeTokenFromWebEmpty => '还没读到登录态：先在 App 的「网页」里登录一次网关，再回来点这里';
-
-  @override
-  String get bridgeLoginSection => '网关登录';
-
-  @override
-  String get bridgeLoginFooter => '用 dsh-passwords 网关的账号密码登录一次，令牌会自动换成 dsh_gateway_token 存在这台手机上。';
-
-  @override
-  String get bridgeLoginUsername => '用户名';
-
-  @override
-  String get bridgeLoginPassword => '密码';
-
-  @override
-  String get bridgeLoginButton => '登录并保存令牌';
-
-  @override
-  String get bridgeLoginFailed => '登录失败';
-
-  @override
-  String get bridgeA11yAllow => '允许手机桥使用无障碍';
-
-  @override
-  String get bridgeA11yAllowHint => '和系统里的服务开关是两道门，两个都开，远程自动化才能执行。';
-
-  @override
-  String get pluginsOpenMarketFailed => '没能打开插件市场，请确认浏览器可用。';
 }

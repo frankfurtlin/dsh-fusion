@@ -4,7 +4,7 @@
 > 分享托管、论坛、创意工坊后端）本项目**均未启用**，实现里对应端点已移除或置空。
 
 > 2026-10-25。本文是宠物系统实现规格的正式版，相对规格改过的地方集中列在 §12。
-> 素材：Deepy 小鲸鱼（Clawd on Desk 主题包）、鲸娘（<upstream service> 序列帧），源文件在 `app/tool/pet_src/`，作者与授权见仓库根目录的 `ASSETS.md`。
+> 素材：Deepy 小鲸鱼（Clawd on Desk 主题包）、鲸娘（<upstream service> 序列帧），源文件在 `app/tool/pet_src/`，作者与授权见 `THIRD_PARTY_NOTICES.md` 与各宠物包内的 `pack.json`。
 
 ## 0. 结论
 
@@ -313,7 +313,7 @@ app/assets/pets/<id>/<anim>.png     # 序列帧图，默认单行横条；帧多
   - 没写 `bonus` 时该状态没有彩蛋（`states.<状态>` 有第二段动画时按 1/3 概率抽其中一段）；没写 `idlePool` 时待机小动作取 `states.idle` 第二段起的动画；
   - 没写某个 `reactions` 键时对应的点按静默跳过，不报错也不崩；没写 `hitBoxes` 时用 `contentBox` 当命中区，没写 `timings` 时用默认时长。
 - 状态名一律用 Clawd 的。动画名用包自己的：鲸娘的反应叫 `poke-left`、`poke-right`、`tickle`、`drag`，游走叫 `swim`。
-- `author`、`license`、`source` 必须如实填写，宠物页底部原样显示，见 §9。两只都是 DSH-TUI 的吉祥物，作者与授权见仓库根目录的 `ASSETS.md`。
+- `author`、`license`、`source` 必须如实填写，宠物页底部原样显示，见 §9。两只都是 DSH-TUI 的吉祥物，作者与授权见 `THIRD_PARTY_NOTICES.md` 与各宠物包内的 `pack.json`。
 
 ### 3.3 运行时加载
 
@@ -540,7 +540,7 @@ pet_svg_frames.py；整张精灵表要先拆帧或导出 Aseprite JSON。
 
 ## 9. 素材与许可
 
-- 两只宠物的作者与授权见仓库根目录的 `ASSETS.md`。`pack.json` 的 `author`、`license`、`source` 如实填写，宠物页底部原样显示，并注明「非官方」。
+- 两只宠物的作者与授权见 `THIRD_PARTY_NOTICES.md` 与各宠物包内的 `pack.json`。`pack.json` 的 `author`、`license`、`source` 如实填写，宠物页底部原样显示，并注明「非官方」。
 - dsh-pet 的素材禁止商用，不打进 App。
 
 ## 10. 涉及的文件
@@ -613,7 +613,7 @@ pet_svg_frames.py；整张精灵表要先拆帧或导出 Aseprite JSON。
 | 15 | 减弱动效时停在首帧、瞬移；气泡带 `liveRegion` | 规格没写。气泡替代横幅后，必须保留横幅原有的可访问性 | 聊天页 |
 | 16 | 挠痒痒改为 1.1 秒内连点 3 下 | 和鲸娘原页一致，小目标上连点 4 下太难 | 聊天页 |
 | 17 | 宠物开启时隐藏空状态里的静止鲸尾 | 一屏一个吉祥物 | empty_state |
-| 18 | 素材许可要如实填写 | 见 `ASSETS.md` | 宠物包 |
+| 18 | 素材许可要如实填写 | 见 `THIRD_PARTY_NOTICES.md` | 宠物包 |
 | 19 | 悬浮窗的 `k` 与 App 内 `petDevicePixels` 逐值对齐：像素画包（含 scale > 1 的 Deepy）一律取整数，并保持小、标准、大至少各差 1（2026-11-01，修「悬浮窗里的鲸娘特别小」） | 悬浮窗原来只四舍五入一次，且只对 scale = 1 取整：鲸娘「大」在 dpr 1.84–3.06 只有 App 内的 2/3，「标准」在 dpr < 2.45 只有一半；Deepy 也小 5–12%。文档一直写着「悬浮窗和 App 内用同一档位」 | 悬浮窗 |
 | 20 | 悬浮窗里每段动画都画全：帧格超出平时窗口的动画，播放期间窗口长到「平时窗口 ∪ 该段帧格」，不再只限 happy、waking、typing 三段；触摸只认平时窗口和当前动画的命中框（2026-11-01，修「子代理、思考的图在 App 外显示不全」） | §6.1 原来接受「其余状态的特效裁掉」，结果 juggling 的音符和道具、thinking 的思考云被截掉一大截（Deepy 的 conducting 上方 18 个美术像素）。窗口跟着画面长、并只朝需要的方向长，是在显示完整和少挡下面 App 之间的折中；溢出部分单开不可触摸窗口在应用悬浮窗上只能画成 80% 不透明，没有采用 | 悬浮窗 |
 | 21 | 2026-11-14：`reactions` 每个反应可以有多个动画：跨版本用「基础名 + 编号」写法（`tickle`、`tickle2`…），数组只在 App 内可读；每次播放随机抽一段。`bonus` 从只对 attention 生效推广到所有非 idle 状态；1.1 秒内连点到第 6 下且包里有 `annoyed` 时播「烦了」并清空计数；`carrying` 接上真实导入（`UserPetsController.import()` 期间） | 一条反应只能写一个动画，同一个包的点按反馈完全重复；彩蛋只有 attention 用得上，其他状态多出来的动画只能当状态变体；连点超过 3 下后永远停在挠痒痒，没有升级反馈；`carrying` 一直只是预留字段，导入宠物包时既没有动画也不进状态归约 | 宠物包（`reactions` 可写数组或编号键、`bonus` 适用所有非 idle 状态）、聊天页（`pet_stage.dart` 的随机反应、全状态彩蛋、第 6 下 annoyed）、宠物信号（`pet_signals.dart` 的 `petCarryingProvider`）、导出与市场规范化（降到编号写法） |

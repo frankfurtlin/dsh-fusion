@@ -1,5 +1,5 @@
 ---
-# dsh-go:managed — delete this line to keep your own edits.
+# dsh-pocket:managed — delete this line to keep your own edits.
 name: companion-adapt
 description: 根据 dsh-go 伙伴小屋发来的体检报告，为用户导入的 Live2D 模型生成数据型适配表；用于“适配这个模型”“这里不对”和 /companion-adapt。使用与轻量模式相同的输入、提示词与 adapter JSON，交给 App 校验和执行，不改模型或舞台。
 ---
