@@ -45,7 +45,7 @@ const updateMirrorOrigin = '';
 /// Where this project publishes its own builds: COS behind the EdgeOne domain
 /// (tools/pocket/publish_apk.py uploads the APK and the manifest). The app asks
 /// `<origin>/update.json`; assets in that manifest carry absolute URLs.
-const updateDownloadOrigin = 'https://static.frankfurtlin.top/pocket';
+const updateDownloadOrigin = 'https://static.frankfurtlin.top/apps/pocket';
 
 /// The beta channel: `<origin>/beta/update.json` and `<origin>/beta/<version>/<file>`,
 /// both behind `Authorization: Bearer <token>`. The token is compiled into beta

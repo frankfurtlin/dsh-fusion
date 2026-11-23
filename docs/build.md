@@ -74,7 +74,7 @@ tools/pocket/publish_local.sh            # debug → COS → 打印直链 / 字�
 tools/pocket/publish_local.sh release    # release
 ```
 
-走 `https://static.frankfurtlin.top/pocket/apk/...`（COS + EdgeOne），本机上传实测
+走 `https://static.frankfurtlin.top/apps/pocket/apk/...`（COS + EdgeOne），本机上传实测
 **86 MB/s**。装完核对字节数，对不上就是没下全。开发包**不进** `update.json`
 （那是正式发布通道），只给直链。
 
@@ -190,14 +190,14 @@ python3 tools/pocket/release.py
 | 读版本 | `pubspec.yaml` 与 `app_info.dart` 必须一致，否则中止 |
 | 读说明 | `CHANGELOG.md` 必须有对应版本段且非空，否则中止 |
 | 验 APK | `aapt` 查包名/versionName/versionCode/ABI；`apksigner` 查签名必须是 `CN=DSH Fusion` |
-| 上传 COS | `pocket/apk/dsh-pocket-<ver>-<build>-arm64.apk`，`immutable` 长缓存（路径带版本号，内容永不变） |
+| 上传 COS | `apps/pocket/apk/dsh-pocket-<ver>-<build>-arm64.apk`，`immutable` 长缓存（路径带版本号，内容永不变）；发布脚本同时维护兼容入口 `pocket/update.json` |
 | 建 Release | 标签 `v<ver>`，说明取 CHANGELOG，资产名与 COS 一致 |
-| 写清单 | `pocket/update.json` → 指向 **COS 地址**（国内直连快），带 size 与 sha256，`max-age=60` |
+| 写清单 | `apps/pocket/update.json`（新规范）+ `pocket/update.json`（App 硬编码的兼容入口）→ 指向 **COS 地址**，带 size 与 sha256，`max-age=60` |
 | 回验 | 拉一次 APK 与清单，确认可访问、字节数一致、版本号正确 |
 
 ### 为什么清单指向 COS 而不是 GitHub
 
-App 的自动更新读 `https://static.frankfurtlin.top/pocket/update.json`。清单里的
+App 的自动更新读 `https://static.frankfurtlin.top/apps/pocket/update.json`。清单里的
 `url` 指向 COS 直链，手机下载走腾讯 CDN，不需要经过 GitHub 加速镜像；GitHub Release
 保留为归档与来源记录（同一份 APK）。
 
@@ -215,7 +215,7 @@ App 侧：设置 → 关于 → 检查更新，或等启动 6 秒后的自动检
 服务端侧：
 
 ```bash
-curl -s https://static.frankfurtlin.top/pocket/update.json | python3 -m json.tool | head -20
+curl -s https://static.frankfurtlin.top/apps/pocket/update.json | python3 -m json.tool | head -20
 ```
 
 ### GitHub Actions 的定位
@@ -223,4 +223,43 @@ curl -s https://static.frankfurtlin.top/pocket/update.json | python3 -m json.too
 `.github/workflows/android-apk.yml` **只在需要一台干净机器复现构建时用**（比如本地
 工具链坏了）。它也会建 Release 并写清单，但日常发布不要用它——它构建的包和本机构建
 的包内容可能不同（依赖版本、环境变量），而发布脚本读的是本地产物。
+
+## 13. 构建立即拖死宿主的问题（2026-11-23 修复）
+
+**现象**：`--release` 构建跑到一半，整机失联；`dmesg` 里是 `Out of memory: Killed
+process ...`。2026-11-20（dshgo-fusion）与 2026-11-23（dsh-pocket）各中过一次。
+
+**原因**：一次 release 构建同时活着 Gradle daemon（-Xmx2560m）、Kotlin daemon
+（-Xmx1g）、dart `frontend_server`（单进程 2 GB 级），再加上宿主本身的 dsh（约 1 GB）
+与 hermes，8 GB 机器直接见底；内核 OOM killer 挑大的杀，常常连带把 dsh 杀掉，
+于是「构建把宿主拖死」。
+
+**修复**：`tools/build-apk.sh` 现在会把自己塞进一个独立的 systemd scope，
+内存由 cgroup 硬约束，撑死只死自己：
+
+```bash
+# 默认行为（无需手动加参数）
+tools/build-apk.sh --release /root/workspace/dsh-pocket/app
+# → 内存护栏：MemoryMax=3G MemoryHigh=2400M SwapMax=512M workers=2
+# → cgroup   ：/system.slice/run-xxxx.scope
+```
+
+可调的环境变量：
+
+| 变量 | 默认 | 作用 |
+|---|---|---|
+| `BUILD_MEM_MAX` | `3G` | 硬上限，超了内核在 scope 内 OOM，不影响宿主 |
+| `BUILD_MEM_HIGH` | `2400M` | 软上限，超过后先回收/限速 |
+| `BUILD_MEM_SWAP` | `512M` | 允许用的 swap，防止把 swap 吃光拖慢整机 |
+| `BUILD_WORKERS` | `2` | 传给 Gradle 的 `org.gradle.workers.max` |
+
+实测（1.1.2 → 1.1.3 那次）：**memory.peak = 2404 MB / memory.max = 3072 MB**，
+构建正常完成，宿主内存始终有余量。
+
+**另外**：构建前确认没有残留的浏览器/Playwright 进程。之前 GitHub 主页截图留下
+15 个 Chromium 进程占 1.78 GB，是那次构建被 OOM 杀掉的直接诱因：
+
+```bash
+ps -eo pid,rss,cmd --sort=-rss | head -5      # 看谁在吃内存
+```
 

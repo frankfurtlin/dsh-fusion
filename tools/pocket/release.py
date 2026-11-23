@@ -45,7 +45,10 @@ PUBSPEC = os.path.join(APP, 'pubspec.yaml')
 APP_INFO = os.path.join(APP, 'lib/state/app_info.dart')
 
 COS_ENV = '/root/.secrets/cos.env'
-PREFIX = 'pocket'
+PREFIX = 'apps/pocket'
+# 过渡期：1.1.2 及更早读的是 /pocket/update.json。等所有在用的版本都 ≥1.1.3
+# 之后可以删掉这条，把 LEGACY_PREFIX 置空。
+LEGACY_PREFIX = 'pocket'
 REPO = 'frankfurtlin/dsh-pocket'
 SIGNER = 'CN=DSH Fusion'
 TZ = timezone(timedelta(hours=8))
@@ -203,8 +206,9 @@ def write_manifest(client, bucket: str, eo: str, full: str, name: str,
         'publishedAt': datetime.now(TZ).isoformat(timespec='seconds'),
     }
     body = json.dumps(manifest, ensure_ascii=False, indent=1).encode()
-    client.put_object(Bucket=bucket, Key=f'{PREFIX}/update.json', Body=body,
-                      ContentType='application/json', CacheControl='public, max-age=60')
+    for prefix in filter(None, (PREFIX, LEGACY_PREFIX)):
+        client.put_object(Bucket=bucket, Key=f'{prefix}/update.json', Body=body,
+                          ContentType='application/json', CacheControl='public, max-age=60')
     return f'{eo}/{PREFIX}/update.json'
 
 

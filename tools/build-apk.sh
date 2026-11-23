@@ -25,6 +25,41 @@ export ANDROID_SDK_ROOT="$ANDROID_SDK"
 export FLUTTER_ROOT="$FLUTTER_HOME"
 export GRADLE_USER_HOME=/root/.gradle
 export PATH="$JDK_HOME/bin:$ANDROID_SDK/cmdline-tools/latest/bin:$ANDROID_SDK/platform-tools:$FLUTTER_HOME/bin:$PATH"
+# ------------------------------------------------------- 内存护栏 (2026-11-23) ---
+# 这台机器 8 GB，一次 release 构建（Gradle daemon + Kotlin daemon + dart
+# frontend_server）峰值能吃掉整机，内核 OOM 反过来杀 dsh/hermes，宿主直接失联。
+# 2026-11-20（dshgo-fusion）和 2026-11-23（dsh-pocket）各中过一次。
+#
+# 做法：把自己塞进一个独立的 systemd scope，内存上限由 cgroup 硬约束 —— 构建
+# 撑死也只死它自己，不再动宿主。可以用环境变量调：
+#   BUILD_MEM_MAX=4G  BUILD_MEM_HIGH=3200M  BUILD_MEM_SWAP=256M  BUILD_WORKERS=2
+MEM_MAX="${BUILD_MEM_MAX:-4G}"
+MEM_HIGH="${BUILD_MEM_HIGH:-3200M}"
+MEM_SWAP="${BUILD_MEM_SWAP:-256M}"
+BUILD_WORKERS="${BUILD_WORKERS:-2}"
+
+if [ "${DSH_BUILD_IN_SCOPE:-0}" != "1" ] && command -v systemd-run >/dev/null 2>&1; then
+  # 2026-11-23：上次构建留下的 Gradle daemon 会活在 scope 外面（1.7 GB），内存上限
+  # 管不到它，于是「scope 里很空、整机在 swap」—— 必须先停掉，让新 daemon 生在
+  # scope 内。
+  ( cd "$(dirname "${BASH_SOURCE[0]}")/../app/android" 2>/dev/null && ./gradlew --stop >/dev/null 2>&1 ) || true
+  ( cd "$(dirname "${BASH_SOURCE[0]}")/.." && ./app/android/gradlew --stop >/dev/null 2>&1 ) || true
+  export DSH_BUILD_IN_SCOPE=1
+  # --collect 让 scope 结束后不留下 failed 单元；--quiet 不打印 "Running scope as unit"。
+  exec systemd-run --scope --quiet --collect \
+    -p MemoryMax="$MEM_MAX" -p MemoryHigh="$MEM_HIGH" -p MemorySwapMax="$MEM_SWAP" \
+    -- bash "$0" "$@"
+fi
+
+# scope 内：压并行度。Gradle 的 worker 数与 Kotlin 增量编译都会各自开 JVM，
+# 2 vCPU 上超过 2 个 worker 只是互相抢内存。
+if [ "${DSH_BUILD_IN_SCOPE:-0}" = "1" ]; then
+  export GRADLE_OPTS="${GRADLE_OPTS:--Dorg.gradle.workers.max=$BUILD_WORKERS}"
+  echo "内存护栏：MemoryMax=$MEM_MAX MemoryHigh=$MEM_HIGH SwapMax=$MEM_SWAP workers=$BUILD_WORKERS"
+  echo "cgroup   ：$(cat /proc/self/cgroup | head -1)"
+  echo "内存上限 ：$(cat /sys/fs/cgroup$(cat /proc/self/cgroup | head -1 | cut -d: -f3)/memory.max 2>/dev/null || echo '（读不到，可能不是 cgroup v2）')"
+fi
+
 # 国内镜像：flutter 引擎产物 + pub 包（pub.dev 直连约 38KB/s）
 export FLUTTER_STORAGE_BASE_URL="${FLUTTER_STORAGE_BASE_URL:-https://storage.flutter-io.cn}"
 export PUB_HOSTED_URL="${PUB_HOSTED_URL:-https://pub.flutter-io.cn}"

@@ -47,7 +47,7 @@ client = CosS3Client(CosConfig(Region=os.environ['COS_REGION'],
                                SecretKey=os.environ['COS_SECRET_KEY']))
 bucket = os.environ['COS_BUCKET']
 eo = os.environ['COS_EO_DOMAIN'].rstrip('/')
-key = f'pocket/apk/{name}'
+key = f'apps/pocket/apk/{name}'
 t = time.time()
 with open(apk, 'rb') as body:
     client.put_object(Bucket=bucket, Key=key, Body=body, ContentLength=str(size),

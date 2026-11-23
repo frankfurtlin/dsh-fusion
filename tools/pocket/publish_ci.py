@@ -5,8 +5,9 @@
     COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION / COS_EO_DOMAIN
 
 发布布局（App 的 app/lib/update/update_config.dart 按这个取）：
-    pocket/apk/dsh-pocket-<version>-arm64-<sha>.apk   ← 不可变缓存
-    pocket/update.json                                ← 60 秒缓存，App 每次检查都取这个
+    apps/pocket/update.json    ← 新规范清单（URL 指向 GitHub Release 资产）
+    pocket/update.json         ← 兼容入口（App 硬编码 /pocket/update.json）
+    APK 不落 COS：GitHub runner → 广州 COS 的 66MB 上传会卡死，资产挂 GitHub Release。
 
 清单格式跟 app/lib/update/release.dart 的 parseUpdateManifest 对齐（schema 1）。
 """
@@ -22,7 +23,7 @@ import time
 from datetime import datetime, timezone, timedelta
 
 TZ = timezone(timedelta(hours=8))
-PREFIX = 'pocket'
+PREFIX = 'apps/pocket'
 
 
 def fail(msg: str) -> None:
@@ -111,12 +112,13 @@ def main() -> int:
     mp = 'out/update.json'
     with open(mp, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
-    with open(mp, 'rb') as body:
-        client.put_object(
-            Bucket=bucket, Key=f'{PREFIX}/update.json', Body=body,
-            ContentType='application/json', CacheControl='public, max-age=60',
-        )
-    print(f'完成：{eo}/{PREFIX}/update.json')
+    for key in (f'{PREFIX}/update.json', 'apps/pocket/update.json'):
+        with open(mp, 'rb') as body:
+            client.put_object(
+                Bucket=bucket, Key=key, Body=body,
+                ContentType='application/json', CacheControl='public, max-age=60',
+            )
+        print(f'清单：{eo}/{key}')
     return 0
 
 
