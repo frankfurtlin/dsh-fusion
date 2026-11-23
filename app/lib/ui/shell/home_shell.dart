@@ -52,6 +52,7 @@ import 'quick_panel.dart';
 import 'session_search_page.dart' show showSessionSearch;
 import 'sessions_drawer.dart';
 import 'system_entry_host.dart';
+import '../update/update_launch_check.dart';
 
 /// Home: the chat screen, with the sessions drawer pulled over it from the left.
 ///
@@ -353,8 +354,9 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
                           const ResetReceiptHost(),
                         ],
                       ],
-                      // Daily update check against the upstream repository is off in this build
-                      // (fusion): it would offer the original app, not this one.
+                      // 每日更新检查：读的是我们自己的清单（COS / update.json），不是上游仓库。
+                      // 启动 6 秒后跑一次，24 小时内不重复；有新版本时弹更新页（绘制层为空）。
+                      const UpdateLaunchCheck(),
                       // The voice model chosen during setup: download, resume, ready / failed notices (draws nothing).
                       const VoiceModelHost(),
                       // App links / shared files: routes them to their feature (draws nothing).
