@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.dsh-fusion.invalid/plugin-kit/v1/manifest.schema.json",
+  "$id": "https://schemas.dsh-pocket.invalid/plugin-kit/v1/manifest.schema.json",
   "title": "dsh-go native plugin manifest (package.json \"dshGo\"), protocol v1",
   "description": "docs/design/native-plugins-protocol.md §1. Unknown keys and surfaces are ignored with a warning by the bridge, so they are allowed here; the SDK check reports them. Serialized size <= 16 KiB.",
   "type": "object",

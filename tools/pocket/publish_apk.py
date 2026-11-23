@@ -27,7 +27,7 @@ import sys
 import tempfile
 from datetime import datetime, timezone, timedelta
 
-REPO = 'frankfurtlin/dsh-fusion'
+REPO = 'frankfurtlin/dsh-pocket'
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STATE = os.path.join(ROOT, 'tools', 'pocket', '.publish-state.json')
 PUBSPEC = os.path.join(ROOT, 'app', 'pubspec.yaml')

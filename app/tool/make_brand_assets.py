@@ -142,7 +142,7 @@ def check_safe():
 
 # ── SVG masters ──────────────────────────────────────────────────────────────
 HEAD = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">\n'
-        '<!-- dsh-fusion · {what}: {mark}. app/tool/make_brand_assets.py authors this file; '
+        '<!-- dsh-pocket · {what}: {mark}. app/tool/make_brand_assets.py authors this file; '
         'app/tool/make_brand_mark.py turns it into app/lib/ui/shell/brand_glyph.g.dart. -->\n')
 
 TILE_PATH = ('M34.58 18C31.39 18.13 29.27 18.57 27.14 19.54C23.87 21.03 21.03 23.87 19.54 27.14'
@@ -304,7 +304,7 @@ def icon_files():
 
 
 MONO_XML = '''<?xml version="1.0" encoding="utf-8"?>
-<!-- Themed-icon (Android 13+) layer: the dsh-fusion mark (terminal prompt) on the 108 grid,
+<!-- Themed-icon (Android 13+) layer: the dsh-pocket mark (terminal prompt) on the 108 grid,
      the same placement as mipmap/ic_launcher_foreground. Authored by tool/make_brand_assets.py. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"

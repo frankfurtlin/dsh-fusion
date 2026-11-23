@@ -278,7 +278,7 @@ class _SectionNote extends StatelessWidget {
 }
 
 /// The market repository's submission guide (GitHub), at the bottom.
-const marketSubmitUrl = 'https://github.com/frankfurtlin/dsh-fusion#提交插件';
+const marketSubmitUrl = 'https://github.com/frankfurtlin/dsh-pocket#提交插件';
 
 class _SubmitPlugin extends StatelessWidget {
   const _SubmitPlugin();
