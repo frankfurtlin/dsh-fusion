@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" font-family="-apple-system, 'Segoe UI', 'Noto Sans SC', sans-serif">
+  <!-- 背景 -->
+  <rect width="760" height="420" fill="#f7f8fb"/>
+
+  <!-- 手机 -->
+  <rect x="40" y="120" width="180" height="180" rx="22" fill="#ffffff" stroke="#c9d2e3"/>
+  <rect x="56" y="150" width="148" height="120" rx="10" fill="#eef2fb"/>
+  <text x="130" y="196" text-anchor="middle" font-size="15" fill="#1e232e" font-weight="600">DSH Pocket</text>
+  <text x="130" y="218" text-anchor="middle" font-size="12" fill="#646974">Flutter · Android</text>
+  <text x="130" y="288" text-anchor="middle" font-size="11" fill="#a1a5ac">你的手机</text>
+
+  <!-- 服务器 -->
+  <rect x="540" y="70" width="180" height="280" rx="18" fill="#1e232e"/>
+  <text x="630" y="104" text-anchor="middle" font-size="13" fill="#f0f4fd" font-weight="600">你的服务器</text>
+  <rect x="560" y="128" width="140" height="46" rx="8" fill="#2d3547"/>
+  <text x="630" y="148" text-anchor="middle" font-size="11" fill="#dbe4f7">dsh web :3080</text>
+  <text x="630" y="164" text-anchor="middle" font-size="10" fill="#8b93a7">会话 / 工作区 API</text>
+  <rect x="560" y="186" width="140" height="46" rx="8" fill="#2d3547"/>
+  <text x="630" y="206" text-anchor="middle" font-size="11" fill="#dbe4f7">bridge-server :3082</text>
+  <text x="630" y="222" text-anchor="middle" font-size="10" fill="#8b93a7">MCP + 手机 WSS</text>
+  <rect x="560" y="244" width="140" height="46" rx="8" fill="#2d3547"/>
+  <text x="630" y="264" text-anchor="middle" font-size="11" fill="#dbe4f7">Agent（DSH 会话）</text>
+  <text x="630" y="280" text-anchor="middle" font-size="10" fill="#8b93a7">phone_* 工具</text>
+
+  <!-- COS/EO -->
+  <rect x="540" y="368" width="180" height="36" rx="8" fill="#eef2fb" stroke="#c9d2e3"/>
+  <text x="630" y="391" text-anchor="middle" font-size="11" fill="#4f5562">COS + EdgeOne（更新 / 摘要）</text>
+
+  <!-- 连线 -->
+  <line x1="222" y1="180" x2="556" y2="151" stroke="#5b5ef7" stroke-width="2"/>
+  <text x="330" y="150" font-size="11" fill="#5b5ef7">SSH 端口转发</text>
+
+  <line x1="222" y1="212" x2="556" y2="209" stroke="#4b67b4" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="300" y="200" font-size="11" fill="#4b67b4">WSS（已认证）</text>
+
+  <line x1="222" y1="248" x2="556" y2="270" stroke="#9aa4bb" stroke-width="2"/>
+  <text x="300" y="268" font-size="11" fill="#646974">Agent 操作手机</text>
+
+  <line x1="222" y1="290" x2="596" y2="368" stroke="#9aa4bb" stroke-width="2" stroke-dasharray="3 4"/>
+  <text x="330" y="336" font-size="11" fill="#646974">HTTPS 直连</text>
+</svg>

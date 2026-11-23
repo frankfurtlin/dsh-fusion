@@ -1,0 +1,47 @@
+name: Bug report
+description: 功能异常、崩溃、显示错误
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢反馈。**提交前请把日志里的令牌、服务器地址、私钥等敏感信息删掉。**
+  - type: input
+    id: version
+    attributes:
+      label: App 版本
+      description: 设置 → 关于，例如 1.0.2 (3)
+      placeholder: 1.0.2 (3)
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: 设备与系统
+      placeholder: 小米 24031PN0DC / Android 15
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开 …
+        2. 点击 …
+        3. 看到 …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果 / 实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 设置 → 诊断 里导出的日志（记得脱敏）
+      render: shell
+    validations:
+      required: false
