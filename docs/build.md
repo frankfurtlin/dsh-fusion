@@ -1,112 +1,159 @@
-# 构建约定（2026-11-23 起）
+# 怎么编译（含踩过的坑）
 
-> 决策人：Frankfurtlin。以下是硬规则，agent 默认照这个做，不要再走 GitHub Actions。
+> 2026-11-23 定稿。**这是构建的唯一权威文档**，和别的说法冲突时以本文为准。
 
-## 一句话
+## 0. 三条硬规则
 
-**构建只在本地跑；开发阶段用 debug；CI 只留给正式发布。**
+1. **只在本地构建**。不要用 GitHub Actions 做日常构建（理由见 §8 的跨云实测）。
+2. **开发阶段用 debug**；但**日常使用请装 release** —— debug 是 JIT，UI 慢 2–5 倍（§6）。
+3. **R8 默认关闭**；要开必须先在真机上跑通主要路径（§7 的事故复盘）。
 
-## 为什么
+## 1. 环境
 
-2026-11-22/23 那一轮踩了三个坑，都是"在云上构建"带来的：
+全部内置在 `/root/toolchain/`，脚本自己 export，不依赖外部 env：
 
-1. GitHub runner → 广州 COS 传 66 MB 会卡死（两次超过 25 分钟没完成）；而本机 → COS 是
-   **86 MB/s**。跨云链路不可靠，本机是可信的。
-2. 本机 → GitHub 下载 0 B/s，CI 产物拉不回来，出问题只能靠猜。
-3. 第一次开 R8 的包在真机上一启动就闪退（`packageinfo is null` / 一开就退），
-   而在本地构建时能当场用 `aapt` / `apksigner` 验包名、版本、ABI、签名。
+| 组件 | 路径 |
+|---|---|
+| Flutter | `/root/toolchain/flutter`（3.50.0 / Dart 3.14.0） |
+| JDK | `/root/toolchain/jdk` |
+| Android SDK | `/root/toolchain/android`（compileSdk 36，NDK 28.2） |
+| 发布密钥 | `app/android/key.properties` → `/root/.secrets/dshfusion-release.jks` |
 
-本地构建 = 产物在手、可验、可立刻传到 COS 给手机装。
+机器：**2 vCPU / 8 GB**（可用约 3.7 GB）。这是构建慢的根因，也是"不要并行跑两个构建"
+的原因——两个 Gradle daemon 会把内存吃光，整机进 D 状态。
 
-## 怎么构建
+## 2. 命令速查
 
 ```bash
 cd /root/workspace/dsh-fusion
 
-# 开发：debug，单 ABI，最快
-tools/build-apk.sh /root/workspace/dsh-fusion/app
-
-# 需要验 release 行为时才用（R8 默认关闭，详见下）
-tools/build-apk.sh --release /root/workspace/dsh-fusion/app
+tools/build-apk.sh /root/workspace/dsh-fusion/app              # debug（默认单 ABI arm64）
+tools/build-apk.sh --release /root/workspace/dsh-fusion/app    # release（R8 关闭）
+tools/build-apk.sh --keep-daemon ...                           # 保留 Gradle daemon（开发循环必用）
+tools/build-apk.sh --all-abis ...                              # arm64 + x64（慢一倍）
+tools/build-apk.sh --pub-get-only ...                          # 只解析依赖
+tools/build-apk.sh --detach ...                                # 丢后台跑，agent 环境推荐
 ```
 
-产物：`app/build/app/outputs/flutter-apk/app-arm64-{debug,release}.apk`，
-脚本同时拷一份到 `dist/`。日志：`dist/build-{debug,release}.log`。
+产物：
 
-脚本内置工具链（JDK / Android SDK / Flutter 都在 `/root/toolchain/`），不依赖外部 env。
-本机 2C/8G，debug 首次约 10–20 分钟，增量会快得多；跑的时候别同时开别的重活。
-
-## 签名：debug 与 release 同钥
-
-`app/android/build.gradle.kts` 里 `debug { if (hasWholeReleaseKey) signingConfig = release }`，
-所以**本地 debug 包也用发布密钥签**。好处：
-
-- debug 覆盖安装 release、release 覆盖安装 debug 都可以，**数据保留**；
-- 不需要为了换包而卸载（也就不会丢配置）。
-
-## 版本号
-
-开发阶段不必每次改版本，但**要发出去给手机装之前**，改这两个地方（必须一致，
-否则 App 里的「关于」和 APK 的 versionName 会对不上）：
-
-- `app/pubspec.yaml` 的 `version:`（例如 `1.0.3+4`）
-- `app/lib/state/app_info.dart` 的 `defaultValue`（同一个字符串）
-
-## 发到手机（一条命令）
-
-```bash
-tools/pocket/publish_local.sh            # debug 包 → COS → 打印直链 + sha256
-tools/pocket/publish_local.sh release    # 用 release 包
+```
+app/build/app/outputs/flutter-apk/app-<abi>-<mode>.apk        ← 脚本按这个找
+app/build/app/outputs/apk/<abi>/<mode>/app-<abi>-<mode>.apk   ← Gradle 真正产在这里
+dist/app-<abi>-<mode>.apk                                     ← 脚本拷一份
+dist/build-<mode>.log                                         ← 完整日志
 ```
 
-产物会传到 COS 的 `pocket/apk/`，走 `https://static.frankfurtlin.top` 出链；
-下载完可以核对脚本打印的字节数与 sha256。
+## 3. 耗时实测（2C / 8G）
 
-## R8 / 压缩
-
-**默认关闭**。1.0.1 是第一次开 R8 的构建，真机一启动就退出（`androidx.startup`
-的 Initializer 与 `ListenableWorker` 都是按类名反射实例化的，被砍即崩）。
-keep 规则已补（`app/android/app/proguard-rules.pro`），要重新开启必须：
-
-1. `flutter build apk --release -Pminify`（或直接在 gradle 里恢复默认）；
-2. **真机装上跑一遍主要路径**（启动、连主机、预览文件、手机桥）再发布。
-
-没真机验证过就别开。
-
-## CI 的定位
-
-`.github/workflows/android-apk.yml` 保留，但只在**正式发布**时手动触发
-（`workflow_dispatch`，mode=release）。它会：
-
-- 构建 → 校验签名指纹 → 建 GitHub Release 挂 APK → 更新 COS 上的 `update.json`。
-
-开发阶段的 debug 包不要走它：慢、拿不回产物、还容易和本地产物混淆。
-
-## 已知的环境坑
-
-| 现象 | 处理 |
+| 场景 | 耗时 |
 |---|---|
-| `sqlite3` build hook 要联网下 so，本机拿不到 | 已塞进 `app/.dart_tool/hooks_runner/shared/sqlite3/build/`；清过 `.dart_tool` 要重塞 |
-| `flutter test` 卡住（同上，网络） | 开发阶段以 `flutter analyze` + 真机为准 |
-| Gradle 首次跑要下依赖 | 走 `storage.flutter-io.cn` / 国内镜像，已配在脚本里 |
-| 本机 checkout 缺部分文件（`app/test` 等） | partial clone 拉不齐；CI 用全新 clone 不受影响，本地以 `app/lib` 为准 |
+| 首次 / 清理后全量 debug | **464 s** |
+| 冷 daemon、无改动 | 76 s |
+| 热 daemon + pub get 跳过 + 无改动 | **8 s** |
+| 改几行 Dart 后增量 | 15–40 s |
+| 改 Kotlin/Java 后增量 | 60–120 s |
 
-## 已知的假失败：Gradle 无变更时脚本报 FAILED
+## 4. 提速手册（已落地）
 
-现象：`build_rc=1 fresh_apks=0` + `Gradle build failed to produce an .apk file`，
-但 `outputs/apk/arm64/release/` 里其实有 APK（时间戳是上一次的）。
+1. **`--keep-daemon`**：daemon 冷启动是分钟级。开发循环里开着，无改动重建从 76s → 8s。
+   代价：常驻 1–2.5 GB；收工 `cd app/android && ./gradlew --stop` 释放。
+2. **跳过 `pub get`**：`pubspec.yaml` + `pubspec.lock` 的 sha256 存在
+   `app/.dart_tool/.pub-get.stamp`，没变就跳过（省 10–20 s）。
+3. **只编 arm64**：脚本默认 `--target-platform android-arm64`，别随手 `--all-abis`。
+4. **配置缓存 / 并行 / build cache**：`app/android/gradle.properties` 已开
+   `org.gradle.configuration-cache`、`org.gradle.caching`、`org.gradle.parallel`
+   （`workers.max=2` 对齐 2 核）。别关。
+5. **增量优先**：只改 Dart 就跑增量；不要为了"干净"随手 `flutter clean`（全量 7 分钟起）。
+6. **别并行**：同一时间只跑一个构建。
 
-原因：Gradle 判定输入未变、`assembleRelease` 直接 UP-TO-DATE，不会产出新文件；
-而 `tools/build-apk.sh` 按「新产出的 apk」判断成功，于是报失败。
-
-处理：
+## 5. 发到手机
 
 ```bash
-# 产物实际在这（per-ABI 输出路径，CI 里也有同样的怪癖）
-cp app/build/app/outputs/apk/arm64/release/app-arm64-release.apk \
-   app/build/app/outputs/flutter-apk/app-arm64-release.apk
-tools/pocket/publish_local.sh release
+tools/pocket/publish_local.sh            # debug → COS → 打印直链 / 字节数 / sha256
+tools/pocket/publish_local.sh release    # release
 ```
 
-判断是否真的需要重建：看 `git log -1 --format=%cd -- app packages` 是否比 APK 的 mtime 新。
-不新就说明这个 APK 就是当前代码的产物，直接用。
+走 `https://static.frankfurtlin.top/pocket/apk/...`（COS + EdgeOne），本机上传实测
+**86 MB/s**。装完核对字节数，对不上就是没下全。开发包**不进** `update.json`
+（那是正式发布通道），只给直链。
+
+## 6. debug 与 release 的取舍
+
+| | debug | release |
+|---|---|---|
+| UI 流畅度 | JIT，慢 2–5 倍 | 正常 |
+| 体积 | ~149 MB | ~72 MB |
+| 用途 | 抓日志、调试 | 日常使用、发给别人 |
+| 签名 | **同一把发布密钥** | 同 |
+
+`app/android/app/build.gradle.kts` 里 `debug { if (hasWholeReleaseKey) signingConfig = release }`，
+所以 debug ↔ release 可以**互相覆盖安装且保留数据**，换包不用卸载。
+（这条很重要：早期因包名不同 / 卸载重装，配置丢过两次。）
+
+## 7. R8 事故复盘（2026-11-23）
+
+**现象**：1.0.1 装上后"一开就自动关闭"。
+
+**原因**：那是第一版开启 R8 的构建。R8 会删除/改名只在运行时按类名引用的类：
+
+- `androidx.startup` 的 `Initializer`（WorkManager 靠 manifest meta-data 里的类名实例化）
+- 继承 `ListenableWorker` 的 `DigestWorker`
+
+任何一类被砍，进程启动就 `ClassNotFoundException`。
+
+**处置**（已落地，别回退）：
+
+- release 默认**不压缩**，要开得显式 `-Pminify`；
+- `app/android/app/proguard-rules.pro` 补齐 `androidx.work` / `androidx.startup` /
+  `ListenableWorker` / `digest` 包的 keep；
+- `MainActivity` 里排期调用包 `runCatching`——WorkManager 出任何问题都不该拖死 App。
+
+**重开 R8 的门槛**：真机跑过「启动 / 连主机 / 预览文件 / 手机桥」四条主路径，否则不许发。
+
+## 8. CI 的定位（为什么不让它日常构建）
+
+`.github/workflows/android-apk.yml` 保留，只用于**正式发布**（`workflow_dispatch`，mode=release）：
+构建 → 校验签名指纹 → 建 GitHub Release 挂 APK → 更新 COS 上的 `update.json`。
+
+实测理由：
+
+| 链路 | 实测 |
+|---|---|
+| 本机 → COS | 86 MB/s（65 MB 用 0.8 s） |
+| GitHub runner → 广州 COS | 传 66 MB **超过 25 分钟没完成**（两次） |
+| 本机 → GitHub 下载 | **0 B/s**（直连与 ghfast 都拉不动） |
+
+产物拉不回来 → 出问题只能猜；本地构建能当场用 `aapt` / `apksigner` 验。
+
+## 9. 坑清单（照这个查，别重犯）
+
+| 现象 | 原因 | 处理 |
+|---|---|---|
+| 装上"packageinfo is null"或一启动就退 | ①APK 没下全 ②R8 砍了反射类 | 先核字节数/sha256；再看 §7 |
+| 脚本报 `build FAILED — fresh_apks=0`，但 `outputs/apk/*/release/` 里有 APK | Gradle 判定 UP-TO-DATE，不产新文件 | **已修**：脚本识别 flutter 那句 `failed to produce an .apk file`，复用既有产物并返回 0 |
+| `Gradle build failed to produce an .apk file` | Flutter 按 `outputs/flutter-apk/app-<mode>.apk` 找，实际在 per-ABI 子目录 | 脚本已处理；手动时从 `outputs/apk/<abi>/<mode>/` 拷 |
+| `sqlite3` build hook 卡住 / 下载失败 | hook 要联网下 `libsqlite3.*.so`，本机到不了 | 已塞进 `app/.dart_tool/hooks_runner/shared/sqlite3/build/`；清了 `.dart_tool` 要重塞 |
+| `flutter test` 长时间无输出 | 同上 | 开发阶段以 `flutter analyze` + 真机为准 |
+| `git checkout` 报缺 blob / 缺 `app/test`、`app/ohos` | partial clone（`blob:none`）+ 稀疏检出，约 3000 个文件没落盘 | **别** `git checkout -- .`（会覆盖未提交改动）；按需 `git show HEAD:<path> > <path>`；CI 用全新 clone 不受影响 |
+| `pkill -f <模式>` 把当前 shell 杀掉 | 模式匹配到自己的命令行 | 用 `pgrep` 取 PID 再按 PID 杀 |
+| `gh release upload` 资产名不对 / 改名后 URL 404 | gh 保留本地文件名；API 改名后 CDN 路径 404 | 上传前把文件复制成目标名字（见 `publish_ci.py`） |
+| `--keep-daemon` 后整机变卡 | daemon 常驻 1–2.5 GB | 收工 `./gradlew --stop`；别同时开两个构建 |
+| 版本号对不上（关于页 vs APK） | `pubspec.yaml` 与 `app_info.dart` 两处 | 发出去之前两处一起改（§10） |
+
+## 10. 版本号
+
+两处必须一致，否则「关于」显示与 APK 的 versionName 会打架：
+
+- `app/pubspec.yaml` → `version: 1.0.3+4`
+- `app/lib/state/app_info.dart` → `defaultValue: '1.0.3+4'`
+
+开发阶段可以不改；**要发到手机之前**改。
+
+## 11. 提交前必须跑
+
+```bash
+(cd app && flutter analyze lib)                          # 改 Dart 必跑
+(cd packages/bridge-server && node --check src/*.js)     # 改桥服务必跑
+node packages/bridge-server/tools/smoke.mjs              # 桥服务冒烟（91 项）
+```
