@@ -127,10 +127,20 @@ $FLUTTER --version 2>&1 | tee -a "$LOG"
 log ""
 
 # 2. pub get
-log "=== 2/3 flutter pub get ==="
-$FLUTTER pub get 2>&1 | tail -30 | tee -a "$LOG"
-PUBGET_RC=${PIPESTATUS[0]}
-log "pub_get_rc=$PUBGET_RC"
+# 2026-11-23：pubspec 与 pubspec.lock 都没变就跳过（每次省 10-20s）。
+PUBGET_STAMP="$PROJECT/.dart_tool/.pub-get.stamp"
+PUBSPEC_SIG=$(cat "$PROJECT/pubspec.yaml" "$PROJECT/pubspec.lock" 2>/dev/null | sha256sum | cut -d' ' -f1)
+if [ -f "$PUBGET_STAMP" ] && [ "$(cat "$PUBGET_STAMP" 2>/dev/null)" = "$PUBSPEC_SIG" ] \
+   && [ -f "$PROJECT/.dart_tool/package_config.json" ]; then
+  log "=== 2/3 pub get 跳过（pubspec 未变）==="
+  PUBGET_RC=0
+else
+  log "=== 2/3 flutter pub get ==="
+  $FLUTTER pub get 2>&1 | tail -30 | tee -a "$LOG"
+  PUBGET_RC=${PIPESTATUS[0]}
+  log "pub_get_rc=$PUBGET_RC"
+  [ "$PUBGET_RC" = 0 ] && printf '%s' "$PUBSPEC_SIG" > "$PUBGET_STAMP"
+fi
 if [ "$PUBGET_RC" != 0 ]; then log "pub get FAILED"; exit "$PUBGET_RC"; fi
 if [ "$PUB_GET_ONLY" = 1 ]; then log "pub-get-only: stop."; exit 0; fi
 log ""
@@ -162,9 +172,29 @@ if [ "$BUILD_RC" != 0 ] && [ "${#FRESH_APKS[@]}" -gt 0 ]; then
   log "NOTE: flutter 返回非 0（per-ABI 输出路径的老问题），但本轮确实产出了 ${#FRESH_APKS[@]} 个 APK，按成功处理。"
 fi
 
+# 2026-11-23：Gradle 判定 UP-TO-DATE 时不会产出新文件，flutter 于是报
+# "failed to produce an .apk file"。只要既有产物比所有源码都新，就算成功。
+UP_TO_DATE=""
+if [ "$BUILD_RC" != 0 ] && [ "${#FRESH_APKS[@]}" -eq 0 ]; then
+  # 优先取本次目标 ABI 的产物（android-arm64 → app-arm64-<mode>.apk），别抓到 x64
+  # 判据是 flutter 那句固定的抱怨：只有它出现才说明「Gradle 没报错，只是没产出
+  # 新文件」（UP-TO-DATE）；真正的编译错误不会有这句话。
+  ABI_TAG="${TARGET_PLATFORM#android-}"
+  EXISTING="$APK_DIR/app-${ABI_TAG}-${MODE}.apk"
+  [ -f "$EXISTING" ] || EXISTING=$(ls -1t "$APK_DIR"/app-*-"$MODE".apk 2>/dev/null | head -1 || true)
+  if [ -n "$EXISTING" ] && grep -q "failed to produce an .apk file" "$LOG" 2>/dev/null; then
+    UP_TO_DATE="$EXISTING"
+    BUILD_RC=0
+    log "NOTE: Gradle 判定无变更（UP-TO-DATE），复用既有产物，按成功处理。"
+  fi
+fi
+
 if [ "$BUILD_RC" = 0 ] || [ "${#FRESH_APKS[@]}" -gt 0 ]; then
   log "=== artifacts in $APK_DIR ==="
   ls -l "$APK_DIR" 2>/dev/null | tee -a "$LOG"
+  if [ -n "$UP_TO_DATE" ]; then
+    cp -f "$UP_TO_DATE" "$DIST/" && log "reused -> $DIST/$(basename "$UP_TO_DATE") ($(stat -c%s "$UP_TO_DATE") bytes, 无变更)"
+  fi
   for f in "${FRESH_APKS[@]}"; do
     cp -f "$f" "$DIST/" && log "copied -> $DIST/$(basename "$f") ($(stat -c%s "$f") bytes)"
   done
