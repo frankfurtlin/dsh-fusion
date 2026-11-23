@@ -32,7 +32,6 @@ class PluginsScreen extends ConsumerStatefulWidget {
 }
 
 class _PluginsScreenState extends ConsumerState<PluginsScreen> {
-  late PluginsTab _tab = widget.initialTab;
   bool _refreshing = false;
 
   @override

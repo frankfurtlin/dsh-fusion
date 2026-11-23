@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_footprint.dart';
-import '../../runtime/runtime_state.dart';
 import '../../state/connection_state.dart';
 import '../../state/hosts_state.dart';
 import '../common/app_sheet.dart';
 import '../common/sheet_title_bar.dart';
 import '../common/status_chip.dart';
 import '../companion/companion_page.dart';
-import '../onboarding/local_install.dart';
 import '../settings/settings_widgets.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';
@@ -84,8 +81,6 @@ class HostSheet extends ConsumerWidget {
     final l10n = context.l10n;
     final active = ref.watch(activeHostProvider);
     final ssh = ref.watch(hostsProvider.select((s) => s.ssh));
-    final account = ref.watch(relayAccountProvider).value;
-    final relayHosts = account?.signedIn == true ? account!.hosts : const <RelayHost>[];
 
     Future<void> pick(HostRef host) async {
       if (host == active) {
@@ -95,17 +90,6 @@ class HostSheet extends ConsumerWidget {
       final navigator = Navigator.of(context);
       final ok = await activateHost(context, ref, host);
       if (ok && navigator.mounted) navigator.pop();
-    }
-
-    // 本机 without its runtime: the row installs it, and switches to it once
-    // installed (leaving the install page keeps the current host). A build
-    // without the runtime has no 本机 row at all.
-    final localMissing = ref.watch(localRuntimeProvider.select((s) => s.status.runtimeMissing));
-    final localAvailable = ref.watch(localRuntimeProvider.select((s) => s.available));
-    void installLocal() {
-      final navigator = Navigator.of(context);
-      navigator.pop();
-      unawaited(navigator.push(MaterialPageRoute<void>(builder: (_) => const LocalInstallPage(useWhenDone: true))));
     }
 
     return SafeArea(
@@ -173,7 +157,6 @@ class _HostRow extends ConsumerWidget {
     required this.subtitle,
     required this.active,
     required this.onTap,
-    this.relay,
   });
 
   final HostRef host;
@@ -181,7 +164,6 @@ class _HostRow extends ConsumerWidget {
   final String subtitle;
   final bool active;
   final VoidCallback onTap;
-  final RelayHost? relay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -189,11 +171,7 @@ class _HostRow extends ConsumerWidget {
     // Live state for 本机 and the active remote host; presence for relay
     // hosts; nothing for idle SSH hosts (connecting just to show a dot
     // would cost a login).
-    final HostStatusView? view = host.isLocal || active
-        ? watchHostStatus(ref, host)
-        : relay != null
-        ? HostStatusView.ofRelayHost(relay!)
-        : null;
+    final HostStatusView? view = host.isLocal || active ? watchHostStatus(ref, host) : null;
     return Semantics(
       key: ValueKey('host-row-${host.kind.name}-${host.id}'),
       selected: active,

@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../bridge/bridge_settings_page.dart';
-import '../../performance/performance_state.dart';
 import '../../runtime/local_footprint.dart';
 import '../../runtime/runtime_state.dart';
 import '../common/pressable.dart';
@@ -59,34 +58,12 @@ class RuntimeChoiceView extends ConsumerStatefulWidget {
 }
 
 class _RuntimeChoiceViewState extends ConsumerState<RuntimeChoiceView> {
-  RuntimeOption? _picked;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final footprint = ref.watch(localFootprintProvider).value;
-    final light = ref.watch(performanceDefaultsProvider).recommendRemote;
-    final available = ref.watch(localRuntimeProvider.select((s) => s.available));
-    final suggested = !available || light || footprint?.suggestRemote == true
-        ? RuntimeOption.remote
-        : RuntimeOption.local;
     // One way in: a remote host over SSH. `onTavern`/`onLocal` stay in the signature for the
     // callers that still pass them, but nothing here leads to either any more.
-    final selected = _picked == RuntimeOption.local ? RuntimeOption.local : RuntimeOption.remote;
-    final colors = DshColors.of(context);
-
-    final String localDetail;
-    var localWarn = false;
-    if (!available) {
-      localDetail = l10n.localEnvUnavailable;
-    } else if (footprint != null && footprint.lowStorage) {
-      localDetail = l10n.localEnvLowStorage(footprint.requiredRoundedMb!);
-      localWarn = true;
-    } else if (footprint?.unpackedMb case final unpacked?) {
-      localDetail = l10n.localEnvThisPhoneDetail(LocalFootprint.round(unpacked), LocalFootprint.engineMemoryMb);
-    } else {
-      localDetail = l10n.localEnvThisPhoneDetailShort(LocalFootprint.engineMemoryMb);
-    }
 
     return OnboardingScaffold(
       leading: widget.leading,
@@ -107,7 +84,6 @@ class _RuntimeChoiceViewState extends ConsumerState<RuntimeChoiceView> {
           title: l10n.commonRemoteHost,
           detail: l10n.localEnvRemoteDetail,
           selected: true,
-          onTap: () => setState(() => _picked = RuntimeOption.remote),
         ),
         const Spacer(flex: 2),
         const SizedBox(height: 24),
