@@ -54,7 +54,8 @@ source /root/toolchain/env.sh && tools/build-apk.sh --debug
   直链 + 字节数 + sha256）。
 - debug 与 release **同密钥签名**，可互相覆盖安装且保留数据；换包不用卸载。
 - R8 **默认关闭**（1.0.1 开过一次，真机一启动就退）；要开必须真机验证主要路径。
-- CI 只留给正式发布（mode=release）：建 Release + 更新 COS 的 `update.json`。
+- **发布只跑一条命令**：`python3 tools/pocket/release.py`（先改版本两处 + 写 CHANGELOG，再 `--release` 构建）。它校验版本一致、CHANGELOG 有段、APK 签名与版本号，然后同步 COS 包 / GitHub Release / `update.json` 三处并回验。
+- CI 仅用于「干净机器复现构建」，不是日常发布通道。
 
 细节、环境坑、版本号约定见 [`docs/build.md`](docs/build.md)。
 真机行为（手机桥、无障碍、通知、后台保活）只有装机才能证明，桌面测试不算。
