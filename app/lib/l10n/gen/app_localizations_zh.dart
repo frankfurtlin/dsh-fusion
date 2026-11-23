@@ -26289,6 +26289,15 @@ class L10nZh extends L10n {
   String get viewUiDialectNote => '在网页版查看';
 
   @override
+  String get viewHtmlSandbox => '静态预览 · 脚本已禁用 · 外部网络已拦截';
+
+  @override
+  String get viewHtmlSource => '查看源码';
+
+  @override
+  String get viewHtmlRendered => '查看效果';
+
+  @override
   String get voiceSettingsTitle => '语音';
 
   @override

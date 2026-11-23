@@ -27739,6 +27739,15 @@ class L10nEn extends L10n {
   String get viewUiDialectNote => 'Shown in DSH Web';
 
   @override
+  String get viewHtmlSandbox => 'Static preview · scripts off · network blocked';
+
+  @override
+  String get viewHtmlSource => 'View source';
+
+  @override
+  String get viewHtmlRendered => 'View rendered';
+
+  @override
   String get voiceSettingsTitle => 'Voice';
 
   @override

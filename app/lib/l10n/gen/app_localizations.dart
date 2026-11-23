@@ -47966,6 +47966,24 @@ abstract class L10n {
   /// **'在网页版查看'**
   String get viewUiDialectNote;
 
+  /// No description provided for @viewHtmlSandbox.
+  ///
+  /// In zh, this message translates to:
+  /// **'静态预览 · 脚本已禁用 · 外部网络已拦截'**
+  String get viewHtmlSandbox;
+
+  /// No description provided for @viewHtmlSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看源码'**
+  String get viewHtmlSource;
+
+  /// No description provided for @viewHtmlRendered.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看效果'**
+  String get viewHtmlRendered;
+
   /// No description provided for @voiceSettingsTitle.
   ///
   /// In zh, this message translates to:
