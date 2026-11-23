@@ -90,3 +90,23 @@ keep 规则已补（`app/android/app/proguard-rules.pro`），要重新开启必
 | `flutter test` 卡住（同上，网络） | 开发阶段以 `flutter analyze` + 真机为准 |
 | Gradle 首次跑要下依赖 | 走 `storage.flutter-io.cn` / 国内镜像，已配在脚本里 |
 | 本机 checkout 缺部分文件（`app/test` 等） | partial clone 拉不齐；CI 用全新 clone 不受影响，本地以 `app/lib` 为准 |
+
+## 已知的假失败：Gradle 无变更时脚本报 FAILED
+
+现象：`build_rc=1 fresh_apks=0` + `Gradle build failed to produce an .apk file`，
+但 `outputs/apk/arm64/release/` 里其实有 APK（时间戳是上一次的）。
+
+原因：Gradle 判定输入未变、`assembleRelease` 直接 UP-TO-DATE，不会产出新文件；
+而 `tools/build-apk.sh` 按「新产出的 apk」判断成功，于是报失败。
+
+处理：
+
+```bash
+# 产物实际在这（per-ABI 输出路径，CI 里也有同样的怪癖）
+cp app/build/app/outputs/apk/arm64/release/app-arm64-release.apk \
+   app/build/app/outputs/flutter-apk/app-arm64-release.apk
+tools/pocket/publish_local.sh release
+```
+
+判断是否真的需要重建：看 `git log -1 --format=%cd -- app packages` 是否比 APK 的 mtime 新。
+不新就说明这个 APK 就是当前代码的产物，直接用。
