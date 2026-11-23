@@ -1,4 +1,4 @@
-# dsh-fusion-bridge
+# dsh-pocket-bridge
 
 Agent ↔ 手机桥。一个进程，两个端点：
 

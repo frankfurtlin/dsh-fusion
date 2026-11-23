@@ -25,10 +25,10 @@
 ## 2. 命令速查
 
 ```bash
-cd /root/workspace/dsh-fusion
+cd /root/workspace/dsh-pocket
 
-tools/build-apk.sh /root/workspace/dsh-fusion/app              # debug（默认单 ABI arm64）
-tools/build-apk.sh --release /root/workspace/dsh-fusion/app    # release（R8 关闭）
+tools/build-apk.sh /root/workspace/dsh-pocket/app              # debug（默认单 ABI arm64）
+tools/build-apk.sh --release /root/workspace/dsh-pocket/app    # release（R8 关闭）
 tools/build-apk.sh --keep-daemon ...                           # 保留 Gradle daemon（开发循环必用）
 tools/build-apk.sh --all-abis ...                              # arm64 + x64（慢一倍）
 tools/build-apk.sh --pub-get-only ...                          # 只解析依赖

@@ -4,7 +4,7 @@
 
 ## 这是什么
 
-DSH Fusion：Android 端 Flutter 应用 + 服务器端 Node 手机桥。App 用 SSH 连自己的
+DSH Pocket：Android 端 Flutter 应用 + 服务器端 Node 手机桥。App 用 SSH 连自己的
 DSH 主机，并常驻一条 WSS 让 Agent 能操作这台手机。
 
 ## 布局
@@ -48,7 +48,7 @@ source /root/toolchain/env.sh && tools/build-apk.sh --debug
 
 - **只在本地构建**，不要用 GitHub Actions 做日常构建。跨云链路实测不可靠
   （GitHub runner → COS 传 66MB 卡死；本机 → GitHub 下载 0 B/s）。
-- **开发阶段用 debug**：`tools/build-apk.sh /root/workspace/dsh-fusion/app`
+- **开发阶段用 debug**：`tools/build-apk.sh /root/workspace/dsh-pocket/app`
 - 发到手机一条命令：`tools/pocket/publish_local.sh [debug|release]`（传 COS 并打印
   直链 + 字节数 + sha256）。
 - debug 与 release **同密钥签名**，可互相覆盖安装且保留数据；换包不用卸载。

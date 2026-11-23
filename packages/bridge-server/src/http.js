@@ -2,7 +2,7 @@
  * HTTP + WebSocket surface: the MCP endpoint for the DSH agent and the
  * authenticated WebSocket endpoint phones connect to.
  *
- * @module dsh-fusion-bridge/http
+ * @module dsh-pocket-bridge/http
  */
 
 import http from 'node:http'
@@ -33,13 +33,13 @@ export function createServer(config, options = {}) {
   const log = options.log ?? ((line) => console.log(`[bridge] ${line}`))
   const phones = new PhoneRegistry({ callTimeoutMs: config.callTimeoutMs, maxMessageBytes: config.maxMessageBytes })
   const sessions = createSessionVerifier({ gatewayBase: config.gatewayBase, sessionCacheMs: config.sessionCacheMs })
-  const mcp = createMcpHandler({ tools: createTools(phones), serverInfo: { name: 'dsh-fusion-bridge', version } })
+  const mcp = createMcpHandler({ tools: createTools(phones), serverInfo: { name: 'dsh-pocket-bridge', version } })
 
   const server = http.createServer((req, res) => {
     const path = (req.url ?? '/').split('?')[0]
     if (path === '/healthz') {
       res.writeHead(200, { 'content-type': 'application/json' })
-      res.end(JSON.stringify({ ok: true, service: 'dsh-fusion-bridge', phones: phones.list().length, version }))
+      res.end(JSON.stringify({ ok: true, service: 'dsh-pocket-bridge', phones: phones.list().length, version }))
       return
     }
     if (path === config.mcpPath) {

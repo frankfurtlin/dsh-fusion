@@ -1,4 +1,4 @@
-# DSH Fusion
+# DSH Pocket
 
 把 DeepSeek Harness（DSH）装进口袋的 Android 客户端：原生 Flutter 界面，
 通过 SSH 连接你自己的 DSH 主机，并把手机本身变成 Agent 的一双手。
@@ -22,7 +22,7 @@
 | Flutter 原生 DSH 客户端 | 原生 UI、纯 Dart 客户端、SSH / mux 传输、会话与工作区 API |
 | 早期 Capacitor 套壳版 | 手机桥（桥服务、端点/凭据、文件与无障碍）、移动端交互经验 |
 
-当前实现状态与真机验证记录见 [`docs/fusion-status.md`](docs/fusion-status.md)；
+当前实现状态与真机验证记录见 [`docs/pocket-status.md`](docs/pocket-status.md)；
 **怎么编译构建见 [`docs/build.md`](docs/build.md)**（含耗时实测、提速手段与踩过的坑）；
 其余设计文档在 `docs/`。
 

@@ -2,7 +2,7 @@
  * Runtime configuration for the bridge. Every deployment-varying value is an
  * explicit field here; nothing is defaulted deep inside a request path.
  *
- * @module dsh-fusion-bridge/config
+ * @module dsh-pocket-bridge/config
  */
 
 /** @typedef {{ port: number, host: string, gatewayBase: string, publicOrigin: string, wsPath: string, mcpPath: string, callTimeoutMs: number, heartbeatMs: number, maxMessageBytes: number, sessionCacheMs: number, allowUnauthenticated: boolean, downloadDir: string, downloadPath: string }} Config */

@@ -2,11 +2,11 @@
 
 
 > 本文记录当时的合并方案与路径。**实现已经变化**：Android 包名已改为
-> `top.frankfurtlin.dshfusion`，仓库目录为 `/root/workspace/dsh-fusion`，
-> 技能包为 `dsh-fusion-*`。阅读时以当前代码为准。
+> `top.frankfurtlin.dshfusion`，仓库目录为 `/root/workspace/dsh-pocket`，
+> 技能包为 `dsh-pocket-*`。阅读时以当前代码为准。
 
 > 读者：直接照此改代码的 agent。
-> 目标仓库 `/root/workspace/dsh-fusion`（dsh-Go fork），源仓库 `/root/workspace/dsh-mobile`。
+> 目标仓库 `/root/workspace/dsh-pocket`（dsh-Go fork），源仓库 `/root/workspace/dsh-mobile`。
 > 上位文档：`docs/merge-architecture.md`（分工、拓扑、阶段 P0–P5）。本文只回答“具体改哪个文件、加哪几条 Manifest、写哪些方法”。
 > 结论以文中“**已核实**”标注者为据；标“**待复核**”的条目在 `app/` 源码完整 checkout 后必须再读一遍原文。
 
@@ -59,7 +59,7 @@ dsh-mobile 的 `BridgeService` 是**反方向**：手机主动连到 `wss://<公
 ## 2. 文件级映射
 
 源目录（下称 `$SRC`）= `/root/workspace/dsh-mobile/packages/mobile-shell/android/app/src/main/java/top/frankfurtlin/dshmobile/`
-目标目录（下称 `$DST`）= `/root/workspace/dsh-fusion/app/android/app/src/main/java/io/github/ccch1mneyyy/dsh_app/bridge/`
+目标目录（下称 `$DST`）= `/root/workspace/dsh-pocket/app/android/app/src/main/java/io/github/ccch1mneyyy/dsh_app/bridge/`
 
 > 包名保持 `io.github.ccch1mneyyy.dsh_app`（merge-architecture §3.5 已决定），只加子包 `.bridge`。
 > **注意**：Kotlin 源在 `src/main/kotlin/`，Java 源放 `src/main/java/`，AGP + kotlin-android 会自动一起编译，**不需要**往 `build.gradle.kts` 里加 `java.srcDirs`。`src/main/java` 目录当前不存在，新建即可。
@@ -391,7 +391,7 @@ bridge-server `maxMessageBytes = 1048576`（已核实 config.js）。dsh-mobile 
 ### L1 本机（不需要手机）
 
 ```sh
-cd /root/workspace/dsh-fusion/app/android
+cd /root/workspace/dsh-pocket/app/android
 ./gradlew :app:testArm64DebugUnitTest --tests 'io.github.ccch1mneyyy.dsh_app.bridge.*'
 ```
 

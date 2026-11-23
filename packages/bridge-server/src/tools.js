@@ -2,7 +2,7 @@
  * Model-facing tool surface. Each tool is a thin adapter over one phone
  * operation so the model never sees transport vocabulary.
  *
- * @module dsh-fusion-bridge/tools
+ * @module dsh-pocket-bridge/tools
  */
 
 /** JSON Schema for the optional device selector shared by every phone tool. */
