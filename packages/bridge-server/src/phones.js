@@ -7,7 +7,7 @@
  * - bridge → phone: `{t:'call', id, op, args}`
  * - phone → bridge: `{t:'res', id, ok, data?}` / `{t:'res', id, ok:false, error}`
  *
- * @module dsh-fusion-bridge/phones
+ * @module dsh-pocket-bridge/phones
  */
 
 import { randomUUID } from 'node:crypto'

@@ -3,7 +3,7 @@
  * Supports exactly what dsh-mcp-client needs: `initialize`, `tools/list`,
  * `tools/call`, `ping`, and the `notifications/initialized` notification.
  *
- * @module dsh-fusion-bridge/mcp
+ * @module dsh-pocket-bridge/mcp
  */
 
 import { randomUUID } from 'node:crypto'

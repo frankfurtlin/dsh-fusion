@@ -963,9 +963,9 @@ export function checkUiJson(text) {
 
 function defaultPath() {
   if (process.env.DSH_HOME) return join(process.env.DSH_HOME, 'dsh-go', 'ui.json');
-  // Installed as <DSH_HOME>/skills/dsh-fusion-ui/scripts/check.mjs.
+  // Installed as <DSH_HOME>/skills/dsh-pocket-ui/scripts/check.mjs.
   const skill = dirname(here);
-  if (basename(here) === 'scripts' && basename(skill) === 'dsh-fusion-ui' && basename(dirname(skill)) === 'skills') {
+  if (basename(here) === 'scripts' && basename(skill) === 'dsh-pocket-ui' && basename(dirname(skill)) === 'skills') {
     return join(dirname(dirname(skill)), 'dsh-go', 'ui.json');
   }
   return join(homedir(), '.dsh', 'dsh-go', 'ui.json');

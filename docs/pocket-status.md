@@ -1,7 +1,7 @@
 # fusion 现状（2026-11-20）
 
 > **2026-11-22**：上游那套第三方托管服务（论坛、官方插件市场目录、分享托管、创意工坊后端、
-> 更新镜像）已全部关停，代码里的端点已移除或置空。包名、仓库名、内置技能包统一改为 `dsh-fusion`。
+> 更新镜像）已全部关停，代码里的端点已移除或置空。包名、仓库名、内置技能包统一改为 `dsh-pocket`。
 
 把 dsh-Go（Flutter 原生客户端）与 dsh-mobile（作者自己的 Capacitor 套壳）合成的工作仓库。
 架构决策见 [merge-architecture.md](merge-architecture.md)，逐文件移植方案见 [port-map.md](port-map.md)，
@@ -75,7 +75,7 @@ tools/verify-bridge.sh --watch  # 等手机连上再报
 判定「手机上这套真能用」的链路：
 1. App 里「手机桥」填 origin + 网关令牌 → 连接；
 2. 服务器 `curl 127.0.0.1:3082/healthz` 的 `phones` 变成 1；
-3. `journalctl -u dsh-fusion-bridge` 里 `phone connected` 的 `caps=` 有 **26** 项（含 `a11y.find`、`a11y.text`、`device.status`、`media.latest`）。旧包是 22 项 —— **caps 数是判断装没装上新包的硬指标**；
+3. `journalctl -u dsh-pocket-bridge` 里 `phone connected` 的 `caps=` 有 **26** 项（含 `a11y.find`、`a11y.text`、`device.status`、`media.latest`）。旧包是 22 项 —— **caps 数是判断装没装上新包的硬指标**；
 4. 任一 dsh 会话里调用 `phone_ping` / `phone_info` 拿到响应。
 
 ## 当前可安装包
@@ -125,6 +125,6 @@ https://hermes.frankfurtlin.top/dshfusion/DSH-Fusion-arm64-release-65caf86.apk
 
 ## 尚未完成
 
-- **手机桥暂不启用**（用户 2026-11-22 决定）。服务端 `dsh-fusion-bridge` 仍在跑，随时可开。
+- **手机桥暂不启用**（用户 2026-11-22 决定）。服务端 `dsh-pocket-bridge` 仍在跑，随时可开。
 - 后台耗电未测：桥不用了就没有 WSS 常驻负担；若以后再开，按「客户端不 ping + SSH keepalive 45s + 服务端心跳 60s」观察。
 - `dshgo` 这个 URL scheme 与 `.dshgo` 分享文件扩展名仍是旧名（改会破坏已有分享链接与文件，需要单独决策）。

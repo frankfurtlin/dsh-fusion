@@ -86,7 +86,7 @@ async function callTool(name, args) {
 console.log('MCP handshake')
 const init = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'smoke', version: '0' } })
 check('initialize answers 200', init.status === 200, `status ${init.status}`)
-check('initialize names the server', init.body?.result?.serverInfo?.name === 'dsh-fusion-bridge', JSON.stringify(init.body))
+check('initialize names the server', init.body?.result?.serverInfo?.name === 'dsh-pocket-bridge', JSON.stringify(init.body))
 check('initialize assigns a session id', Boolean(init.sessionId), String(init.sessionId))
 const notified = await fetch(`${base}${config.mcpPath}`, {
   method: 'POST',

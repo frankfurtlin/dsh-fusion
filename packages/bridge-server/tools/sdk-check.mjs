@@ -16,7 +16,7 @@ const handle = await listen(config, { log: () => {} })
 const port = handle.server.address().port
 const phone = await connectFakePhone({ url: `ws://127.0.0.1:${port}${config.wsPath}` })
 
-const client = new Client({ name: 'dsh-fusion-bridge-sdk-check', version: '0.0.0' }, { capabilities: {} })
+const client = new Client({ name: 'dsh-pocket-bridge-sdk-check', version: '0.0.0' }, { capabilities: {} })
 const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}${config.mcpPath}`))
 await client.connect(transport)
 
