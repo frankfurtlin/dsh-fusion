@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../l10n/l10n.dart';
 import '../../media/gallery.dart' show imageProviderBytes;
@@ -68,6 +69,10 @@ String _extensionOf(String path) {
 /// How a file is shown.
 enum PreviewMode {
   image,
+
+  /// Vector drawing (SVG), rendered on the phone.
+  svg,
+
   pdf,
 
   /// Converted to PDF by the Host.
@@ -95,7 +100,7 @@ PreviewMode previewModeOf(String path, {bool officeToPdf = false}) {
     return officeToPdf ? PreviewMode.office : PreviewMode.unsupported;
   }
   return switch (artifactKindOf(path)) {
-    ArtifactKind.image => ext == 'svg' ? PreviewMode.text : PreviewMode.image,
+    ArtifactKind.image => ext == 'svg' ? PreviewMode.svg : PreviewMode.image,
     ArtifactKind.pdf => PreviewMode.pdf,
     ArtifactKind.markdown => PreviewMode.markdown,
     ArtifactKind.text || ArtifactKind.web || ArtifactKind.other => PreviewMode.text,
@@ -135,9 +140,7 @@ bool artifactPreviewable(Artifact artifact, {bool officeToPdf = false}) {
   if (mode == PreviewMode.unsupported) return false;
   // A web page or a drawing made for the user reads better in an app that
   // renders it than as its source.
-  if (artifact.kind == ArtifactKind.web || artifact.kind == ArtifactKind.image && mode == PreviewMode.text) {
-    return false;
-  }
+  if (artifact.kind == ArtifactKind.web) return false;
   if (mode == PreviewMode.text && artifact.kind == ArtifactKind.other) {
     return isTextLikePath(artifact.path);
   }
@@ -506,6 +509,13 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
           sessionId: widget.sessionId,
           artifact: _artifact,
           office: mode == PreviewMode.office,
+          revision: _revision,
+          onOpen: _openElsewhere,
+        ),
+        PreviewMode.svg => _SvgPreview(
+          key: ValueKey(mode),
+          sessionId: widget.sessionId,
+          artifact: _artifact,
           revision: _revision,
           onOpen: _openElsewhere,
         ),
@@ -1836,5 +1846,97 @@ class _PdfPageState extends State<_PdfPage> {
         },
       ),
     );
+  }
+}
+
+/// An SVG drawing, rendered on the phone.
+///
+/// SVG used to be shown as source text (and refused by [artifactPreviewable]),
+/// which is the wrong default: a drawing should look like a drawing. The bytes
+/// come through the same path as images — [artifactFilesProvider] materializes
+/// the file locally whether it lives on this phone or on the host.
+class _SvgPreview extends ConsumerStatefulWidget {
+  const _SvgPreview({
+    super.key,
+    required this.sessionId,
+    required this.artifact,
+    required this.revision,
+    this.onOpen,
+  });
+
+  final String sessionId;
+  final Artifact artifact;
+  final int revision;
+  final VoidCallback? onOpen;
+
+  @override
+  ConsumerState<_SvgPreview> createState() => _SvgPreviewState();
+}
+
+class _SvgPreviewState extends ConsumerState<_SvgPreview> {
+  Uint8List? _bytes;
+  Object? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_load());
+  }
+
+  @override
+  void didUpdateWidget(_SvgPreview old) {
+    super.didUpdateWidget(old);
+    if (old.revision != widget.revision) unawaited(_load());
+  }
+
+  Future<void> _load() async {
+    try {
+      final files = ref.read(artifactFilesProvider);
+      final path = await _absolute(ref, widget.sessionId, widget.artifact);
+      final file = await files.materialize(widget.sessionId, path);
+      final size = await file.length();
+      // A drawing larger than this is almost certainly not something meant to be
+      // looked at on a phone; refuse instead of freezing the frame.
+      if (size > _remoteImageBytes) throw DshRemoteException('workspace-file/too-large', 'svg', {});
+      final bytes = await file.readAsBytes();
+      if (!mounted) return;
+      setState(() {
+        _bytes = bytes;
+        _error = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      if (_bytes == null) setState(() => _error = error);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final bytes = _bytes;
+    if (bytes != null) {
+      return ZoomableImage(
+        child: SvgPicture.memory(
+          bytes,
+          fit: BoxFit.contain,
+          placeholderBuilder: (_) => const _Spinner(color: Colors.white70),
+          // A broken reference inside the SVG should not take the page down.
+          errorBuilder: (_, error, _) => _ImageViewerFrame.message(
+            l10n.viewArtifactImageFailed,
+            actionLabel: l10n.commonOpenWith,
+            onAction: widget.onOpen,
+          ),
+        ),
+      );
+    }
+    if (_error case final error?) {
+      final problem = _problemOf(error);
+      return _ImageViewerFrame.message(
+        problem.message ?? problem.title,
+        actionLabel: problem.fix == _Fix.open ? l10n.commonOpenWith : null,
+        onAction: widget.onOpen,
+      );
+    }
+    return const _Spinner(color: Colors.white70);
   }
 }
