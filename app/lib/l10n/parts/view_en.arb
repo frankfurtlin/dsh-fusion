@@ -387,5 +387,8 @@
   "viewUiDialectKindMap": "Map",
   "viewUiDialectKindOther": "This part",
   "viewUiDialectInvalid": "This block shows in DSH Web",
-  "viewUiDialectNote": "Shown in DSH Web"
+  "viewUiDialectNote": "Shown in DSH Web",
+  "viewHtmlSandbox": "Static preview · scripts off · network blocked",
+  "viewHtmlSource": "View source",
+  "viewHtmlRendered": "View rendered"
 }

@@ -6,6 +6,7 @@
 // in an Android app.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dsh_client/dsh_client.dart';
@@ -14,15 +15,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../l10n/l10n.dart';
 import '../../media/gallery.dart' show imageProviderBytes;
 import '../../state/artifact_files.dart';
 import '../../state/artifacts.dart';
 import '../../state/sheet_files.dart';
+import '../preview/html_preview_sanitizer.dart';
 import '../../state/workspace_state.dart';
 import '../common/capsule_chip.dart';
 import '../files/file_glyph.dart';
+import '../web/web_view_guard.dart';
 import '../files/table_view.dart';
 import '../session/workspace_files.dart' show formatBytes;
 import '../share/share_entry.dart' show shareArtifact;
@@ -51,6 +55,9 @@ const _workbookBytes = 16 * 1024 * 1024;
 
 /// Remote images and PDFs are fetched for a preview up to these sizes.
 const _remoteImageBytes = 32 * 1024 * 1024;
+
+/// An HTML file worth rendering; past this it is a download, not a preview.
+const _htmlBytes = 4 * 1024 * 1024;
 const _remotePdfBytes = 64 * 1024 * 1024;
 
 /// [path] 所在的目录;没有目录部分时为 null(交给会话的工作目录)。
@@ -72,6 +79,9 @@ enum PreviewMode {
 
   /// Vector drawing (SVG), rendered on the phone.
   svg,
+
+  /// An HTML document, rendered with scripts and network off.
+  html,
 
   pdf,
 
@@ -103,7 +113,8 @@ PreviewMode previewModeOf(String path, {bool officeToPdf = false}) {
     ArtifactKind.image => ext == 'svg' ? PreviewMode.svg : PreviewMode.image,
     ArtifactKind.pdf => PreviewMode.pdf,
     ArtifactKind.markdown => PreviewMode.markdown,
-    ArtifactKind.text || ArtifactKind.web || ArtifactKind.other => PreviewMode.text,
+    ArtifactKind.web => PreviewMode.html,
+    ArtifactKind.text || ArtifactKind.other => PreviewMode.text,
     _ => PreviewMode.unsupported,
   };
 }
@@ -140,7 +151,6 @@ bool artifactPreviewable(Artifact artifact, {bool officeToPdf = false}) {
   if (mode == PreviewMode.unsupported) return false;
   // A web page or a drawing made for the user reads better in an app that
   // renders it than as its source.
-  if (artifact.kind == ArtifactKind.web) return false;
   if (mode == PreviewMode.text && artifact.kind == ArtifactKind.other) {
     return isTextLikePath(artifact.path);
   }
@@ -293,6 +303,9 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
   /// XLSX this phone could not read: the Host's PDF of it instead.
   bool _asPdf = false;
 
+  /// 「查看源码」 for html / svg
+  bool _asSource = false;
+
   StreamSubscription<DshWorkspaceWatchFrame>? _watch;
   Timer? _debounce;
   bool _ready = false;
@@ -407,6 +420,13 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
   }
 
   List<Widget> get _actions => [
+    if (previewModeOf(_artifact.path) == PreviewMode.html ||
+        previewModeOf(_artifact.path) == PreviewMode.svg)
+      GlassIconButton(
+        icon: _asSource ? AppIcons.preview : AppIcons.code,
+        tooltip: _asSource ? context.l10n.viewHtmlRendered : context.l10n.viewHtmlSource,
+        onPressed: () => setState(() => _asSource = !_asSource),
+      ),
     GlassIconButton(
       icon: ArtifactAction.share.icon,
       tooltip: context.l10n.commonShare,
@@ -442,6 +462,7 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
     final convert = office && ref.watch(artifactFilesProvider).canConvertOffice;
     var mode = previewModeOf(_artifact.path, officeToPdf: convert);
     if (mode == PreviewMode.table && _asText) mode = PreviewMode.text;
+    if ((mode == PreviewMode.html || mode == PreviewMode.svg) && _asSource) mode = PreviewMode.text;
     if (mode == PreviewMode.workbook && _asPdf) mode = PreviewMode.office;
 
     if (mode == PreviewMode.image && (!_gone || _images.length > 1)) {
@@ -509,6 +530,13 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
           sessionId: widget.sessionId,
           artifact: _artifact,
           office: mode == PreviewMode.office,
+          revision: _revision,
+          onOpen: _openElsewhere,
+        ),
+        PreviewMode.html => _HtmlPreview(
+          key: ValueKey(mode),
+          sessionId: widget.sessionId,
+          artifact: _artifact,
           revision: _revision,
           onOpen: _openElsewhere,
         ),
@@ -1938,5 +1966,169 @@ class _SvgPreviewState extends ConsumerState<_SvgPreview> {
       );
     }
     return const _Spinner(color: Colors.white70);
+  }
+}
+
+/// An HTML document, rendered in a WebView that cannot reach anything.
+///
+/// The file may come from the agent, a repository, or something downloaded, so
+/// it is treated as hostile input. Three walls, in order:
+///
+/// 1. [sanitizeHtmlForPreview] strips scripts, frames, event handlers and remote
+///    references, and injects `default-src 'none'` so any request that survives
+///    the strip still fails.
+/// 2. The controller is created with JavaScript *disabled* — the strip above is
+///    defence in depth, not the only line.
+/// 3. Every navigation is prevented. A link does nothing; the viewer's
+///    "open elsewhere" is the way out.
+class _HtmlPreview extends ConsumerStatefulWidget {
+  const _HtmlPreview({
+    super.key,
+    required this.sessionId,
+    required this.artifact,
+    required this.revision,
+    this.onOpen,
+  });
+
+  final String sessionId;
+  final Artifact artifact;
+  final int revision;
+  final VoidCallback? onOpen;
+
+  @override
+  ConsumerState<_HtmlPreview> createState() => _HtmlPreviewState();
+}
+
+class _HtmlPreviewState extends ConsumerState<_HtmlPreview> {
+  WebViewController? _controller;
+  WebViewGuard? _guard;
+  Object? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_load());
+  }
+
+  @override
+  void didUpdateWidget(_HtmlPreview old) {
+    super.didUpdateWidget(old);
+    if (old.revision != widget.revision) unawaited(_load());
+  }
+
+  @override
+  void dispose() {
+    _guard?.dispose();
+    _guard = null;
+    _controller = null;
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    try {
+      final files = ref.read(artifactFilesProvider);
+      final path = await _absolute(ref, widget.sessionId, widget.artifact);
+      final file = await files.materialize(widget.sessionId, path);
+      if (await file.length() > _htmlBytes) {
+        throw DshRemoteException('workspace-file/too-large', 'html', {});
+      }
+      final source = utf8.decode(await file.readAsBytes(), allowMalformed: true);
+      final document = sanitizeHtmlForPreview(
+        looksLikeFragment(source) ? '<!doctype html><html><body>$source</body></html>' : source,
+      );
+
+      // `loadHtmlString` itself may arrive as a navigation request; the first
+      // one has to go through or the page never paints. Everything after it is
+      // refused, which is what stops links, redirects and forms.
+      var allowFirst = true;
+      final controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.disabled)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onNavigationRequest: (_) {
+              if (allowFirst) {
+                allowFirst = false;
+                return NavigationDecision.navigate;
+              }
+              return NavigationDecision.prevent;
+            },
+            onWebResourceError: (_) {},
+          ),
+        );
+      await controller.loadHtmlString(document);
+      if (!mounted) return;
+
+      final guard = WebViewGuard(onGone: (_) {
+        if (mounted) setState(() => _controller = null);
+      });
+      final media = MediaQuery.maybeOf(context);
+      await guard.attach(
+        controller,
+        dark: Theme.of(context).brightness == Brightness.dark,
+        textZoom: ((media?.textScaler.scale(1) ?? 1) * 100).round(),
+      );
+      if (!mounted) {
+        guard.dispose();
+        return;
+      }
+      _guard?.dispose();
+      setState(() {
+        _guard = guard;
+        _controller = controller;
+        _error = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = error);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final controller = _controller;
+    if (controller != null) {
+      return Column(
+        children: [
+          _SandboxNotice(text: l10n.viewHtmlSandbox),
+          Expanded(child: WebViewWidget(controller: controller)),
+        ],
+      );
+    }
+    if (_error case final error?) {
+      final problem = _problemOf(error);
+      return _ImageViewerFrame.message(
+        problem.message ?? problem.title,
+        actionLabel: problem.fix == _Fix.open ? l10n.commonOpenWith : null,
+        onAction: widget.onOpen,
+      );
+    }
+    return const _Spinner(color: Colors.white70);
+  }
+}
+
+/// The thin strip that says what the preview is not allowed to do.
+class _SandboxNotice extends StatelessWidget {
+  const _SandboxNotice({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = DshColors.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      color: colors.codeWellBg,
+      child: Row(
+        children: [
+          Icon(AppIcons.info, size: 14, color: colors.textTertiary),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(text, style: TextStyle(fontSize: 11.5, color: colors.textTertiary)),
+          ),
+        ],
+      ),
+    );
   }
 }
