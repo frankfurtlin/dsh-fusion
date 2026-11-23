@@ -48,7 +48,8 @@ source /root/toolchain/env.sh && tools/build-apk.sh --debug
 
 - **只在本地构建**，不要用 GitHub Actions 做日常构建。跨云链路实测不可靠
   （GitHub runner → COS 传 66MB 卡死；本机 → GitHub 下载 0 B/s）。
-- **开发阶段用 debug**：`tools/build-apk.sh /root/workspace/dsh-pocket/app`
+- **给用户装机的一律用 release**（2026-11-23 用户明确要求）：`tools/build-apk.sh --release ...`。debug 包只用于我自己排查，不发给用户——debug 是 JIT，UI 慢 2–5 倍，用户会当成卡顿。
+- 内部调试可在本地用 debug 构建，但**不发布**。
 - 发到手机一条命令：`tools/pocket/publish_local.sh [debug|release]`（传 COS 并打印
   直链 + 字节数 + sha256）。
 - debug 与 release **同密钥签名**，可互相覆盖安装且保留数据；换包不用卸载。
