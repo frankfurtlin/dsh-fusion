@@ -12,6 +12,7 @@ import '../../state/update_state.dart';
 import '../shell/brand_mark.dart';
 import '../shell/page_frame.dart';
 import '../theme/theme.dart';
+import '../update/update_tiles.dart';
 import 'settings_widgets.dart';
 
 /// The installed version as the app shows it: `0.9.6 (10271234)`.
@@ -51,6 +52,8 @@ class AboutPage extends ConsumerWidget {
             ),
           ],
         ),
+        // 检查更新 + 每日自动检查（读我们自己的清单，见 tools/pocket/release.py）
+        const SettingsSection(children: [AppUpdateTiles()]),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
           child: Column(
