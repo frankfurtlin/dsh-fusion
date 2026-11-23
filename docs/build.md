@@ -157,3 +157,70 @@ tools/pocket/publish_local.sh release    # release
 (cd packages/bridge-server && node --check src/*.js)     # 改桥服务必跑
 node packages/bridge-server/tools/smoke.mjs              # 桥服务冒烟（91 项）
 ```
+
+## 12. 发布流程（2026-11-23 起）
+
+**一次构建 → 一条命令 → 四处同时最新。** 手工发布容易漏（Release 更新了清单没更新、
+清单指向了不存在的文件），所以把顺序固化成脚本：`tools/pocket/release.py`。
+
+### 标准四步
+
+```bash
+cd /root/workspace/dsh-pocket
+
+# 1. 改版本（两处必须一致，脚本会校验）
+#    app/pubspec.yaml            version: 1.1.1+6
+#    app/lib/state/app_info.dart defaultValue: '1.1.1+6'
+
+# 2. 写 CHANGELOG（脚本会读这一段当 Release 说明；没有就拒绝发布）
+#    ## 1.1.1 · 2026-11-24
+#    - 修了什么…
+
+# 3. 本地构建 release（不要用 debug，不要用 Actions）
+tools/build-apk.sh --release /root/workspace/dsh-pocket/app
+
+# 4. 发布
+python3 tools/pocket/release.py
+```
+
+`release.py` 依次做这几件事，**任何一步失败就整体中止**，不会留下半发布状态：
+
+| 步骤 | 校验/动作 |
+|---|---|
+| 读版本 | `pubspec.yaml` 与 `app_info.dart` 必须一致，否则中止 |
+| 读说明 | `CHANGELOG.md` 必须有对应版本段且非空，否则中止 |
+| 验 APK | `aapt` 查包名/versionName/versionCode/ABI；`apksigner` 查签名必须是 `CN=DSH Fusion` |
+| 上传 COS | `pocket/apk/dsh-pocket-<ver>-<build>-arm64.apk`，`immutable` 长缓存（路径带版本号，内容永不变） |
+| 建 Release | 标签 `v<ver>`，说明取 CHANGELOG，资产名与 COS 一致 |
+| 写清单 | `pocket/update.json` → 指向 **COS 地址**（国内直连快），带 size 与 sha256，`max-age=60` |
+| 回验 | 拉一次 APK 与清单，确认可访问、字节数一致、版本号正确 |
+
+### 为什么清单指向 COS 而不是 GitHub
+
+App 的自动更新读 `https://static.frankfurtlin.top/pocket/update.json`。清单里的
+`url` 指向 COS 直链，手机下载走腾讯 CDN，不需要经过 GitHub 加速镜像；GitHub Release
+保留为归档与来源记录（同一份 APK）。
+
+### 只做部分发布
+
+```bash
+python3 tools/pocket/release.py --dry-run      # 只检查并打印，不写任何远程
+python3 tools/pocket/release.py --skip-github  # 只发 COS + 清单
+```
+
+### 发布后自检
+
+App 侧：设置 → 关于 → 检查更新，或等启动 6 秒后的自动检查（每 24 小时一次）。
+
+服务端侧：
+
+```bash
+curl -s https://static.frankfurtlin.top/pocket/update.json | python3 -m json.tool | head -20
+```
+
+### GitHub Actions 的定位
+
+`.github/workflows/android-apk.yml` **只在需要一台干净机器复现构建时用**（比如本地
+工具链坏了）。它也会建 Release 并写清单，但日常发布不要用它——它构建的包和本机构建
+的包内容可能不同（依赖版本、环境变量），而发布脚本读的是本地产物。
+
