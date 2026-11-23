@@ -390,5 +390,6 @@
   "viewUiDialectNote": "Shown in DSH Web",
   "viewHtmlSandbox": "Static preview · scripts off · network blocked",
   "viewHtmlSource": "View source",
-  "viewHtmlRendered": "View rendered"
+  "viewHtmlRendered": "View rendered",
+  "updateAutoCheckReset": "Check clock reset — the next launch checks again"
 }

@@ -47984,6 +47984,12 @@ abstract class L10n {
   /// **'查看效果'**
   String get viewHtmlRendered;
 
+  /// No description provided for @updateAutoCheckReset.
+  ///
+  /// In zh, this message translates to:
+  /// **'已重置检查计时，下次启动会重新检查'**
+  String get updateAutoCheckReset;
+
   /// No description provided for @voiceSettingsTitle.
   ///
   /// In zh, this message translates to:

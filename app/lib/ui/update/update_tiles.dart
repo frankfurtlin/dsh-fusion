@@ -30,13 +30,24 @@ class AppUpdateTiles extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SettingsTile(
-          icon: tint == null ? null : AppIcons.checkUpdate,
-          tint: tint ?? 0,
-          spot: Spots.updateCheck,
-          value: _value(context, update),
-          onTap: update.check == UpdateCheckPhase.checking ? null : () => unawaited(checkForUpdates(context, ref)),
-          chevron: update.check != UpdateCheckPhase.checking,
+        // 长按清掉 24 小时计时：手动检查随时可用，但「启动自动检查」这条路径
+        // 一旦跑过就要等一天，长按是唯一的立刻重看机会（自用 App，值得留这个口子）。
+        GestureDetector(
+          onLongPress: () async {
+            await controller.resetAutoCheckClock();
+            if (!context.mounted) return;
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(l10n.updateAutoCheckReset), duration: const Duration(seconds: 2)),
+            );
+          },
+          child: SettingsTile(
+            icon: tint == null ? null : AppIcons.checkUpdate,
+            tint: tint ?? 0,
+            spot: Spots.updateCheck,
+            value: _value(context, update),
+            onTap: update.check == UpdateCheckPhase.checking ? null : () => unawaited(checkForUpdates(context, ref)),
+            chevron: update.check != UpdateCheckPhase.checking,
+          ),
         ),
         const SizedBox(height: 2),
         SettingsSwitchTile(

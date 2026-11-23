@@ -26298,6 +26298,9 @@ class L10nZh extends L10n {
   String get viewHtmlRendered => '查看效果';
 
   @override
+  String get updateAutoCheckReset => '已重置检查计时，下次启动会重新检查';
+
+  @override
   String get voiceSettingsTitle => '语音';
 
   @override
