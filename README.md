@@ -1,115 +1,125 @@
 <div align="center">
 
-<img src="app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="120" alt="DSH Pocket" />
+<img src="app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="110" alt="DSH Pocket" />
 
 # DSH Pocket
 
-**把 DeepSeek Harness 装进口袋的 Android 客户端：SSH 连上你自己的主机，在手机原生界面里聊，顺便把手机变成 Agent 的一双手。**
-
-An Android client for DeepSeek Harness. Connect to your own host over SSH, chat in a native app, and let the agent drive the phone itself.
+DeepSeek Harness on your phone: a native Android client that connects to your own host over SSH,
+and lets the agent running there operate the device.
 
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.2-orange)](app/pubspec.yaml)
 [![Platform](https://img.shields.io/badge/platform-Android-3ddc84)](https://developer.android.com)
-[![Flutter](https://img.shields.io/badge/Flutter-3.50-02569b)](https://flutter.dev)
-[![Status](https://img.shields.io/badge/status-in%20development-yellow)](#状态)
+[![Status](https://img.shields.io/badge/status-in%20development-yellow)](#status)
 
-[中文](README.md) · [English](README.en.md) · [构建说明](docs/build.md) · [实现状态](docs/pocket-status.md)
+**English** · [简体中文](README.zh-CN.md) · [Build guide](docs/build.md)
 
 </div>
 
-![架构](docs/architecture.svg)
+![How the pieces fit together](docs/architecture.svg)
 
-## 这是什么
+## The problem
 
-DeepSeek Harness（下称 DSH）跑在你自己的服务器上，平时通过浏览器访问。DSH Pocket 把
-「在手机浏览器里凑合」换成原生 App：对话、会话、工作区文件都在原生界面里操作；同时多出
-一条反向通道——DSH 里的 Agent 能操作这台手机。
+DeepSeek Harness runs on a server you control and is normally used from a browser. On a phone that
+is workable but not pleasant: the sidebar eats the width, the composer fights the keyboard, and
+there is no way for the agent to touch the device it is being used from.
 
-它不做模型推理，也不托管任何数据：所有请求都发往**你自己的**主机。
+DSH Pocket replaces the browser with a native app, and adds a second connection in the opposite
+direction, so the agent can read the screen, tap, type and move files on the phone.
 
-## 功能
+It does not run a model and it stores nothing for you. Every request goes to your own host.
 
-| | |
-|---|---|
-| **远程主机** | 填 SSH 地址即可连上服务器上的 `dsh web`（只连接模式，不在服务器上另起实例）。密码或私钥登录，主机密钥指纹校验（TOFU） |
-| **原生对话** | Flutter 原生聊天界面、流式输出、Markdown 与代码块渲染、会话列表与切换 |
-| **工作区文件** | 浏览、搜索、预览文本 / 图片 / PDF / 表格 / Excel，产物可直接保存或分享 |
-| **手机桥** | App 常驻一条已认证 WSS 到 `bridge-server`，Agent 由此获得 `phone_*` 工具：读写手机文件、剪贴板、通知、启动应用，以及无障碍自动化（读屏、控件树、点击、滑动、截屏） |
-| **兴趣推送** | 服务端按兴趣方向每 6 小时生成摘要，App 后台拉取，有新内容才发通知 |
-| **宠物** | 内置宠物包（水豚噜噜等），随会话状态联动，可导入自己的宠物包 |
-| **主题与图标** | 「雾蓝玻璃」视觉体系、明暗双主题、6 套启动图标可选 |
-| **双语界面** | 中文 / English，跟随系统或手动切换 |
+## How it works
 
-## 安装
+The app talks to your host over an SSH tunnel forwarded to `dsh web` — the same session you would
+have in a browser, rendered in Flutter. A second, authenticated WebSocket connects to a small Node
+service on the same host, which exposes `phone_*` tools to the agent over MCP.
 
-直接装 APK（自建分发，腾讯云 COS + EdgeOne）：
+Nothing needs to be public except the host you already run.
 
-```
-https://static.frankfurtlin.top/pocket/apk/dsh-pocket-1.0.2-3-arm64.apk
+## Install
+
+Download the APK (self-hosted, served from Tencent COS behind EdgeOne):
+
+```bash
+curl -LO https://static.frankfurtlin.top/pocket/apk/dsh-pocket-1.0.2-3-arm64.apk
 ```
 
-- 平台：Android 8.0+（`minSdk 26`），arm64
-- 包名：`top.frankfurtlin.dshfusion`
-- 装完后到「设置 → 远程主机 → 添加 SSH 主机」填地址、端口、用户名与凭据；
-  **DSH 登录令牌**填 `dsh web` 启动链接里的 `?token=` 值
+Android 8.0+ (`minSdk 26`), arm64, package name `top.frankfurtlin.dshfusion`.
 
-从源码构建见 [`docs/build.md`](docs/build.md)（本机构建、签名、提速与坑清单）。
+Then open **Settings → Remote hosts → Add SSH host** and fill in address, port and credentials.
+Paste the **DSH login token** — the `?token=` value from the `dsh web` launch URL.
 
-## 服务器侧
+To build it yourself see [docs/build.md](docs/build.md): local toolchain, signing, build timings
+and the pitfalls worth knowing.
 
-手机桥要跑 `packages/bridge-server`：
+## The phone bridge
+
+The bridge is a single Node service. It binds to loopback; only `/bridge/ws` has to be reachable
+from the phone, and `/mcp` refuses non-loopback peers.
 
 ```bash
 cd packages/bridge-server
 npm install
 DSH_BRIDGE_PUBLIC_ORIGIN=https://dsh.example.com node src/index.js
-# MCP 端点   http://127.0.0.1:3082/mcp
-# 手机 WSS    http://127.0.0.1:3082/bridge/ws  ← 经反向代理对外
-curl -s 127.0.0.1:3082/healthz   # {"ok":true,"service":"dsh-pocket-bridge",...}
+
+curl -s 127.0.0.1:3082/healthz
+# {"ok":true,"service":"dsh-pocket-bridge","phones":0,"version":"0.1.0"}
 ```
 
-它只监听回环，公网只暴露 `/bridge/ws`，`/mcp` 有回环断言。细节见
-[`packages/bridge-server/README.md`](packages/bridge-server/README.md)。
+With it running, the agent can list and move files, read the clipboard, post notifications, launch
+apps, and drive accessibility (`phone_tree`, `phone_tap`, `phone_swipe`, `phone_screenshot`). See
+[packages/bridge-server/README.md](packages/bridge-server/README.md).
 
-## 项目结构
+## What it doesn't do
+
+- It does not host DSH for you. No account, no cloud, no sync between devices.
+- It does not start a DSH instance on your host. Attach-only: if `dsh web` is not running, the app
+  cannot create it.
+- It does not proxy your traffic. The SSH connection runs straight from the phone to your server.
+- iOS and HarmonyOS are not shipped. The platform folders exist but are not maintained.
+- Accessibility automation relies on Android's accessibility service and has not been verified for
+  long-running use.
+
+## Inside the repo
 
 ```
-app/                     Flutter 客户端（lib/ 界面与状态，android/ 宿主：桥服务与无障碍）
-app/assets/skills/       随包分发的技能包，安装到用户主机的 DSH
-packages/bridge-server/  服务器端手机桥（MCP + 手机 WebSocket）
-packages/dsh_client/     纯 Dart 客户端：HTTP/SSE、mux、会话与工作区 API
-packages/dsh_remote/     远程传输
-runtime/                 跑在宿主 DSH 里的插件（原生插件协议）
-tools/                   build-apk.sh / verify-bridge.sh / pocket（摘要与发布）
-docs/                    构建、架构、设计与运维文档
+app/                     Flutter client and Android host
+packages/bridge-server/  MCP + phone WebSocket server
+packages/dsh_client/     Pure Dart client for the DSH API
+packages/dsh_remote/     Transports
+runtime/                 Plugins that run inside the host DSH
+tools/  docs/            Build scripts and documentation
 ```
 
-## 文档
+`app/lib/` holds the UI and Riverpod state; `app/android/` the bridge service and the accessibility
+service. `app/assets/skills/` ships skill bundles that get installed into your host's DSH.
 
-| 文档 | 内容 |
-|---|---|
-| [`docs/build.md`](docs/build.md) | **怎么编译**：本地构建、提速、签名、R8 复盘、坑清单 |
-| [`docs/pocket-status.md`](docs/pocket-status.md) | 当前实现状态与真机验证记录 |
-| [`docs/architecture.md`](docs/architecture.md) | 架构与数据流 |
-| [`docs/pets/README.md`](docs/pets/README.md) | 宠物包格式与硬限制 |
-| [`AGENTS.md`](AGENTS.md) | 在本仓库里工作的约定 |
+## Status
 
-## 状态
+In development, primarily built for personal use. Verified on a real device: install and in-place
+upgrade, SSH remote host, login token, eleven file-preview formats, pet packs, the interest digest
+and the in-app updater. Not yet verified: power draw of a long-lived bridge connection, and
+long-term stability of the accessibility automation.
 
-开发中，自用为主。
+## Docs
 
-- **已真机验证**：安装与覆盖升级、SSH 远程主机、登录令牌、11 种文件预览、宠物包、
-  兴趣推送、自动更新
-- **尚未验证**：手机桥长连的功耗、无障碍自动化的长期稳定性
+[docs/build.md](docs/build.md) covers building. [docs/pocket-status.md](docs/pocket-status.md) is
+the on-device verification log. [docs/architecture.md](docs/architecture.md) has the data flow,
+[docs/pets/README.md](docs/pets/README.md) the pet pack format, and [AGENTS.md](AGENTS.md) the
+conventions for working in this repository. The Chinese README,
+[README.zh-CN.md](README.zh-CN.md), carries the longer notes.
 
-## 许可
+## Contributing
 
-[AGPL-3.0](LICENSE)。
+Issues and pull requests are welcome, though this is a personal project and replies may be slow. Run
+`flutter analyze` and the bridge smoke test before opening a PR — see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
-本项目是 [dsh-Go](https://github.com/ccch1mneyyy/dsh-Go)（AGPL-3.0）的衍生作品，并移植了
-同一作者早期 Capacitor 实现（MIT）的手机桥部分；上游署名与第三方素材授权见
-[NOTICE.md](NOTICE.md) 与 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+## License
 
-派生作品必须延续 AGPL-3.0。随包分发的第三方素材（宠物、字体、图标）各有其授权，
-不在本项目授权范围内。
+AGPL-3.0. This project is a derivative of [dsh-Go](https://github.com/ccch1mneyyy/dsh-Go)
+(AGPL-3.0) and ports the phone bridge from the same author's earlier Capacitor implementation
+(MIT). Copyright, upstream attribution and third-party asset licenses live in
+[NOTICE.md](NOTICE.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Bundled assets — pets, fonts, icons — carry their own licenses and are not covered by this one.
