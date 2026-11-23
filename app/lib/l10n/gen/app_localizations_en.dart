@@ -27748,6 +27748,9 @@ class L10nEn extends L10n {
   String get viewHtmlRendered => 'View rendered';
 
   @override
+  String get updateAutoCheckReset => 'Check clock reset — the next launch checks again';
+
+  @override
   String get voiceSettingsTitle => 'Voice';
 
   @override

@@ -1386,5 +1386,6 @@
   "viewUiDialectNote": "在网页版查看",
   "viewHtmlSandbox": "静态预览 · 脚本已禁用 · 外部网络已拦截",
   "viewHtmlSource": "查看源码",
-  "viewHtmlRendered": "查看效果"
+  "viewHtmlRendered": "查看效果",
+  "updateAutoCheckReset": "已重置检查计时，下次启动会重新检查"
 }

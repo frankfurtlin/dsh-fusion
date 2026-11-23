@@ -7982,6 +7982,7 @@
   "viewHtmlSandbox": "Static preview · scripts off · network blocked",
   "viewHtmlSource": "View source",
   "viewHtmlRendered": "View rendered",
+  "updateAutoCheckReset": "Check clock reset — the next launch checks again",
   "voiceSettingsTitle": "Voice",
   "voiceModeAuto": "Automatic",
   "voiceModeSystem": "System",

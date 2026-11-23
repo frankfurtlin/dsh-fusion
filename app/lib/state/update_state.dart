@@ -620,6 +620,19 @@ class AppUpdateController extends Notifier<AppUpdateState> {
 
   /// The launch check: runs only when enabled and due ([isAutoCheckDue]).
   /// True when the caller should offer the update (newer and not skipped).
+  /// Clears the 24-hour clock so the next launch checks again.
+  ///
+  /// The interval is global (not per version), so after a check there is no way
+  /// to see the automatic path again for a day. This is the escape hatch: long
+  /// press 「检查更新」 in 设置 → 关于.
+  Future<void> resetAutoCheckClock() async {
+    await ready;
+    final prefs = _prefs;
+    if (prefs == null) return;
+    await prefs.remove(_checkedKey);
+    await prefs.remove(_attemptKey);
+  }
+
   Future<bool> autoCheckIfDue() async {
     await ready;
     final prefs = _prefs;
