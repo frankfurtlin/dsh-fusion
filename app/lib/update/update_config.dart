@@ -21,7 +21,7 @@
 library;
 
 /// GitHub repository the releases live in.
-const updateRepo = 'frankfurtlin/dsh-fusion';
+const updateRepo = 'frankfurtlin/dsh-pocket';
 
 /// `releases/latest` of the REST API: tag, notes, assets with sizes and
 /// SHA-256 digests. Unauthenticated: 60 requests per hour per IP.

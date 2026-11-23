@@ -33,7 +33,7 @@ from datetime import datetime, timedelta, timezone
 HOME = os.path.expanduser('~')
 PUBLISH_ROOT = os.environ.get('POCKET_PUBLISH_ROOT', '/srv/hermes/pocket')
 CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'interests.json')
-UA = 'dsh-pocket-digest/1.0 (+https://github.com/frankfurtlin/dsh-fusion)'
+UA = 'dsh-pocket-digest/1.0 (+https://github.com/frankfurtlin/dsh-pocket)'
 TZ = timezone(timedelta(hours=8))
 
 # 兴趣权重：来自画像（DSH 插件与前端 / agent 基建 / A 股资源板块 / AI 工程）

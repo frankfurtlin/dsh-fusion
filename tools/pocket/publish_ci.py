@@ -41,7 +41,7 @@ def sha256(path: str) -> str:
 def release_asset(tag: str, apk: str, asset_name: str) -> str:
     """把 APK 传到 GitHub Release 并返回浏览器可下载的地址。"""
     import subprocess
-    repo = os.environ.get('GITHUB_REPOSITORY', 'frankfurtlin/dsh-fusion')
+    repo = os.environ.get('GITHUB_REPOSITORY', 'frankfurtlin/dsh-pocket')
     subprocess.run(['gh', 'release', 'view', tag, '-R', repo], capture_output=True)
     view = subprocess.run(['gh', 'release', 'view', tag, '-R', repo], capture_output=True, text=True)
     if view.returncode != 0:
