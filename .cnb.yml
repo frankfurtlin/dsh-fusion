@@ -10,7 +10,9 @@ main:
     - name: android-release
       # Flutter 官方镜像自带 JDK 17、Android SDK、cmdline-tools，省掉每次装环境。
       docker:
-        image: ghcr.io/cirruslabs/flutter:stable
+        # 必须跟 app/pubspec.yaml 的 sdk 约束匹配：stable 标签当前只带 Dart 3.12，
+        # 而项目要求 ^3.13.4。钉到与本机一致的 3.50.0。
+        image: ghcr.io/cirruslabs/flutter:3.50.0
       stages:
         - name: 环境自检
           script: |
