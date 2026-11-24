@@ -116,6 +116,16 @@ main:
             # gradlew/local.properties 被 android/.gitignore 忽略，先让 Flutter 生成
             flutter build apk --release --target-platform android-arm64 --config-only
             cd android
+            # 版本号由 pubspec.yaml 决定，但 --config-only 不会写进 local.properties，
+            # 不补的话 APK 的 versionName 会退化成 1.0。
+            VER=$(sed -n 's/^version: *//p' ../pubspec.yaml)
+            VNAME=${VER%%+*}
+            VBUILD=${VER##*+}
+            sed -i '/^flutter\.version/d' local.properties
+            printf 'flutter.versionName=%s\nflutter.versionCode=%s\n' "$VNAME" "$VBUILD" \
+              >> local.properties
+            echo "版本 $VNAME+$VBUILD"
+            grep -E 'flutter\.version' local.properties
             # -PskipDependencyChecks=true == flutter --android-skip-build-dependency-validation
             ./gradlew --no-daemon assembleRelease \
               -Punsigned -PskipDependencyChecks=true -Ptarget-platform=android-arm64
