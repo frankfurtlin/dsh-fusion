@@ -263,3 +263,45 @@ tools/build-apk.sh --release /root/workspace/dsh-pocket/app
 ps -eo pid,rss,cmd --sort=-rss | head -5      # 看谁在吃内存
 ```
 
+## 14. CNB 远程构建（2026-11-24 起是日常通道）
+
+本机构建慢的根因是内存不是 CPU（见 §13）：本机 2 核 / 8 GB 还要常驻
+DSH(1.5 GB)+Hermes，release 构建峰值 3.5 GB。CNB Runner 实测 **8 核 / 16 GB**。
+
+### 分工
+
+| 环节 | 谁做 |
+|---|---|
+| 编译出未签名 APK | CNB（`.cnb.yml`，push 自动触发） |
+| 下载 + 用 release 密钥签名 | 本机 `tools/pocket/cnb_fetch_sign.py` |
+| 传 COS / 建 Release / 写清单 | 本机 `tools/pocket/release.py` |
+
+签名密钥与 COS 凭据**不进 CI**（用户 2026-11-24 明确要求）。
+
+### 一条完整发布
+
+```bash
+git push origin main                      # 双推 GitHub + CNB
+# 等 CNB 构建完成（约 30 分钟无缓存 / 8-12 分钟有缓存）
+python3 tools/pocket/cnb_fetch_sign.py    # 下载附件 + 签名 + 校验
+python3 tools/pocket/release.py           # 发布
+```
+
+`cnb_fetch_sign.py` 需要 `/root/.secrets/cnb-token.env`（`CNB_TOKEN=...`，600）。
+
+### 流水线踩过的六个坑
+
+| 现象 | 原因 | 修法 |
+|---|---|---|
+| `Cannot mkdir: Function not implemented` | 基础镜像 `eclipse-temurin:17-jdk` | 换 `ubuntu:24.04`，JDK 用 apt |
+| `Cannot change ownership ... Invalid argument` | 容器 userns 未映射 tar 里的 uid/gid | `TAR_OPTIONS=--no-same-owner` |
+| `429 Too Many Requests` | Maven Central 对 CNB 出口限流 | `.cnb/gradle-mirrors.gradle` 走阿里云 |
+| `./gradlew: not found` | `gradlew` 被 `android/.gitignore` 忽略 | 先 `flutter build apk --config-only` |
+| AGP 9.1.0 < 9.1.1 校验失败 | 直接调 gradlew 少了 flutter 的旁路参数 | `-PskipDependencyChecks=true` |
+| 附件页“暂无附件” | 产物在 `apk/<abi>/release/`，路径写少一层 | 复制到工作区根目录再附 |
+
+### 缓存
+
+`docker.volumes` 挂 `/root/flutter`、`/root/android-sdk`、`/root/.gradle`、
+`/root/.pub-cache`。卷可能因 userns 不可写，脚本里有可写性探测，失败自动回退 `/tmp`
+（丢缓存但不阻塞）。

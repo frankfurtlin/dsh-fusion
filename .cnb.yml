@@ -2,112 +2,128 @@
 #
 # 分工（2026-11-24 用户选定「方案 B」）：
 #   CNB  —— 只负责编译，产出**未签名** APK，作为提交附件回传
-#   本机 —— 用 release 密钥签名、校验、传 COS、更新清单（release.py）
-# 签名密钥与 COS 凭据都不需要进 CI。
+#   本机 —— 下载、用 release 密钥签名、传 COS、更新清单
+#          （tools/pocket/cnb_fetch_sign.py + tools/pocket/release.py）
+# 签名密钥与 COS 凭据都不进 CI。
 #
 # 为什么在 CNB 构建：本机 2 核 / 8 GB 且常驻 DSH(1.5 GB)+Hermes，release 构建
-# 峰值 3.5 GB 会把整机压进 swap，40 分钟才出包（docs/build.md §13）。
-# CNB Runner 实测 8 核 / 16 GB。
+# 峰值 3.5 GB 会把整机压进 swap（40 分钟）；CNB Runner 实测 8 核 / 16 GB。
 #
 # 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
 #
-# 踩坑记录（换镜像前先读）：
-#  1. 基础镜像必须用 ubuntu:24.04。用 eclipse-temurin:17-jdk 时，Flutter 解压
-#     自己的 gradle-wrapper 会报 "Cannot mkdir/open: Function not implemented"，
-#     而同样的解压在 ubuntu:24.04 上完全正常（2026-11-24 实测对比）。
-#     JDK 用 apt 装，不要用 temurin 基础镜像。
-#  2. 预置 Flutter 镜像版本不够新：ghcr.io/cirruslabs/flutter 最新 3.44，
-#     项目要 Dart ^3.13.4（Flutter 3.50.0）→ 用 TUNA 镜像 git clone 指定 tag。
-#  3. 别把 Flutter 装到 /cache 这类数据卷上：卷属主被 userns 重映射，不可写。
+# 踩坑记录（改之前先读，每一条都真实卡过一次）：
+#  1. 基础镜像要用 ubuntu:24.04。用 eclipse-temurin:17-jdk 时 Flutter 解压自己的
+#     gradle-wrapper 会报 "Cannot mkdir: Function not implemented"；同一份脚本在
+#     ubuntu:24.04 上一次通过。JDK 用 apt 装。
+#  2. 容器 userns 未映射 Flutter 产物里的 uid/gid → tar chown 报
+#     "Cannot change ownership ... Invalid argument"，必须 TAR_OPTIONS=--no-same-owner。
+#  3. Maven Central 对 CNB 共享出口限流（429）→ 用 .cnb/gradle-mirrors.gradle。
+#  4. app/android/gradlew 被 android/.gitignore 忽略，仓库里没有 → 先跑
+#     `flutter build apk --config-only` 让 Flutter 生成。
+#  5. 直接调 gradlew 时 AGP 版本校验要显式旁路：-PskipDependencyChecks=true
+#     （这就是 --android-skip-build-dependency-validation 传给 Gradle 的属性）。
+#  6. 产物的实际路径是 build/app/outputs/apk/<abi>/release/，附件插件按相对路径
+#     找文件，所以先复制到工作区根目录再附。
 main:
   push:
     - name: android-release-unsigned
       docker:
         image: ubuntu:24.04
+        # 缓存：命中后工具链 13.5m → 几秒，构建 17m → 8m 左右。
+        # 卷可能因 userns 重映射不可写，下面有可写性探测并回退到 /tmp。
+        volumes:
+          - /root/flutter:read-write
+          - /root/android-sdk:read-write
+          - /root/.gradle:read-write
+          - /root/.pub-cache:read-write
       stages:
         - name: 安装工具链
           script: |
             set -e
-            # 容器 userns 没映射 flutter 产物里的 uid/gid（397546/5000），tar 的
-            # chown 会报 "Cannot change ownership ... Invalid argument" 并失败。
-            # TAR_OPTIONS 会被 Flutter 内部调用的 tar 继承。
-            export TAR_OPTIONS="--no-same-owner"
+            # 卷不可写时回退到 /tmp（丢掉缓存但不阻塞构建）
+            pick() {
+              target="$1"
+              mkdir -p "$target" 2>/dev/null || true
+              if touch "$target/.probe" 2>/dev/null; then
+                rm -f "$target/.probe"; echo "$target"
+              else
+                echo "/tmp/$(basename "$target")"
+              fi
+            }
+            FLUTTER_DIR=$(pick /root/flutter)
+            ANDROID_DIR=$(pick /root/android-sdk)
+            GRADLE_DIR=$(pick /root/.gradle)
+            PUB_DIR=$(pick /root/.pub-cache)
+            echo "flutter=$FLUTTER_DIR android=$ANDROID_DIR gradle=$GRADLE_DIR pub=$PUB_DIR"
+
+            cat > /tmp/dsh-paths.sh <<EOF
+            export TAR_OPTIONS=--no-same-owner
+            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+            export ANDROID_HOME=$ANDROID_DIR
+            export ANDROID_SDK_ROOT=$ANDROID_DIR
+            export GRADLE_USER_HOME=$GRADLE_DIR
+            export PUB_CACHE=$PUB_DIR
+            export PATH=$FLUTTER_DIR/bin:$ANDROID_DIR/platform-tools:\$PATH
+            export PUB_HOSTED_URL=https://pub.flutter-io.cn
+            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+            EOF
+
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -qq >/dev/null 2>&1
             apt-get install -y -qq git curl unzip xz-utils openjdk-17-jdk-headless \
               >/dev/null 2>&1
-            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-            if [ ! -x /root/flutter/bin/flutter ]; then
+            if [ ! -x "$FLUTTER_DIR/bin/flutter" ]; then
               echo "==> 克隆 Flutter 3.50.0（TUNA 镜像）"
+              rm -rf "$FLUTTER_DIR"
               git clone --depth 1 --branch 3.50.0 \
-                https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git /root/flutter
-              git config --global --add safe.directory /root/flutter
+                https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git "$FLUTTER_DIR"
+              git config --global --add safe.directory "$FLUTTER_DIR"
             fi
 
-            export ANDROID_HOME=/root/android-sdk
-            if [ ! -d "$ANDROID_HOME/cmdline-tools/latest" ]; then
+            if [ ! -d "$ANDROID_DIR/cmdline-tools/latest" ]; then
               echo "==> 安装 Android SDK"
-              mkdir -p "$ANDROID_HOME/cmdline-tools"
+              mkdir -p "$ANDROID_DIR/cmdline-tools"
               curl -fL --retry 3 -o /tmp/cmdline.zip \
                 https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-              unzip -q /tmp/cmdline.zip -d "$ANDROID_HOME/cmdline-tools"
-              mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+              unzip -q /tmp/cmdline.zip -d "$ANDROID_DIR/cmdline-tools"
+              mv "$ANDROID_DIR/cmdline-tools/cmdline-tools" "$ANDROID_DIR/cmdline-tools/latest"
               rm -f /tmp/cmdline.zip
-              yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
-              "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
+              yes | "$ANDROID_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+              "$ANDROID_DIR/cmdline-tools/latest/bin/sdkmanager" --install \
                 "platform-tools" "platforms;android-36" "build-tools;36.0.0" >/dev/null
             fi
 
-            export PUB_HOSTED_URL=https://pub.flutter-io.cn
-            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
-            /root/flutter/bin/flutter --version
+            . /tmp/dsh-paths.sh
+            flutter --version
             java -version 2>&1 | head -2
 
         - name: 配置 Gradle 镜像
           script: |
             set -e
-            # Maven Central 对 CNB 的共享出口限流（实测 429 Too Many Requests），
-            # Flutter 自带的 :gradle 子构建会直连 Maven Central。用全局 init 脚本
-            # 把仓库地址改写到阿里云镜像（与本地 /root/.gradle/init.d 同一份）。
-            mkdir -p /root/.gradle/init.d
-            cp .cnb/gradle-mirrors.gradle /root/.gradle/init.d/mirrors.gradle
-            cat /root/.gradle/init.d/mirrors.gradle | head -5
+            . /tmp/dsh-paths.sh
+            # Maven Central 对 CNB 共享出口限流（实测 429），Flutter 自带的 :gradle
+            # 子构建会直连它，这里用全局 init 脚本改写到阿里云镜像。
+            mkdir -p "$GRADLE_USER_HOME/init.d"
+            cp .cnb/gradle-mirrors.gradle "$GRADLE_USER_HOME/init.d/mirrors.gradle"
 
         - name: 构建 release（未签名）
           script: |
             set -e
-            # 同安装阶段：Flutter 会再解一次 gradle-wrapper，chown 到未映射的
-            # uid/gid 会失败，必须跳过属主。
-            export TAR_OPTIONS="--no-same-owner"
-            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-            export ANDROID_HOME=/root/android-sdk
-            export ANDROID_SDK_ROOT=/root/android-sdk
-            export PATH=/root/flutter/bin:$ANDROID_HOME/platform-tools:$PATH
-            export PUB_HOSTED_URL=https://pub.flutter-io.cn
-            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+            . /tmp/dsh-paths.sh
             cd app
             flutter pub get
-            # gradlew / local.properties 被 android/.gitignore 忽略，Flutter 现场生成，
-            # 所以先用 --config-only 把 Android 工程准备好，再直接调 gradlew。
+            # gradlew/local.properties 被 android/.gitignore 忽略，先让 Flutter 生成
             flutter build apk --release --target-platform android-arm64 --config-only
-            # 直接调 gradlew：`flutter build apk` 只认 app-arm64-release.apk，
-            # 而 -Punsigned 产出的是 app-arm64-release-unsigned.apk，会报
-            # "Gradle build failed to produce an .apk file"。
             cd android
-            printf 'flutter.sdk=/root/flutter\nsdk.dir=%s\n' "$ANDROID_HOME" > local.properties
-            # -PskipDependencyChecks=true 就是 flutter --android-skip-build-dependency-validation
-            # 传给 Gradle 的同一个属性（见 flutter_tools/lib/src/android/gradle.dart）。
+            # -PskipDependencyChecks=true == flutter --android-skip-build-dependency-validation
             ./gradlew --no-daemon assembleRelease \
               -Punsigned -PskipDependencyChecks=true -Ptarget-platform=android-arm64
-            echo "=== 产物 ==="
-            find ../build/app/outputs -name '*.apk' -printf '%p %s bytes\n'
-            APK=$(find ../build/app/outputs -path '*arm64/release*' -name '*release*.apk' | head -1)
-            [ -n "$APK" ] || APK=$(find ../build/app/outputs -name '*release*.apk' | head -1)
+            APK=$(find ../build/app/outputs -path '*arm64/release*' -name '*.apk' | head -1)
+            [ -n "$APK" ] || APK=$(find ../build/app/outputs -path '*release*' -name '*.apk' | head -1)
             echo "APK=$APK"
             sha256sum "$APK"
-            # 复制到工作区根目录：附件插件按相对路径找文件，产物实际在
-            # app/build/app/outputs/apk/arm64/release/ 下（多了一层 arm64）。
+            # 附件插件按工作区相对路径找文件，先复制到根目录
             cp "$APK" ../../app-release-unsigned.apk
             ls -l ../../app-release-unsigned.apk
 
