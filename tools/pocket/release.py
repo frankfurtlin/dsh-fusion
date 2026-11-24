@@ -230,11 +230,21 @@ def main() -> int:
     parser.add_argument('--dry-run', action='store_true', help='只检查，不写任何远程')
     parser.add_argument('--skip-github', action='store_true', help='不创建/更新 GitHub Release')
     parser.add_argument('--skip-cos', action='store_true', help='只发 GitHub Release（清单写 GitHub 地址）')
+    parser.add_argument(
+        '--apk',
+        help='指定要发布的 APK（默认 app/build/.../app-arm64-release.apk，'
+             '不存在时用 dist/app-arm64-release.apk）。CNB 构建走 dist 那条。',
+    )
     args = parser.parse_args()
 
     full, name, build = read_version()
     notes = changelog_section(name)
-    apk = APK if os.path.exists(APK) else APK_FALLBACK
+    if args.apk is not None:
+        apk = args.apk
+        if not os.path.exists(apk):
+            raise Fail(f'--apk 指定的文件不存在：{apk}')
+    else:
+        apk = APK if os.path.exists(APK) else APK_FALLBACK
     print(f'版本      {full}')
     print(f'APK       {apk}')
 
