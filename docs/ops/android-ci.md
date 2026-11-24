@@ -1,3 +1,9 @@
+> **已废弃（2026-11-24）**：正式包不再由 GitHub Actions 构建，改由 **CNB**
+> 编译（未签名）+ 本机签名发布，见 [`docs/build.md`](../build.md) §14。
+> 本文保留作为历史记录：仓库已从 `dsh-Go` 改名为 `dsh-pocket`，发布密钥的
+> 证书主体也已从 `CN=dsh-Go` 改为 `CN=DSH Fusion`，文中提到 `CN=dsh-Go`
+> 与 Actions 流程的步骤都不要再照做。
+
 # Android APK 的 CI 构建与发布签名
 
 本文记录 2026-11-20 起 APK 的两条产出路径：**本机脚本**（快速验证）和 **GitHub Actions**（正式出包）。
