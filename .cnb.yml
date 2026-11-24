@@ -1,52 +1,23 @@
-# CNB 云原生构建：Android release APK（未签名）
-#
-# 分工（2026-11-24 用户选定「方案 B」）：
-#   CNB  —— 只负责编译，产出**未签名** APK，作为提交附件回传
-#   本机 —— 用 release 密钥签名、校验、传 COS、更新清单（release.py）
-# 签名密钥与 COS 凭据都不需要进 CI。
-#
-# 为什么在 CNB 构建：本机 2 核 / 8 GB 且常驻 DSH(1.5 GB)+Hermes，release 构建
-# 峰值 3.5 GB 会把整机压进 swap，40 分钟才出包（docs/build.md §13）。
-#
-# 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
-#
-# 关键决策（踩坑记录，别改回去）：
-#  1. 工具链装在**镜像**里，不在流水线里现装。CNB 流水线沙箱对 tar 的
-#     mkdir/open 返回 ENOSYS（"Function not implemented"），Flutter 解压自己的
-#     引擎产物必定失败；docker build 的上下文没有这个限制。
-#  2. 预置镜像不够新：ghcr.io/cirruslabs/flutter 最新只到 3.44，项目要
-#     Dart ^3.13.4（Flutter 3.50.0），所以 Dockerfile 里自己装。
-#  3. 镜像缓存用 build.by 声明：只有 Dockerfile 变了才重建（约 10 分钟），
-#     否则直接命中已有镜像。
 main:
   push:
-    - name: android-release-unsigned
+    - name: tar-diagnose
       docker:
-        build:
-          dockerfile: docker/android.Dockerfile
-          by:
-            - docker/android.Dockerfile
+        image: ubuntu:24.04
       stages:
-        - name: 环境自检
+        - name: tar 最小复现
           script: |
-            set -e
-            flutter --version
-            echo "ANDROID_HOME=$ANDROID_HOME"
-            java -version 2>&1 | head -2
-
-        - name: 构建 release（未签名）
-          script: |
-            set -e
-            cd app
-            flutter pub get
-            flutter build apk --release --target-platform android-arm64 -Punsigned
-            ls -lh build/app/outputs/flutter-apk/
-            APK=$(ls build/app/outputs/flutter-apk/*.apk | head -1)
-            echo "APK=$APK"
-            sha256sum "$APK"
-
-        - name: 回传未签名 APK（提交附件）
-          image: cnbcool/attachments:latest
-          settings:
-            attachments:
-              - "./app/build/app/outputs/flutter-apk/app-arm64-release-unsigned.apk"
+            set -x
+            apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq tar gzip curl >/dev/null 2>&1
+            echo "--- id ---"; id
+            echo "--- mount ---"; mount | grep -E " / | /root| /workspace| /tmp" | head -6
+            echo "--- 本地 tar 往返 ---"
+            mkdir -p /tmp/t1/gradle/wrapper && echo hi > /tmp/t1/gradle/wrapper/f
+            tar czf /tmp/t.tgz -C /tmp/t1 gradle
+            mkdir -p /tmp/t2 && tar xzf /tmp/t.tgz -C /tmp/t2 && find /tmp/t2 -type f
+            echo "--- 下真实 gradle-wrapper.tgz 再解 ---"
+            curl -sSL -o /tmp/gw.tgz https://storage.flutter-io.cn/flutter_infra_release/gradle-wrapper/fd5c1f2c013565a3bea56ada6df9d2b8e96d56aa/gradle-wrapper.tgz
+            ls -l /tmp/gw.tgz; file /tmp/gw.tgz
+            mkdir -p /tmp/gw && tar xzf /tmp/gw.tgz -C /tmp/gw && find /tmp/gw -type f
+            echo "--- 解到 /workspace 下 ---"
+            mkdir -p /workspace/gwtest && tar xzf /tmp/gw.tgz -C /workspace/gwtest && find /workspace/gwtest -type f
+            echo "--- DONE ---"
