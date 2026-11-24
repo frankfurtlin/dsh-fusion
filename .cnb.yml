@@ -10,79 +10,33 @@
 #
 # 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
 #
-# 踩过的坑（别再改回去）：
-#  1. 预置镜像没有新版 Flutter：ghcr.io/cirruslabs/flutter 最新只到 3.44，
-#     项目要 Dart ^3.13.4（Flutter 3.50.0），只能自己装。
-#  2. 容器与数据卷的 overlay 对 tar 的某些操作返回 ENOSYS
-#     （"Cannot open/mkdir: Function not implemented"），解压 Flutter 必挂
-#     → 改用 git clone（TUNA 镜像）装 Flutter，并去掉 tar 路径。
-#  3. 数据卷属主被 userns 重映射，/cache 不可写 → 探测后回退到 $HOME 缓存。
-#  4. /opt 目录同样受限：Flutter 把自己的 gradle-wrapper.tgz 解到
-#     /opt/flutter/bin/cache 时报 ENOSYS。工具链一律装到 $HOME 下。
+# 关键决策（踩坑记录，别改回去）：
+#  1. 工具链装在**镜像**里，不在流水线里现装。CNB 流水线沙箱对 tar 的
+#     mkdir/open 返回 ENOSYS（"Function not implemented"），Flutter 解压自己的
+#     引擎产物必定失败；docker build 的上下文没有这个限制。
+#  2. 预置镜像不够新：ghcr.io/cirruslabs/flutter 最新只到 3.44，项目要
+#     Dart ^3.13.4（Flutter 3.50.0），所以 Dockerfile 里自己装。
+#  3. 镜像缓存用 build.by 声明：只有 Dockerfile 变了才重建（约 10 分钟），
+#     否则直接命中已有镜像。
 main:
   push:
     - name: android-release-unsigned
       docker:
-        image: eclipse-temurin:17-jdk
-        volumes:
-          - /cache:read-write
+        build:
+          dockerfile: docker/android.Dockerfile
+          by:
+            - docker/android.Dockerfile
       stages:
-        - name: 安装工具链
+        - name: 环境自检
           script: |
             set -e
-            echo "user=$(id -u) home=$HOME"
-            CACHE=/cache
-            mkdir -p "$CACHE" 2>/dev/null || true
-            if ! touch "$CACHE/.probe" 2>/dev/null; then
-              CACHE="$HOME/.cnb-cache"
-              mkdir -p "$CACHE"
-              echo "==> /cache 不可写，改用 $CACHE"
-            fi
-            rm -f "$CACHE/.probe"
-
-            # Flutter 内部会用 `tar -xzf` 解压自己的产物，容器里 gid 5000 未映射，
-            # tar 的 chown 报 "Invalid argument" 直接失败。TAR_OPTIONS 让它跳过属主。
-            export TAR_OPTIONS="--no-same-owner --no-same-permissions"
-            export FLUTTER_HOME="$HOME/flutter"
-            export ANDROID_HOME="$HOME/android-sdk"
-            apt-get update -qq >/dev/null 2>&1 || true
-            apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
-
-            if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
-              echo "==> 克隆 Flutter 3.50.0（TUNA 镜像）"
-              rm -rf "$FLUTTER_HOME"
-              git clone --depth 1 --branch 3.50.0 \
-                https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git "$FLUTTER_HOME"
-              git config --global --add safe.directory "$FLUTTER_HOME"
-            fi
-
-            if [ ! -d "$ANDROID_HOME/cmdline-tools/latest" ]; then
-              if [ ! -f "$CACHE/commandlinetools-linux.zip" ]; then
-                echo "==> 下载 Android cmdline-tools"
-                curl -fL --retry 3 -o "$CACHE/commandlinetools-linux.zip" \
-                  https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-              fi
-              echo "==> 解压 Android cmdline-tools"
-              mkdir -p "$ANDROID_HOME/cmdline-tools"
-              unzip -q "$CACHE/commandlinetools-linux.zip" -d "$ANDROID_HOME/cmdline-tools"
-              mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
-              yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
-              "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
-                "platform-tools" "platforms;android-36" "build-tools;36.0.0" >/dev/null
-            fi
-            export PUB_HOSTED_URL=https://pub.flutter-io.cn
-            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
-            "$FLUTTER_HOME/bin/flutter" --version
+            flutter --version
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            java -version 2>&1 | head -2
 
         - name: 构建 release（未签名）
           script: |
             set -e
-            export TAR_OPTIONS="--no-same-owner --no-same-permissions"
-            export PATH="$HOME/flutter/bin:$HOME/android-sdk/platform-tools:$PATH"
-            export ANDROID_HOME="$HOME/android-sdk"
-            export ANDROID_SDK_ROOT=/opt/android-sdk
-            export PUB_HOSTED_URL=https://pub.flutter-io.cn
-            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
             cd app
             flutter pub get
             flutter build apk --release --target-platform android-arm64 -Punsigned
