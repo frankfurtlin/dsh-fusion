@@ -28,6 +28,10 @@ main:
         - name: 安装工具链
           script: |
             set -e
+            # 容器 userns 没映射 flutter 产物里的 uid/gid（397546/5000），tar 的
+            # chown 会报 "Cannot change ownership ... Invalid argument" 并失败。
+            # TAR_OPTIONS 会被 Flutter 内部调用的 tar 继承。
+            export TAR_OPTIONS="--no-same-owner"
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -qq >/dev/null 2>&1
             apt-get install -y -qq git curl unzip xz-utils openjdk-17-jdk-headless \
@@ -63,6 +67,7 @@ main:
         - name: 构建 release（未签名）
           script: |
             set -e
+            export TAR_OPTIONS="--no-same-owner"
             export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
             export PATH=/root/flutter/bin:$ANDROID_HOME/platform-tools:$PATH
             export ANDROID_HOME=/root/android-sdk
