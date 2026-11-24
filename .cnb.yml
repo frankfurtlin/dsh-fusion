@@ -17,6 +17,8 @@
 #     （"Cannot open/mkdir: Function not implemented"），解压 Flutter 必挂
 #     → 改用 git clone（TUNA 镜像）装 Flutter，并去掉 tar 路径。
 #  3. 数据卷属主被 userns 重映射，/cache 不可写 → 探测后回退到 $HOME 缓存。
+#  4. /opt 目录同样受限：Flutter 把自己的 gradle-wrapper.tgz 解到
+#     /opt/flutter/bin/cache 时报 ENOSYS。工具链一律装到 $HOME 下。
 main:
   push:
     - name: android-release-unsigned
@@ -38,8 +40,8 @@ main:
             fi
             rm -f "$CACHE/.probe"
 
-            export FLUTTER_HOME=/opt/flutter
-            export ANDROID_HOME=/opt/android-sdk
+            export FLUTTER_HOME="$HOME/flutter"
+            export ANDROID_HOME="$HOME/android-sdk"
             apt-get update -qq >/dev/null 2>&1 || true
             apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
 
@@ -72,8 +74,8 @@ main:
         - name: 构建 release（未签名）
           script: |
             set -e
-            export PATH=/opt/flutter/bin:/opt/android-sdk/platform-tools:$PATH
-            export ANDROID_HOME=/opt/android-sdk
+            export PATH="$HOME/flutter/bin:$HOME/android-sdk/platform-tools:$PATH"
+            export ANDROID_HOME="$HOME/android-sdk"
             export ANDROID_SDK_ROOT=/opt/android-sdk
             export PUB_HOSTED_URL=https://pub.flutter-io.cn
             export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
