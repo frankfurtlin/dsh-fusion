@@ -11,113 +11,48 @@
 #
 # 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
 #
-# 踩坑记录（改之前先读，每一条都真实卡过一次）：
-#  1. 基础镜像要用 ubuntu:24.04。用 eclipse-temurin:17-jdk 时 Flutter 解压自己的
-#     gradle-wrapper 会报 "Cannot mkdir: Function not implemented"；同一份脚本在
-#     ubuntu:24.04 上一次通过。JDK 用 apt 装。
-#  2. 容器 userns 未映射 Flutter 产物里的 uid/gid → tar chown 报
-#     "Cannot change ownership ... Invalid argument"，必须 TAR_OPTIONS=--no-same-owner。
-#  3. Maven Central 对 CNB 共享出口限流（429）→ 用 .cnb/gradle-mirrors.gradle。
-#  4. app/android/gradlew 被 android/.gitignore 忽略，仓库里没有 → 先跑
-#     `flutter build apk --config-only` 让 Flutter 生成。
-#  5. 直接调 gradlew 时 AGP 版本校验要显式旁路：-PskipDependencyChecks=true
-#     （这就是 --android-skip-build-dependency-validation 传给 Gradle 的属性）。
-#  6. 产物的实际路径是 build/app/outputs/apk/<abi>/release/，附件插件按相对路径
-#     找文件，所以先复制到工作区根目录再附。
+# 踩坑记录（改之前先读，每条都真实卡过一次）：
+#  1. 工具链预烤进镜像（docker/android.Dockerfile），由 build.by 哈希缓存。
+#     **不要用数据卷缓存**：容器 userns 重映射导致卷不可写，实测四个卷全退回
+#     /tmp，等于没缓存（工具链仍要 13.6 分钟）。
+#  2. 基础镜像必须 ubuntu，不能 eclipse-temurin（后者下 Flutter 解压会 ENOSYS）。
+#  3. tar 必须 --no-same-owner（镜像里用 TAR_OPTIONS 环境变量）。
+#  4. Maven Central 对 CNB 出口限流 429 → 用 .cnb/gradle-mirrors.gradle。
+#  5. app/android/gradlew 被 .gitignore 忽略 → 先 `flutter build apk --config-only`。
+#  6. 直接调 gradlew 要显式 -PskipDependencyChecks=true 旁路 AGP 版本校验。
+#  7. --config-only 不写版本号 → 手动把 pubspec 的版本写进 local.properties。
+#  8. 产物在 apk/<abi>/release/ 下，附件插件按相对路径找文件 → 先复制到工作区根。
 main:
   push:
     - name: android-release-unsigned
       docker:
-        image: ubuntu:24.04
-        # 缓存：命中后工具链 13.5m → 几秒，构建 17m → 8m 左右。
-        # 卷可能因 userns 重映射不可写，下面有可写性探测并回退到 /tmp。
-        volumes:
-          - /root/flutter:read-write
-          - /root/android-sdk:read-write
-          - /root/.gradle:read-write
-          - /root/.pub-cache:read-write
+        build:
+          dockerfile: docker/android.Dockerfile
+          # 只有这个文件变了才重建镜像（首次约 20 分钟，之后秒级命中）
+          by:
+            - docker/android.Dockerfile
       stages:
-        - name: 安装工具链
+        - name: 环境自检
           script: |
             set -e
-            # 卷不可写时回退到 /tmp（丢掉缓存但不阻塞构建）
-            pick() {
-              target="$1"
-              mkdir -p "$target" 2>/dev/null || true
-              if touch "$target/.probe" 2>/dev/null; then
-                rm -f "$target/.probe"; echo "$target"
-              else
-                echo "/tmp/$(basename "$target")"
-              fi
-            }
-            FLUTTER_DIR=$(pick /root/flutter)
-            ANDROID_DIR=$(pick /root/android-sdk)
-            GRADLE_DIR=$(pick /root/.gradle)
-            PUB_DIR=$(pick /root/.pub-cache)
-            echo "flutter=$FLUTTER_DIR android=$ANDROID_DIR gradle=$GRADLE_DIR pub=$PUB_DIR"
-
-            cat > /tmp/dsh-paths.sh <<EOF
-            export TAR_OPTIONS=--no-same-owner
-            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-            export ANDROID_HOME=$ANDROID_DIR
-            export ANDROID_SDK_ROOT=$ANDROID_DIR
-            export GRADLE_USER_HOME=$GRADLE_DIR
-            export PUB_CACHE=$PUB_DIR
-            export PATH=$FLUTTER_DIR/bin:$ANDROID_DIR/platform-tools:\$PATH
-            export PUB_HOSTED_URL=https://pub.flutter-io.cn
-            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
-            EOF
-
-            export DEBIAN_FRONTEND=noninteractive
-            apt-get update -qq >/dev/null 2>&1
-            apt-get install -y -qq git curl unzip xz-utils openjdk-17-jdk-headless \
-              >/dev/null 2>&1
-
-            if [ ! -x "$FLUTTER_DIR/bin/flutter" ]; then
-              echo "==> 克隆 Flutter 3.50.0（TUNA 镜像）"
-              rm -rf "$FLUTTER_DIR"
-              git clone --depth 1 --branch 3.50.0 \
-                https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git "$FLUTTER_DIR"
-              git config --global --add safe.directory "$FLUTTER_DIR"
-            fi
-
-            if [ ! -d "$ANDROID_DIR/cmdline-tools/latest" ]; then
-              echo "==> 安装 Android SDK"
-              mkdir -p "$ANDROID_DIR/cmdline-tools"
-              curl -fL --retry 3 -o /tmp/cmdline.zip \
-                https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-              unzip -q /tmp/cmdline.zip -d "$ANDROID_DIR/cmdline-tools"
-              mv "$ANDROID_DIR/cmdline-tools/cmdline-tools" "$ANDROID_DIR/cmdline-tools/latest"
-              rm -f /tmp/cmdline.zip
-              yes | "$ANDROID_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
-              "$ANDROID_DIR/cmdline-tools/latest/bin/sdkmanager" --install \
-                "platform-tools" "platforms;android-36" "build-tools;36.0.0" >/dev/null
-            fi
-
-            . /tmp/dsh-paths.sh
             flutter --version
-            java -version 2>&1 | head -2
+            echo "ANDROID_HOME=$ANDROID_HOME"
 
         - name: 配置 Gradle 镜像
           script: |
             set -e
-            . /tmp/dsh-paths.sh
-            # Maven Central 对 CNB 共享出口限流（实测 429），Flutter 自带的 :gradle
-            # 子构建会直连它，这里用全局 init 脚本改写到阿里云镜像。
-            mkdir -p "$GRADLE_USER_HOME/init.d"
-            cp .cnb/gradle-mirrors.gradle "$GRADLE_USER_HOME/init.d/mirrors.gradle"
+            mkdir -p "$HOME/.gradle/init.d"
+            cp .cnb/gradle-mirrors.gradle "$HOME/.gradle/init.d/mirrors.gradle"
 
         - name: 构建 release（未签名）
           script: |
             set -e
-            . /tmp/dsh-paths.sh
             cd app
             flutter pub get
             # gradlew/local.properties 被 android/.gitignore 忽略，先让 Flutter 生成
             flutter build apk --release --target-platform android-arm64 --config-only
             cd android
-            # 版本号由 pubspec.yaml 决定，但 --config-only 不会写进 local.properties，
-            # 不补的话 APK 的 versionName 会退化成 1.0。
+            # --config-only 不写版本号，不补的话 APK versionName 会退化成 1.0
             VER=$(sed -n 's/^version: *//p' ../pubspec.yaml)
             VNAME=${VER%%+*}
             VBUILD=${VER##*+}
@@ -125,7 +60,6 @@ main:
             printf 'flutter.versionName=%s\nflutter.versionCode=%s\n' "$VNAME" "$VBUILD" \
               >> local.properties
             echo "版本 $VNAME+$VBUILD"
-            grep -E 'flutter\.version' local.properties
             # -PskipDependencyChecks=true == flutter --android-skip-build-dependency-validation
             ./gradlew --no-daemon assembleRelease \
               -Punsigned -PskipDependencyChecks=true -Ptarget-platform=android-arm64
@@ -133,7 +67,6 @@ main:
             [ -n "$APK" ] || APK=$(find ../build/app/outputs -path '*release*' -name '*.apk' | head -1)
             echo "APK=$APK"
             sha256sum "$APK"
-            # 附件插件按工作区相对路径找文件，先复制到根目录
             cp "$APK" ../../app-release-unsigned.apk
             ls -l ../../app-release-unsigned.apk
 
