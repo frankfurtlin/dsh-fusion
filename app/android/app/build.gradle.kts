@@ -130,8 +130,12 @@ android {
             if (hasWholeReleaseKey) signingConfig = signingConfigs.getByName("release")
         }
         release {
-            // Use the release key when configured; local builds without key.properties fall back to debug.
-            signingConfig = signingConfigs.getByName(if (keyProps.isEmpty) "debug" else "release")
+            // -Punsigned：CI 只负责编译，产出未签名包，由本机用 release 密钥签名后再发布。
+            // 密钥不进 CI（2026-11-24 用户要求方案 B）。
+            if (!project.hasProperty("unsigned")) {
+                // Use the release key when configured; local builds without key.properties fall back to debug.
+                signingConfig = signingConfigs.getByName(if (keyProps.isEmpty) "debug" else "release")
+            }
             // R8 (minify + resource shrinking) is the slowest step on a small machine
             // (20-40 min), so iteration builds skip it with `-PfastBuild`; `-PnoMinify`
             // keeps an unminified build around when something is only reachable by name
