@@ -46,7 +46,7 @@ DeepSeek Harness（下称 DSH）跑在你自己的服务器上，平时通过浏
 直接装 APK（自建分发，腾讯云 COS + EdgeOne）：
 
 ```
-https://static.frankfurtlin.top/pocket/apk/dsh-pocket-1.0.2-3-arm64.apk
+https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.1.3-8-arm64.apk
 ```
 
 - 平台：Android 8.0+（`minSdk 26`），arm64
@@ -89,7 +89,7 @@ docs/                    构建、架构、设计与运维文档
 
 | 文档 | 内容 |
 |---|---|
-| [`docs/build.md`](docs/build.md) | **怎么编译**：本地构建、提速、签名、R8 复盘、坑清单 |
+| [`docs/build.md`](docs/build.md) | **怎么编译**：CNB 远程构建、本机签名、提速、签名、R8 复盘、坑清单 |
 | [`docs/pocket-status.md`](docs/pocket-status.md) | 当前实现状态与真机验证记录 |
 | [`docs/architecture.md`](docs/architecture.md) | 架构与数据流 |
 | [`docs/pets/README.md`](docs/pets/README.md) | 宠物包格式与硬限制 |

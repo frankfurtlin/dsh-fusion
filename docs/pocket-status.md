@@ -80,20 +80,22 @@ tools/verify-bridge.sh --watch  # 等手机连上再报
 
 ## 当前可安装包
 
-公网地址（免登录，Caddy 静态直出）：
+公网地址（COS + EdgeOne，免登录）：
 
 ```
-https://hermes.frankfurtlin.top/dshfusion/DSH-Fusion-arm64-release-65caf86.apk
+https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.1.3-8-arm64.apk
 ```
 
 | 项 | 值 |
 |---|---|
-| 文件 | `DSH-Fusion-arm64-release-65caf86.apk` |
-| 大小 | 66 MB（R8 release，v1+v2+v3 签名，CN=dsh-Go） |
-| sha256 | `c7dde67b6d63f2105fccca116ea6011ef2381dfc249ed0422cfb6297a63e3f65` |
-| 来源 | GitHub Actions `65caf86`，签名校验由 CI 把关 |
+| 版本 | **1.1.3（versionCode 8）** |
+| 字节 | 76,524,960 |
+| sha256 | `0c5dd93f01570fbea181264dfc931a444d3abc20c51657bd158f448b7d16bfb3` |
+| 签名 | `CN=DSH Fusion`（与历史版本同密钥，可覆盖升级） |
+| 来源 | CNB 构建（未签名）→ 本机 `tools/pocket/cnb_fetch_sign.py` 签名 → `release.py` 发布 |
 
-服务器上同时留了一份在 `dist/apk/`，桥的 `/bridge/download/<file>` 也能取（那条口要求网关登录态）。
+自动更新清单：`https://static.frankfurtlin.top/apps/pocket/update.json`。
+构建链路见 [`docs/build.md`](build.md) §14。
 
 ## 连接方式只剩一种
 
