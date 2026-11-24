@@ -5,7 +5,7 @@
 #   本机 —— 用 release 密钥签名、校验、传 COS、更新清单（release.py）
 # 签名密钥与 COS 凭据都不需要进 CI。
 #
-# 为什么在这儿构建：本机 2 核 / 8 GB 且常驻 DSH(1.5 GB)+Hermes，release 构建
+# 为什么在 CNB 构建：本机 2 核 / 8 GB 且常驻 DSH(1.5 GB)+Hermes，release 构建
 # 峰值 3.5 GB 会把整机压进 swap，40 分钟才出包（docs/build.md §13）。
 #
 # 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
@@ -13,9 +13,10 @@
 # 踩过的坑（别再改回去）：
 #  1. 预置镜像没有新版 Flutter：ghcr.io/cirruslabs/flutter 最新只到 3.44，
 #     项目要 Dart ^3.13.4（Flutter 3.50.0），只能自己装。
-#  2. 数据卷不支持 tar 需要的 chown/utime，解压到卷里会报
-#     "Cannot open: Function not implemented" / "Operation not permitted"。
-#     → 只把**压缩包**放卷里，解压到容器本地盘，并加 --no-same-owner。
+#  2. 容器与数据卷的 overlay 对 tar 的某些操作返回 ENOSYS
+#     （"Cannot open/mkdir: Function not implemented"），解压 Flutter 必挂
+#     → 改用 git clone（TUNA 镜像）装 Flutter，并去掉 tar 路径。
+#  3. 数据卷属主被 userns 重映射，/cache 不可写 → 探测后回退到 $HOME 缓存。
 main:
   push:
     - name: android-release-unsigned
@@ -24,52 +25,48 @@ main:
         volumes:
           - /cache:read-write
       stages:
-        - name: 安装工具链（包已缓存则跳过下载）
+        - name: 安装工具链
           script: |
             set -e
             echo "user=$(id -u) home=$HOME"
-            # 卷的属主被 userns 重映射过，/cache 可能不可写（Permission denied）。
-            # 探测一下，不可写就退到 home 下（丢掉跨构建缓存，但不会卡住）。
             CACHE=/cache
             mkdir -p "$CACHE" 2>/dev/null || true
             if ! touch "$CACHE/.probe" 2>/dev/null; then
               CACHE="$HOME/.cnb-cache"
               mkdir -p "$CACHE"
-              echo "==> /cache 不可写，改用 $CACHE（本次无跨构建缓存）"
+              echo "==> /cache 不可写，改用 $CACHE"
             fi
             rm -f "$CACHE/.probe"
+
             export FLUTTER_HOME=/opt/flutter
             export ANDROID_HOME=/opt/android-sdk
             apt-get update -qq >/dev/null 2>&1 || true
             apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
 
-            if [ ! -f $CACHE/flutter_linux_3.50.0-stable.tar.xz ]; then
-              echo "==> 下载 Flutter 3.50.0（国内镜像）"
-              curl -fL --retry 3 --retry-delay 2 -o $CACHE/flutter_linux_3.50.0-stable.tar.xz \
-                https://storage.flutter-io.cn/flutter_infra_release/releases/stable/linux/flutter_linux_3.50.0-stable.tar.xz
-            fi
             if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
-              echo "==> 解压 Flutter"
-              mkdir -p /opt
-              tar -xJf $CACHE/flutter_linux_3.50.0-stable.tar.xz -C /opt \
-                --no-same-owner --no-same-permissions
+              echo "==> 克隆 Flutter 3.50.0（TUNA 镜像）"
+              rm -rf "$FLUTTER_HOME"
+              git clone --depth 1 --branch 3.50.0 \
+                https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git "$FLUTTER_HOME"
               git config --global --add safe.directory "$FLUTTER_HOME"
             fi
 
-            if [ ! -f "$CACHE/commandlinetools-linux.zip" ]; then
-              echo "==> 下载 Android cmdline-tools"
-              curl -fL --retry 3 -o "$CACHE/commandlinetools-linux.zip" \
-                https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            fi
             if [ ! -d "$ANDROID_HOME/cmdline-tools/latest" ]; then
-              echo "==> 解压 Android SDK 工具"
+              if [ ! -f "$CACHE/commandlinetools-linux.zip" ]; then
+                echo "==> 下载 Android cmdline-tools"
+                curl -fL --retry 3 -o "$CACHE/commandlinetools-linux.zip" \
+                  https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+              fi
+              echo "==> 解压 Android cmdline-tools"
               mkdir -p "$ANDROID_HOME/cmdline-tools"
-              unzip -q $CACHE/commandlinetools-linux.zip -d "$ANDROID_HOME/cmdline-tools"
+              unzip -q "$CACHE/commandlinetools-linux.zip" -d "$ANDROID_HOME/cmdline-tools"
               mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
               yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
               "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
                 "platform-tools" "platforms;android-36" "build-tools;36.0.0" >/dev/null
             fi
+            export PUB_HOSTED_URL=https://pub.flutter-io.cn
+            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
             "$FLUTTER_HOME/bin/flutter" --version
 
         - name: 构建 release（未签名）
