@@ -1,0 +1,41 @@
+# CNB 云原生构建：Android release APK
+#
+# 为什么在这儿构建：本机是 2 核 / 8 GB 且常驻 DSH（1.5 GB）+ Hermes，一次
+# release 构建峰值 3.5 GB，会把内核压进 swap，40 分钟才出包（docs/build.md §13）。
+# CNB Runner 是 4 核，同样的活大约 8 分钟。
+#
+# 触发：main 分支 push。本地 `git push origin main` 会同时推到 GitHub 与 CNB。
+main:
+  push:
+    - name: android-release
+      # Flutter 官方镜像自带 JDK 17、Android SDK、cmdline-tools，省掉每次装环境。
+      docker:
+        image: ghcr.io/cirruslabs/flutter:stable
+      stages:
+        - name: 环境自检
+          script: |
+            set -e
+            echo "--- java ---";   java -version 2>&1 | head -2
+            echo "--- flutter ---"; flutter --version | head -3
+            echo "--- android ---"; echo "ANDROID_HOME=${ANDROID_HOME:-<unset>}"; ls "${ANDROID_HOME:-/opt/android-sdk}" 2>/dev/null | head -5
+
+        - name: 构建 release APK
+          script: |
+            set -e
+            cd app
+            # 国内镜像：pub 与 flutter 引擎产物
+            export PUB_HOSTED_URL=https://pub.flutter-io.cn
+            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+            flutter pub get
+            flutter build apk --release --target-platform android-arm64
+            ls -lh build/app/outputs/flutter-apk/*.apk
+
+        - name: 产物信息
+          script: |
+            set -e
+            cd app
+            APK=$(ls build/app/outputs/flutter-apk/*-release.apk | head -1)
+            echo "APK: $APK"
+            ls -l "$APK"
+            sha256sum "$APK"
+            echo "CNB_ARTIFACT_PATH=$APK"
