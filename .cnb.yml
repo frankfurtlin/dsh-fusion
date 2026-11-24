@@ -27,34 +27,44 @@ main:
         - name: 安装工具链（包已缓存则跳过下载）
           script: |
             set -e
-            mkdir -p /cache
+            echo "user=$(id -u) home=$HOME"
+            # 卷的属主被 userns 重映射过，/cache 可能不可写（Permission denied）。
+            # 探测一下，不可写就退到 home 下（丢掉跨构建缓存，但不会卡住）。
+            CACHE=/cache
+            mkdir -p "$CACHE" 2>/dev/null || true
+            if ! touch "$CACHE/.probe" 2>/dev/null; then
+              CACHE="$HOME/.cnb-cache"
+              mkdir -p "$CACHE"
+              echo "==> /cache 不可写，改用 $CACHE（本次无跨构建缓存）"
+            fi
+            rm -f "$CACHE/.probe"
             export FLUTTER_HOME=/opt/flutter
             export ANDROID_HOME=/opt/android-sdk
             apt-get update -qq >/dev/null 2>&1 || true
             apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
 
-            if [ ! -f /cache/flutter_linux_3.50.0-stable.tar.xz ]; then
+            if [ ! -f $CACHE/flutter_linux_3.50.0-stable.tar.xz ]; then
               echo "==> 下载 Flutter 3.50.0（国内镜像）"
-              curl -fL --retry 3 --retry-delay 2 -o /cache/flutter_linux_3.50.0-stable.tar.xz \
+              curl -fL --retry 3 --retry-delay 2 -o $CACHE/flutter_linux_3.50.0-stable.tar.xz \
                 https://storage.flutter-io.cn/flutter_infra_release/releases/stable/linux/flutter_linux_3.50.0-stable.tar.xz
             fi
             if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
               echo "==> 解压 Flutter"
               mkdir -p /opt
-              tar -xJf /cache/flutter_linux_3.50.0-stable.tar.xz -C /opt \
+              tar -xJf $CACHE/flutter_linux_3.50.0-stable.tar.xz -C /opt \
                 --no-same-owner --no-same-permissions
               git config --global --add safe.directory "$FLUTTER_HOME"
             fi
 
-            if [ ! -f /cache/commandlinetools-linux.zip ]; then
+            if [ ! -f "$CACHE/commandlinetools-linux.zip" ]; then
               echo "==> 下载 Android cmdline-tools"
-              curl -fL --retry 3 -o /cache/commandlinetools-linux.zip \
+              curl -fL --retry 3 -o "$CACHE/commandlinetools-linux.zip" \
                 https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
             fi
             if [ ! -d "$ANDROID_HOME/cmdline-tools/latest" ]; then
               echo "==> 解压 Android SDK 工具"
               mkdir -p "$ANDROID_HOME/cmdline-tools"
-              unzip -q /cache/commandlinetools-linux.zip -d "$ANDROID_HOME/cmdline-tools"
+              unzip -q $CACHE/commandlinetools-linux.zip -d "$ANDROID_HOME/cmdline-tools"
               mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
               yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
               "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
