@@ -102,12 +102,17 @@ main:
               -Punsigned -PskipDependencyChecks=true -Ptarget-platform=android-arm64
             echo "=== 产物 ==="
             find ../build/app/outputs -name '*.apk' -printf '%p %s bytes\n'
-            APK=$(find ../build/app/outputs -name '*release*.apk' | head -1)
+            APK=$(find ../build/app/outputs -path '*arm64/release*' -name '*release*.apk' | head -1)
+            [ -n "$APK" ] || APK=$(find ../build/app/outputs -name '*release*.apk' | head -1)
             echo "APK=$APK"
             sha256sum "$APK"
+            # 复制到工作区根目录：附件插件按相对路径找文件，产物实际在
+            # app/build/app/outputs/apk/arm64/release/ 下（多了一层 arm64）。
+            cp "$APK" ../../app-release-unsigned.apk
+            ls -l ../../app-release-unsigned.apk
 
         - name: 回传未签名 APK（提交附件）
           image: cnbcool/attachments:latest
           settings:
             attachments:
-              - "./app/build/app/outputs/apk/release/app-arm64-release-unsigned.apk"
+              - "./app-release-unsigned.apk"
