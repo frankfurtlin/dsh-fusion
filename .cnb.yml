@@ -88,6 +88,9 @@ main:
             export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
             cd app
             flutter pub get
+            # gradlew / local.properties 被 android/.gitignore 忽略，Flutter 现场生成，
+            # 所以先用 --config-only 把 Android 工程准备好，再直接调 gradlew。
+            flutter build apk --release --target-platform android-arm64 --config-only
             # 直接调 gradlew：`flutter build apk` 只认 app-arm64-release.apk，
             # 而 -Punsigned 产出的是 app-arm64-release-unsigned.apk，会报
             # "Gradle build failed to produce an .apk file"。
