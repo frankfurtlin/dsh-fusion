@@ -77,21 +77,23 @@ main:
         - name: 构建 release（未签名）
           script: |
             set -e
-            export TAR_OPTIONS="--no-same-owner"
             export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-            export PATH=/root/flutter/bin:$ANDROID_HOME/platform-tools:$PATH
             export ANDROID_HOME=/root/android-sdk
             export ANDROID_SDK_ROOT=/root/android-sdk
+            export PATH=/root/flutter/bin:$ANDROID_HOME/platform-tools:$PATH
             export PUB_HOSTED_URL=https://pub.flutter-io.cn
             export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
             cd app
             flutter pub get
-            # AGP 9.1.0 与 Flutter 3.50.0 要求的最低 9.1.1 只差一个 patch，
-            # 与 tools/build-apk.sh 一致地旁路该校验（见 docs/toolchain.md）。
-            flutter build apk --release --target-platform android-arm64 -Punsigned \
-              --android-skip-build-dependency-validation
-            ls -lh build/app/outputs/flutter-apk/
-            APK=$(ls build/app/outputs/flutter-apk/*.apk | head -1)
+            # 直接调 gradlew：`flutter build apk` 只认 app-arm64-release.apk，
+            # 而 -Punsigned 产出的是 app-arm64-release-unsigned.apk，会报
+            # "Gradle build failed to produce an .apk file"。
+            cd android
+            printf 'flutter.sdk=/root/flutter\nsdk.dir=%s\n' "$ANDROID_HOME" > local.properties
+            ./gradlew --no-daemon assembleRelease -Punsigned -Ptarget-platform=android-arm64
+            echo "=== 产物 ==="
+            find ../build/app/outputs -name '*.apk' -printf '%p %s bytes\n'
+            APK=$(find ../build/app/outputs -name '*release*.apk' | head -1)
             echo "APK=$APK"
             sha256sum "$APK"
 
@@ -99,4 +101,4 @@ main:
           image: cnbcool/attachments:latest
           settings:
             attachments:
-              - "./app/build/app/outputs/flutter-apk/app-arm64-release-unsigned.apk"
+              - "./app/build/app/outputs/apk/release/app-arm64-release-unsigned.apk"
