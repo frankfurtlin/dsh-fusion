@@ -30,10 +30,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 APK_OUT = os.path.join(ROOT, 'dist/app-arm64-release.apk')
 KEY_PROPS = os.path.join(ROOT, 'app/android/key.properties')
 BUILD_TOOLS = '/root/toolchain/android/build-tools/36.0.0'
+JDK_HOME = '/root/toolchain/jdk'
 TOKEN_FILE = '/root/.secrets/cnb-token.env'
 
-# CNB 提交附件的下载地址（2026-11-24 实测）
-ATTACHMENT_URL = 'https://cnb.cool/frankslin/frankfurtlin/dsh-pocket/-/commit/{commit}/attachments/{name}'
+# CNB 提交附件的下载地址（2026-11-24 从页面实测得到，需要完整 40 位 sha）
+ATTACHMENT_URL = (
+    'https://cnb.cool/frankslin/frankfurtlin/dsh-pocket'
+    '/-/commit-assets/download/{commit}/{name}'
+)
 REPO_SLUG = 'frankslin/frankfurtlin/dsh-pocket'
 DEFAULT_ASSET = 'app-release-unsigned.apk'
 
@@ -42,10 +46,22 @@ class Fail(Exception):
     """不该被跳过的前置条件。"""
 
 
-def sh(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(args, capture_output=True, text=True)
+def tool_env() -> dict[str, str]:
+    """apksigner / aapt2 是脚本，要能看见 java。"""
+    env = dict(os.environ)
+    java_home = env.get('JAVA_HOME') or JDK_HOME
+    if os.path.isdir(java_home):
+        env['JAVA_HOME'] = java_home
+        env['PATH'] = f'{java_home}/bin:' + env.get('PATH', '')
+    return env
+
+
+def sh(*args: str, check: bool = True, secret: bool = False) -> subprocess.CompletedProcess[str]:
+    result = subprocess.run(args, capture_output=True, text=True, env=tool_env())
     if check and result.returncode != 0:
-        raise Fail(f'命令失败：{" ".join(args)}\n{result.stdout}\n{result.stderr}')
+        # 签名命令里带密码，报错时不能原样打印
+        shown = '<已隐藏含密钥参数的命令>' if secret else ' '.join(args)
+        raise Fail(f'命令失败：{shown}\n{result.stdout}\n{result.stderr}')
     return result
 
 
@@ -71,23 +87,24 @@ def current_commit() -> str:
     return sh('git', '-C', ROOT, 'rev-parse', 'HEAD').stdout.strip()
 
 
-def auth_token() -> str:
-    """CNB 访问令牌；附件下载需要登录态。"""
+def auth_token() -> str | None:
+    """CNB 访问令牌（可选）。公开仓库下载附件不需要它。"""
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, encoding='utf-8') as handle:
             for line in handle:
                 if line.startswith('CNB_TOKEN='):
                     return line.split('=', 1)[1].strip()
-    raise Fail(
-        f'缺少 {TOKEN_FILE}（内容一行 `CNB_TOKEN=<令牌>`）。\n'
-        '令牌在 https://cnb.cool/profile/token 创建，勾 repo-code 只读即可。',
-    )
+    return None
 
 
 def download(url: str, dest: str) -> int:
-    """下载附件；带 CNB 令牌，避免落到登录页。"""
-    request = urllib.request.Request(url, headers={'Authorization': f'Bearer {auth_token()}'})
-    with urllib.request.urlopen(request, timeout=120) as response:
+    """下载附件。
+
+    这个地址对公开仓库是 302 到 asset.cnb.cool 的签名链接，**不需要认证**；
+    反过来带 Authorization 头会让 CNB 返回 400（2026-11-24 实测）。
+    """
+    request = urllib.request.Request(url, headers={'User-Agent': 'dsh-pocket-release/1.0'})
+    with urllib.request.urlopen(request, timeout=300) as response:
         data = response.read()
     if not data.startswith(b'PK'):
         snippet = data[:80].decode('utf-8', 'replace').replace('\n', ' ')
@@ -114,6 +131,7 @@ def sign(unsigned: str, props: dict[str, str]) -> None:
         '--v2-signing-enabled', 'true',
         '--v3-signing-enabled', 'true',
         APK_OUT,
+        secret=True,
     )
 
 
