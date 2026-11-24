@@ -1,20 +1,17 @@
 main:
   push:
-    - name: tar-diagnose-2
+    - name: probe-flutter-image
       docker:
-        image: ubuntu:24.04
+        image: docker.cnb.cool/jacknic/docker/flutter
       stages:
-        - name: 分别解到 /tmp /root /opt /workspace
+        - name: 探测镜像里的工具链版本
           script: |
-            set -e
-            apt-get update -qq >/dev/null 2>&1; apt-get install -y -qq tar gzip curl >/dev/null 2>&1
-            curl -sSL -o /tmp/gw.tgz https://storage.flutter-io.cn/flutter_infra_release/gradle-wrapper/fd5c1f2c013565a3bea56ada6df9d2b8e96d56aa/gradle-wrapper.tgz
-            for D in /tmp/t /root/r /opt/o /workspace/w; do
-              echo "=== $D ==="
-              rm -rf "$D"; mkdir -p "$D"
-              if tar xzf /tmp/gw.tgz -C "$D"; then echo "  OK: $(find $D -type f | wc -l) files"; else echo "  FAILED"; fi
-            done
-            echo "=== 深层 mkdir 测试（模拟 flutter 的 artifacts 路径）==="
-            mkdir -p /root/flutter/bin/cache/artifacts/gradle_wrapper && echo "  深路径 mkdir OK"
-            tar xzf /tmp/gw.tgz -C /root/flutter/bin/cache/artifacts/gradle_wrapper && echo "  深路径 tar OK"
-            echo "=== DONE ==="
+            set -x
+            flutter --version
+            echo "FLUTTER_ROOT=$(dirname $(dirname $(readlink -f $(which flutter))))"
+            echo "ANDROID_HOME=$ANDROID_HOME ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+            java -version 2>&1 | head -3
+            ls ${ANDROID_HOME:-/opt/android-sdk} 2>/dev/null | head
+            echo "=== 试解 flutter 的 gradle-wrapper ==="
+            TMP=$(mktemp -d); tar xzf /root/flutter/bin/cache/artifacts/gradle_wrapper/*.tgz -C "$TMP" 2>/dev/null || echo "(无现成 tgz，跳过)"
+            echo DONE
