@@ -1,0 +1,45 @@
+// Global Gradle repository mirror: rewrite slow upstream repos to Aliyun mirrors.
+// Loaded automatically from $GRADLE_USER_HOME/init.d/
+def MIRRORS = [
+    'dl.google.com/dl/android/maven2'      : 'https://maven.aliyun.com/repository/google',
+    'maven.google.com'                     : 'https://maven.aliyun.com/repository/google',
+    'repo.maven.apache.org/maven2'         : 'https://maven.aliyun.com/repository/central',
+    'repo1.maven.org/maven2'               : 'https://maven.aliyun.com/repository/central',
+    'plugins.gradle.org/m2'                : 'https://maven.aliyun.com/repository/gradle-plugin',
+    'plugins-artifacts.gradle.org'         : 'https://maven.aliyun.com/repository/gradle-plugin',
+]
+
+def rewrite = { RepositoryHandler repos ->
+    repos.configureEach { repo ->
+        if (repo instanceof MavenArtifactRepository) {
+            def u = repo.url.toString()
+            for (e in MIRRORS) {
+                if (u.contains(e.key)) { repo.url = e.value; break }
+            }
+        }
+    }
+}
+
+beforeSettings { settings ->
+    rewrite(settings.pluginManagement.repositories)
+    rewrite(settings.dependencyResolutionManagement.repositories)
+}
+
+settingsEvaluated { settings ->
+    rewrite(settings.pluginManagement.repositories)
+    if (settings.hasProperty('dependencyResolutionManagement')) {
+        rewrite(settings.dependencyResolutionManagement.repositories)
+    }
+}
+
+beforeProject { project ->
+    rewrite(project.buildscript.repositories)
+    rewrite(project.repositories)
+}
+
+allprojects {
+    buildscript { repositories { } }
+    repositories { }
+    rewrite(buildscript.repositories)
+    rewrite(repositories)
+}
