@@ -9,48 +9,58 @@
 # 峰值 3.5 GB 会把整机压进 swap，40 分钟才出包（docs/build.md §13）。
 #
 # 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
+#
+# 踩过的坑（别再改回去）：
+#  1. 预置镜像没有新版 Flutter：ghcr.io/cirruslabs/flutter 最新只到 3.44，
+#     项目要 Dart ^3.13.4（Flutter 3.50.0），只能自己装。
+#  2. 数据卷不支持 tar 需要的 chown/utime，解压到卷里会报
+#     "Cannot open: Function not implemented" / "Operation not permitted"。
+#     → 只把**压缩包**放卷里，解压到容器本地盘，并加 --no-same-owner。
 main:
   push:
     - name: android-release-unsigned
       docker:
-        # 自带 JDK 17；Flutter 与 Android SDK 由下面的 stage 安装并按卷缓存
         image: eclipse-temurin:17-jdk
-        # 必须用 read-write：copy-on-write 是 OverlayFS，tar 解压会报
-        # "Cannot open: Function not implemented"（2026-11-24 实测）。
         volumes:
-          - /opt/flutter:read-write
-          - /opt/android-sdk:read-write
-          - /root/.gradle:read-write
-          - /root/.pub-cache:read-write
+          - /cache:read-write
       stages:
-        - name: 安装工具链（命中缓存则秒过）
+        - name: 安装工具链（包已缓存则跳过下载）
           script: |
             set -e
+            mkdir -p /cache
             export FLUTTER_HOME=/opt/flutter
             export ANDROID_HOME=/opt/android-sdk
-            if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
-              echo "==> 安装 Flutter 3.50.0（国内镜像）"
-              apt-get update -qq >/dev/null 2>&1 || true
-              apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
-              curl -fL --retry 3 --retry-delay 2 -o /tmp/flutter.tar.xz \
+            apt-get update -qq >/dev/null 2>&1 || true
+            apt-get install -y -qq curl unzip xz-utils git file >/dev/null 2>&1 || true
+
+            if [ ! -f /cache/flutter_linux_3.50.0-stable.tar.xz ]; then
+              echo "==> 下载 Flutter 3.50.0（国内镜像）"
+              curl -fL --retry 3 --retry-delay 2 -o /cache/flutter_linux_3.50.0-stable.tar.xz \
                 https://storage.flutter-io.cn/flutter_infra_release/releases/stable/linux/flutter_linux_3.50.0-stable.tar.xz
-              mkdir -p /opt && tar -xJf /tmp/flutter.tar.xz -C /opt
-              rm -f /tmp/flutter.tar.xz
+            fi
+            if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
+              echo "==> 解压 Flutter"
+              mkdir -p /opt
+              tar -xJf /cache/flutter_linux_3.50.0-stable.tar.xz -C /opt \
+                --no-same-owner --no-same-permissions
+              git config --global --add safe.directory "$FLUTTER_HOME"
+            fi
+
+            if [ ! -f /cache/commandlinetools-linux.zip ]; then
+              echo "==> 下载 Android cmdline-tools"
+              curl -fL --retry 3 -o /cache/commandlinetools-linux.zip \
+                https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
             fi
             if [ ! -d "$ANDROID_HOME/cmdline-tools/latest" ]; then
-              echo "==> 安装 Android SDK"
+              echo "==> 解压 Android SDK 工具"
               mkdir -p "$ANDROID_HOME/cmdline-tools"
-              curl -fL --retry 3 -o /tmp/cmdline.zip \
-                https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-              unzip -q /tmp/cmdline.zip -d "$ANDROID_HOME/cmdline-tools"
+              unzip -q /cache/commandlinetools-linux.zip -d "$ANDROID_HOME/cmdline-tools"
               mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
-              rm -f /tmp/cmdline.zip
               yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
               "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
                 "platform-tools" "platforms;android-36" "build-tools;36.0.0" >/dev/null
             fi
             "$FLUTTER_HOME/bin/flutter" --version
-            echo "ANDROID_HOME=$ANDROID_HOME"
 
         - name: 构建 release（未签名）
           script: |
