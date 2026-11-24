@@ -4,7 +4,7 @@
 
 ## 0. 三条硬规则
 
-1. **只在本地构建**。不要用 GitHub Actions 做日常构建（理由见 §8 的跨云实测）。
+1. **日常构建交给 CNB**（cnb.cool，8 核 / 16 GB，push 自动触发，约 17 分钟），本机只做签名与发布。不要用 GitHub Actions 做日常构建（理由见 §8 的跨云实测）。本机构建保留为离线/调试的兜底。详见 §14。
 2. **给用户装机的包一律是 release**（2026-11-23 用户明确要求）。debug 只用于我自己排查，不发给用户 —— debug 是 JIT，UI 慢 2–5 倍，用户会当成卡顿（§6）。
 3. **R8 默认关闭**；要开必须先在真机上跑通主要路径（§7 的事故复盘）。
 
@@ -176,11 +176,17 @@ cd /root/workspace/dsh-pocket
 #    ## 1.1.1 · 2026-11-24
 #    - 修了什么…
 
-# 3. 本地构建 release（不要用 debug，不要用 Actions）
-tools/build-apk.sh --release /root/workspace/dsh-pocket/app
+# 3. 构建：push 触发 CNB（不要用 debug，不要用 Actions）
+git push origin main      # 双推 GitHub + CNB，CNB 编译出未签名包挂在提交附件
 
-# 4. 发布
-python3 tools/pocket/release.py
+# 4. 取回、用 release 密钥签名、校验
+python3 tools/pocket/cnb_fetch_sign.py
+
+# 5. 发布
+python3 tools/pocket/release.py --apk dist/app-arm64-release.apk
+
+# 离线兜底（没有网络时才用，本机 2 核约 40 分钟）
+# tools/build-apk.sh --release /root/workspace/dsh-pocket/app
 ```
 
 `release.py` 依次做这几件事，**任何一步失败就整体中止**，不会留下半发布状态：
@@ -219,6 +225,8 @@ curl -s https://static.frankfurtlin.top/apps/pocket/update.json | python3 -m jso
 ```
 
 ### GitHub Actions 的定位
+
+> 日常通道已经是 CNB（§14）；这里说的 Actions 只用于「干净机器复现」这一种场景。
 
 `.github/workflows/android-apk.yml` **只在需要一台干净机器复现构建时用**（比如本地
 工具链坏了）。它也会建 Release 并写清单，但日常发布不要用它——它构建的包和本机构建

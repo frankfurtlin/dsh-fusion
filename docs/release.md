@@ -63,8 +63,9 @@ tooling/build-apk.sh -f all          # 双架构本地验证；正式发版不�
 tooling/build-apk.sh --dry-run -f all   # 只打印要执行的命令
 ```
 
-> 正式包改在 GitHub Actions 上构建（双 ABI + 发布签名 + 签名校验），本机只做快速验证：
-> 见 [`docs/ops/android-ci.md`](ops/android-ci.md)。
+> 正式包由 CNB 构建（未签名），本机用 release 密钥签名并发布：
+> `git push` → `tools/pocket/cnb_fetch_sign.py` → `tools/pocket/release.py --apk ...`。
+> 详见 [`docs/build.md`](build.md) §14。
 
 脚本把构建时间编成 versionCode，传给 `--build-number`，同时传 `--build-name` 和 `DSH_APP_VERSION`：
 
