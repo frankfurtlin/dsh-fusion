@@ -76,7 +76,10 @@ main:
             export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
             cd app
             flutter pub get
-            flutter build apk --release --target-platform android-arm64 -Punsigned
+            # AGP 9.1.0 与 Flutter 3.50.0 要求的最低 9.1.1 只差一个 patch，
+            # 与 tools/build-apk.sh 一致地旁路该校验（见 docs/toolchain.md）。
+            flutter build apk --release --target-platform android-arm64 -Punsigned \
+              --android-skip-build-dependency-validation
             ls -lh build/app/outputs/flutter-apk/
             APK=$(ls build/app/outputs/flutter-apk/*.apk | head -1)
             echo "APK=$APK"
