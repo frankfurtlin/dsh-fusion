@@ -15,11 +15,13 @@ main:
       docker:
         # 自带 JDK 17；Flutter 与 Android SDK 由下面的 stage 安装并按卷缓存
         image: eclipse-temurin:17-jdk
+        # 必须用 read-write：copy-on-write 是 OverlayFS，tar 解压会报
+        # "Cannot open: Function not implemented"（2026-11-24 实测）。
         volumes:
-          - /opt/flutter:copy-on-write
-          - /opt/android-sdk:copy-on-write
-          - /root/.gradle:copy-on-write
-          - /root/.pub-cache:copy-on-write
+          - /opt/flutter:read-write
+          - /opt/android-sdk:read-write
+          - /root/.gradle:read-write
+          - /root/.pub-cache:read-write
       stages:
         - name: 安装工具链（命中缓存则秒过）
           script: |
