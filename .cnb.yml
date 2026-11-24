@@ -1,17 +1,18 @@
 main:
   push:
-    - name: probe-flutter-image
+    - name: probe-flutter-install
       docker:
-        image: docker.cnb.cool/jacknic/docker/flutter
+        image: ubuntu:24.04
       stages:
-        - name: 探测镜像里的工具链版本
+        - name: ubuntu 上装 flutter 并跑 --version
           script: |
-            set -x
-            flutter --version
-            echo "FLUTTER_ROOT=$(dirname $(dirname $(readlink -f $(which flutter))))"
-            echo "ANDROID_HOME=$ANDROID_HOME ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-            java -version 2>&1 | head -3
-            ls ${ANDROID_HOME:-/opt/android-sdk} 2>/dev/null | head
-            echo "=== 试解 flutter 的 gradle-wrapper ==="
-            TMP=$(mktemp -d); tar xzf /root/flutter/bin/cache/artifacts/gradle_wrapper/*.tgz -C "$TMP" 2>/dev/null || echo "(无现成 tgz，跳过)"
+            set -e
+            apt-get update -qq >/dev/null 2>&1
+            apt-get install -y -qq git curl unzip xz-utils >/dev/null 2>&1
+            git clone --depth 1 --branch 3.50.0 https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git /root/flutter
+            git config --global --add safe.directory /root/flutter
+            export PUB_HOSTED_URL=https://pub.flutter-io.cn
+            export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+            /root/flutter/bin/flutter --version
+            echo "=== flutter --version 成功 ==="
             echo DONE
