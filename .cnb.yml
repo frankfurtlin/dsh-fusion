@@ -64,6 +64,16 @@ main:
             /root/flutter/bin/flutter --version
             java -version 2>&1 | head -2
 
+        - name: 配置 Gradle 镜像
+          script: |
+            set -e
+            # Maven Central 对 CNB 的共享出口限流（实测 429 Too Many Requests），
+            # Flutter 自带的 :gradle 子构建会直连 Maven Central。用全局 init 脚本
+            # 把仓库地址改写到阿里云镜像（与本地 /root/.gradle/init.d 同一份）。
+            mkdir -p /root/.gradle/init.d
+            cp .cnb/gradle-mirrors.gradle /root/.gradle/init.d/mirrors.gradle
+            cat /root/.gradle/init.d/mirrors.gradle | head -5
+
         - name: 构建 release（未签名）
           script: |
             set -e
