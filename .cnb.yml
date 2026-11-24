@@ -6,37 +6,44 @@
 #          （tools/pocket/cnb_fetch_sign.py + tools/pocket/release.py）
 # 签名密钥与 COS 凭据都不进 CI。
 #
-# 为什么在 CNB 构建：本机 2 核 / 8 GB 且常驻 DSH(1.5 GB)+Hermes，release 构建
-# 峰值 3.5 GB 会把整机压进 swap（40 分钟）；CNB Runner 实测 8 核 / 16 GB。
+# 三层加速（都按官方文档来做，见 docs.cnb.cool）：
+#  1. 工具链预烤进镜像 docker/android.Dockerfile，用 docker.build + by 缓存
+#     （文档：build/grammar.md#pipeline-build）。实测 Prepare 9.9m → 35.8s。
+#  2. Gradle / pub 依赖用 copy-on-write 数据卷缓存
+#     （文档：build/pipeline-cache.md「文件缓存」，官方 Flutter 示例同款）。
+#  3. 只编 arm64 flavor：ABI 在 app/build.gradle.kts 里是 productFlavor，
+#     assembleRelease 会连 x64 一起编，用 assembleArm64Release 省掉一半打包。
 #
-# 触发：main 分支 push（本地 `git push origin main` 同时推到 GitHub 与 CNB）。
+# 触发：main 分支 push（本地 git push origin main 同时推到 GitHub 与 CNB）。
 #
-# 踩坑记录（改之前先读，每条都真实卡过一次）：
-#  1. 工具链预烤进镜像（docker/android.Dockerfile），由 build.by 哈希缓存。
-#     **不要用数据卷缓存**：容器 userns 重映射导致卷不可写，实测四个卷全退回
-#     /tmp，等于没缓存（工具链仍要 13.6 分钟）。
-#  2. 基础镜像必须 ubuntu，不能 eclipse-temurin（后者下 Flutter 解压会 ENOSYS）。
-#  3. tar 必须 --no-same-owner（镜像里用 TAR_OPTIONS 环境变量）。
-#  4. Maven Central 对 CNB 出口限流 429 → 用 .cnb/gradle-mirrors.gradle。
-#  5. app/android/gradlew 被 .gitignore 忽略 → 先 `flutter build apk --config-only`。
-#  6. 直接调 gradlew 要显式 -PskipDependencyChecks=true 旁路 AGP 版本校验。
-#  7. --config-only 不写版本号 → 手动把 pubspec 的版本写进 local.properties。
-#  8. 产物在 apk/<abi>/release/ 下，附件插件按相对路径找文件 → 先复制到工作区根。
+# 其它踩坑（改之前先读）：
+#  - 基础镜像必须 ubuntu，eclipse-temurin 下 Flutter 解压会报 ENOSYS。
+#  - tar 必须 --no-same-owner（镜像里已设 TAR_OPTIONS）。
+#  - Maven Central 对 CNB 出口限流 429 → .cnb/gradle-mirrors.gradle 走阿里云。
+#  - app/android/gradlew 被 .gitignore 忽略 → 先 flutter build --config-only 生成。
+#  - 直接调 gradlew 要 -PskipDependencyChecks=true 旁路 AGP 版本校验。
+#  - --config-only 不写版本号 → 手动写进 local.properties。
+#  - 产物在 apk/<flavor>/release/ 下，附件插件按相对路径找 → 先复制到工作区根。
 main:
   push:
     - name: android-release-unsigned
       docker:
         build:
           dockerfile: docker/android.Dockerfile
-          # 只有这个文件变了才重建镜像（首次约 20 分钟，之后秒级命中）
           by:
             - docker/android.Dockerfile
+        # 依赖目录缓存到构建节点（官方 pipeline-cache 文档的「文件缓存」）
+        volumes:
+          - /root/.gradle:copy-on-write
+          - /root/.pub-cache:copy-on-write
       stages:
         - name: 环境自检
           script: |
             set -e
             flutter --version
-            echo "ANDROID_HOME=$ANDROID_HOME"
+            java -version 2>&1 | head -2
+            echo "gradle 缓存目录: $(du -sh "$HOME/.gradle" 2>/dev/null | cut -f1 || echo 空)"
+            echo "pub 缓存目录:    $(du -sh "$HOME/.pub-cache" 2>/dev/null | cut -f1 || echo 空)"
 
         - name: 配置 Gradle 镜像
           script: |
@@ -49,22 +56,18 @@ main:
             set -e
             cd app
             flutter pub get
-            # gradlew/local.properties 被 android/.gitignore 忽略，先让 Flutter 生成
             flutter build apk --release --target-platform android-arm64 --config-only
             cd android
-            # --config-only 不写版本号，不补的话 APK versionName 会退化成 1.0
             VER=$(sed -n 's/^version: *//p' ../pubspec.yaml)
-            VNAME=${VER%%+*}
-            VBUILD=${VER##*+}
             sed -i '/^flutter\.version/d' local.properties
-            printf 'flutter.versionName=%s\nflutter.versionCode=%s\n' "$VNAME" "$VBUILD" \
-              >> local.properties
-            echo "版本 $VNAME+$VBUILD"
-            # -PskipDependencyChecks=true == flutter --android-skip-build-dependency-validation
-            ./gradlew --no-daemon assembleRelease \
+            printf 'flutter.versionName=%s\nflutter.versionCode=%s\n' \
+              "${VER%%+*}" "${VER##*+}" >> local.properties
+            echo "版本 ${VER%%+*}+${VER##*+}"
+            # 只编 arm64 flavor（ABI 是 productFlavor，arm64Release 才是单 ABI）
+            ./gradlew --no-daemon assembleArm64Release \
               -Punsigned -PskipDependencyChecks=true -Ptarget-platform=android-arm64
-            APK=$(find ../build/app/outputs -path '*arm64/release*' -name '*.apk' | head -1)
-            [ -n "$APK" ] || APK=$(find ../build/app/outputs -path '*release*' -name '*.apk' | head -1)
+            APK=$(find ../build/app/outputs -path '*arm64*release*' -name '*.apk' | head -1)
+            [ -n "$APK" ] || APK=$(find ../build/app/outputs -name '*release*.apk' | head -1)
             echo "APK=$APK"
             sha256sum "$APK"
             cp "$APK" ../../app-release-unsigned.apk
