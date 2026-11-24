@@ -27,6 +27,15 @@
 main:
   push:
     - name: android-release-unsigned
+      # 只有可能影响 APK 的文件变动才触发（文档：grammar.md#ifModify）。
+      # 改 README/CHANGELOG/docs/tools 不构建，省一次 17 分钟的跑。
+      # 注意：新建分支的 push 没有对比基准，此检查会被忽略（文档明确写了）。
+      ifModify:
+        - "app/**"
+        - "packages/**"
+        - "docker/**"
+        - ".cnb.yml"
+        - ".cnb/**"
       docker:
         build:
           dockerfile: docker/android.Dockerfile
