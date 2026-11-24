@@ -77,6 +77,9 @@ main:
         - name: 构建 release（未签名）
           script: |
             set -e
+            # 同安装阶段：Flutter 会再解一次 gradle-wrapper，chown 到未映射的
+            # uid/gid 会失败，必须跳过属主。
+            export TAR_OPTIONS="--no-same-owner"
             export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
             export ANDROID_HOME=/root/android-sdk
             export ANDROID_SDK_ROOT=/root/android-sdk
