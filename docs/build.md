@@ -305,3 +305,5 @@ python3 tools/pocket/release.py           # 发布
 `docker.volumes` 挂 `/root/flutter`、`/root/android-sdk`、`/root/.gradle`、
 `/root/.pub-cache`。卷可能因 userns 不可写，脚本里有可写性探测，失败自动回退 `/tmp`
 （丢缓存但不阻塞）。
+
+<!-- 2026-11-24: 验证 ifModify，只改文档应当不触发 CNB 构建 -->
