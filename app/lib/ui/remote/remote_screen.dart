@@ -120,6 +120,7 @@ class RemoteScreen extends ConsumerWidget {
             SettingsTile(
               icon: AppIcons.add,
               tinted: false,
+              title: l10n.webLoginAdd,
               subtitle: l10n.webLoginIntro,
               onTap: () => unawaited(_addWeb(context, ref)),
             ),
