@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart' show sha256;
+
 import 'package:flutter/services.dart' show MissingPluginException, appFlavor;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -55,6 +57,15 @@ bool isAutoCheckDue({
 }) {
   bool elapsed(DateTime? since, Duration span) => since == null || now.isBefore(since) || now.difference(since) >= span;
   return elapsed(lastChecked, interval) && elapsed(lastAttempt, retryAfterFailure);
+}
+
+/// 灰度分桶：`deviceId|版本` 的 sha256 首字节取模 100。同一台设备同一个版本永远
+/// 落在同一个桶里（安装过程中刷新也不会跳来跳去）；没有设备标识时当作第 0 桶
+/// （宁可多提示，不要漏掉一台拿不到更新的设备）。
+int rolloutBucketFor(String? deviceId, AppVersion version) {
+  if (deviceId == null || deviceId.isEmpty) return 0;
+  final digest = sha256.convert(utf8.encode('$deviceId|${version.toString()}'));
+  return digest.bytes.first % 100;
 }
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -333,6 +344,9 @@ class AppUpdateController extends Notifier<AppUpdateState> {
   bool _privilegedDispatching = false;
   int _reconcileRead = 0;
 
+  /// 设备标识（`pocket.deviceId`，main.dart 启动时写下的），灰度分桶用。
+  String? _deviceId;
+
   /// Bumped per download and install attempt: a late answer from an abandoned
   /// one, or a check that started before it, can't change what it works on.
   int _run = 0;
@@ -340,6 +354,15 @@ class AppUpdateController extends Notifier<AppUpdateState> {
   /// What a check on the beta channel calls itself: the installed version,
   /// build and ABI once the native side said them.
   String _userAgent = updaterUserAgent(version: AppInfo.version.split('+').first);
+
+  /// 灰度是否轮到这台设备：清单没写 rollout（或 100）就是所有人；
+  /// 只有自动提示看它，手动检查不看。
+  bool get rolloutAllows {
+    final latest = state.latest;
+    if (latest == null) return true;
+    if (latest.rolloutPercent >= 100) return true;
+    return rolloutBucketFor(_deviceId, latest.version) < latest.rolloutPercent;
+  }
 
   bool get _noticeOnly => ref.read(operatingSystemProvider) == 'ohos';
 
@@ -406,6 +429,7 @@ class AppUpdateController extends Notifier<AppUpdateState> {
       await _cleanDownloads();
       if (!ref.mounted) return;
     }
+    _deviceId = prefs.getString('pocket.deviceId');
     int? ms(String key) => prefs.getInt(key);
     state = state.copyWith(
       loaded: true,
@@ -645,7 +669,12 @@ class AppUpdateController extends Notifier<AppUpdateState> {
     if (!isAutoCheckDue(now: _now(), lastChecked: at(_checkedKey), lastAttempt: at(_attemptKey))) return false;
     await check();
     // Switched off while the check was in flight: keep the result, skip the offer.
-    return ref.mounted && state.autoCheck && state.hasUpdate && !state.isSkipped &&
+    return ref.mounted &&
+        state.autoCheck &&
+        state.hasUpdate &&
+        !state.isSkipped &&
+        // 灰度：只有落在这一批的设备自动被提示；手动检查不受影响。
+        rolloutAllows &&
         (state.noticeOnly ? state.noticePage != null : state.asset != null);
   }
 

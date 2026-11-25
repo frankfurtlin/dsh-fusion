@@ -36,6 +36,9 @@ import sys
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import manifest_sign  # noqa: E402 — 清单签名，见该文件头
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 APP = os.path.join(ROOT, 'app')
 APK = os.path.join(APP, 'build/app/outputs/flutter-apk/app-arm64-release.apk')
@@ -196,7 +199,8 @@ def github_release(name: str, apk: str, asset: str, notes: str, tag: str, dry: b
 
 
 def write_manifest(client, bucket: str, eo: str, full: str, name: str,
-                   url: str, asset: str, size: int, digest: str, notes: str) -> str:
+                   url: str, asset: str, size: int, digest: str, notes: str,
+                   rollout: int = 100) -> str:
     manifest = {
         'schema': 1,
         'version': full,
@@ -204,7 +208,13 @@ def write_manifest(client, bucket: str, eo: str, full: str, name: str,
         'assets': {'arm64': {'name': asset, 'url': url, 'size': size, 'sha256': digest}},
         'notes': notes,
         'publishedAt': datetime.now(TZ).isoformat(timespec='seconds'),
+        # 灰度：百分数，App 用 deviceId+版本号哈希分桶，只有落在前 N% 的设备自动提示。
+        'rollout': rollout,
     }
+    try:
+        manifest = manifest_sign.sign(manifest)
+    except manifest_sign.SignError as error:
+        raise Fail(f'清单签名失败，不能发布：{error}') from error
     body = json.dumps(manifest, ensure_ascii=False, indent=1).encode()
     for prefix in filter(None, (PREFIX, LEGACY_PREFIX)):
         client.put_object(Bucket=bucket, Key=f'{prefix}/update.json', Body=body,
@@ -230,6 +240,12 @@ def main() -> int:
     parser.add_argument('--dry-run', action='store_true', help='只检查，不写任何远程')
     parser.add_argument('--skip-github', action='store_true', help='不创建/更新 GitHub Release')
     parser.add_argument('--skip-cos', action='store_true', help='只发 GitHub Release（清单写 GitHub 地址）')
+    parser.add_argument(
+        '--rollout',
+        type=int,
+        default=100,
+        help='清单里的灰度百分比（0-100，默认 100 全量）；只影响自动提示，手动检查照样能看到',
+    )
     parser.add_argument(
         '--apk',
         help='指定要发布的 APK（默认 app/build/.../app-arm64-release.apk，'
@@ -276,9 +292,18 @@ def main() -> int:
     if not args.skip_cos:
         if args.dry_run:
             manifest_url = f'{eo}/{PREFIX}/update.json'
-            print(f'（dry-run）将写清单 {manifest_url}')
+            probe = manifest_sign.sign({
+                'schema': 1, 'version': full, 'tag': f'v{name}',
+                'assets': {'arm64': {'name': asset, 'url': url, 'size': size, 'sha256': digest}},
+                'notes': notes, 'publishedAt': datetime.now(TZ).isoformat(timespec='seconds'),
+                'rollout': args.rollout,
+            })
+            if not manifest_sign.verify(probe):
+                raise Fail('清单签名自检失败（私钥或规范化规则有问题），不能发布')
+            print(f'（dry-run）将写清单 {manifest_url}（签名 ✓，rollout {args.rollout}%）')
         else:
-            manifest_url = write_manifest(client, bucket, eo, full, name, url, asset, size, digest, notes)
+            manifest_url = write_manifest(client, bucket, eo, full, name, url, asset, size, digest, notes,
+                                          rollout=args.rollout)
             print(f'清单      {manifest_url}')
 
     if not args.skip_github:
@@ -293,6 +318,9 @@ def main() -> int:
             if published.get('version') != full:
                 raise Fail(f'清单里的版本是 {published.get("version")}，应为 {full}')
             print(f'校验      清单版本 {published["version"]} ✓')
+            if not manifest_sign.verify(published):
+                raise Fail('发布出去的清单验签失败（公钥见 tools/pocket/manifest_sign.py）')
+            print('校验      清单签名 ✓')
 
     print('\n发布完成。')
     print(f'  安装包  {url}')

@@ -110,6 +110,7 @@ class ReleaseInfo {
     this.pageUrl,
     this.checksumsUrl,
     this.patches = const {},
+    this.rollout,
   });
 
   final AppVersion version;
@@ -131,6 +132,13 @@ class ReleaseInfo {
 
   /// Deltas to each flavor's APK, by the installed APK they start from.
   final Map<ApkFlavor, List<ReleasePatch>> patches;
+
+  /// 灰度百分比（0–100），只影响**自动**提示；null 或 100 是全量。
+  /// 见 `rolloutBucketFor`（update_state.dart）：`deviceId|版本` 的哈希分桶。
+  final int? rollout;
+
+  /// [rollout] 归一化后的值（null 与越界都按 100 = 全量）。
+  int get rolloutPercent => (rollout ?? 100).clamp(0, 100);
 
   ReleaseAsset? apkFor(ApkFlavor? flavor) => flavor == null ? null : apks[flavor];
 
@@ -154,6 +162,7 @@ class ReleaseInfo {
       pageUrl: pageUrl,
       checksumsUrl: checksumsUrl,
       patches: patches,
+      rollout: rollout,
     );
   }
 
@@ -172,6 +181,7 @@ class ReleaseInfo {
       for (final MapEntry(key: flavor, value: asset) in apks.entries)
         flavor.name: {'name': asset.name, 'url': asset.url.toString(), 'size': ?asset.size, 'sha256': ?asset.sha256},
     },
+    if (rollout != null) 'rollout': rollout,
     if (patches.isNotEmpty)
       'patches': {
         for (final MapEntry(key: flavor, value: list) in patches.entries)
@@ -274,6 +284,7 @@ ReleaseInfo parseUpdateManifest(Object? json, {Uri? base}) {
     title: json['title'] as String?,
     publishedAt: DateTime.tryParse(json['publishedAt'] as String? ?? ''),
     pageUrl: page == null ? null : Uri.tryParse(page),
+    rollout: (json['rollout'] as num?)?.toInt().clamp(0, 100),
     patches: {
       if (json['patches'] case final Map byFlavor)
         for (final MapEntry(:key, :value) in byFlavor.entries)
