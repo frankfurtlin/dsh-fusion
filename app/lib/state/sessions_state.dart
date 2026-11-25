@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../companion/companion_state.dart';
 import '../diagnostics/perf_trace.dart';
+import 'session_row_snapshot.dart';
 import '../runtime/runtime_state.dart';
 import 'connection_state.dart';
 import 'hosts_state.dart';
@@ -276,6 +277,20 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
       unawaited(sub.cancel());
       unawaited(workspaces.cancel());
     });
+    // 冷启动先画出上一次的列表：网络那一份要 2 秒出头，不该挡住第一眼。
+    // 快照只在内存里没有行时用（同一进程的刷新走已有状态）。
+    if (_all.isEmpty) {
+      final snapshot = r.read(sessionRowSnapshotProvider);
+      final cached = await snapshot.rowsFor(host);
+      if (cached.isNotEmpty && seq == _loadSeq && _all.isEmpty) {
+        _all = cached;
+        PerfTrace.note('session_list_cached', 0, {'rows': cached.length});
+        // Paint once this build's initialization is over; the real list replaces it.
+        Future.microtask(() {
+          if (r.mounted && state.isLoading) state = AsyncData(_visible());
+        });
+      }
+    }
     return _buildRead = _load(r, conn.client, seq, identity);
   }
 
@@ -295,6 +310,8 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
       // A list already in flight when deletion completed may still contain
       // the old row. Only a server-confirmed deletion adds this host's fence.
       _all = sessions.where((s) => !_deleted.contains(s.sessionId)).toList();
+      // 给下一次冷启动留一份（只存抽屉要显示的字段）。
+      unawaited(r.read(sessionRowSnapshotProvider).save(r.read(activeHostProvider), _all));
       final cache = r.read(readListCacheProvider);
       cache.stamp(sessions, identity, client);
       _origin = cache.origin(sessions);
@@ -310,11 +327,11 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
   /// Applies a `$events` edge to the rows when the edge says all that
   /// changed, instead of reading every conversation again (`session/list`
   /// has no paging: a remote Host sends all of them, projections and all,
-  /// through the Relay on each read). That covers a conversation added or
-  /// re-announced (the edge carries its row), a listed conversation starting
-  /// a turn, and any edge of a subagent child (hidden here, kept for the
-  /// lineage). A turn ending, a removal and a conversation not listed yet
-  /// still read the list.
+  /// through the Relay on each read; 187 rows measured 2.4 s on a phone's
+  /// SSH tunnel). That covers a conversation added or re-announced (the edge
+  /// carries its row), a listed conversation starting or ending a turn, a
+  /// removal, and any edge of a subagent child (hidden here, kept for the
+  /// lineage). Only a conversation not listed yet reads the list.
   bool _applyInPlace(HostEvent event) {
     if (_listsOut > 0 || !state.hasValue || state.isLoading) return false;
     final SessionSummary row;
@@ -323,16 +340,35 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
         row = summary;
       case SessionStatusEvent(:final sessionId, :final running):
         final listed = _all.where((s) => s.sessionId == sessionId).firstOrNull;
-        if (listed == null || !(listed.isSubagent || running && !listed.blank)) return false;
-        row = listed.copyWith(running: running);
+        if (listed == null || listed.blank) return false;
+        // 轮末也是就地更新：活动时间按 Host 的排序改成现在，不重读整表。
+        // 标题可能到轮末才落，所以顺手只补这一行（一次 projections）。
+        row = listed.copyWith(running: running, updatedAt: running ? null : DateTime.now());
+      case SessionRemovedEvent(:final sessionId):
+        if (sessionId.isEmpty) return false;
+        if (!_all.any((s) => s.sessionId == sessionId)) return true;
+        _all = _all.where((s) => s.sessionId != sessionId).toList();
+        state = AsyncData(_visible());
+        return true;
       default:
         return false;
     }
     if (_deleted.contains(row.sessionId)) return true;
     final at = _all.indexWhere((s) => s.sessionId == row.sessionId);
     _all = at < 0 ? [..._all, row] : (List.of(_all)..[at] = row);
+    if (row.sessionId.isNotEmpty) _queueTitle(row);
     state = AsyncData(_visible());
     return true;
+  }
+
+  /// Queues one row's title read (轮末补标题), without the whole-list refresh.
+  void _queueTitle(SessionSummary row) {
+    final reads = _titleReads;
+    if (reads == null || reads.retired || reads.running.contains(row.sessionId)) return;
+    if ((row.title ?? '').trim().isNotEmpty) return;
+    if (_waitingToRetry(row, reads.now())) return;
+    reads.queue.addFirst(row);
+    _nextTitles(reads);
   }
 
   List<SessionSummary> _visible() {
