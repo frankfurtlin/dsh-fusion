@@ -19,6 +19,9 @@ import os
 import re
 import shutil
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import manifest_sign  # noqa: E402 — 清单签名（见 manifest_sign.py）
 import time
 from datetime import datetime, timezone, timedelta
 
@@ -109,6 +112,8 @@ def main() -> int:
         'notes': os.environ.get('COMMIT_TITLE', ''),
         'publishedAt': datetime.now(TZ).isoformat(),
     }
+    manifest['rollout'] = 100
+    manifest = manifest_sign.sign(manifest)
     mp = 'out/update.json'
     with open(mp, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)

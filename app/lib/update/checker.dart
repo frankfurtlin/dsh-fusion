@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'manifest_signature.dart';
 import 'release.dart';
 import 'update_config.dart';
 import 'update_http.dart';
@@ -133,10 +134,16 @@ class UpdateChecker {
     }
     try {
       final json = jsonDecode(body);
-      return switch (endpoint.kind) {
-        EndpointKind.githubApi => parseGithubRelease(json),
-        EndpointKind.manifest => parseUpdateManifest(json, base: endpoint.url),
-      };
+      switch (endpoint.kind) {
+        case EndpointKind.githubApi:
+          return parseGithubRelease(json);
+        case EndpointKind.manifest:
+          // 自己镜像上的清单必须带本项目的签名；验不过就当这个源坏了，
+          // 继续问下一个（GitHub 那条是 TLS 直达、另一套格式）。
+          final signed = await UpdateManifestSignature.verify(json);
+          if (!signed && endpoint.mirrorId != null) return CheckFailure.badResponse;
+          return parseUpdateManifest(json, base: endpoint.url);
+      }
     } on Object {
       // FormatException, or a TypeError from a field of the wrong type. Some
       // mirrors answer 200 with an HTML error page.

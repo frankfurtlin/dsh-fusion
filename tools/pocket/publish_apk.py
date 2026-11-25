@@ -7,8 +7,9 @@
     python3 tools/pocket/publish_apk.py --force    # 无视已发布记录，重发当前版本
 
 发布物：
-    COS  pocket/apk/dsh-pocket-<version>-arm64-<sha>.apk
-    COS  pocket/update.json        ← App 的自动更新清单
+    COS  apps/pocket/apk/dsh-pocket-<version>-arm64-<sha>.apk   ← 新规范位置
+    COS  apps/pocket/update.json                                ← 新规范清单
+    COS  pocket/update.json                                     ← 兼容入口（App 硬编码）
 
 为什么在这里发而不是在 GitHub Actions 里发：COS 的密钥只放在这台机器的
 /root/.secrets/cos.env（0600），不进 GitHub Secrets，也不进任何仓库。
@@ -24,6 +25,9 @@ import os
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import manifest_sign  # noqa: E402 — 清单签名（见 manifest_sign.py）
 import tempfile
 from datetime import datetime, timezone, timedelta
 
@@ -32,6 +36,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 STATE = os.path.join(ROOT, 'tools', 'pocket', '.publish-state.json')
 PUBSPEC = os.path.join(ROOT, 'app', 'pubspec.yaml')
 COS_PREFIX = 'pocket'
+APPS_PREFIX = 'apps/pocket'
 TZ = timezone(timedelta(hours=8))
 
 
@@ -139,7 +144,7 @@ def main() -> int:
         digest = sha256(apk)
         size = os.path.getsize(apk)
         asset_name = f'dsh-pocket-{version.replace("+", "-")}-arm64-{sha[:7]}.apk'
-        key = f'{COS_PREFIX}/apk/{asset_name}'
+        key = f'{APPS_PREFIX}/apk/{asset_name}'
         print(f'上传 {asset_name}（{size / 1048576:.1f} MB）…')
         put(client, bucket, key, apk, 'application/vnd.android.package-archive',
             'public, max-age=31536000, immutable')
@@ -160,11 +165,13 @@ def main() -> int:
             'notes': notes,
             'publishedAt': datetime.now(TZ).isoformat(),
         }
+        manifest['rollout'] = 100
+        manifest = manifest_sign.sign(manifest)
         mp = os.path.join(tmp, 'update.json')
         with open(mp, 'w', encoding='utf-8') as f:
             json.dump(manifest, f, ensure_ascii=False, indent=1)
-        put(client, bucket, f'{COS_PREFIX}/update.json', mp, 'application/json',
-            'public, max-age=60')
+        for manifest_key in (f'{APPS_PREFIX}/update.json', f'{COS_PREFIX}/update.json'):
+            put(client, bucket, manifest_key, mp, 'application/json', 'public, max-age=60')
 
     save_state({
         'headSha': sha,
@@ -174,7 +181,7 @@ def main() -> int:
         'sha256': digest,
         'publishedAt': manifest['publishedAt'],
     })
-    print(f'完成：{eo}/{COS_PREFIX}/update.json')
+    print(f'完成：{eo}/{APPS_PREFIX}/update.json（兼容入口 {eo}/{COS_PREFIX}/update.json）')
     return 0
 
 
