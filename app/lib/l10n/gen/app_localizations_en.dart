@@ -11769,6 +11769,19 @@ class L10nEn extends L10n {
   String get nearbyChange => 'Change';
 
   @override
+  String get perfCopy => 'Copy the timings';
+
+  @override
+  String get perfCopied => 'Timings copied';
+
+  @override
+  String get perfEmpty => 'Nothing yet: use the app once, then come back';
+
+  @override
+  String get perfHint =>
+      'How long each step of this launch took — names and milliseconds only. Copy it and send it to the agent.';
+
+  @override
   String get performanceTitle => 'Performance';
 
   @override

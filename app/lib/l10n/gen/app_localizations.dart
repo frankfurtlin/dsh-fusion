@@ -20762,6 +20762,30 @@ abstract class L10n {
   /// **'更换'**
   String get nearbyChange;
 
+  /// No description provided for @perfCopy.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制性能数据'**
+  String get perfCopy;
+
+  /// No description provided for @perfCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制性能数据'**
+  String get perfCopied;
+
+  /// No description provided for @perfEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有数据：正常用一次再回来看'**
+  String get perfEmpty;
+
+  /// No description provided for @perfHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次启动各阶段的耗时，只含名称与毫秒；复制后可以发给 agent 分析'**
+  String get perfHint;
+
   /// No description provided for @performanceTitle.
   ///
   /// In zh, this message translates to:

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../launch/launch_state.dart';
+import '../../diagnostics/perf_trace.dart';
 import '../../launch/startup_trace.dart';
 import '../../runtime/local_footprint.dart';
 import '../../diagnostics/diagnostics_publish.dart';
@@ -394,6 +395,8 @@ class _RootGateState extends ConsumerState<RootGate> {
       _launchReady = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         StartupTrace.mark('first page');
+        // 启动画面 → 第一页：这段时间里在等本机的设置/运行时/引导状态。
+        PerfTrace.end('first_page');
         final launch = LaunchController.active.value;
         if (launch == null) return StartupTrace.finished();
         launch.ready(waitsForEngine: ref.read(activeHostProvider).isLocal);

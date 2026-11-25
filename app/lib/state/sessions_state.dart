@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../companion/companion_state.dart';
+import '../diagnostics/perf_trace.dart';
 import '../runtime/runtime_state.dart';
 import 'connection_state.dart';
 import 'hosts_state.dart';
@@ -281,11 +282,14 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
   Future<List<SessionSummary>> _load(Ref r, DshClient client, int seq, ReadListIdentity? identity) async {
     final List<SessionSummary> sessions;
     _listsOut++;
+    final watch = Stopwatch()..start();
     try {
       sessions = await client.listSessions();
     } finally {
       _listsOut--;
     }
+    // 进 App 时最常等的一步：全量 session/list（不分页，含每条会话的投影）。
+    PerfTrace.note('session_list', watch.elapsedMilliseconds, {'rows': sessions.length});
     if (!r.mounted) return const [];
     if (seq == _loadSeq) {
       // A list already in flight when deletion completed may still contain

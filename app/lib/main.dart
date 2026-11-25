@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'diagnostics/perf_trace.dart';
 import 'diagnostics/pocket_log.dart';
 import 'state/app_info.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,9 @@ import 'ui/theme/theme.dart';
 Future<void> main() => runWithFrameProbe(_startApp);
 
 Future<void> _startApp() async {
+  // 本次启动的计时从这里开始：Dart 入口 → 第一帧 → 第一页（设置 → 诊断 → 性能可读）。
+  PerfTrace.begin('boot');
+  PerfTrace.begin('first_page');
   if (!frameProbeEnabled) SteadyFrameBinding();
   WidgetsFlutterBinding.ensureInitialized();
   appErrorCapture.install();
@@ -48,6 +52,10 @@ Future<void> _startApp() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(dshSystemOverlay(PlatformDispatcher.instance.platformBrightness));
   runApp(const ProviderScope(child: DshApp()));
+  // 第一帧画完算 boot 结束：之后的等待都在页面里（建链、列表、开会话，各有自己的账）。
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    PerfTrace.end('boot');
+  });
 }
 
 /// 稳定但不敏感的设备标识：装一次生成，之后一直用它归类日志。

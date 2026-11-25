@@ -6,6 +6,7 @@ import 'package:dsh_client/dsh_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../diagnostics/app_error_log.dart';
+import '../diagnostics/perf_trace.dart';
 import '../l10n/l10n.dart';
 import '../usage/usage_stats.dart';
 import 'attachments.dart';
@@ -791,6 +792,9 @@ class ChatController extends Notifier<ChatState> {
   }
 
   void _listen(DshClient client, RunPulse pulse, {bool building = false}) {
+    // 打开一个会话：从开始 follow 到第一份快照落地，是「点开会话到有内容」的那一段。
+    final openWatch = Stopwatch()..start();
+    var openLogged = false;
     final owner = ref;
     final listener = _listenOwner = Object();
     _watchEnded = false;
@@ -832,6 +836,14 @@ class ChatController extends Notifier<ChatState> {
             }
             if (event is SessionSnapshotEvent) {
               if (!identical(event.followEpoch, _followEpoch) || !(event.followEpoch?.isCurrent ?? true)) return;
+              if (!openLogged) {
+                openLogged = true;
+                PerfTrace.note('session_open', openWatch.elapsedMilliseconds, {
+                  'records': event.events.length,
+                  'resync': event.isResync,
+                  'building': building,
+                });
+              }
               // Recheck at delivery, not only when watch() emitted the frame.
               // A queued old snapshot cannot adopt a newer (or null) mux.
               if (event.followEpoch case final epoch?) {
