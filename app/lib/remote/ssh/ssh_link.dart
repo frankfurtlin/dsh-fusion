@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dsh_client/dsh_client.dart';
 
 import '../../l10n/l10n.dart';
+import '../../diagnostics/perf_trace.dart';
 import '../link_status.dart';
 import 'local_forward.dart';
 import 'remote_bootstrap.dart';
@@ -211,6 +212,8 @@ class SshHostLink implements HostLink {
     }
 
     at(HostLinkStep.connect, detail: _config.address);
+    // 建链分四段计时（设置 → 诊断 → 性能里能直接看到哪一段慢）。
+    PerfTrace.begin('ssh_connect');
     final secrets = await _loadSecrets();
     _checkOpen();
     final transport = await _transportFactory(SshConnectParams.of(_config, secrets), (key) async {
@@ -241,6 +244,7 @@ class SshHostLink implements HostLink {
           return true;
       }
     });
+    PerfTrace.end('ssh_connect', {'mode': _config.dshMode.name, 'compression': _config.compression});
     if (_closed) {
       transport.close();
       throw StateError('link closed');
@@ -248,6 +252,7 @@ class SshHostLink implements HostLink {
     // Own the authenticated connection while bootstrap/probe are pending.
     _connectingTransport = transport;
     at(HostLinkStep.startDsh, detail: appL10n.remoteCheckingDsh);
+    PerfTrace.begin('ssh_dsh');
     try {
       final RemoteDshEndpoint endpoint;
       if (_config.dshMode == SshDshMode.attachOnly) {
@@ -268,9 +273,11 @@ class SshHostLink implements HostLink {
           onDetail: (d) => at(HostLinkStep.startDsh, detail: d),
         );
       }
+      PerfTrace.end('ssh_dsh', {'attachOnly': _config.dshMode == SshDshMode.attachOnly, 'reused': endpoint.reused});
       _checkOpen();
 
       at(HostLinkStep.tunnel, detail: '127.0.0.1:${endpoint.port}');
+      PerfTrace.begin('ssh_tunnel');
       try {
         // Destroy a late channel too: Future.timeout does not cancel the
         // underlying SSH channel-open request.
@@ -291,6 +298,7 @@ class SshHostLink implements HostLink {
               : HostLinkDiagnosticCode.sshTunnelFailed,
         );
       }
+      PerfTrace.end('ssh_tunnel');
       _checkOpen();
       final previous = _endpoint;
       _endpoint = endpoint;
@@ -306,7 +314,9 @@ class SshHostLink implements HostLink {
       _installTransport(transport);
 
       at(HostLinkStep.login);
+      PerfTrace.begin('ssh_login');
       final client = await _ensureClient(endpoint, previous);
+      PerfTrace.end('ssh_login');
       _checkOpen();
       _emit(
         HostLinkStatus(

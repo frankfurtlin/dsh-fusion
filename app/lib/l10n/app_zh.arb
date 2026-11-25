@@ -6554,6 +6554,10 @@
     }
   },
   "nearbyChange": "更换",
+  "perfCopy": "复制性能数据",
+  "perfCopied": "已复制性能数据",
+  "perfEmpty": "还没有数据：正常用一次再回来看",
+  "perfHint": "本次启动各阶段的耗时，只含名称与毫秒；复制后可以发给 agent 分析",
   "performanceTitle": "性能",
   "performanceAuto": "自动",
   "performanceFull": "完整",

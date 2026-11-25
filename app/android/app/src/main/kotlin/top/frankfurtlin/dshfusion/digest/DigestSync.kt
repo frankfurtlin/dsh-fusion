@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -28,6 +29,9 @@ import java.util.concurrent.TimeUnit
  *
  * 频率与退出：WorkManager 唯一周期任务，6 小时一次，带网络约束，指数退避。
  * 用户在设置里关掉 → cancelUniqueWork 并清空 seen；服务端地址为空 → 不排期。
+ *
+ * 点通知回到「发现」页（[TAP_URI]）：那是 App 自己的页面链接，Android 侧交给
+ * Flutter 后由 links/page_links.dart 打开（页面 id 见 ui/settings/index/spots.dart）。
  */
 object DigestSync {
     private const val PREFS = "pocket_digest"
@@ -38,6 +42,10 @@ object DigestSync {
     private const val CHANNEL = "dsh-pocket-digest"
     private const val WORK = "pocket-digest"
     private const val NOTIFY_ID = 7301
+
+    /** 「发现」页（DigestPage）在 `dshgo://open/<id>` 里的 id 与整条链接。 */
+    internal const val PAGE_ID = "digest"
+    internal const val TAP_URI = "dshgo://open/$PAGE_ID"
 
     /** 默认摘要地址：公网可读，但路径不可枚举（不包含任何隐私数据）。 */
     const val DEFAULT_URL = "https://hermes.frankfurtlin.top/pocket/r4itxgctmgwxby1pw102/digest.json"
@@ -146,10 +154,17 @@ object DigestSync {
         val more = fresh.size - 1
         val text = if (more > 0) "$title 等 $more 条" else first.optString("summary")
 
+        // 「发现」页的页面链接（ACTION_VIEW + dshgo://open/digest）：LinksPlugin 把
+        // 它交给 Flutter，LinkHost 再压上那一页。只带一个 extra 没人读，点了就是
+        // 回到上一次停留的页面 —— 内容看起来哪都没有。
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            putExtra("pocket.digest", true)
-            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = Uri.parse(TAP_URI)
+            addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP,
+            )
         }
         val pending = PendingIntent.getActivity(
             context, NOTIFY_ID, intent,

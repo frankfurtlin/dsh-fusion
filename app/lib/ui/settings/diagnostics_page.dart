@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../diagnostics/diagnostics_publish.dart';
+import '../../diagnostics/perf_trace.dart';
 import '../../diagnostics/automatic_diagnostics.dart';
 import '../../diagnostics/redact.dart';
 import '../../diagnostics/system_ime_diagnostics.dart';
@@ -29,6 +30,7 @@ import '../engine/engine_status.dart';
 import '../shell/page_frame.dart';
 import '../phone/phone_control_screen.dart';
 import '../theme/app_icons.dart';
+import '../theme/theme.dart' show AppType;
 import 'settings_widgets.dart';
 import 'direct_engine_settings.dart';
 import '../common/brief_notice.dart';
@@ -134,6 +136,8 @@ class DiagnosticsPage extends ConsumerWidget {
             InfoRow(label: 'API Key', value: settings.hasApiKey ? l10n.pluginsConfigured : l10n.commonNotSet),
           ],
         ),
+        // 本次启动各阶段等了多久：复制给我，就能说清是建链、列表还是会话内容慢。
+        const PerfSection(),
         // Its failure evidence is recorded natively: Android's own, HarmonyOS's from HiAppEvent.
         const AutomaticDiagnosticsSection(),
         // Android reads the system log through a privileged channel; HarmonyOS, this app's own window.
@@ -159,6 +163,48 @@ class DiagnosticsPage extends ConsumerWidget {
         // it, as groups do.
         const DiagnosticsBundleNote(),
         if (ref.watch(androidSystemFeaturesProvider)) ...[const SizedBox(height: 24), const DirectEngineSettings()],
+      ],
+    );
+  }
+}
+
+/// 本次启动的性能账本（diagnostics/perf_trace.dart）：一行一个阶段，可复制。
+/// 不写入磁盘、不含会话内容；进程重开后重新记。
+class PerfSection extends StatelessWidget {
+  const PerfSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final text = PerfTrace.text();
+    Future<void> copy() async {
+      await Clipboard.setData(ClipboardData(text: text));
+      if (context.mounted) showBriefNotice(context, l10n.perfCopied);
+    }
+
+    return SettingsSection(
+      title: l10n.performanceTitle,
+      footer: Text(l10n.perfHint),
+      children: [
+        if (text.isEmpty)
+          InfoRow(label: l10n.performanceTitle, value: l10n.perfEmpty)
+        else ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: SelectableText(
+              text,
+              style: AppType.monoLabel(
+                color: theme.colorScheme.onSurfaceVariant,
+              ).copyWith(height: 1.6),
+            ),
+          ),
+          ListPageRow(
+            icon: AppIcons.copy,
+            title: l10n.perfCopy,
+            onTap: copy,
+          ),
+        ],
       ],
     );
   }

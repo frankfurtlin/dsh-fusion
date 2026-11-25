@@ -11168,6 +11168,18 @@ class L10nZh extends L10n {
   String get nearbyChange => '更换';
 
   @override
+  String get perfCopy => '复制性能数据';
+
+  @override
+  String get perfCopied => '已复制性能数据';
+
+  @override
+  String get perfEmpty => '还没有数据：正常用一次再回来看';
+
+  @override
+  String get perfHint => '本次启动各阶段的耗时，只含名称与毫秒；复制后可以发给 agent 分析';
+
+  @override
   String get performanceTitle => '性能';
 
   @override
