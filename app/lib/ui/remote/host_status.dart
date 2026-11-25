@@ -44,6 +44,7 @@ HostStatusView watchHostStatus(WidgetRef ref, HostRef host) {
 
 IconData hostKindIcon(HostKind kind) => switch (kind) {
   HostKind.local => AppIcons.thisPhone,
+  HostKind.web => AppIcons.computer,
   HostKind.ssh => AppIcons.sshHost,
   HostKind.relay => AppIcons.computer,
 };
@@ -51,6 +52,7 @@ IconData hostKindIcon(HostKind kind) => switch (kind) {
 /// Identity tint per kind (one of the 8 fixed pairs), so rows read as a set.
 int hostKindTint(HostKind kind) => switch (kind) {
   HostKind.local => 0,
+  HostKind.web => 2,
   HostKind.ssh => 6,
   HostKind.relay => 1,
 };

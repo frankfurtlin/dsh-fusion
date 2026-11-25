@@ -26805,6 +26805,87 @@ class L10nZh extends L10n {
   }
 
   @override
+  String get webLoginTitle => '网页登录';
+
+  @override
+  String get webLoginShort => '网页';
+
+  @override
+  String get webLoginIntro => '填网址、账号、密码，和浏览器里登录一样；密码只存在这台手机的安全存储里。';
+
+  @override
+  String get webLoginEmpty => '还没有网页登录主机';
+
+  @override
+  String get webLoginAdd => '添加网页登录';
+
+  @override
+  String get webLoginEdit => '编辑网页登录';
+
+  @override
+  String get webLoginUrl => '网址';
+
+  @override
+  String get webLoginUrlHint => 'https://dsh.frankfurtlin.top';
+
+  @override
+  String get webLoginAccount => '账号';
+
+  @override
+  String get webLoginPassword => '密码';
+
+  @override
+  String get webLoginPasswordHint => '登录 dsh-passwords 网关用的密码';
+
+  @override
+  String get webLoginPasswordSaved => '已保存；留空表示不修改';
+
+  @override
+  String get webLoginTest => '测试连接';
+
+  @override
+  String get webLoginTesting => '正在登录…';
+
+  @override
+  String get webLoginTestOk => '登录成功';
+
+  @override
+  String get webLoginSave => '保存';
+
+  @override
+  String get webLoginSaved => '已保存';
+
+  @override
+  String get webLoginRemove => '删除这台主机';
+
+  @override
+  String get webLoginRemoveHint => '账号密码会一起删掉，下次要重新填';
+
+  @override
+  String get webLoginErrMissing => '网址、账号、密码都要填';
+
+  @override
+  String get webLoginErrUrl => '网址不对，填个域名就行';
+
+  @override
+  String get webLoginErrMissingAccount => '还没有填账号';
+
+  @override
+  String get webLoginErrNoPassword => '这台主机还没有保存密码';
+
+  @override
+  String get webLoginOpeningDsh => '正在打开 DSH…';
+
+  @override
+  String get webLoginErrOpenFailed => '登录了，但打不开 DSH Web';
+
+  @override
+  String get webLoginRefreshing => '会话快过期，正在重新登录…';
+
+  @override
+  String get webLoginNoWebview => '网页登录主机请在浏览器里打开这个网址';
+
+  @override
   String get workshopTitle => '创意工坊';
 
   @override

@@ -16,6 +16,7 @@ import '../remote/relay/webrtc_peer.dart';
 import '../remote/secret_store.dart';
 import '../remote/ssh/ssh_host_config.dart';
 import '../remote/ssh/ssh_transport.dart';
+import '../remote/web/web_host_config.dart';
 import 'sessions_state.dart';
 import 'read_list_epoch.dart';
 
@@ -24,8 +25,9 @@ export '../remote/ssh/ssh_transport.dart' show PresentedHostKey;
 export '../remote/relay/relay_backend.dart' show RelayHost, RelayTrust, RelayUser;
 export '../remote/ssh/ssh_host_config.dart';
 
-/// The three kinds of DSH host the app can talk to.
-enum HostKind { local, ssh, relay }
+/// The kinds of DSH host the app can talk to: 本机引擎、网页登录（HTTPS + 网关
+/// 账号密码）、SSH 电脑、DSH Remote 中继。
+enum HostKind { local, web, ssh, relay }
 
 /// Identifies a host: the on-device engine, a saved SSH host, or a relay
 /// (ds-harness-remote) device. Equality is by kind + id; [name] is only a
@@ -34,6 +36,8 @@ class HostRef {
   const HostRef._(this.kind, this.id, [this.name]);
 
   static const local = HostRef._(HostKind.local, 'local');
+
+  const HostRef.web(String id) : this._(HostKind.web, id);
 
   const HostRef.ssh(String id) : this._(HostKind.ssh, id);
 
@@ -56,6 +60,7 @@ class HostRef {
       final name = map['name'];
       if (id is! String || id.isEmpty) return local;
       return switch (map['kind']) {
+        'web' => HostRef.web(id),
         'ssh' => HostRef.ssh(id),
         'relay' => HostRef.relay(id, name: name is String ? name : null),
         _ => local,
@@ -78,6 +83,7 @@ class HostRef {
 /// Chat-header label for a connection: "本机", "电脑 · SSH", "家里的 Mac · 远程".
 String hostLabel(HostKind kind, String? name) => switch (kind) {
   HostKind.local => appL10n.commonThisPhone,
+  HostKind.web => '${_short(name ?? appL10n.webLoginTitle)} · ${appL10n.webLoginShort}',
   HostKind.ssh => '${_short(name ?? appL10n.stateSshHost)} · SSH',
   HostKind.relay => appL10n.stateHostRemoteLabel(_short(name ?? appL10n.commonRemoteHost)),
 };
@@ -95,13 +101,23 @@ final secretStoreProvider = Provider<SecretStore>((ref) => SecureSecretStore());
 // ── Saved SSH hosts ──────────────────────────────────────────────────────────
 
 class HostsState {
-  const HostsState({this.ssh = const [], this.loaded = false});
+  const HostsState({this.ssh = const [], this.web = const [], this.loaded = false});
 
   final List<SshHostConfig> ssh;
+
+  /// 网页登录主机（HTTPS + dsh-passwords 网关账号）。
+  final List<WebHostConfig> web;
   final bool loaded;
 
   SshHostConfig? sshById(String id) {
     for (final h in ssh) {
+      if (h.id == id) return h;
+    }
+    return null;
+  }
+
+  WebHostConfig? webById(String id) {
+    for (final h in web) {
       if (h.id == id) return h;
     }
     return null;
@@ -111,6 +127,9 @@ class HostsState {
 /// Saved SSH hosts: configs in SharedPreferences, secrets in [SecretStore].
 class HostsController extends Notifier<HostsState> {
   static const prefsKey = 'remote_ssh_hosts';
+
+  /// 网页登录主机：配置在 prefs，密码在 SecretStore。
+  static const webPrefsKey = 'remote_web_hosts';
 
   SecretStore get _secrets => ref.read(secretStoreProvider);
   late Future<void> _loaded;
@@ -127,6 +146,7 @@ class HostsController extends Notifier<HostsState> {
 
   Future<void> _load() async {
     var hosts = const <SshHostConfig>[];
+    var web = const <WebHostConfig>[];
     try {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString(prefsKey);
@@ -134,17 +154,35 @@ class HostsController extends Notifier<HostsState> {
         final list = jsonDecode(raw);
         if (list is List) hosts = list.map(SshHostConfig.fromJson).whereType<SshHostConfig>().toList();
       }
+      final rawWeb = prefs.getString(webPrefsKey);
+      if (rawWeb != null) {
+        final list = jsonDecode(rawWeb);
+        if (list is List) web = list.map(WebHostConfig.fromJson).whereType<WebHostConfig>().toList();
+      }
     } catch (_) {
       // No preferences backend (tests) or a corrupt entry: start empty.
     }
-    state = HostsState(ssh: hosts, loaded: true);
+    state = HostsState(ssh: hosts, web: web, loaded: true);
   }
 
-  Future<bool> _persist(List<SshHostConfig> hosts) async {
-    state = HostsState(ssh: List.unmodifiable(hosts), loaded: true);
+  Future<bool> _persist(List<SshHostConfig> hosts) => _store(hosts: hosts);
+
+  Future<bool> _store({List<SshHostConfig>? hosts, List<WebHostConfig>? web}) async {
+    state = HostsState(
+      ssh: List.unmodifiable(hosts ?? state.ssh),
+      web: List.unmodifiable(web ?? state.web),
+      loaded: true,
+    );
     try {
       final prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(prefsKey, jsonEncode([for (final h in hosts) h.toJson()]));
+      var ok = true;
+      if (hosts != null) {
+        ok = await prefs.setString(prefsKey, jsonEncode([for (final h in hosts) h.toJson()])) && ok;
+      }
+      if (web != null) {
+        ok = await prefs.setString(webPrefsKey, jsonEncode([for (final h in web) h.toJson()])) && ok;
+      }
+      return ok;
     } catch (_) {
       return false;
     }
@@ -235,6 +273,49 @@ class HostsController extends Notifier<HostsState> {
     final host = state.sshById(id);
     if (host == null) return;
     await saveSsh(host.copyWith(hostKeyType: () => key.type, hostKeyFingerprint: () => key.fingerprint));
+  }
+
+  /// Adds or replaces a 网页登录 host. [password] null keeps the stored one.
+  Future<bool> saveWeb(WebHostConfig config, {String? password}) async {
+    await _loaded;
+    ref.read(readListCredentialEpochProvider.notifier).advance();
+    if (password != null) {
+      try {
+        if (password.isEmpty) {
+          await _secrets.delete(webPasswordKey(config.id));
+        } else {
+          await _secrets.write(webPasswordKey(config.id), password);
+        }
+      } catch (_) {
+        return false;
+      }
+    }
+    final hosts = [...state.web];
+    final index = hosts.indexWhere((h) => h.id == config.id);
+    if (index >= 0) {
+      hosts[index] = config;
+    } else {
+      hosts.add(config);
+    }
+    return _store(web: hosts);
+  }
+
+  Future<String?> loadWebPassword(String id) async {
+    try {
+      return await _secrets.read(webPasswordKey(id));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Removes the host and its password; switches back to 本机 if it was active.
+  Future<void> removeWeb(String id) async {
+    await _loaded;
+    await _store(web: [...state.web.where((h) => h.id != id)]);
+    try {
+      await _secrets.delete(webPasswordKey(id));
+    } catch (_) {}
+    unawaited(ref.read(activeHostProvider.notifier).forget((h) => h == HostRef.web(id)));
   }
 
   /// Forgets the pinned key (after the person confirmed the machine changed).

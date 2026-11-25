@@ -43,6 +43,8 @@ final class NoDshWeb extends DshWebAccess {
 final dshWebAccessProvider = Provider.autoDispose<DshWebAccess>((ref) {
   final host = ref.watch(activeHostProvider);
   switch (host.kind) {
+    case HostKind.web:
+      return NoDshWeb(appL10n.webLoginNoWebview);
     case HostKind.local:
       return const LocalDshWeb();
     case HostKind.relay:
