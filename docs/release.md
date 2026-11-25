@@ -498,7 +498,7 @@ App 这边（`app/lib/update/delta.dart`、`app/lib/state/update_state.dart`）�
 
 - 签什么：**去掉 `signature` 后的规范化 JSON**（键按字典序、无空白、非 ASCII 原样、只用整数）。两侧规则必须一致，改动要同时改 `tools/pocket/manifest_sign.py` 与 Dart 那一侧。
 - 私钥：`/root/.secrets/pocket-update-key.pem`（0600，只在本机；不进仓库、不进 CI）。
-- 强制范围：**自己镜像上的清单**（`UpdateEndpoint.mirrorId != null`，即 COS 那份和它的加速镜像）必须验签通过，否则这个源按「坏响应」跳过、继续问下一个；自定义 feed / 内测通道有签名就验、没有就按原样接受（它们属于构建者自己）；GitHub API 是另一套格式，不在签名范围内。
+- 强制范围：**官方发布源的那份清单**（`<updateDownloadOrigin>/update.json`，`UpdateEndpoint.requireSignature`）必须验签通过，否则这个源按「坏响应」跳过、继续问下一个（GitHub API 或发布页仍可更新）；自定义 feed / 内测通道属于构建者自己的来源，有签名就验、没有按原样接受；GitHub API 是另一套格式，不在签名范围内。
 - 手工检查：`python3 tools/pocket/manifest_sign.py --check update.json`；`--public-key` 打印内置公钥（换密钥时抄进 Dart）。
 - 换密钥：改 `manifest_sign.py` 的 `PUBLIC_KEY_B64` 与 `manifest_signature.dart` 的 `updateManifestPublicKey` → 发版。**旧版 App 不认新签名**，所以换密钥等于把旧版挡在镜像源外（会回落到 GitHub API，仍能更新，直到它们升级）。
 

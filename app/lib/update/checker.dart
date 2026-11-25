@@ -138,10 +138,11 @@ class UpdateChecker {
         case EndpointKind.githubApi:
           return parseGithubRelease(json);
         case EndpointKind.manifest:
-          // 自己镜像上的清单必须带本项目的签名；验不过就当这个源坏了，
-          // 继续问下一个（GitHub 那条是 TLS 直达、另一套格式）。
+          // 官方发布源的那份清单必须带本项目的签名；验不过就当这个源坏了，
+          // 继续问下一个（GitHub 那条是 TLS 直达、另一套格式）。自定义 feed
+          // 与内测通道是构建者自己的来源，有签名才验、没有按原样接受。
           final signed = await UpdateManifestSignature.verify(json);
-          if (!signed && endpoint.mirrorId != null) return CheckFailure.badResponse;
+          if (!signed && endpoint.requireSignature) return CheckFailure.badResponse;
           return parseUpdateManifest(json, base: endpoint.url);
       }
     } on Object {

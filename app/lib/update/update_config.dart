@@ -205,6 +205,7 @@ class UpdateEndpoint {
     required this.url,
     required this.mirrorId,
     this.headers = const {},
+    this.requireSignature = false,
   });
 
   /// Stable id, remembered when it works so the next check starts there.
@@ -217,6 +218,10 @@ class UpdateEndpoint {
 
   /// Sent with the request (the beta channel's token). Never printed.
   final Map<String, String> headers;
+
+  /// 这份清单必须带本项目的签名才能用（官方发布源就是这样）。自定义 feed /
+  /// 内测通道是构建者自己的来源，有签名就验、没有就按原样接受。
+  final bool requireSignature;
 
   @override
   String toString() => '$id <$url>';
@@ -241,9 +246,20 @@ class UpdateSources {
   final bool useGithubApi;
   final List<UpdateMirror> mirrors;
 
+  /// 官方发布源的那份清单（`<updateDownloadOrigin>/update.json`）：必须验签。
+  /// 构建时用 `--dart-define` 换掉镜像/feed 的变体走自己的来源，不强制。
+  static final officialFeed = Uri.parse('$updateDownloadOrigin/$updateManifestName');
+
   List<UpdateEndpoint> metadataEndpoints({String? preferred}) {
     final manifests = [
-      if (feed case final feed?) UpdateEndpoint(id: 'feed', kind: EndpointKind.manifest, url: feed, mirrorId: null),
+      if (feed case final feed?)
+        UpdateEndpoint(
+          id: 'feed',
+          kind: EndpointKind.manifest,
+          url: feed,
+          mirrorId: null,
+          requireSignature: feed == officialFeed,
+        ),
       for (final mirror in mirrors)
         if (mirror.rewrite(githubLatestAsset(updateManifestName)) case final url?)
           UpdateEndpoint(id: 'manifest:${mirror.id}', kind: EndpointKind.manifest, url: url, mirrorId: mirror.id),
