@@ -48950,6 +48950,168 @@ abstract class L10n {
   /// **'还没连上「{name}」，连上后再打开网页版'**
   String webConnectHostFirst(String name);
 
+  /// No description provided for @webLoginTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'网页登录'**
+  String get webLoginTitle;
+
+  /// No description provided for @webLoginShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'网页'**
+  String get webLoginShort;
+
+  /// No description provided for @webLoginIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'填网址、账号、密码，和浏览器里登录一样；密码只存在这台手机的安全存储里。'**
+  String get webLoginIntro;
+
+  /// No description provided for @webLoginEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有网页登录主机'**
+  String get webLoginEmpty;
+
+  /// No description provided for @webLoginAdd.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加网页登录'**
+  String get webLoginAdd;
+
+  /// No description provided for @webLoginEdit.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑网页登录'**
+  String get webLoginEdit;
+
+  /// No description provided for @webLoginUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'网址'**
+  String get webLoginUrl;
+
+  /// No description provided for @webLoginUrlHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'https://dsh.frankfurtlin.top'**
+  String get webLoginUrlHint;
+
+  /// No description provided for @webLoginAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号'**
+  String get webLoginAccount;
+
+  /// No description provided for @webLoginPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码'**
+  String get webLoginPassword;
+
+  /// No description provided for @webLoginPasswordHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录 dsh-passwords 网关用的密码'**
+  String get webLoginPasswordHint;
+
+  /// No description provided for @webLoginPasswordSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存；留空表示不修改'**
+  String get webLoginPasswordSaved;
+
+  /// No description provided for @webLoginTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试连接'**
+  String get webLoginTest;
+
+  /// No description provided for @webLoginTesting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在登录…'**
+  String get webLoginTesting;
+
+  /// No description provided for @webLoginTestOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录成功'**
+  String get webLoginTestOk;
+
+  /// No description provided for @webLoginSave.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存'**
+  String get webLoginSave;
+
+  /// No description provided for @webLoginSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存'**
+  String get webLoginSaved;
+
+  /// No description provided for @webLoginRemove.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除这台主机'**
+  String get webLoginRemove;
+
+  /// No description provided for @webLoginRemoveHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号密码会一起删掉，下次要重新填'**
+  String get webLoginRemoveHint;
+
+  /// No description provided for @webLoginErrMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'网址、账号、密码都要填'**
+  String get webLoginErrMissing;
+
+  /// No description provided for @webLoginErrUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'网址不对，填个域名就行'**
+  String get webLoginErrUrl;
+
+  /// No description provided for @webLoginErrMissingAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有填账号'**
+  String get webLoginErrMissingAccount;
+
+  /// No description provided for @webLoginErrNoPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'这台主机还没有保存密码'**
+  String get webLoginErrNoPassword;
+
+  /// No description provided for @webLoginOpeningDsh.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在打开 DSH…'**
+  String get webLoginOpeningDsh;
+
+  /// No description provided for @webLoginErrOpenFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录了，但打不开 DSH Web'**
+  String get webLoginErrOpenFailed;
+
+  /// No description provided for @webLoginRefreshing.
+  ///
+  /// In zh, this message translates to:
+  /// **'会话快过期，正在重新登录…'**
+  String get webLoginRefreshing;
+
+  /// No description provided for @webLoginNoWebview.
+  ///
+  /// In zh, this message translates to:
+  /// **'网页登录主机请在浏览器里打开这个网址'**
+  String get webLoginNoWebview;
+
   /// No description provided for @workshopTitle.
   ///
   /// In zh, this message translates to:

@@ -28262,6 +28262,88 @@ class L10nEn extends L10n {
   }
 
   @override
+  String get webLoginTitle => 'Web sign-in';
+
+  @override
+  String get webLoginShort => 'Web';
+
+  @override
+  String get webLoginIntro =>
+      'Enter the address, account and password you use in the browser; the password stays in this phone\'s secure storage.';
+
+  @override
+  String get webLoginEmpty => 'No web sign-in host yet';
+
+  @override
+  String get webLoginAdd => 'Add web sign-in';
+
+  @override
+  String get webLoginEdit => 'Edit web sign-in';
+
+  @override
+  String get webLoginUrl => 'Address';
+
+  @override
+  String get webLoginUrlHint => 'https://dsh.frankfurtlin.top';
+
+  @override
+  String get webLoginAccount => 'Account';
+
+  @override
+  String get webLoginPassword => 'Password';
+
+  @override
+  String get webLoginPasswordHint => 'The password for the dsh-passwords gateway';
+
+  @override
+  String get webLoginPasswordSaved => 'Saved; leave empty to keep it';
+
+  @override
+  String get webLoginTest => 'Test connection';
+
+  @override
+  String get webLoginTesting => 'Signing in…';
+
+  @override
+  String get webLoginTestOk => 'Signed in';
+
+  @override
+  String get webLoginSave => 'Save';
+
+  @override
+  String get webLoginSaved => 'Saved';
+
+  @override
+  String get webLoginRemove => 'Delete this host';
+
+  @override
+  String get webLoginRemoveHint => 'The account and password are deleted with it';
+
+  @override
+  String get webLoginErrMissing => 'Address, account and password are required';
+
+  @override
+  String get webLoginErrUrl => 'That address doesn\'t look right — a domain is enough';
+
+  @override
+  String get webLoginErrMissingAccount => 'No account set';
+
+  @override
+  String get webLoginErrNoPassword => 'This host has no saved password';
+
+  @override
+  String get webLoginOpeningDsh => 'Opening DSH…';
+
+  @override
+  String get webLoginErrOpenFailed => 'Signed in, but DSH Web didn\'t open';
+
+  @override
+  String get webLoginRefreshing => 'Session is expiring, signing in again…';
+
+  @override
+  String get webLoginNoWebview => 'For a web sign-in host, open this address in a browser';
+
+  @override
   String get workshopTitle => 'Workshop';
 
   @override

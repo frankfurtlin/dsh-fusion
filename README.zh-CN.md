@@ -30,6 +30,7 @@ DeepSeek Harness（下称 DSH）跑在你自己的服务器上，平时通过浏
 
 ## 功能
 
+- **网页登录**：填网址 + dsh-passwords 网关的账号密码就能连，和浏览器同一个入口（最省事）。
 - **远程主机**：填 SSH 地址即可连上服务器上的 `dsh web`（只连接模式，不在服务器上另起实例）。
   密码或私钥登录，主机密钥指纹校验（TOFU）。
 - **原生对话**：Flutter 原生界面、流式输出、Markdown 与代码块渲染、会话列表与切换。
@@ -51,7 +52,8 @@ https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.1.3-8-arm64.apk
 
 - 平台：Android 8.0+（`minSdk 26`），arm64
 - 包名：`top.frankfurtlin.dshfusion`
-- 装完后到「设置 → 远程主机 → 添加 SSH 主机」填地址、端口、用户名与凭据；
+- 最省事：装完后到「设置 → 远程主机 → 网页登录 → 添加」，填网址、账号、密码；
+- 或者「设置 → 远程主机 → 添加 SSH 主机」填地址、端口、用户名与凭据；
   **DSH 登录令牌**填 `dsh web` 启动链接里的 `?token=` 值
 
 从源码构建见 [`docs/build.md`](docs/build.md)（本机构建、签名、提速与坑清单）。

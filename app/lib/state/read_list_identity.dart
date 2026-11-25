@@ -180,6 +180,13 @@ final readListIdentityProvider = Provider<ReadListIdentity?>((ref) {
         accountId,
         epoch,
       ]);
+    case HostKind.web:
+      final webHosts = ref.watch(hostsProvider);
+      final web = webHosts.webById(selected.id);
+      if (!webHosts.loaded || web == null || web.id.length > 256 || web.connectionKey.length > 8192) {
+        return null;
+      }
+      return ReadListIdentity.of(['web', web.id, web.connectionKey, epoch]);
     case HostKind.ssh:
       final hosts = ref.watch(hostsProvider);
       final host = hosts.sshById(selected.id);

@@ -10,6 +10,8 @@ import '../remote/network_watch.dart';
 import '../remote/relay/relay_backend.dart';
 import '../remote/ssh/ssh_link.dart';
 import '../remote/ssh/ssh_transport.dart';
+import '../remote/web/web_host_config.dart';
+import '../remote/web/web_link.dart';
 import '../runtime/runtime_bridge.dart';
 import '../runtime/container_paths.dart';
 import 'workspaces_state.dart';
@@ -189,12 +191,33 @@ final sshLinkFactoryProvider = Provider<SshLinkFactory>(
   },
 );
 
+/// Builds the link for one 网页登录 host (tests inject a fake gateway).
+typedef WebLinkFactory = WebHostLink Function(Ref ref, WebHostConfig config);
+
+final webLinkFactoryProvider = Provider<WebLinkFactory>(
+  (ref) => (ref, config) => WebHostLink(
+    config: config,
+    loadPassword: () => ref.read(hostsProvider.notifier).loadWebPassword(config.id),
+    kicks: ref.read(networkKicksProvider),
+  ),
+);
+
 /// The live link to a remote host; null for 本机 or an unknown host. Kept while
 /// something watches it (the active connection, a status row); closed after.
 final hostLinkProvider = Provider.autoDispose.family<HostLink?, HostRef>((ref, host) {
   switch (host.kind) {
     case HostKind.local:
       return null;
+    case HostKind.web:
+      final key = ref.watch(hostsProvider.select((s) => s.webById(host.id)?.connectionKey));
+      if (key == null) return null;
+      final config = ref.read(hostsProvider).webById(host.id)!;
+      final link = ref.read(webLinkFactoryProvider)(ref, config);
+      ref.listen(hostsProvider.select((s) => s.webById(host.id)), (_, next) {
+        if (next != null && next.connectionKey == link.config.connectionKey) link.updateConfig(next);
+      });
+      ref.onDispose(() => unawaited(link.close()));
+      return link;
     case HostKind.ssh:
       // Reconnect only for changes that matter to the session (not a rename
       // or a freshly pinned key).
@@ -252,6 +275,7 @@ final hostLinkStatusProvider = StreamProvider.autoDispose.family<HostLinkStatus,
 final hostNameProvider = Provider.autoDispose.family<String?, HostRef>((ref, host) {
   return switch (host.kind) {
     HostKind.local => appL10n.commonThisPhone,
+    HostKind.web => ref.watch(hostsProvider.select((s) => s.webById(host.id)?.name)),
     HostKind.ssh => ref.watch(hostsProvider.select((s) => s.sshById(host.id)?.name)),
     HostKind.relay => ref.watch(relayAccountProvider.select((a) => a.value?.hostById(host.id)?.name)) ?? host.name,
   };
@@ -546,6 +570,12 @@ AsyncValue<HostConnection?> _connectionForHost(Ref ref, HostRef host) {
   switch (host.kind) {
     case HostKind.local:
       return ref.watch(localConnectionProvider);
+    case HostKind.web:
+      final knownWeb = ref.watch(hostsProvider.select((s) => !s.loaded || s.webById(host.id) != null));
+      if (!knownWeb) return ref.watch(localConnectionProvider);
+      final loadedWeb = ref.watch(hostsProvider.select((s) => s.loaded));
+      if (!loadedWeb) return const AsyncLoading();
+      return ref.watch(remoteConnectionProvider(host));
     case HostKind.ssh:
       final known = ref.watch(hostsProvider.select((s) => !s.loaded || s.sshById(host.id) != null));
       if (!known) return ref.watch(localConnectionProvider);

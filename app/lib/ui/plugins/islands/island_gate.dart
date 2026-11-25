@@ -43,6 +43,8 @@ bool islandHostAllowed(
   bool override = false,
 }) => switch (kind) {
   HostKind.relay => false,
+  // 网页登录主机没有本地隧道/端口，岛屿（内嵌的 DSH Web）不在这里开。
+  HostKind.web => false,
   HostKind.ssh => true,
   HostKind.local => override || (reported == true && probed == RouteGuard.present),
 };
@@ -131,6 +133,8 @@ final islandHostGateProvider = Provider.family<bool, HostRef>((ref, host) {
 /// the app's forward while connected, nothing over the relay.
 final islandHostUrlProvider = Provider.autoDispose.family<Uri?, HostRef>((ref, host) {
   switch (host.kind) {
+    case HostKind.web:
+      return null;
     case HostKind.local:
       final status = ref.watch(localRuntimeProvider.select((s) => s.status));
       if (!status.isRunning || status.baseUrl == null || status.token == null) return null;

@@ -8,6 +8,7 @@ import '../../l10n/l10n.dart';
 import '../../runtime/local_footprint.dart';
 import '../../runtime/runtime_state.dart';
 import '../../state/connection_state.dart';
+import '../../remote/web/web_host_config.dart';
 import '../../state/hosts_state.dart';
 import '../common/ask_ai.dart';
 import '../common/overview_card.dart';
@@ -22,6 +23,7 @@ import 'link_progress.dart';
 import 'network_details_sheet.dart';
 import 'relay_login_sheet.dart';
 import 'ssh_host_form.dart';
+import 'web_host_form.dart';
 import 'session_backup_page.dart';
 import 'remote_web/remote_web_entry.dart';
 
@@ -57,6 +59,15 @@ class RemoteScreen extends ConsumerWidget {
 
   /// A host added while this phone has nothing to run on (no runtime, first
   /// run) is the one to use: take it at once instead of a second tap.
+  /// 新建网页登录主机；和 SSH 一样，本机什么都没装时直接拿它当当前主机。
+  Future<void> _addWeb(BuildContext context, WidgetRef ref) async {
+    final saved = await Navigator.of(context)
+        .push<WebHostConfig>(MaterialPageRoute(builder: (_) => const WebHostFormPage()));
+    if (saved == null || !context.mounted) return;
+    final nothingHere = ref.read(localRuntimeProvider).status.runtimeMissing;
+    if (nothingHere && ref.read(activeHostProvider).isLocal) await _use(context, ref, HostRef.web(saved.id));
+  }
+
   Future<void> _addSsh(BuildContext context, WidgetRef ref) async {
     final saved = await Navigator.of(context)
         .push<SshHostConfig>(MaterialPageRoute(builder: (_) => const SshHostFormPage()));
@@ -69,6 +80,7 @@ class RemoteScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final ssh = ref.watch(hostsProvider.select((s) => s.ssh));
+    final web = ref.watch(hostsProvider.select((s) => s.web));
     final active = ref.watch(activeHostProvider);
     final signedIn = ref.watch(relayAccountProvider.select((a) => a.value?.signedIn ?? false));
     void push(Widget page) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
@@ -91,6 +103,25 @@ class RemoteScreen extends ConsumerWidget {
               subtitle: l10n.remoteCompactHistoryHint,
               value: ref.watch(remoteCompactHistoryProvider),
               onChanged: (value) => unawaited(ref.read(remoteCompactHistoryProvider.notifier).set(value)),
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: l10n.webLoginTitle,
+          footer: web.isEmpty ? Text(l10n.webLoginIntro) : null,
+          children: [
+            for (final h in web)
+              _WebRow(
+                config: h,
+                active: active == HostRef.web(h.id),
+                onTap: () => _use(context, ref, HostRef.web(h.id)),
+                onEdit: () => push(WebHostFormPage(existing: h)),
+              ),
+            SettingsTile(
+              icon: AppIcons.add,
+              tinted: false,
+              subtitle: l10n.webLoginIntro,
+              onTap: () => unawaited(_addWeb(context, ref)),
             ),
           ],
         ),
@@ -331,6 +362,39 @@ class _EdgeIconButton extends StatelessWidget {
     return Transform.translate(
       offset: const Offset(SettingsMetrics.trailingPad + 10 - SettingsMetrics.inset, 0),
       child: button,
+    );
+  }
+}
+
+/// 一行网页登录主机：名字 + 网址（主机那一栏），失败状态和 SSH 行一样跟着显示。
+class _WebRow extends ConsumerWidget {
+  const _WebRow({required this.config, required this.active, required this.onTap, required this.onEdit});
+
+  final WebHostConfig config;
+  final bool active;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final view = active ? watchHostStatus(ref, HostRef.web(config.id)) : null;
+    return Semantics(
+      selected: active,
+      inMutuallyExclusiveGroup: true,
+      child: SettingsTile(
+        icon: hostKindIcon(HostKind.web),
+        tinted: false,
+        title: config.displayName,
+        subtitle: '${config.username}@${config.base.host}',
+        onTap: onTap,
+        value: view == null ? null : _HostState(view),
+        trailing: _EdgeIconButton(
+          icon: const Icon(AppIcons.configure, size: 20),
+          tooltip: l10n.commonEdit,
+          onPressed: onEdit,
+        ),
+      ),
     );
   }
 }
