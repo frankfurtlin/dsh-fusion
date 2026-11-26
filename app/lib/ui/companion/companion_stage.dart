@@ -96,8 +96,8 @@ class CompanionStage extends StatefulWidget {
   final CompanionStageController controller;
   final CompanionStageEvents events;
 
-  /// The model alone on a see-through page, without her room around it (the
-  /// tavern's visual novel draws its own scene behind).
+  /// The model alone on a see-through page, without her room around it (a
+  /// page of its own draws its scene behind).
   final bool bare;
 
   @override

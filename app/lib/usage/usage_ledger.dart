@@ -25,11 +25,6 @@ enum UsageCount {
   /// Generation requests sent.
   gen,
 
-  /// v3: messages the person sent in the tavern (typed, a quick reply, or
-  /// calling on a character in a group). Regenerating, continuing and
-  /// 帮我写 are not messages.
-  tavern,
-
   /// v3: times the companion room was opened.
   room,
 
@@ -38,7 +33,7 @@ enum UsageCount {
 }
 
 /// The counts contract v3 added; v1 and v2 bodies leave them out.
-const usageCountsV3 = {UsageCount.tavern, UsageCount.room, UsageCount.call};
+const usageCountsV3 = {UsageCount.room, UsageCount.call};
 
 /// The newest contract this app speaks.
 const usageContract = 3;
@@ -68,7 +63,7 @@ const usageCountLimits = {'turns': 5000, 'voice': 2000, 'phone': 2000, 'share': 
 
 /// v3's further ceilings. Tokens run high: a long chat sends its whole
 /// context with every call.
-const usageCountLimitsV3 = {'tavern': 5000, 'room': 1000, 'call': 500, 'tok_in': 2000000000, 'tok_out': 200000000};
+const usageCountLimitsV3 = {'room': 1000, 'call': 500, 'tok_in': 2000000000, 'tok_out': 200000000};
 
 /// ABIs the share host takes.
 const usageAbis = {'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'};

@@ -1,5 +1,5 @@
-// 朗读: one reply read aloud at a time, from the button under it (主对话) or
-// its menu (酒馆). Tapping the one being read stops it; starting another,
+// 朗读: one reply read aloud at a time, from the button under it (主对话).
+// Tapping the one being read stops it; starting another,
 // sending a message, or leaving the conversation stops it too.
 
 import 'dart:async';

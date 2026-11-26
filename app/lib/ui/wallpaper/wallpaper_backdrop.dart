@@ -6,7 +6,7 @@
 // only drawn after that; a new bake fades in over the old one. While it shows, text colours
 // fainter than the secondary one are guarded for it (WallpaperLook.guardTheme).
 //
-// [WallpaperBackdrop.scene] does the same for a page's own picture (a tavern chat's background)
+// [WallpaperBackdrop.scene] does the same for a page's own picture (a chat's background)
 // in place of the app's wallpaper: the gradient when it has none.
 
 import 'dart:ui' as ui;
