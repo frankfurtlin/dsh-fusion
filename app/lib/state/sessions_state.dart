@@ -276,13 +276,23 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
       unawaited(workspaces.cancel());
     });
     // 冷启动先画出上一次的列表：网络那一份要 2 秒出头，不该挡住第一眼。
-    // 快照只在内存里没有行时用（同一进程的刷新走已有状态）。
+    // 快照只在内存里没有行时用（同一进程的刷新走已有状态）。快照存的是抽屉
+    // 能显示的全部行（子会话不落盘），所以这里铺出来的就是满的，不是首屏。
     if (_all.isEmpty) {
       final snapshot = r.read(sessionRowSnapshotProvider);
       final cached = await snapshot.rowsFor(host);
       if (cached.isNotEmpty && seq == _loadSeq && _all.isEmpty) {
         _all = cached;
-        PerfTrace.note('session_list_cached', 0, {'rows': cached.length});
+        // 快照里只有抽屉要看的那几列（子会话不落盘），`total` 是写它时列表的
+        // 全量行数：`rows=93 total=189` 说明少的 96 行是子会话，不是掉行。
+        final savedAt = snapshot.savedAtFor(host);
+        final total = snapshot.totalFor(host);
+        final ageSeconds = savedAt == null ? null : DateTime.now().difference(savedAt).inSeconds;
+        PerfTrace.note('session_list_cached', 0, {
+          'rows': cached.length,
+          'total': ?total,
+          'ageS': ?ageSeconds,
+        });
         // Paint once this build's initialization is over; the real list replaces it.
         Future.microtask(() {
           if (r.mounted && state.isLoading) state = AsyncData(_visible());
@@ -301,22 +311,91 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     } finally {
       _listsOut--;
     }
-    // 进 App 时最常等的一步：全量 session/list（不分页，含每条会话的投影）。
-    PerfTrace.note('session_list', watch.elapsedMilliseconds, {'rows': sessions.length});
-    if (!r.mounted) return const [];
-    if (seq == _loadSeq) {
-      // A list already in flight when deletion completed may still contain
-      // the old row. Only a server-confirmed deletion adds this host's fence.
-      _all = sessions.where((s) => !_deleted.contains(s.sessionId)).toList();
-      // 给下一次冷启动留一份（只存抽屉要显示的字段）。
-      unawaited(r.read(sessionRowSnapshotProvider).save(r.read(activeHostProvider), _all));
-      final cache = r.read(readListCacheProvider);
-      cache.stamp(sessions, identity, client);
-      _origin = cache.origin(sessions);
-      _readTitles(r, client);
+    final ms = watch.elapsedMilliseconds;
+    if (!r.mounted) {
+      PerfTrace.note('session_list', ms, {'rows': sessions.length});
+      return const [];
     }
+    if (seq != _loadSeq) {
+      // 这次读已经被更新的 build/refresh 取代：它的行不落地（不是这次的答案）。
+      PerfTrace.note('session_list', ms, {'rows': sessions.length});
+      return _visible();
+    }
+    // 进 App 时最常等的一步：全量 session/list（不分页，含每条会话的投影）。
+    // 和上一次的差一起记：`same` 多、`changed` 少 = 刷新只是在原地更新。
+    final listed = [
+      for (final s in sessions)
+        if (!_deleted.contains(s.sessionId)) s,
+    ];
+    final diff = _mergeListing(_all, listed);
+    _all = diff.rows;
+    _listingChanged = diff.added > 0 || diff.changed > 0 || diff.removed > 0;
+    PerfTrace.note('session_list', ms, {
+      'rows': sessions.length,
+      'top': diff.top,
+      'same': diff.same,
+      'changed': diff.changed,
+      'added': diff.added,
+      'removed': diff.removed,
+    });
+    // 给下一次冷启动留一份（只存抽屉要显示的字段）。
+    unawaited(r.read(sessionRowSnapshotProvider).save(_host ?? r.read(activeHostProvider), _all));
+    final cache = r.read(readListCacheProvider);
+    cache.stamp(sessions, identity, client);
+    _origin = cache.origin(sessions);
+    _readTitles(r, client);
     return _visible();
   }
+
+  /// 这一次读和上一次列表差在哪里：没变的行**留用同一个实例**，只换变的行。
+  ///
+  /// 抽屉、智能体谱系和搜索语料都从行实例上读投影，实例没变就不用重建；
+  /// [removed] 是这次没再列出来的行数（别处归档/删掉）。
+  ({List<SessionSummary> rows, int same, int changed, int added, int removed, int top}) _mergeListing(
+    List<SessionSummary> previous,
+    List<SessionSummary> next,
+  ) {
+    final rows = <SessionSummary>[];
+    var same = 0;
+    var changed = 0;
+    var added = 0;
+    var removed = 0;
+    if (previous.isEmpty) {
+      rows.addAll(next);
+      added = next.length;
+    } else {
+      final before = <String, SessionSummary>{
+        for (final row in previous)
+          if (row.sessionId.isNotEmpty) row.sessionId: row,
+      };
+      for (final row in next) {
+        final old = before.remove(row.sessionId);
+        if (old == null) {
+          rows.add(row);
+          added++;
+        } else if (_sameRow(old, row)) {
+          rows.add(old);
+          same++;
+        } else {
+          rows.add(row);
+          changed++;
+        }
+      }
+      removed = before.length;
+    }
+    return (
+      rows: rows,
+      same: same,
+      changed: changed,
+      added: added,
+      removed: removed,
+      top: rows.where((s) => !s.isSubagent).length,
+    );
+  }
+
+  /// 这一次列表和屏幕上那份是不是同一个内容（见 [_mergeListing]）：
+  /// `false` 时刷新不重发列表，抽屉不重建、滚动位置不动。
+  bool _listingChanged = true;
 
   /// Lists being read. An edge landing meanwhile reads the list once more
   /// instead of being applied in place: the read out may predate it.
@@ -619,7 +698,9 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
       if (r.mounted && seq == _loadSeq) {
         _lastLoadedAt = DateTime.now();
         _lastLoadedClient = conn.client;
-        state = AsyncData(sessions);
+        // 这一份和屏幕上的一样（`same` 全中）就不重发：抽屉不重建、滚动位置
+        // 不动；有变的行才换新列表（行实例只有变的那些是新的）。
+        if (_listingChanged || !state.hasValue) state = AsyncData(sessions);
         cache.finishRefresh(ReadListKind.sessions, activity);
         _appliedRefreshSeq = seq;
       }
@@ -907,6 +988,52 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
 }
 
 final sessionsProvider = AsyncNotifierProvider<SessionsController, List<SessionSummary>>(SessionsController.new);
+
+/// 两行是不是同一份列表内容（Host 这次说的和上次说的一样）。
+///
+/// 比的是整行，不是几个显示字段：智能体谱系读 `subagentCatalog` /
+/// `agentTeam` / `subagentTiming`，搜索读整块投影（session_search.dart），
+/// 少比一块就会把旧值留在屏幕上。
+bool _sameRow(SessionSummary a, SessionSummary b) {
+  if (identical(a, b)) return true;
+  if (a.sessionId != b.sessionId ||
+      a.updatedAt != b.updatedAt ||
+      a.running != b.running ||
+      a.blank != b.blank ||
+      a.agentAvailable != b.agentAvailable ||
+      a.cwd != b.cwd ||
+      a.parentSessionId != b.parentSessionId ||
+      a.origin != b.origin ||
+      a.projectionsKind != b.projectionsKind) {
+    return false;
+  }
+  // 快照里的行不带 raw（不落会话内容），只有抽屉要的那一块。
+  if (a.raw.isEmpty || b.raw.isEmpty) {
+    return a.projections.asOfSeq == b.projections.asOfSeq && _sameJson(a.projections.values, b.projections.values);
+  }
+  return _sameJson(a.raw, b.raw);
+}
+
+/// 结构相等：JSON 解出来的 map / list / 标量。实测 189 行（≈670 KB）比一遍
+/// 2–3 ms（桌面 JIT），一次刷新比一次，比整列表重画便宜。
+bool _sameJson(Object? a, Object? b) {
+  if (identical(a, b)) return true;
+  if (a is Map && b is Map) {
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || !_sameJson(a[key], b[key])) return false;
+    }
+    return true;
+  }
+  if (a is List && b is List) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (!_sameJson(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  return a == b;
+}
 
 /// A remote host with no working directory of its own: without a workspace, a
 /// new conversation would land wherever its `dsh web` happened to start.
