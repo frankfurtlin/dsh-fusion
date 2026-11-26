@@ -19,12 +19,12 @@ import 'sequence_field.dart';
 import '../../l10n/l10n.dart';
 import '../../state/engine_settings_state.dart';
 import '../../state/settings_state.dart';
-import '../account/account_page.dart';
 import '../common/segmented_pill.dart';
 import '../features/feature_widgets.dart';
 import '../settings/index/spot_anchor.dart' show anchorSpot;
 import '../settings/index/spots.dart' show SettingsIndex;
 import '../settings/settings_widgets.dart' show SettingsMetrics;
+import '../onboarding/api_key_page.dart';
 import '../shell/page_frame.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';
@@ -556,7 +556,8 @@ class SecretFieldTile extends ConsumerWidget {
         subtitleColor: error != null ? colors.danger : null,
         value: hasKey || configured ? l10n.engineFieldSharedWithModel : l10n.engineFieldNotConfigured,
         valueColor: hasKey || configured ? null : colors.warning,
-        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AccountPage())),
+        // 账号页随手机本地引擎一起删除：这里改用 App 里保存的 API Key（设置 › 模型）。
+        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ApiKeyPage())),
       );
     }
     final source = SchemaFormScope.of(context);

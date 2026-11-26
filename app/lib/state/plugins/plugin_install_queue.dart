@@ -213,7 +213,7 @@ class PluginInstallsController extends Notifier<Map<String, PluginInstallJob>> {
       _put(job.copyWith(phase: PluginInstallPhase.cancelled, failure: describeCancelled));
       return;
     }
-    if (job.phase == PluginInstallPhase.removing && host.isLocal && ref.read(operatingSystemProvider) == 'ohos') {
+    if (job.phase == PluginInstallPhase.removing && ref.read(operatingSystemProvider) == 'ohos') {
       // Removal has no install request to abort. Stop before the next install.
       _cancelledRemovals.add(job.requestId);
       _put(job.copyWith(phase: PluginInstallPhase.cancelling));
@@ -336,7 +336,7 @@ class PluginInstallsController extends Notifier<Map<String, PluginInstallJob>> {
             (j) => j.copyWith(
               phase: PluginInstallPhase.failed,
               result: removed,
-              failure: describeOperationFailure(removed, isLocal: host.isLocal),
+              failure: describeOperationFailure(removed),
             ),
           );
         }
@@ -378,13 +378,13 @@ class PluginInstallsController extends Notifier<Map<String, PluginInstallJob>> {
           client,
           requestId,
           name,
-          requireResult: host.isLocal && ref.read(operatingSystemProvider) == 'ohos',
+          requireResult: ref.read(operatingSystemProvider) == 'ohos',
         );
       }
       if (result.succeeded) {
         return finish((j) => j.copyWith(phase: PluginInstallPhase.succeeded, result: result));
       }
-      final failure = describeOperationFailure(result, isLocal: host.isLocal, published: job.request.published);
+      final failure = describeOperationFailure(result, published: job.request.published);
       return finish(
         (j) => j.copyWith(
           phase: failure.kind == PluginFailureKind.cancelled ? PluginInstallPhase.cancelled : PluginInstallPhase.failed,

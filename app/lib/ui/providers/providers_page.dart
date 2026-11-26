@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/account_state.dart';
 import '../../state/connection_state.dart';
 import '../../state/models_state.dart';
 import '../../state/providers_state.dart';
@@ -16,7 +15,6 @@ import '../../state/read_list_cache.dart';
 import '../../state/read_list_identity.dart';
 import '../../state/settings_state.dart';
 import '../../state/subscriptions_state.dart';
-import '../account/account_page.dart';
 import '../common/list_page_row.dart';
 import '../common/read_list_status.dart';
 import '../common/status_chip.dart';
@@ -115,14 +113,7 @@ class ProvidersPage extends ConsumerWidget {
 /// custom providers are read, so the figures never jump.
 String? _summary(WidgetRef ref, HostConnection? conn, ProvidersSnapshot? snapshot) {
   if (conn == null || snapshot == null) return null;
-  final remote = !conn.isLocal;
-  final bool deepSeek;
-  if (remote) {
-    deepSeek = catalogHasDeepSeek(ref.watch(modelCatalogProvider).value);
-  } else {
-    final account = ref.watch(accountProvider);
-    deepSeek = account.signedIn || ref.watch(settingsProvider.select((s) => s.hasApiKey));
-  }
+  final deepSeek = catalogHasDeepSeek(ref.watch(modelCatalogProvider).value);
   final subs = ref.watch(subscriptionsProvider).value;
   final statuses = subs != null && subs.available ? subs.statuses : const <SubscriptionStatus>[];
   final total = 1 + statuses.length + snapshot.providers.length;
@@ -132,7 +123,7 @@ String? _summary(WidgetRef ref, HostConnection? conn, ProvidersSnapshot? snapsho
     for (final p in snapshot.providers) snapshot.healthOf(p) == ProviderHealth.ready,
   ].where((ok) => ok).length;
   final counts = appL10n.engineProvidersSummary(total, ready);
-  return remote ? '${conn.label} · $counts' : counts;
+  return '${conn.label} · $counts';
 }
 
 /// DeepSeek: the app's own account / API Key on 本机, the engine's catalog on
@@ -143,9 +134,10 @@ class _DeepSeekCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    // 手机本地引擎与 DeepSeek 账号已删除：DeepSeek 只看主机自己的模型目录。
     final conn = ref.watch(activeConnectionProvider).value;
     final Widget row;
-    if (conn != null && !conn.isLocal) {
+    if (conn != null) {
       final ready = catalogHasDeepSeek(ref.watch(modelCatalogProvider).value);
       row = ListPageRow(
         leading: const Monogram('DeepSeek'),
@@ -154,24 +146,12 @@ class _DeepSeekCard extends ConsumerWidget {
         trailing: ProviderDot(ready ? StatusTone.ok : StatusTone.idle),
       );
     } else {
-      final account = ref.watch(accountProvider);
       final settings = ref.watch(settingsProvider);
-      final (String subtitle, StatusTone tone) = switch (account.phase) {
-        AccountPhase.signedIn => (
-          l10n.engineProvidersAccount(account.profile?.displayName ?? l10n.commonSignedIn),
-          StatusTone.ok,
-        ),
-        AccountPhase.signingIn => (l10n.engineProvidersSigningIn, StatusTone.busy),
-        _ when settings.hasApiKey => ('API Key · ${maskApiKey(settings.apiKey)}', StatusTone.ok),
-        _ => (l10n.engineProvidersSignInOrKey, StatusTone.idle),
-      };
       row = ListPageRow(
         leading: const Monogram('DeepSeek'),
         title: 'DeepSeek',
-        subtitle: subtitle,
-        trailing: ProviderDot(tone),
-        chevron: true,
-        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AccountPage())),
+        subtitle: settings.hasApiKey ? ('API Key · ${maskApiKey(settings.apiKey)}') : l10n.engineProvidersNotConfiguredHere,
+        trailing: ProviderDot(settings.hasApiKey ? StatusTone.ok : StatusTone.idle),
       );
     }
     return Padding(

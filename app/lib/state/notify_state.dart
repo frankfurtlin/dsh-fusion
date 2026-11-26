@@ -333,14 +333,11 @@ class ChatAlertsController extends Notifier<ChatAlert?> {
     // Watching the phone task from the start, wherever alerts are (web mode too), so the turn
     // that drove the phone is known when it ends (_onAlert).
     ref.listen(phoneTurnEndProvider, (_, _) {});
-    ref.listen(localConnectionProvider, (_, next) {
-      _attach(HostRef.local, next.value);
-    }, fireImmediately: true);
     ref.listen(activeConnectionProvider, (_, next) {
       final conn = next.value;
       final host = conn == null ? null : _remoteRef(conn);
       for (final other in [..._trackers.keys]) {
-        if (!other.isLocal && other != host) _attach(other, null);
+        if (other != host) _attach(other, null);
       }
       if (host != null) _attach(host, conn);
     }, fireImmediately: true);
@@ -496,13 +493,13 @@ class ChatAlertsController extends Notifier<ChatAlert?> {
     }
   }
 
-  /// The host a remote connection belongs to; null for 本机.
+  /// The host a connection belongs to; null when it cannot be named.
   HostRef? _remoteRef(HostConnection connection) {
     final id = connection.hostId;
-    if (connection.isLocal || id == null) return null;
+    if (id == null) return null;
     final active = ref.read(activeHostProvider);
     return switch (connection.kind) {
-      HostKind.local || HostKind.none => null,
+      HostKind.none => null,
       HostKind.web => HostRef.web(id),
       HostKind.ssh => HostRef.ssh(id),
       HostKind.relay => HostRef.relay(id, name: active.id == id ? active.name : null),
@@ -642,7 +639,7 @@ class ChatAlertsController extends Notifier<ChatAlert?> {
   }
 
   bool _offerPhonePrompt(ChatAlert alert) {
-    if (!alert.host.isLocal ||
+    if (alert.host.isNone ||
         !alert.kind.attention ||
         alert.eventId == null ||
         ref.read(appForegroundProvider) ||

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/engine_control.dart';
 import '../../state/hosts_state.dart';
 import '../../state/plugins_state.dart';
 import '../common/app_dialog.dart';
@@ -27,17 +26,13 @@ Future<PluginInstallJob> runPluginInstall(BuildContext context, PluginInstallReq
   final l10n = context.l10n;
   final container = ProviderScope.containerOf(context, listen: false);
   final messenger = ScaffoldMessenger.maybeOf(context);
-  final navigator = Navigator.of(context, rootNavigator: true);
   final host = container.read(pluginHostProvider);
   final job = await container.read(pluginInstallsProvider.notifier).install(request);
   final name = request.title ?? request.name;
   switch (job.phase) {
     case PluginInstallPhase.succeeded when job.needsRestart:
-      if (host?.isLocal ?? false) {
-        if (navigator.mounted) {
-          unawaited(offerEngineRestart(navigator.context, container, name));
-        }
-      } else {
+      // 手机本地引擎已删除：装完只在主机上重启 DSH，App 不再提供「重启引擎」。
+      {
         messenger?.showSnackBar(
           SnackBar(
             duration: const Duration(seconds: 6),
@@ -179,36 +174,6 @@ Future<bool> confirmMarketRisk(BuildContext context, MarketEntry entry) async {
     return false;
   }
   return true;
-}
-
-/// Restart dialog for the on-device engine after `restart-required`.
-Future<void> offerEngineRestart(BuildContext context, ProviderContainer container, String name) async {
-  final l10n = context.l10n;
-  final restart = await showAppDialog<bool>(
-    context: context,
-    builder: (dialog) => AlertDialog(
-      title: Text(l10n.pluginsRestartRequired),
-      content: Text(l10n.pluginsRestartExplanation(name)),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(dialog, false), child: Text(l10n.commonLater)),
-        FilledButton(onPressed: () => Navigator.pop(dialog, true), child: Text(l10n.pluginsRestartEngine)),
-      ],
-    ),
-  );
-  if (restart != true) return;
-  try {
-    if (await EngineControl.restart(container)) return;
-  } on Object {
-    // Native start/stop errors need the same visible failure as a stop timeout.
-  }
-  if (!context.mounted) return;
-  await showAppDialog<void>(
-    context: context,
-    builder: (dialog) => AlertDialog(
-      content: Text(l10n.pluginsReloadFailed),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialog), child: Text(l10n.commonClose))],
-    ),
-  );
 }
 
 /// A confirmation that a host change retired: nothing was sent. These open
@@ -505,28 +470,15 @@ Future<bool> removePluginBundle(BuildContext context, PluginBundle bundle, {Rout
     }
     if (result.succeeded && !result.needsRestart) return true;
     if (result.succeeded) {
-      final local = host.isLocal;
       await publishResult(
         SnackBar(
-          content: Text(
-            local
-                ? l10n.pluginsUninstalledRestartLocal(title)
-                : l10n.pluginsUninstalledRestartRemote(title, host.label),
-          ),
+          content: Text(l10n.pluginsUninstalledRestartRemote(title, host.label)),
           persist: false,
-          action: local
-              ? SnackBarAction(
-                  label: l10n.pluginsRestartNow,
-                  onPressed: () {
-                    if (owned()) unawaited(EngineControl.restart(container));
-                  },
-                )
-              : null,
         ),
       );
       return true;
     }
-    await publishFailure(_failed(l10n.pluginsUninstallFailed, describeOperationFailure(result, isLocal: host.isLocal)));
+    await publishFailure(_failed(l10n.pluginsUninstallFailed, describeOperationFailure(result)));
   } on Object catch (error) {
     await publishFailure(_failed(l10n.pluginsUninstallFailed, describePluginError(error)));
   } finally {
@@ -544,30 +496,21 @@ Future<void> togglePluginBundle(BuildContext context, PluginBundle bundle, bool 
   try {
     final result = await container.read(installedPluginsProvider.notifier).setEnabled(bundle, enabled);
     if (!result.succeeded) {
-      final failure = describeOperationFailure(result, isLocal: host?.isLocal ?? true);
+      final failure = describeOperationFailure(result);
       messenger?.showSnackBar(
         SnackBar(content: Text(_failed(enabled ? l10n.pluginsEnableFailed : l10n.pluginsDisableFailed, failure))),
       );
     } else if (result.needsRestart) {
-      final local = host?.isLocal ?? true;
       messenger
         ?..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
             content: Text(
-              local
-                  ? (enabled ? l10n.pluginsEnabledRestartLocal : l10n.pluginsDisabledRestartLocal)
-                  : (enabled
-                        ? l10n.pluginsEnabledRestartRemote(host!.label)
-                        : l10n.pluginsDisabledRestartRemote(host!.label)),
+              enabled
+                  ? l10n.pluginsEnabledRestartRemote(host!.label)
+                  : l10n.pluginsDisabledRestartRemote(host!.label),
             ),
             persist: false,
-            action: local
-                ? SnackBarAction(
-                    label: l10n.pluginsRestartNow,
-                    onPressed: () => unawaited(EngineControl.restart(container)),
-                  )
-                : null,
           ),
         );
     }

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../phone/phone_channel.dart';
 import 'connection_state.dart';
-import 'hosts_state.dart';
 import 'sessions_state.dart';
 
 /// UI provenance only. Native independently binds its original attachment/root.
@@ -15,16 +14,15 @@ class PhoneSkillUseOrigin {
   final int selectionRevision;
 
   static PhoneSkillUseOrigin? capture(ProviderContainer container, String sessionId) {
+    // 手机本地引擎已删除：这份来源记录跟着当前活动连接（远程主机）走。
     final active = container.read(activeConnectionProvider);
-    final local = container.read(localConnectionProvider);
-    if (container.read(activeHostProvider) != HostRef.local || active.isLoading || active.hasError ||
-        local.isLoading || local.hasError || active.value?.isLocal != true || local.value?.isLocal != true ||
+    if (active.isLoading || active.hasError || active.value == null ||
         container.read(currentSessionProvider) != sessionId) {
       return null;
     }
-    final client = local.value!.client;
+    final client = active.value!.client;
     final generation = client.mux.generation;
-    if (!identical(active.value?.client, client) || generation == null) return null;
+    if (generation == null) return null;
     return PhoneSkillUseOrigin._(client, generation, sessionId,
       container.read(currentSessionProvider.notifier).selectionRevision);
   }

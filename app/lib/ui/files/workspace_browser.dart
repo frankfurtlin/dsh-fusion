@@ -588,18 +588,17 @@ class _FolderSliver extends ConsumerWidget {
     final folders = entries.where((e) => e.isDirectory).length;
     final files = entries.length - folders;
     final clock = now();
-    final local = ref.watch(artifactFilesProvider.select((f) => f.isLocal));
     return SliverMainAxisGroup(
       slivers: [
         WorkspaceCardSliver(
           count: entries.length,
           itemBuilder: (context, i) {
             final entry = entries[i];
-            final hostPath = workspaceHostPath(root, workspaceChild(rel, entry.name));
             final row = WorkspaceEntryRow(
               entry: entry,
               sessionId: sessionId,
-              thumbnailPath: local && hostPath.startsWith('/') ? hostPath : null,
+              // 手机本地引擎已删除：缩略图一律走主机的文件接口。
+              thumbnailPath: null,
               modified: dir.times[entry.name],
               now: clock,
               onTap: switch (entry.type) {

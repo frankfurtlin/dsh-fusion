@@ -17,7 +17,7 @@ import '../../state/android_features.dart';
 import '../../state/compose_inbox.dart';
 import '../../state/ui_mode_state.dart';
 import '../../state/web_target.dart';
-import '../../ui_config/ui_skill.dart' show petThemeSkillName;
+import '../../ui_config/skill_names.dart';
 import '../common/expand_reveal.dart';
 import '../settings/settings_widgets.dart';
 import '../theme/app_icons.dart';

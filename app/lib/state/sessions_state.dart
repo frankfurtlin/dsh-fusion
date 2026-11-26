@@ -10,17 +10,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../companion/companion_state.dart';
 import '../diagnostics/perf_trace.dart';
 import 'session_row_snapshot.dart';
-import '../runtime/runtime_state.dart';
 import 'connection_state.dart';
 import 'hosts_state.dart';
-import '../runtime/local_paths.dart';
 import 'read_list_cache.dart';
 import 'read_list_identity.dart';
-import 'settings_state.dart';
 import 'workspaces_state.dart';
 
-/// Default working directory for sessions created on the phone.
-String get localWorkspaceDir => LocalPaths.workspace;
+/// DSH 的默认工作区路径：只用于把工具调用里的路径缩短显示、给目录选择器
+/// 一个建议。会话真正的 cwd 由主机自己决定（`connection.workingDirectory`）。
+const defaultWorkspaceDir = '/root/workspace';
 
 class ArchiveCommitResult {
   const ArchiveCommitResult(this.archived, this.failed);
@@ -654,13 +652,12 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     }
   }
 
-  /// Creates a session in the workspace the drawer shows (else the default
-  /// directory) and returns its id. [autoApprove] false keeps the host's
-  /// permission preset even when 自动批准命令 is on (the companion's).
-  Future<String> create({bool autoApprove = true}) async {
+  /// Creates a session in the workspace the drawer shows (else the host's
+  /// default) and returns its id, keeping the host's permission preset.
+  Future<String> create() async {
     final conn = ref.read(activeConnectionProvider).value;
     if (conn == null) throw StateError('not connected');
-    return createForConnection(conn, autoApprove: autoApprove, isCurrent: () => true);
+    return createForConnection(conn, isCurrent: () => true);
   }
 
   /// Creates for a captured connection. The caller retires its intent through
@@ -668,7 +665,6 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
   Future<String> createForConnection(
     HostConnection conn, {
     required bool Function() isCurrent,
-    bool autoApprove = true,
   }) async {
     final owner = ref;
     void checkCurrent() {
@@ -690,20 +686,9 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     final created = await createSessionInWorkspace(
       conn.client,
       workspaceId,
-      cwd: conn.isLocal ? localWorkspaceDir : conn.workingDirectory,
+      cwd: conn.workingDirectory,
       checkCurrent: checkCurrent,
     );
-    checkCurrent();
-    // Safe mode keeps the default preset: the agent there repairs the engine
-    // with a full shell already, and every command should still be asked.
-    final safeMode = ref.read(localRuntimeProvider).status.inSafeMode;
-    if (autoApprove && conn.isLocal && !safeMode && ref.read(settingsProvider).autoApproveCommands) {
-      try {
-        await conn.client.setPermissionPreset(created.sessionId, 'danger-full-access');
-      } catch (_) {
-        // Keep the default preset if the command is unavailable.
-      }
-    }
     checkCurrent();
     unawaited(refresh());
     return created.sessionId;
@@ -925,7 +910,7 @@ final sessionsProvider = AsyncNotifierProvider<SessionsController, List<SessionS
 
 /// A remote host with no working directory of its own: without a workspace, a
 /// new conversation would land wherever its `dsh web` happened to start.
-bool _hostPicksNewChatDirectory(HostConnection? conn) => conn != null && !conn.isLocal && conn.workingDirectory == null;
+bool _hostPicksNewChatDirectory(HostConnection? conn) => conn != null && conn.workingDirectory == null;
 
 Workspace? _recentForNewChat(HostConnection? conn, WorkspacesState registry, List<SessionSummary>? sessions) {
   if (!_hostPicksNewChatDirectory(conn) || !registry.ready || sessions == null) return null;

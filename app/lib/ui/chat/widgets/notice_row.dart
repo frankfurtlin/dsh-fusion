@@ -109,7 +109,7 @@ class _NoticeRowState extends State<NoticeRow> {
       action = (
         label: l10n.chatGoToSettings,
         onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => pi ? const ProvidersPage() : const ApiKeyPage(onboarding: false)),
+          MaterialPageRoute<void>(builder: (_) => pi ? const ProvidersPage() : const ApiKeyPage()),
         ),
       );
     } else {

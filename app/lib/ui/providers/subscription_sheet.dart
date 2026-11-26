@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/account_state.dart' show accountBrowserProvider;
+import '../../state/external_browser.dart';
 import '../../state/app_foreground.dart';
 import '../../state/subscriptions_state.dart';
 import '../common/app_sheet.dart';
@@ -105,7 +105,7 @@ class _SubscriptionLoginSheetState extends ConsumerState<SubscriptionLoginSheet>
 
   Future<void> _open(String url) async {
     _opened = url;
-    final ok = await ref.read(accountBrowserProvider).open(Uri.parse(url));
+    final ok = await ref.read(externalBrowserProvider).open(Uri.parse(url));
     if (mounted) setState(() => _browserFailed = !ok);
   }
 

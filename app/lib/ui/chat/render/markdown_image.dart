@@ -103,7 +103,7 @@ ImageSource imageSourceOf(String url) {
 /// without a known working directory the path stays relative: the Host
 /// resolves it against the session's own.
 String workspaceImagePath(String path, {String? baseDir, String? cwd, bool local = false}) {
-  final base = baseDir ?? cwd ?? (local ? localWorkspaceDir : null);
+  final base = baseDir ?? cwd ?? (local ? defaultWorkspaceDir : null);
   return resolveSessionPath(path, cwd: base);
 }
 
@@ -216,10 +216,8 @@ class ArtifactImageReader implements WorkspaceImageReader {
     final connection = files.connection;
     if (connection == null) throw const ArtifactError('offline');
     if (!files.canFetch) throw const ArtifactError('unsupported');
-    if (!connection.isLocal) {
-      final stat = await connection.client.statFile(sessionId, path);
-      if ((stat.bytes ?? 0) > maxMarkdownImageBytes) throw const ImageTooLarge();
-    }
+    final stat = await connection.client.statFile(sessionId, path);
+    if ((stat.bytes ?? 0) > maxMarkdownImageBytes) throw const ImageTooLarge();
     final file = await files.materialize(sessionId, Artifact(path: path, origin: ArtifactOrigin.linked, turn: 0));
     if (isSvgUrl(path)) return SvgImageBytes(await file.readAsBytes());
     return RasterImage(FileImage(file));
@@ -494,7 +492,7 @@ class _MarkdownImageState extends ConsumerState<MarkdownImage> {
       _error = const ArtifactError('offline');
       return;
     }
-    final local = ref.read(artifactFilesProvider).isLocal;
+    const local = false;
     final baseDir = scope?.baseDir;
     final path = workspaceImagePath(
       source.path,

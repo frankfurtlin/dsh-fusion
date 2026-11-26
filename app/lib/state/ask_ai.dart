@@ -21,7 +21,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/l10n.dart';
-import '../ui_config/ui_skill.dart' show guideSkillName;
+import '../ui_config/skill_names.dart';
 import 'attachments.dart';
 import 'compose_inbox.dart';
 import 'ui_mode_state.dart';

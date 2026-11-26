@@ -13,10 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_paths.dart';
 import '../../state/connection_state.dart';
-import '../../state/sessions_state.dart' show localWorkspaceDir;
-import '../../state/settings_state.dart';
+import '../../state/sessions_state.dart' show defaultWorkspaceDir;
 import '../../state/workspaces_state.dart';
 import '../common/app_sheet.dart';
 import '../common/breadcrumb_row.dart';
@@ -58,42 +56,13 @@ class DirectoryShortcut {
   final String? subtitle;
 }
 
-/// Where to start: the home folder and the engine's default folder; on the
-/// phone also its shared storage (when the engine can see it).
-List<DirectoryShortcut> directoryShortcuts({required bool local, required bool phoneStorage, String? workingDir}) {
-  if (local) {
-    return [
-      DirectoryShortcut(
-        AppIcons.defaultFolder,
-        appL10n.remoteDirectoryDefault,
-        localWorkspaceDir,
-        subtitle: displayPath(localWorkspaceDir, local: true),
-      ),
-      // HarmonyOS: the sandbox lets the engine at its default folder and no further.
-      if (!LocalPaths.noGuest) DirectoryShortcut(AppIcons.home, appL10n.remoteDirectoryHome, localHome, subtitle: '~'),
-      if (phoneStorage) ...[
-        DirectoryShortcut(AppIcons.phoneStorage, appL10n.remoteDirectoryPhoneStorage, phoneStorageRoot),
-        DirectoryShortcut(
-          AppIcons.downloads,
-          appL10n.remoteDirectoryDownloads,
-          '$phoneStorageRoot/Download',
-          subtitle: appL10n.remoteDirectoryDownloadsPath,
-        ),
-        DirectoryShortcut(
-          AppIcons.document,
-          appL10n.remoteDirectoryDocuments,
-          '$phoneStorageRoot/Documents',
-          subtitle: appL10n.remoteDirectoryDocumentsPath,
-        ),
-      ],
-    ];
-  }
-  return [
-    DirectoryShortcut(AppIcons.home, appL10n.remoteDirectoryHome, null, subtitle: '~'),
-    if (workingDir != null && workingDir.isNotEmpty)
-      DirectoryShortcut(AppIcons.defaultFolder, appL10n.remoteDirectoryDefault, workingDir, subtitle: workingDir),
-  ];
-}
+/// Where to start on the host: its home folder and, when it has one, the
+/// working directory configured for it. 手机本地引擎已删除：本机那组入口随之删除。
+List<DirectoryShortcut> directoryShortcuts({required String? workingDir}) => [
+  DirectoryShortcut(AppIcons.home, appL10n.remoteDirectoryHome, null, subtitle: '~'),
+  if (workingDir != null && workingDir.isNotEmpty)
+    DirectoryShortcut(AppIcons.defaultFolder, appL10n.remoteDirectoryDefault, workingDir, subtitle: workingDir),
+];
 
 /// The picker's first step (a sheet): places to start, recent places,
 /// 「输入路径」.
@@ -107,10 +76,8 @@ class DirectoryLocationsSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final conn = ref.watch(activeConnectionProvider).value;
-    final local = conn?.isLocal ?? true;
-    final phoneStorage = ref.watch(settingsProvider.select((s) => s.phoneStorage));
     final recent = ref.watch(workspacePrefsProvider.select((p) => p.recent));
-    final shortcuts = directoryShortcuts(local: local, phoneStorage: phoneStorage, workingDir: conn?.workingDirectory);
+    final shortcuts = directoryShortcuts(workingDir: conn?.workingDirectory);
     final canBrowse = conn?.client.canBrowseDirectories ?? false;
     final known = {for (final s in shortcuts) ?s.path};
     final places = [
@@ -171,7 +138,7 @@ class DirectoryLocationsSheet extends ConsumerWidget {
                         ListPageRow(
                           icon: AppIcons.history,
                           title: folderName(p),
-                          subtitle: displayPath(p, local: local),
+                          subtitle: displayPath(p),
                           onTap: () => browse(p),
                         ),
                     ],
@@ -207,7 +174,7 @@ Future<String?> askFolderPath(BuildContext context) async {
   final path = await showTextPrompt(
     context,
     title: l10n.remoteDirectoryEnterPath,
-    hint: localWorkspaceDir,
+    hint: defaultWorkspaceDir,
     confirm: l10n.remoteDirectoryGo,
     mono: true,
     keyboardType: TextInputType.url,
@@ -231,15 +198,14 @@ Future<String?> askFolderName(BuildContext context, {required String parentName}
 /// A breadcrumb for display.
 typedef Crumb = ({String label, String path});
 
-/// Breadcrumbs as people read them: inside the phone's storage from
-/// 「手机存储」, inside the home folder from 「主目录」, else from the root.
-List<Crumb> displayCrumbs(DirectoryLevel level, {required bool local}) {
+/// Breadcrumbs as people read them: inside the home folder from 「主目录」,
+/// else from the root (手机本地引擎已删除：不再有「手机存储」那一档).
+List<Crumb> displayCrumbs(DirectoryLevel level) {
   final crumbs = level.crumbs;
-  final storage = local ? crumbs.indexWhere((c) => c.path == phoneStorageRoot) : -1;
   final home = crumbs.indexWhere((c) => c.path == level.home);
-  final (start, label) = storage >= 0
-      ? (storage, appL10n.remoteDirectoryPhoneStorage)
-      : (home >= 0 ? (home, appL10n.remoteDirectoryHome) : (0, appL10n.remoteDirectoryRoot));
+  final (start, label) = home >= 0
+      ? (home, appL10n.remoteDirectoryHome)
+      : (0, appL10n.remoteDirectoryRoot);
   return [
     for (final (i, c) in crumbs.indexed)
       if (i == start) (label: label, path: c.path) else if (i > start) (label: c.name, path: c.path),
@@ -247,8 +213,8 @@ List<Crumb> displayCrumbs(DirectoryLevel level, {required bool local}) {
 }
 
 /// The browser's title for [level]: its last crumb as displayed.
-String levelTitle(DirectoryLevel level, {required bool local}) {
-  final crumbs = displayCrumbs(level, local: local);
+String levelTitle(DirectoryLevel level) {
+  final crumbs = displayCrumbs(level);
   return crumbs.isEmpty ? level.path : crumbs.last.label;
 }
 
@@ -321,8 +287,7 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
     final level = _level;
     final client = _client;
     if (level == null || client == null) return;
-    final local = ref.read(activeConnectionProvider).value?.isLocal ?? true;
-    final name = await askFolderName(context, parentName: levelTitle(level, local: local));
+    final name = await askFolderName(context, parentName: levelTitle(level));
     if (name == null || !mounted) return;
     try {
       final created = await client.createDirectory(level.path, name);
@@ -337,9 +302,8 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final conn = ref.watch(activeConnectionProvider).value;
-    final local = conn?.isLocal ?? true;
     final level = _level;
-    final title = level == null ? l10n.remoteDirectoryPickerTitle : levelTitle(level, local: local);
+    final title = level == null ? l10n.remoteDirectoryPickerTitle : levelTitle(level);
     final confirmLabel = widget.confirmLabel ?? l10n.remoteDirectoryChoose;
     final canCreate = conn?.client.canCreateDirectories ?? false;
 
@@ -357,7 +321,6 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
     } else {
       body = _LevelList(
         level: level,
-        local: local,
         showHidden: _showHidden,
         onOpen: (path) => unawaited(_open(path)),
         onToggleHidden: () => setState(() => _showHidden = !_showHidden),
@@ -377,7 +340,7 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
           children: [
             if (level != null)
               BreadcrumbRow(
-                crumbs: displayCrumbs(level, local: local),
+                crumbs: displayCrumbs(level),
                 onTap: (path) {
                   if (path != level.path) unawaited(_open(path));
                 },
@@ -421,14 +384,12 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
 class _LevelList extends StatelessWidget {
   const _LevelList({
     required this.level,
-    required this.local,
     required this.showHidden,
     required this.onOpen,
     required this.onToggleHidden,
   });
 
   final DirectoryLevel level;
-  final bool local;
   final bool showHidden;
   final ValueChanged<String> onOpen;
   final VoidCallback onToggleHidden;

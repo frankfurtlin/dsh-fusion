@@ -6,7 +6,7 @@ import '../../l10n/l10n.dart';
 import '../common/tool_glyph.dart';
 import 'dsh_ui/dsh_ui_model.dart' show DshUiParse, DshUiParsed;
 import 'dsh_ui/dsh_ui_plugin.dart';
-import '../../state/sessions_state.dart' show localWorkspaceDir;
+import '../../state/sessions_state.dart' show defaultWorkspaceDir;
 import 'render/code_block.dart' show languageForPath;
 import 'render/diff_view.dart';
 
@@ -486,9 +486,9 @@ class ToolView {
 
 /// 工作区内的路径去掉工作区前缀,其余原样。
 String displayPath(String path) {
-  final prefix = '$localWorkspaceDir/';
+  final prefix = '$defaultWorkspaceDir/';
   if (path.startsWith(prefix)) return path.substring(prefix.length);
-  if (path == localWorkspaceDir) return '.';
+  if (path == defaultWorkspaceDir) return '.';
   return path;
 }
 

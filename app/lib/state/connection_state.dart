@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'package:dsh_client/dsh_client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../l10n/l10n.dart';
 import '../remote/link_status.dart';
 import '../remote/network_watch.dart';
 import '../remote/relay/relay_backend.dart';
@@ -12,23 +11,15 @@ import '../remote/ssh/ssh_link.dart';
 import '../remote/ssh/ssh_transport.dart';
 import '../remote/web/web_host_config.dart';
 import '../remote/web/web_link.dart';
-import '../runtime/runtime_bridge.dart';
-import '../runtime/container_paths.dart';
-import 'workspaces_state.dart';
-import '../runtime/runtime_state.dart';
 import 'hosts_state.dart';
-import 'permission_default_repair.dart';
-import 'provider_backend.dart';
-import 'provider_keys.dart';
-import 'settings_state.dart';
 
-/// A connected DSH host: the on-device engine, an SSH host or a relay device.
+/// A connected DSH host: a web-login gateway, an SSH host or a relay device.
+/// 手机本地引擎已删除（2026-11-26），连接因此只来自远程主机。
 class HostConnection {
   const HostConnection({
     required this.client,
     this._label,
-    required this.isLocal,
-    this.kind = HostKind.local,
+    required this.kind,
     this.hostId,
     this.name,
     this.workingDirectory,
@@ -39,13 +30,12 @@ class HostConnection {
   /// A fixed label (tests); null builds it from [kind] and [name].
   final String? _label;
 
-  /// The host's own name (SSH / relay); null for 本机 or when not known.
+  /// The host's own name (SSH / relay); null when not known.
   final String? name;
 
-  /// Shown in the chat header: "本机", "电脑 · SSH", "家里的 Mac · 远程".
+  /// Shown in the chat header: "电脑 · SSH", "家里的 Mac · 远程".
   /// Built on read, so it follows a language switch on a live connection.
   String get label => _label ?? hostLabel(kind, name);
-  final bool isLocal;
   final HostKind kind;
   final String? hostId;
 
@@ -55,113 +45,6 @@ class HostConnection {
 }
 
 typedef LocalClientConnector = Future<DshClient> Function({required Uri baseUri, required String token});
-
-/// [DshClient.connect]; tests swap it to decide when a connect finishes.
-final localClientConnectorProvider = Provider<LocalClientConnector>(
-  (ref) =>
-      ({required baseUri, required token}) =>
-          DshClient.connect(baseUri: baseUri, token: token, backgroundLists: true, startMux: false),
-);
-
-/// Connects to the local `dsh web` once the native runtime reports it running.
-class LocalConnectionController extends AsyncNotifier<HostConnection?> {
-  @override
-  Future<HostConnection?> build() async {
-    // This build's ref: `ref` always points at the newest build, so only
-    // `r.mounted` tells that a token change superseded this one.
-    final r = ref;
-    // Riverpod's own retries give up after a while; resume and network
-    // changes try a failed connect again.
-    final kicks = r.read(networkKicksProvider).listen((_) {
-      if (r.mounted && state.hasError && !state.isLoading) r.invalidateSelf();
-    });
-    r.onDispose(() => unawaited(kicks.cancel()));
-    final endpoint = r.watch(
-      localRuntimeProvider.select((s) {
-        final st = s.status;
-        return st.phase == RuntimePhase.running ? (st.baseUrl, st.token) : (null, null);
-      }),
-    );
-    final (baseUrl, token) = endpoint;
-    if (baseUrl == null || token == null) return null;
-
-    if (ContainerPaths.enabled) {
-      final paths = await ContainerPaths.refresh();
-      if (!r.mounted) return null;
-      if (r.read(activeHostProvider).isLocal) {
-        await r.read(workspacePrefsProvider.notifier).relocate(paths);
-      }
-      if (!r.mounted) return null;
-    }
-
-    final client = await r.read(localClientConnectorProvider)(baseUri: Uri.parse(baseUrl), token: token);
-    if (!r.mounted) {
-      await client.close();
-      return null;
-    }
-    r.onDispose(() => unawaited(client.close()));
-    (Object, StackTrace)? readyFailure;
-    final ready = client.mux.ready(timeout: const Duration(seconds: 20));
-    unawaited(
-      ready.then<void>(
-        (_) {},
-        onError: (Object error, StackTrace stack) {
-          readyFailure = (error, stack);
-          // Error/retry states retain their previous value. Retire our published
-          // connection before closing it, without changing an unpublished build.
-          if (r.mounted && identical(state.value?.client, client)) {
-            state = const AsyncData(null);
-          }
-          unawaited(client.close());
-        },
-      ),
-    );
-
-    // Keep DSH's own credential store in sync with the key saved in the app.
-    r.listen(settingsProvider.select((s) => s.apiKey), (prev, next) {
-      if (next == prev) return;
-      if (next.isNotEmpty) {
-        unawaited(_pushKey(client, next));
-      } else if (prev != null && prev.isNotEmpty) {
-        unawaited(client.clearProviderKey().catchError((_) {}));
-      }
-    });
-    final apiKey = r.read(settingsProvider).apiKey;
-    if (apiKey.isNotEmpty) await _pushKey(client, apiKey);
-    if (!r.mounted) return null;
-    if (readyFailure case final failure?) Error.throwWithStackTrace(failure.$1, failure.$2);
-    final connection = HostConnection(client: client, isLocal: true);
-    // HTTP is usable now; keep build pending so ready failures retain Riverpod's retry policy.
-    state = AsyncData(connection);
-    await ready;
-    if (!r.mounted) return null;
-    // Custom providers' keys kept on the phone go back in where the engine
-    // lost them; never awaited (the catalog refreshes when they land).
-    unawaited(
-      healProviderKeys(
-        ClientProviderBackend(client, isLocal: true, hostLabel: appL10n.commonThisPhone),
-        r.read(providerKeyVaultProvider),
-      ).catchError((_) => const <String>[]),
-    );
-    // An Auto default an older app saved keeps DSH's permission presets from
-    // starting; it comes out once, with a restart.
-    unawaited(clearAutoDefaultPreset(r.container));
-
-    return connection;
-  }
-
-  Future<void> _pushKey(DshClient client, String key) async {
-    try {
-      await client.setProviderKey(key);
-    } catch (_) {
-      // Rejected when the launch environment already provides the key; harmless.
-    }
-  }
-}
-
-final localConnectionProvider = AsyncNotifierProvider<LocalConnectionController, HostConnection?>(
-  LocalConnectionController.new,
-);
 
 // ── Remote links ─────────────────────────────────────────────────────────────
 
@@ -207,7 +90,7 @@ final webLinkFactoryProvider = Provider<WebLinkFactory>(
 /// status row); closed after.
 final hostLinkProvider = Provider.autoDispose.family<HostLink?, HostRef>((ref, host) {
   switch (host.kind) {
-    case HostKind.local || HostKind.none:
+    case HostKind.none:
       return null;
     case HostKind.web:
       final key = ref.watch(hostsProvider.select((s) => s.webById(host.id)?.connectionKey));
@@ -275,7 +158,6 @@ final hostLinkStatusProvider = StreamProvider.autoDispose.family<HostLinkStatus,
 /// Display name of a host as currently known.
 final hostNameProvider = Provider.autoDispose.family<String?, HostRef>((ref, host) {
   return switch (host.kind) {
-    HostKind.local => appL10n.commonThisPhone,
     HostKind.web => ref.watch(hostsProvider.select((s) => s.webById(host.id)?.name)),
     HostKind.ssh => ref.watch(hostsProvider.select((s) => s.sshById(host.id)?.name)),
     HostKind.relay => ref.watch(relayAccountProvider.select((a) => a.value?.hostById(host.id)?.name)) ?? host.name,
@@ -299,7 +181,6 @@ class RemoteConnectionController extends AsyncNotifier<HostConnection?> {
     HostConnection wrap(DshClient client) => HostConnection(
       client: client,
       name: name,
-      isLocal: false,
       kind: host.kind,
       hostId: host.id,
       workingDirectory: link is SshHostLink ? link.resolvedWorkingDirectory : null,
@@ -446,11 +327,6 @@ class ConnectionDiagnostics {
       if (identical(_activeRemoteValue, value)) _activeRemoteValue = null;
       _changed();
     });
-    if (host.isLocal) {
-      _releaseHistory();
-      return;
-    }
-
     // Called only by the normal active-connection flow, never by export.
     // Follow link identity even when its connection stays AsyncLoading.
     final link = ref.watch(hostLinkProvider(host));
@@ -572,19 +448,17 @@ final activeConnectionProvider = Provider<AsyncValue<HostConnection?>>((ref) {
 AsyncValue<HostConnection?> _connectionForHost(Ref ref, HostRef host) {
   switch (host.kind) {
     case HostKind.none:
-      // 没有主机：什么都不连（本机引擎已下线，不再拿本机连接兜底）。
+      // 没有主机：什么都不连（手机本地引擎已删除，没有本机连接可兜底）。
       return const AsyncData(null);
-    case HostKind.local:
-      return ref.watch(localConnectionProvider);
     case HostKind.web:
       final knownWeb = ref.watch(hostsProvider.select((s) => !s.loaded || s.webById(host.id) != null));
-      if (!knownWeb) return ref.watch(localConnectionProvider);
+      if (!knownWeb) return const AsyncData(null);
       final loadedWeb = ref.watch(hostsProvider.select((s) => s.loaded));
       if (!loadedWeb) return const AsyncLoading();
       return ref.watch(remoteConnectionProvider(host));
     case HostKind.ssh:
       final known = ref.watch(hostsProvider.select((s) => !s.loaded || s.sshById(host.id) != null));
-      if (!known) return ref.watch(localConnectionProvider);
+      if (!known) return const AsyncData(null);
       final loaded = ref.watch(hostsProvider.select((s) => s.loaded));
       if (!loaded) return const AsyncLoading();
       return ref.watch(remoteConnectionProvider(host));

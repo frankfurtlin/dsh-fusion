@@ -15,7 +15,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gpt_markdown/custom_widgets/svg_image.dart' show isSvgUrl, memorySvg;
 
 import '../../l10n/l10n.dart';
-import '../../state/artifact_files.dart' show artifactFilesProvider;
 import '../../state/attachments.dart' show sessionImageProvider;
 import '../../state/chat_state.dart' show chatProvider;
 import '../../state/sessions_state.dart' show currentSessionProvider, sessionsProvider;
@@ -343,7 +342,7 @@ class _ShareImageCellState extends ConsumerState<_ShareImageCell> {
         final resolved = workspaceImagePath(
           path,
           cwd: path.startsWith('/') ? null : _cwdOf(sessionId),
-          local: ref.read(artifactFilesProvider).isLocal,
+          local: false,
         );
         final source = widget.image;
         ref

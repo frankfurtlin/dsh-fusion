@@ -13,8 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/l10n.dart';
 import '../phone/phone_channel.dart';
-import '../runtime/runtime_bridge.dart';
-import '../runtime/runtime_state.dart';
 import '../state/phone_state.dart' show phoneChannelProvider;
 import 'usage_ledger.dart';
 import 'usage_net.dart';
@@ -62,10 +60,6 @@ final usageResumesProvider = Provider<VoidCallback Function(VoidCallback onResum
 /// active again.
 bool phoneTaskStarted(PhoneTaskStatus before, PhoneTaskStatus now) =>
     now.active && (!before.active || (now.id != null && now.id != before.id));
-
-/// The on-device engine's launch while it runs (`direct`, `proot`).
-String? _engineMode(LocalRuntimeState s) =>
-    s.status.phase == RuntimePhase.running ? s.status.currentExecutionMode : null;
 
 class UsageStatsController extends Notifier<UsageStatsState> {
   static const enabledKey = 'usage_stats_enabled';
@@ -133,15 +127,11 @@ class UsageStatsController extends Notifier<UsageStatsState> {
   }
 
   /// Release builds: today counts when the app comes to the front, and the
-  /// days before go out; the engine's launch and phone control tasks are
-  /// noted as they happen.
+  /// days before go out; phone control tasks are noted as they happen.
   void _watch() {
     ref.onDispose(ref.read(usageResumesProvider)(() => unawaited(foreground())));
     // A cold start comes up in front.
     unawaited(foreground());
-    ref.listen(localRuntimeProvider.select(_engineMode), (_, mode) {
-      if (mode != null) _record((ledger, now) => ledger.engine(mode, now));
-    }, fireImmediately: true);
     final channel = ref.read(phoneChannelProvider);
     StreamSubscription<PhoneStatus>? sub;
     var disposed = false;

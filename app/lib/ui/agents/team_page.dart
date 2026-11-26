@@ -13,7 +13,6 @@ import '../../l10n/l10n.dart';
 import '../../state/agents_state.dart';
 import '../../state/connection_state.dart';
 import '../../state/models_state.dart';
-import '../../state/plugins_state.dart';
 import '../../state/sessions_state.dart';
 import '../chat/model_sheet.dart' show modelShortName;
 import '../chat/widgets/live_clock.dart' show runClock;
@@ -131,7 +130,8 @@ class _TeamOff extends ConsumerWidget {
     final l10n = context.l10n;
     final bundle = ref.watch(agentTeamBundleProvider);
     final row = bundle.value;
-    final canSwitch = row != null && row.readOnlyReason == null && !ref.watch(localSafeModeProvider);
+    // 手机本地引擎已删除：安全模式的插件停用不再存在。
+    final canSwitch = row != null && row.readOnlyReason == null;
     if (bundle.isLoading && row == null) return const QuietSpinner();
     if (row != null && row.enabled) {
       return EmptyView(

@@ -25,10 +25,8 @@ class PluginHost {
   final String label;
   final HostKind kind;
 
-  bool get isLocal => kind == HostKind.local;
-
-  /// The local engine runs a clean repair profile with the plugin manager off:
-  /// no installs or removals until it's back to normal.
+  /// Reserved for hosts that run a clean repair profile with the plugin
+  /// manager off (手机本地引擎已删除后恒为 false)。
   final bool safeMode;
 
   /// The engine says it takes no market installs, updates or removals
@@ -40,16 +38,10 @@ class PluginHost {
   bool get canInstall => !safeMode && !installRefused && client.canInstallPlugins;
 }
 
-/// The on-device engine runs in safe mode. A seam of its own so plugin state
-/// doesn't need the native runtime (tests override it).
-final localSafeModeProvider = Provider<bool>(
-  (ref) => ref.watch(localRuntimeProvider.select((s) => s.status.inSafeMode)),
-);
-
 final pluginHostProvider = Provider<PluginHost?>((ref) {
   final connection = ref.watch(readListLiveConnectionProvider);
   if (connection == null) return null;
-  final safeMode = connection.isLocal && ref.watch(localSafeModeProvider);
+  const safeMode = false;
   final installRefused = ref.watch(operatingSystemProvider) == 'ohos' && ref.watch(marketInstallRefusedProvider);
   return PluginHost.of(connection, safeMode: safeMode, installRefused: installRefused);
 });

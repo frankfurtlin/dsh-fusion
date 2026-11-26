@@ -56,9 +56,8 @@ enum DsBotAvailability {
 class DsBotStatus {
   const DsBotStatus({
     required this.availability,
-    this.host = HostRef.local,
+    this.host = HostRef.none,
     this._hostLabel,
-    this.isLocal = true,
     this.hello,
     this.team,
     this.live = const DsBotLive(),
@@ -70,7 +69,7 @@ class DsBotStatus {
   final HostRef host;
   final String? _hostLabel;
   String get hostLabel => _hostLabel ?? appL10n.commonThisPhone;
-  final bool isLocal;
+
   final DsBotHello? hello;
 
   /// Null until the first `state` answer.
@@ -97,7 +96,6 @@ class DsBotStatus {
     availability: availability ?? this.availability,
     host: host,
     hostLabel: _hostLabel,
-    isLocal: isLocal,
     hello: hello ?? this.hello,
     team: team ?? this.team,
     live: live ?? this.live,
@@ -190,8 +188,7 @@ class DsBotController extends Notifier<DsBotStatus> {
     final base = DsBotStatus(
       availability: DsBotAvailability.connecting,
       host: host,
-      hostLabel: conn.isLocal ? null : conn.label,
-      isLocal: conn.isLocal,
+      hostLabel: conn.label,
     );
     final api = ref.read(dsBotApiFactoryProvider)(conn);
     if (api == null) return base.copyWith(availability: DsBotAvailability.relay);

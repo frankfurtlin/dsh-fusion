@@ -181,7 +181,7 @@ class _ActiveCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     // 没有主机时这张卡没有可说的（本机引擎已下线，也没有「切回本机」）。
-    if (active.isLocal || active.isNone) return const SizedBox.shrink();
+    if (active.isNone) return const SizedBox.shrink();
     final status = ref.watch(hostLinkStatusProvider(active)).value ?? HostLinkStatus.idle;
     final view = HostStatusView.ofLink(status);
     final name = ref.watch(hostNameProvider(active)) ?? l10n.commonRemoteHost;

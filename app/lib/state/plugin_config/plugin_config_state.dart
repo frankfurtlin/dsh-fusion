@@ -471,7 +471,7 @@ class PluginConfigController extends AsyncNotifier<PluginConfigState?> {
       writable: catalog.writable,
       complete: catalog.complete,
       credentials: credentials ?? const {},
-      local: conn?.isLocal ?? true,
+      local: false,
       hostLabel: conn?.label,
       scope: ref.read(pluginConfigScopeProvider),
     );

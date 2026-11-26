@@ -10,7 +10,7 @@ import 'dart:ui';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../runtime/container_paths.dart';
+import '../device/container_paths.dart';
 
 /// The user's wallpaper and how it sits.
 class CustomWallpaper {

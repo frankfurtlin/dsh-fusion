@@ -4,12 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_footprint.dart';
-import '../../runtime/runtime_state.dart';
-import '../../state/account_state.dart';
 import '../../state/android_features.dart';
 import '../../state/ask_ai.dart' show askAiAvailableProvider;
-import '../../state/balance_state.dart';
 import '../../state/connection_state.dart';
 import '../../state/engine_settings_state.dart';
 import '../../state/features_state.dart';
@@ -21,23 +17,17 @@ import '../../state/settings_state.dart';
 import '../../state/system_actions_state.dart';
 import '../../state/ui_mode_state.dart';
 import '../../state/update_state.dart';
-import '../account/account_page.dart';
 import '../../bridge/bridge_settings_page.dart';
-import '../account/account_widgets.dart';
-import '../chat/balance_widgets.dart' show formatMoney;
 import '../common/ask_ai.dart';
 import '../common/overview_card.dart';
 import '../common/search_capsule.dart';
 import '../common/status_chip.dart';
-import '../engine/engine_screen.dart';
-import '../engine/engine_status.dart';
 import '../engine_settings/engine_settings_hub.dart';
 import '../engine_settings/web_search_page.dart';
 import 'media_settings_page.dart';
 import '../features/feature_catalog.dart' show communityPage;
 import '../features/feature_format.dart' show permissionName;
 import '../features/permission_page.dart';
-import '../onboarding/api_key_page.dart' show maskApiKey;
 import '../pets/pet_settings_page.dart';
 import '../phone/phone_control_screen.dart';
 import '../phone/system_actions_page.dart';
@@ -59,9 +49,9 @@ import 'diagnostics_page.dart';
 import 'interface_page.dart';
 import '../../digest/digest_page.dart';
 import 'language_tile.dart';
-import 'linux_environment_page.dart';
 import 'notification_settings.dart';
 import 'performance_page.dart';
+import '../../device/device_bridge.dart';
 import 'personalization_page.dart';
 import 'privacy_page.dart';
 import 'search/settings_search_page.dart';
@@ -105,9 +95,8 @@ class SettingsScreen extends ConsumerWidget {
 
     // AI.
     final permission = _permissionValue(ref);
-    final prefs = canEditReplyPrefs(ref)
-        ? (replyPrefsSummary(ref) == null ? l10n.commonNotSet : l10n.hubValueSet)
-        : null;
+    // 手机本地引擎已删除：个性化页只剩 Agent 预设，没有可读的个人偏好行。
+    final String? prefs = null;
     // 能力.
     final phone = android || ios ? ref.watch(phoneProvider) : null;
     final phoneValue = phone == null || !phone.loaded || !phone.status.ready
@@ -127,7 +116,7 @@ class SettingsScreen extends ConsumerWidget {
     final exempt = android ? ref.watch(batteryExemptProvider).value : null;
     // 主机.
     final ssh = ref.watch(hostsProvider.select((s) => s.ssh.length));
-    final hostName = host.isLocal ? l10n.commonThisPhone : ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
+    final hostName = ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
     // 帮助与关于.
     final update = ref.watch(appUpdateProvider);
     final newVersion = update.hasUpdate && !update.isSkipped;
@@ -219,7 +208,6 @@ class SettingsScreen extends ConsumerWidget {
               spot: SettingsIndex.entry(SettingsPageId.media),
               onTap: () => _push(context, const MediaSettingsPage()),
             ),
-            if (ref.watch(operatingSystemProvider) == 'ohos') const LinuxEnvironmentTile(tint: SettingsHues.abilities),
             SettingsTile(
               icon: AppIcons.plugin,
               tint: SettingsHues.abilities,
@@ -372,11 +360,7 @@ class SettingsScreen extends ConsumerWidget {
   /// 权限's value: the default for new conversations, and whether it is one
   /// that stops asking (shown in the warning colour).
   (String, bool)? _permissionValue(WidgetRef ref) {
-    final local = ref.watch(activeHostProvider).isLocal;
-    final auto = ref.watch(settingsProvider.select((s) => s.autoApproveCommands));
-    final safe = ref.watch(localRuntimeProvider.select((s) => s.status.inSafeMode));
-    // On the phone, 完全权限 for new conversations is the app's own switch.
-    if (local && auto && !safe) return (permissionName('danger-full-access'), true);
+    // 手机本地引擎已删除：新会话的默认权限只来自主机自己声明的预设。
     if (ref.watch(activeConnectionProvider).value == null) return null;
     final state = ref.watch(permissionStateProvider(null)).value;
     final value = state?.hostDefault;
@@ -386,120 +370,29 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-/// The hub's overview card: who is paying (DeepSeek account or API Key) and
-/// the balance, with the engine's state underneath. The card opens 账号, the
-/// engine line opens 引擎. With no runtime on this phone and a remote host in
-/// use there is nothing here to sign in to: the card shows that host and
-/// opens 远程主机.
-class SettingsOverview extends ConsumerStatefulWidget {
+/// The hub's overview card: the host this app talks to and how its link is
+/// doing; tapping it opens 远程主机. 手机本地引擎与账号都已删除（2026-11-26），
+/// 所以卡片不再显示登录/余额，也不再带动本机引擎的页脚。
+class SettingsOverview extends ConsumerWidget {
   const SettingsOverview({super.key});
 
   @override
-  ConsumerState<SettingsOverview> createState() => _SettingsOverviewState();
-}
-
-class _SettingsOverviewState extends ConsumerState<SettingsOverview> {
-  @override
-  void initState() {
-    super.initState();
-    // Opening settings counts as "open": refresh the balance (throttled).
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(balanceProvider.notifier).refresh();
-    });
-  }
-
-  void _push(Widget page) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final account = ref.watch(accountProvider);
-    final settings = ref.watch(settingsProvider);
-    final balance = ref.watch(balanceProvider);
-    final wallets = ref.watch(accountWalletBalanceProvider);
-    final runtime = ref.watch(localRuntimeProvider);
-    final engine = EngineStatusView.of(runtime);
     final colors = DshColors.of(context);
     final active = ref.watch(activeHostProvider);
-    final remoteOnly = runtime.status.runtimeMissing && !active.isLocal;
-
-    // The account's wallets when signed in; otherwise the key's balance.
-    final money = account.signedIn && wallets != null ? balanceFromAccount(wallets) : balance.balance;
-    final low = !account.signedIn && balance.isLow;
-    final balanceLine = money == null
-        ? null
-        : low
-        ? l10n.hubSettingsBalanceLow(formatMoney(money))
-        : l10n.hubSettingsBalance(formatMoney(money));
-
-    final Widget leading;
-    final String title;
-    final String subtitle;
-    var warn = false;
-    var mono = false;
-    // Set when the card shows the remote host: its link state.
-    String? hostLink;
-    switch (account.phase) {
-      case AccountPhase.signedIn:
-        leading = AccountAvatar(profile: account.profile, size: OverviewCard.avatarSize);
-        title = account.profile?.displayName ?? l10n.hubSettingsAccount;
-        subtitle = balanceLine ?? account.profile?.contact ?? l10n.commonSignedIn;
-      case AccountPhase.signingIn:
-        leading = const OverviewGlyph(AppIcons.apiKey);
-        title = l10n.hubSettingsAccount;
-        subtitle = l10n.hubSettingsSigningIn;
-      case _ when remoteOnly:
-        final link = HostStatusView.ofLink(ref.watch(hostLinkStatusProvider(active)).value ?? HostLinkStatus.idle);
-        leading = OverviewGlyph(hostKindIcon(active.kind), tint: hostKindTint(active.kind));
-        title = ref.watch(hostNameProvider(active)) ?? l10n.commonRemoteHost;
-        subtitle = [l10n.commonRemoteHost, link.label].join(' · ');
-        warn = link.tone == StatusTone.error || link.tone == StatusTone.warn;
-        hostLink = link.label;
-      case _ when settings.hasApiKey:
-        leading = const OverviewGlyph(AppIcons.apiKey);
-        title = l10n.hubSettingsApiKey;
-        if (balance.status == BalanceStatus.invalidKey) {
-          subtitle = l10n.hubSettingsInvalidKey;
-          warn = true;
-        } else {
-          subtitle = balanceLine ?? maskApiKey(settings.apiKey);
-          mono = balanceLine == null;
-          warn = low;
-        }
-      case AccountPhase.unsupported:
-        leading = const OverviewGlyph(AppIcons.apiKey);
-        title = l10n.hubSettingsNoApiKey;
-        subtitle = l10n.hubSettingsApiKeyHint;
-      case AccountPhase.signedOut || AccountPhase.unknown:
-        leading = const OverviewGlyph(AppIcons.apiKey);
-        title = l10n.hubSettingsSignInAccount;
-        subtitle = l10n.hubSettingsOrApiKey;
-    }
-    final dsh = runtime.status.dshVersion;
-    // The card is 账号's way in (its title is whoever is signed in).
-    return SpotAnchor(
-      spot: SettingsIndex.entry(SettingsPageId.account),
-      child: OverviewCard(
-        leading: leading,
-        title: Text(title),
-        subtitle: Text(
-          subtitle,
-          style: mono
-              ? AppType.monoLabel(color: Theme.of(context).colorScheme.onSurfaceVariant).copyWith(fontSize: 13)
-              : warn
-              ? TextStyle(color: colors.warning)
-              : null,
-        ),
-        semanticLabel: hostLink != null
-            ? l10n.hubSettingsHostSemantics(title, hostLink)
-            : l10n.hubSettingsAccountSemantics(title, subtitle),
-        onTap: () => _push(hostLink != null ? const RemoteScreen() : const AccountPage()),
-        footer: OverviewFooter(
-          tone: engine.tone,
-          text: [l10n.hubSettingsEngine, engine.label, if (dsh != null) 'DSH $dsh'].join(' · '),
-        ),
-        onFooterTap: () => _push(const EngineScreen()),
+    final link = HostStatusView.ofLink(ref.watch(hostLinkStatusProvider(active)).value ?? HostLinkStatus.idle);
+    final name = ref.watch(hostNameProvider(active)) ?? l10n.commonRemoteHost;
+    final warn = link.tone == StatusTone.error || link.tone == StatusTone.warn;
+    return OverviewCard(
+      leading: OverviewGlyph(hostKindIcon(active.kind), tint: hostKindTint(active.kind)),
+      title: Text(name),
+      subtitle: Text(
+        [l10n.commonRemoteHost, link.label].join(' · '),
+        style: warn ? TextStyle(color: colors.warning) : null,
       ),
+      semanticLabel: l10n.hubSettingsHostSemantics(name, link.label),
+      onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const RemoteScreen())),
     );
   }
 }

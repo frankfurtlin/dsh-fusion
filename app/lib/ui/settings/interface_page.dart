@@ -20,10 +20,10 @@ import '../engine_settings/namespace_copy.dart';
 import '../modes/mode_switch.dart';
 import '../engine_settings/schema_form.dart';
 import '../shell/page_frame.dart';
+import '../web/dsh_web_launcher.dart' show openDshWeb;
 import '../shell/quick_panel.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';
-import '../web/local_web_screen.dart';
 import 'quick_panel_items_sheet.dart';
 import 'settings_widgets.dart';
 
@@ -106,9 +106,10 @@ class InterfacePage extends ConsumerWidget {
             SettingsTile(
               spot: Spots.openWeb,
               // In 网页模式 the web app is the home underneath.
+              // 手机本地引擎已删除：网页入口打开当前主机的 DSH Web（没有网页的主机给出说明）。
               onTap: () => mode == UiMode.web
                   ? Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst)
-                  : Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const LocalWebScreen())),
+                  : openDshWeb(context, ref),
             ),
             SettingsSwitchTile(
               spot: Spots.webPhoneLayout,

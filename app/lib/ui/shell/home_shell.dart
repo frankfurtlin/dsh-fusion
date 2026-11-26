@@ -22,11 +22,7 @@ import '../../state/sessions_state.dart' show currentSessionProvider;
 import '../bots/bot_alerts.dart';
 import '../chat/chat_screen.dart';
 import '../chat/composer_toast.dart' show composerToastGap;
-import '../engine/engine_screen.dart';
-import '../engine/reset_outcome.dart';
 import '../features/all_features_page.dart';
-import '../notify/background_net_host.dart';
-import '../notify/background_pause_host.dart';
 import '../notify/chat_alert_host.dart';
 import '../notify/voice_model_host.dart';
 import '../plugins/plugins_screen.dart';
@@ -35,14 +31,13 @@ import '../phone/phone_stop_watcher.dart';
 import '../phone/system_actions_host.dart';
 import '../remote/host_switcher.dart' show showHostSheet;
 import '../remote/remote_screen.dart';
-import '../safe_mode/safe_mode_notice_listener.dart';
 import '../session/session_detail_page.dart';
 import '../settings/search/settings_search_page.dart';
 import '../settings/settings_screen.dart';
+import '../web/dsh_web_launcher.dart' show openDshWeb;
 import '../share_code/share_code_host.dart';
 import '../theme/theme.dart';
 import '../wallpaper/wallpaper_backdrop.dart';
-import '../web/local_web_screen.dart';
 import 'adaptive/adaptive_layout.dart';
 import 'adaptive/adaptive_rail.dart';
 import 'adaptive/adaptive_scaffold.dart';
@@ -230,15 +225,26 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
   }
 
   void _openDestination(DrawerDestination destination) {
-    final page = switch (destination) {
-      DrawerDestination.web => const LocalWebScreen(),
+    if (destination == DrawerDestination.web) {
+      // 手机本地引擎已删除：网页入口打开当前主机的 DSH Web（没有网页的主机给出说明）。
+      openDshWeb(context, ref);
+      Future<void>.delayed(AppMotion.slow, () {
+        if (!mounted) return;
+        _drawer.value = 0;
+        _quickPanel.value = 0;
+      });
+      return;
+    }
+    final Widget? page = switch (destination) {
+      // web 已在上面的分支里打开当前主机的 DSH Web。
+      DrawerDestination.web => null,
       DrawerDestination.remote => const RemoteScreen(),
       DrawerDestination.plugins => const PluginsScreen(),
-      DrawerDestination.engine => const EngineScreen(),
       DrawerDestination.settings => const SettingsScreen(),
       DrawerDestination.settingsSearch => const SettingsSearchPage(),
       DrawerDestination.features => const AllFeaturesPage(),
     };
+    if (page == null) return;
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
     // Close once the new page covers us, so "back" lands on the chat.
     Future<void>.delayed(AppMotion.slow, () {
@@ -308,9 +314,8 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
     final chat = widget.chatBuilder?.call(_onMenu) ?? ChatScreen(onOpenDrawer: _onMenu, backdrop: false);
     // The floating pet outside the app hears every pet state.
     ref.listen<void>(petOverlayBridgeProvider, (_, _) {});
-    return SafeModeNoticeListener(
-      child: PhoneStopWatcher(
-        child: PopScope(
+    return PhoneStopWatcher(
+      child: PopScope(
           canPop: !_open && !_quickPanelOpen && !(selecting && sidebar),
           onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;
@@ -340,18 +345,10 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
                     children: [
                       // Notifications: routes taps, raises the in-app banner (draws nothing here).
                       ChatAlertHost(onReveal: _revealChat),
-                      // Background running cut off by the phone, or on HarmonyOS suspended with the app:
-                      // one line under the header (draws nothing here).
-                      if (ref.watch(androidSystemFeaturesProvider))
-                        const BackgroundNetHost()
-                      else ...[
-                        const BackgroundPauseHost(),
-                        if (ref.watch(operatingSystemProvider) == 'ohos') ...[
-                          // 系统操作: its session and a handoff's prompt (draws nothing here).
-                          const SystemActionsHost(),
-                          // How a reset asked for before the app reopened came out (draws nothing).
-                          const ResetReceiptHost(),
-                        ],
+                      // 手机本地引擎已删除：后台被切断/挂起的本机提示随之删除。
+                      if (ref.watch(operatingSystemProvider) == 'ohos' && !ref.watch(androidSystemFeaturesProvider)) ...[
+                        // 系统操作: its session and a handoff's prompt (draws nothing here).
+                        const SystemActionsHost(),
                       ],
                       // 每日更新检查：读的是我们自己的清单（COS / update.json），不是上游仓库。
                       // 启动 6 秒后跑一次，24 小时内不重复；有新版本时弹更新页（绘制层为空）。
@@ -451,7 +448,6 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
             ),
           ),
         ),
-      ),
     );
   }
 }

@@ -60,7 +60,7 @@ class AdaptiveRail extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final host = ref.watch(activeHostProvider);
-    final name = ref.watch(hostNameProvider(host)) ?? (host.isLocal ? l10n.commonThisPhone : l10n.commonRemoteHost);
+    final name = ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
     final status = watchHostStatus(ref, host);
     const gap = SizedBox(height: AdaptiveMetrics.gap);
     return Padding(

@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/l10n.dart';
 import '../../state/app_info.dart';
-import '../../state/onboarding_state.dart';
 import '../../state/settings_state.dart';
 import '../common/field_paste.dart';
 import '../providers/provider_widgets.dart' show FormBottomBar;
@@ -13,7 +12,6 @@ import '../settings/credential_recovery_dialog.dart';
 import '../shell/page_frame.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';
-import 'onboarding_scaffold.dart';
 import '../common/brief_notice.dart';
 
 /// Removes whitespace a copy/paste may have picked up; keys never contain spaces.
@@ -37,9 +35,9 @@ String maskApiKey(String key) {
   return '$head…${k.substring(k.length - 4)}';
 }
 
-/// DeepSeek API key entry, used by onboarding and by settings ("更换 API Key").
+/// DeepSeek API key entry (设置 › 更换 API Key、模型页与提示行都从这里进)。
 class ApiKeyPage extends ConsumerStatefulWidget {
-  const ApiKeyPage({super.key, this.onDone, this.onboarding = true, this.onBack});
+  const ApiKeyPage({super.key, this.onDone, this.onBack});
 
   /// Onboarding: called after save or skip. Settings: null, the page pops itself.
   final VoidCallback? onDone;
@@ -48,7 +46,6 @@ class ApiKeyPage extends ConsumerStatefulWidget {
   final VoidCallback? onBack;
 
   /// Shows "稍后设置" and no back button.
-  final bool onboarding;
 
   @override
   ConsumerState<ApiKeyPage> createState() => _ApiKeyPageState();
@@ -97,7 +94,6 @@ class _ApiKeyPageState extends ConsumerState<ApiKeyPage> with FieldPaste<ApiKeyP
     setState(() => _saving = true);
     try {
       await ref.read(settingsProvider.notifier).setApiKey(key);
-      await ref.read(onboardingPrefsProvider.notifier).setKeySkipped(false);
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
@@ -116,72 +112,35 @@ class _ApiKeyPageState extends ConsumerState<ApiKeyPage> with FieldPaste<ApiKeyP
     }
   }
 
-  Future<void> _skip() async {
-    FocusScope.of(context).unfocus();
-    await ref.read(onboardingPrefsProvider.notifier).setKeySkipped(true);
-    widget.onDone?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
     final ready = normalizeApiKey(_controller.text).isNotEmpty && !_saving;
 
-    if (!widget.onboarding) {
-      // Settings: the form-page frame, the back key where every page has it.
-      return Stack(
-        children: [
-          AppPage.list(
-            title: _replacing ? l10n.shellReplaceApiKey : l10n.shellEnterApiKey,
-            subtitle: Text(l10n.shellApiKeyBilling),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _fields(context)),
-              ),
-              const SizedBox(height: FormBottomBar.height),
-            ],
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: MediaQuery.viewInsetsOf(context).bottom,
-            child: FormBottomBar(
-              child: FilledButton(
-                onPressed: ready ? _save : null,
-                child: Text(_saving ? l10n.shellSaving : l10n.commonSave),
-              ),
+    // Settings: the form-page frame, the back key where every page has it.
+    return Stack(
+      children: [
+        AppPage.list(
+          title: _replacing ? l10n.shellReplaceApiKey : l10n.shellEnterApiKey,
+          subtitle: Text(l10n.shellApiKeyBilling),
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _fields(context)),
+            ),
+            const SizedBox(height: FormBottomBar.height),
+          ],
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+          child: FormBottomBar(
+            child: FilledButton(
+              onPressed: ready ? _save : null,
+              child: Text(_saving ? l10n.shellSaving : l10n.commonSave),
             ),
           ),
-        ],
-      );
-    }
-    return OnboardingScaffold(
-      leading: widget.onBack == null
-          ? null
-          : GlassIconButton(icon: AppIcons.back, tooltip: l10n.commonBack, grouped: false, onPressed: widget.onBack),
-      children: [
-        const Spacer(),
-        OnboardingHeader(icon: AppIcons.apiKey, title: l10n.shellEnterApiKey, message: l10n.shellApiKeyBilling),
-        const SizedBox(height: 28),
-        ..._fields(context),
-        const Spacer(flex: 2),
-        const SizedBox(height: 24),
-        FilledButton(
-          onPressed: ready ? _save : null,
-          child: _saving
-              ? SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2.2, color: scheme.onPrimary),
-                )
-              : Text(l10n.shellSaveContinue),
-        ),
-        const SizedBox(height: 6),
-        TextButton(
-          onPressed: _saving ? null : _skip,
-          style: TextButton.styleFrom(foregroundColor: scheme.onSurfaceVariant),
-          child: Text(l10n.shellSetUpLater),
         ),
       ],
     );

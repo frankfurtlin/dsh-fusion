@@ -11,23 +11,19 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../launch/custom_launch.dart';
 import '../../launch/launch_media.dart';
 import '../../launch/launch_motion.dart';
 import '../../launch/launch_state.dart';
-import '../../runtime/runtime_bridge.dart';
-import '../../runtime/runtime_state.dart';
 import '../../state/app_info.dart';
 import '../theme/theme.dart';
 
 /// Where the launch screen goes: over everything in the app (MaterialApp.builder), for as long
 /// as [LaunchController.active] has one. Always in the tree, so the app under it keeps its place.
 ///
-/// On a cold start it also tells the launch screen when this phone's engine is up
-/// ([LaunchController.engineReady]): the motion needn't finish once the engine answers. Without
-/// a launch screen (or on a warm start) it reads nothing.
+/// 手机本地引擎已删除：冷启动不再等本机引擎，启动画面按自己的动画走完
+/// （[LaunchController.engineReady] 仍可用于其他信号，这里不再喂它）。
 class LaunchLayer extends StatelessWidget {
   const LaunchLayer({super.key});
 
@@ -36,8 +32,7 @@ class LaunchLayer extends StatelessWidget {
     valueListenable: LaunchController.active,
     builder: (context, controller, _) {
       if (controller == null) return const SizedBox.shrink();
-      final overlay = LaunchOverlay(key: ObjectKey(controller), controller: controller);
-      return controller.snapshot.coldEngine ? _EngineWatch(controller: controller, child: overlay) : overlay;
+      return LaunchOverlay(key: ObjectKey(controller), controller: controller);
     },
   );
 }
@@ -87,24 +82,6 @@ class _LaunchUnderState extends State<LaunchUnder> {
   Widget build(BuildContext context) {
     final phase = _controller?.phase;
     return Offstage(offstage: phase == LaunchPhase.cover || phase == LaunchPhase.playing, child: widget.child);
-  }
-}
-
-/// Passes "this phone's engine is running" to a cold start's [controller].
-class _EngineWatch extends ConsumerWidget {
-  const _EngineWatch({required this.controller, required this.child});
-
-  final LaunchController controller;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final running = ref.watch(localRuntimeProvider.select((s) => s.status.phase == RuntimePhase.running));
-    if (running) {
-      // Not during a build: the overlay rebuilds on what this changes.
-      SchedulerBinding.instance.addPostFrameCallback((_) => controller.engineReady());
-    }
-    return child;
   }
 }
 

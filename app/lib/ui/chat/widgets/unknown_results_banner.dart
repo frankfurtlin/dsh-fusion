@@ -52,7 +52,7 @@ class UnknownResultsBanner extends ConsumerWidget {
   Future<void> _review(BuildContext context, WidgetRef ref, UnknownResults seen) async {
     final l10n = context.l10n;
     final connection = ref.read(activeConnectionProvider).value;
-    var current = connection?.client == seen.client && connection?.isLocal == true;
+    var current = connection?.client == seen.client;
     // Keep an invalidation latched even if the user switches away and back while
     // the sheet or the fresh lifecycle read is waiting.
     final owner = ref.listenManual(activeConnectionProvider, (_, next) {

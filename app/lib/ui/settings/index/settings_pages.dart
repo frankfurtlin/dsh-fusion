@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../digest/digest_page.dart';
 
-import '../../account/account_page.dart';
 import '../../../bridge/bridge_settings_page.dart';
-import '../../engine/engine_screen.dart';
 import '../../engine_settings/engine_settings_hub.dart';
 import '../../engine_settings/runtime_settings_pages.dart';
 import '../../engine_settings/subagent_settings_page.dart';
@@ -39,8 +37,6 @@ import '../notification_settings.dart';
 import '../performance_page.dart';
 import '../personalization_page.dart';
 import '../privacy_page.dart';
-import '../linux_environment_page.dart';
-import '../reply_prefs_page.dart';
 import '../settings_screen.dart';
 import '../system_access_page.dart';
 import '../../companion/companion_voice_page.dart';
@@ -61,7 +57,6 @@ Widget settingsPage(SettingsPageId id, {String? sessionId}) => switch (id) {
   SettingsPageId.voice => const VoiceSettingsPage(),
   SettingsPageId.voiceReading => const CompanionVoicePage(shared: true),
   SettingsPageId.notifications => const NotificationSettingsPage(),
-  SettingsPageId.replyPrefs => const ReplyPrefsPage(),
   SettingsPageId.sharedLinks => const HostedLinksPage(),
   SettingsPageId.phone => const PhoneControlScreen(),
   SettingsPageId.phoneAppRules => const PhoneAppRulesPage(),
@@ -71,8 +66,6 @@ Widget settingsPage(SettingsPageId id, {String? sessionId}) => switch (id) {
   SettingsPageId.phoneUnlocks => const PhoneUnlockPage(),
   SettingsPageId.bridge => const BridgeSettingsPage(),
   SettingsPageId.systemActions => const SystemActionsPage(),
-  SettingsPageId.linuxEnvironment => const LinuxEnvironmentPage(),
-  SettingsPageId.engine => const EngineScreen(),
   SettingsPageId.background => const BackgroundGuidePage(),
   SettingsPageId.systemAccess => const SystemAccessPage(),
   SettingsPageId.diagnostics => const DiagnosticsPage(),
@@ -86,7 +79,6 @@ Widget settingsPage(SettingsPageId id, {String? sessionId}) => switch (id) {
   SettingsPageId.pluginInventory => const PluginInventoryPage(),
   SettingsPageId.plugins => const PluginsScreen(),
   SettingsPageId.allFeatures => const AllFeaturesPage(),
-  SettingsPageId.account => const AccountPage(),
   SettingsPageId.remote => const RemoteScreen(),
   SettingsPageId.permission => PermissionPage(sessionId: sessionId),
   SettingsPageId.agentPresets => const AgentPresetsPage(),

@@ -310,12 +310,12 @@ class _SearchBody extends ConsumerWidget {
     final sessions = ref.watch(sessionsProvider);
     final connected = ref.watch(activeConnectionProvider.select((c) => c.value != null));
     final host = ref.watch(activeHostProvider);
-    final hostName = ref.watch(hostNameProvider(host)) ?? (host.isLocal ? l10n.commonThisPhone : l10n.commonRemoteHost);
+    final hostName = ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
 
     if (!connected && (sessions.value?.isEmpty ?? true)) {
       return _Notice(
-        icon: host.isLocal ? AppIcons.power : AppIcons.disconnected,
-        title: host.isLocal ? l10n.shellEngineNotRunning : l10n.shellHostNotConnected(hostName),
+        icon: AppIcons.disconnected,
+        title: l10n.shellHostNotConnected(hostName),
         body: l10n.shellSearchAfterConnecting,
       );
     }

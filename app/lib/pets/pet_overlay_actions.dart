@@ -28,7 +28,8 @@ HostRef? petActionHost(Object? raw) {
     final m = jsonDecode(raw);
     if (m is! Map || m['id'] is! String || (m['id'] as String).isEmpty) return null;
     return switch (m['kind']) {
-      'local' when m['id'] == 'local' => HostRef.local,
+      // 手机本地引擎已删除：旧的本机落点不再认识，视为没有主机。
+      'local' => null,
       'ssh' => HostRef.ssh(m['id'] as String),
       'relay' => HostRef.relay(m['id'] as String),
       _ => null,
@@ -41,7 +42,6 @@ HostRef? petActionHost(Object? raw) {
 final petHostChoicesProvider = Provider<List<PetHostChoice>>((ref) {
   final current = ref.watch(activeHostProvider);
   final hosts = <(HostRef, String)>[
-    (HostRef.local, appL10n.commonThisPhone),
     for (final h in ref.watch(hostsProvider).ssh)
       if (h.hostKeyFingerprint != null) (HostRef.ssh(h.id), hostLabel(HostKind.ssh, h.name)),
     for (final h in ref.watch(relayAccountProvider).value?.hosts ?? <RelayHost>[])
@@ -164,7 +164,7 @@ class PetOverlayActions {
           'line': '${snippet(session.title, max: 20) ?? appL10n.commonUntitledChat} · $label',
         },
       if (connection == null || generation == null) 'problem': appL10n.commonEngineUnreachable,
-      'voice': ref.read(localConnectionProvider).value?.client.mux.generation == null
+      'voice': ref.read(activeConnectionProvider).value?.client.mux.generation == null
           ? 'off'
           : voice == null
           ? 'missing'
@@ -220,27 +220,10 @@ class PetOverlayActions {
     }
   }
 
-  /// Only the phone's installed SenseVoice model. A remote or cloud selection
-  /// must never silently receive a recording from the floating microphone.
-  Future<(DshClient, SpeechCatalog, MuxGeneration)?> _voice() async {
-    final client = ref.read(localConnectionProvider).value?.client;
-    final generation = client?.mux.generation;
-    if (client == null || generation == null) return null;
-    try {
-      final catalog = await client.speechCatalog().timeout(const Duration(seconds: 4));
-      if (!ref.mounted ||
-          !identical(ref.read(localConnectionProvider).value?.client, client) ||
-          !identical(generation, client.mux.generation)) {
-        return null;
-      }
-      final model = catalog?.providers
-          .where((p) => p.id == voiceModelProviderId && p.location == 'host-local' && p.usable)
-          .firstOrNull;
-      return model == null ? null : (client, catalog!, generation);
-    } catch (_) {
-      return null;
-    }
-  }
+  /// 手机本地引擎已删除：浮动麦克风原本只把录音喂给本机装好的 SenseVoice
+  /// 模型；现在没有本机运行环境，而远程/云端选择绝不能悄悄收下这份录音，
+  /// 所以这里没有可用端点，调用方按「语音不可用」处理。
+  Future<(DshClient, SpeechCatalog, MuxGeneration)?> _voice() async => null;
 
   Future<Map<String, Object?>> _transcribe(Object? wav) async {
     final voice = await _voice();
@@ -250,9 +233,7 @@ class PetOverlayActions {
     }
     try {
       final result = await voice.$1.transcribe(wav, providerId: voiceModelProviderId, language: voice.$2.language);
-      if (!ref.mounted ||
-          !identical(ref.read(localConnectionProvider).value?.client, voice.$1) ||
-          !identical(voice.$3, voice.$1.mux.generation)) {
+      if (!ref.mounted || !identical(voice.$3, voice.$1.mux.generation)) {
         return {'problem': appL10n.commonEngineUnreachable};
       }
       return {'text': result.text};

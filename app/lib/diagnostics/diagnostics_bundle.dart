@@ -4,11 +4,9 @@
 //
 //   dsh-go-diagnostics-20261024-153012.zip
 //   ├── summary.json   app and DSH versions, device, Android, runtime manifest,
-//   │                  engine state, connection kind
+//   │                  connection kind
 //   ├── settings.json  app settings, secrets reduced to "set or not"
-//   ├── crash.json     the last crash classification (when there is one)
-//   ├── engine.log     recent engine output
-//   └── failure.log    output around the last failure (when there is one)
+//   └── app-errors.json  this app's own recorded errors (when there are any)
 //
 // Every string goes through `redactDiagnostics` on the way in.
 
@@ -18,9 +16,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../phone/phone_channel.dart';
-import '../runtime/runtime_bridge.dart';
 import '../performance/performance_state.dart';
-import '../runtime/runtime_state.dart';
 import '../state/app_info.dart';
 import '../state/connection_state.dart';
 import '../state/settings_state.dart';
@@ -33,28 +29,21 @@ import 'system_ime_diagnostics.dart';
 import 'system_ime_evidence.dart';
 import 'zip_writer.dart';
 
-/// Most engine log lines a bundle carries (the native in-memory log's size).
-const diagnosticsLogLines = 2000;
-
 /// Everything a bundle is made of, read from the app and Android.
 class DiagnosticsSnapshot {
   const DiagnosticsSnapshot({
     required this.at,
-    required this.status,
     required this.settings,
     this.native = const NativeDiagnostics(),
     this.phone = const PhoneStatus.notReady(),
     this.connection = const {},
     this.performance = const {},
     this.voiceMode = VoiceMode.auto,
-    this.engineLog = const [],
-    this.failureLog = const [],
     this.appErrors = const [],
     this.systemIme,
   });
 
   final DateTime at;
-  final RuntimeStatus status;
   final AppSettings settings;
   final NativeDiagnostics native;
 
@@ -66,8 +55,6 @@ class DiagnosticsSnapshot {
   final Map<String, Object?> connection;
   final Map<String, Object?> performance;
   final VoiceMode voiceMode;
-  final List<String> engineLog;
-  final List<String> failureLog;
   final List<AppErrorRecord> appErrors;
 
   /// Only a deliberate manual publication/export includes retained opt-in evidence.
@@ -86,28 +73,11 @@ abstract final class DiagnosticsBundle {
   }
 
   static Map<String, Object?> summary(DiagnosticsSnapshot s) {
-    final status = s.status;
     return {
       'generatedAt': s.at.toUtc().toIso8601String(),
       'timeZoneOffsetMinutes': s.at.timeZoneOffset.inMinutes,
       'app': {'version': AppInfo.version, ...s.native.app},
       'device': s.native.device,
-      'runtime': {
-        'phase': status.phase.name,
-        ...status.launchDiagnostics,
-        'mode': status.mode.name,
-        'safeState': status.safeState.name,
-        'safeReason': status.safeReason,
-        'strikes': status.strikes,
-        'autoSafe': status.autoSafe,
-        'abi': status.abi,
-        'bundledVersion': status.bundledVersion,
-        'installedVersion': status.installedVersion,
-        'dshVersion': status.dshVersion,
-        'nodeVersion': status.nodeVersion,
-        'baseUrl': status.baseUrl,
-        'error': status.error,
-      },
       'manifest': s.native.manifest,
       'phone': {
         'available': s.phone.ready,
@@ -130,40 +100,8 @@ abstract final class DiagnosticsBundle {
     'customProviders': s.customProviderIds.length,
     'themeMode': s.themeMode.name,
     'chatTextScale': s.chatTextScale,
-    'autoStartLocal': s.autoStartLocal,
-    'autoStartLocalExplicit': s.autoStartLocalExplicit,
-    'autoApproveCommands': s.autoApproveCommands,
-    'phoneStorage': s.phoneStorage,
     'webPhoneLayout': s.webPhoneLayout,
     'foldCompletedTurns': s.foldCompletedTurns,
-    'visualReplies': s.visualReplies,
-  };
-
-  /// The native crash classification: the last unexpected exit and, when it
-  /// is a different one, the main profile's last failure. Null without
-  /// either.
-  static Map<String, Object?>? crash(RuntimeStatus status) {
-    final latest = status.failure;
-    final main = status.mainFailure;
-    if (latest == null && main == null) return null;
-    final sameAsLatest = latest != null && main != null && main.at == latest.at && main.kind == latest.kind;
-    return {
-      if (latest != null) 'latest': _failure(latest),
-      if (main != null && !sameAsLatest) 'mainProfile': _failure(main),
-    };
-  }
-
-  static Map<String, Object?> _failure(RuntimeFailure f) => {
-    'kind': f.kind.name,
-    'at': f.at.toUtc().toIso8601String(),
-    'exitCode': f.exitCode,
-    'safeMode': f.safeMode,
-    'upSeconds': f.upSeconds,
-    'summary': f.summary,
-    'requiredRows': f.requiredRows,
-    'suspects': f.suspects,
-    'recent': f.recent,
-    'diagnostics': f.diagnostics,
   };
 
   /// The archive's files, every string redacted.
@@ -171,20 +109,12 @@ abstract final class DiagnosticsBundle {
     const json = JsonEncoder.withIndent('  ');
     ZipEntry text(String name, String body) => ZipEntry(name, utf8.encode(body));
     ZipEntry jsonFile(String name, Object? value) => text(name, '${json.convert(redactJson(value))}\n');
-    String log(List<String> lines) {
-      final tail = lines.length > diagnosticsLogLines ? lines.sublist(lines.length - diagnosticsLogLines) : lines;
-      return '${redactLines(tail).join('\n')}\n';
-    }
 
-    final crash = DiagnosticsBundle.crash(s.status);
     return [
       jsonFile('summary.json', summary(s)),
       jsonFile('settings.json', settingsSummary(s.settings)),
       if (s.systemIme case final evidence?) jsonFile('system-ime.json', evidence.toJson()),
-      if (crash != null) jsonFile('crash.json', crash),
       if (s.native.evidence.isNotEmpty) jsonFile('app-evidence.json', diagnosticEvidenceFacts(s.native.evidence)),
-      if (s.engineLog.isNotEmpty) text('engine.log', log(s.engineLog)),
-      if (s.failureLog.isNotEmpty) text('failure.log', log(s.failureLog)),
       if (s.appErrors.isNotEmpty) jsonFile('app-errors.json', s.appErrors.map((error) => error.toJson()).toList()),
     ];
   }
@@ -195,10 +125,7 @@ abstract final class DiagnosticsBundle {
 /// Reads a [DiagnosticsSnapshot] from the app's state and Android. Every
 /// source is optional: a part that can't be read is left out.
 Future<DiagnosticsSnapshot> collectDiagnostics(Ref ref, DateTime at, {bool includeSystemIme = false}) async {
-  final runtime = ref.read(localRuntimeProvider);
-  final logs = ref.read(localRuntimeLogsProvider);
   final settings = ref.read(settingsProvider);
-  final bridge = ref.read(runtimeBridgeProvider);
   final channel = ref.read(diagnosticsChannelProvider);
   final systemIme = includeSystemIme ? ref.read(systemImeDiagnosticsProvider) : null;
   const wait = Duration(seconds: 5);
@@ -213,29 +140,15 @@ Future<DiagnosticsSnapshot> collectDiagnostics(Ref ref, DateTime at, {bool inclu
 
   final native = await attempt(channel.info, const NativeDiagnostics());
   final phone = await attempt(() => ref.read(phoneChannelProvider).status(), const PhoneStatus.notReady());
-  // The log file outlives the app process; the in-memory log is the
-  // fallback (and what tests see).
-  var engineLog = await attempt(channel.engineLog, const <String>[]);
-  if (engineLog.isEmpty) {
-    engineLog = await attempt(() => bridge.logs(lines: diagnosticsLogLines), logs);
-  }
-  if (engineLog.isEmpty) engineLog = logs;
-  final status = runtime.status;
-  final failureLog = status.failure != null || status.mainFailure != null
-      ? await attempt(bridge.failureLog, const <String>[])
-      : const <String>[];
 
   return DiagnosticsSnapshot(
     at: at,
-    status: status,
     settings: settings,
     native: native,
     phone: phone,
     connection: ref.read(connectionDiagnosticsProvider).snapshot,
     performance: performanceDiagnostics(ref),
     voiceMode: await attempt(() => ref.read(voiceSettingsProvider.notifier).ready(), VoiceMode.auto),
-    engineLog: engineLog,
-    failureLog: failureLog,
     appErrors: appErrorLog.snapshot(),
     systemIme: systemIme?.evidence,
   );

@@ -25,22 +25,20 @@ export '../remote/ssh/ssh_transport.dart' show PresentedHostKey;
 export '../remote/relay/relay_backend.dart' show RelayHost, RelayTrust, RelayUser;
 export '../remote/ssh/ssh_host_config.dart';
 
-/// The kinds of DSH host the app can talk to: 本机引擎、网页登录（HTTPS + 网关
-/// 账号密码）、SSH 电脑、DSH Remote 中继。
+/// The kinds of DSH host the app can talk to: 网页登录（HTTPS + 网关账号密码）、
+/// SSH 电脑、DSH Remote 中继。
 ///
-/// [none] 不是主机：本机引擎已下线（2026-11-26），没有已保存的主机时当前主机
-/// 就是它，界面因此显示「连接电脑或服务器」，而不是回退到本机。
-enum HostKind { local, web, ssh, relay, none }
+/// [none] 不是主机：手机本地引擎已删除（2026-11-26），没有已保存的主机时当前
+/// 主机就是它，界面因此显示「连接电脑或服务器」。
+enum HostKind { web, ssh, relay, none }
 
-/// Identifies a host: the on-device engine, a saved SSH host, or a relay
+/// Identifies a host: a saved web-login gateway, an SSH host, or a relay
 /// (ds-harness-remote) device. Equality is by kind + id; [name] is only a
 /// cached display name for relay hosts (their list lives on the server).
 class HostRef {
   const HostRef._(this.kind, this.id, [this.name]);
 
-  static const local = HostRef._(HostKind.local, 'local');
-
-  /// 没有主机（本机引擎已下线，没有已保存的远程主机时用它占位）。
+  /// 没有主机（手机本地引擎已删除，没有已保存的远程主机时用它占位）。
   static const none = HostRef._(HostKind.none, 'none');
 
   const HostRef.web(String id) : this._(HostKind.web, id);
@@ -53,15 +51,13 @@ class HostRef {
   final String id;
   final String? name;
 
-  bool get isLocal => kind == HostKind.local;
-
-  /// 没有主机：本机引擎已下线，App 因此显示「连接电脑或服务器」。
+  /// 没有主机：手机本地引擎已删除，App 因此显示「连接电脑或服务器」。
   bool get isNone => kind == HostKind.none;
 
   String encode() => jsonEncode({'kind': kind.name, 'id': id, if (name != null) 'name': name});
 
   /// Anything that isn't a saved remote host (an unreadable value, a legacy
-  /// 本机 entry) decodes to [none]: 本机引擎已下线，缺失的主机不再回退到它。
+  /// 本机 entry) decodes to [none].
   static HostRef decode(String? raw) {
     if (raw == null || raw.isEmpty) return none;
     try {
@@ -93,7 +89,6 @@ class HostRef {
 
 /// Chat-header label for a connection: "本机", "电脑 · SSH", "家里的 Mac · 远程".
 String hostLabel(HostKind kind, String? name) => switch (kind) {
-  HostKind.local => appL10n.commonThisPhone,
   HostKind.web => '${_short(name ?? appL10n.webLoginTitle)} · ${appL10n.webLoginShort}',
   HostKind.ssh => '${_short(name ?? appL10n.stateSshHost)} · SSH',
   HostKind.relay => appL10n.stateHostRemoteLabel(_short(name ?? appL10n.commonRemoteHost)),
@@ -411,8 +406,8 @@ final remoteCompactHistoryProvider = NotifierProvider<RemoteCompactHistoryContro
 
 /// Which host the chat, session list and new chats use. Persisted.
 ///
-/// 本机引擎已下线（2026-11-26）：没有已保存的远程主机时这里是 [HostRef.none]，
-/// 不再默认/回退到 [HostRef.local]；界面据此显示「连接电脑或服务器」。
+/// 手机本地引擎已删除（2026-11-26）：没有已保存的远程主机时这里是
+/// [HostRef.none]，界面据此显示「连接电脑或服务器」。
 class ActiveHostController extends Notifier<HostRef> {
   static const prefsKey = 'active_host';
   bool _touched = false;
@@ -446,10 +441,8 @@ class ActiveHostController extends Notifier<HostRef> {
   /// Switches hosts. The open conversation belongs to the old host, so the
   /// chat goes back to "新对话".
   ///
-  /// 本机引擎已下线（2026-11-26）：[HostRef.local] 不再是可选主机，旧入口把它
-  /// 传进来时落到「没有主机」，界面显示「连接电脑或服务器」。
   void select(HostRef host) {
-    final target = host.isLocal ? HostRef.none : host;
+    final target = host;
     _touched = true;
     if (target == state && target.name == state.name) return;
     final changed = target != state;
@@ -459,7 +452,7 @@ class ActiveHostController extends Notifier<HostRef> {
   }
 
   /// [HostRef.none] removes the stored host instead of saving it: the next
-  /// launch starts without one, never on 本机.
+  /// launch starts without one.
   Future<void> _persist(HostRef host) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -472,9 +465,9 @@ class ActiveHostController extends Notifier<HostRef> {
   }
 
   /// Hosts matching [gone] no longer exist (a deleted SSH host, a signed-out
-  /// relay account): leave one in use for no host at all (本机引擎已下线),
-  /// and drop one only saved for the next launch (with 连接上次使用的主机 off,
-  /// this launch never used it).
+  /// relay account): leave one in use for no host at all, and drop one only
+  /// saved for the next launch (with 连接上次使用的主机 off, this launch never
+  /// used it).
   Future<void> forget(bool Function(HostRef host) gone) async {
     if (gone(state)) {
       select(HostRef.none);

@@ -30,7 +30,6 @@ import '../../speech/speech_audio.dart';
 import '../../speech/speech_out.dart';
 import '../../speech/speech_settings.dart';
 import '../../speech/voice_cloud.dart';
-import '../../state/account_state.dart';
 import '../../state/app_notes.dart';
 import '../../state/notify_state.dart';
 import '../../state/voice_settings.dart';
@@ -340,14 +339,9 @@ class _VoiceCallPageState extends ConsumerState<VoiceCallPage> with WidgetsBindi
         switch (_call.ended) {
           CallEnd.permission => l10n.speechCallEndPermission,
           CallEnd.microphone => l10n.speechCallEndMicrophone,
+          // DeepSeek 账号已删除：没有「登录后可识别」的那一档说法了。
           CallEnd.noRecognizer =>
-            wordsForIos
-                ? (ref.read(accountProvider).signedIn
-                      ? l10n.iosSpeechCallEndNoRecognizerSignedIn
-                      : l10n.iosSpeechCallEndNoRecognizer)
-                : (ref.read(accountProvider).signedIn
-                      ? l10n.speechCallEndNoRecognizerSignedIn
-                      : l10n.speechCallEndNoRecognizer),
+            wordsForIos ? l10n.iosSpeechCallEndNoRecognizer : l10n.speechCallEndNoRecognizer,
           CallEnd.background => l10n.speechCallEndBackground,
           CallEnd.failed => l10n.speechCallEndFailed,
           CallEnd.hungUp || null => l10n.speechCallEnded,

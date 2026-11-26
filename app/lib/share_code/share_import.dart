@@ -3,17 +3,13 @@
 // restore point, plugins, settings, skills, AGENTS.md.
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:dsh_client/dsh_client.dart';
 
 import '../l10n/l10n.dart';
 import '../state/connection_state.dart';
 import '../state/plugins_state.dart';
-import 'guest_fs.dart';
 import 'namespace_labels.dart';
-import 'restore_point.dart';
 import 'settings_sanitizer.dart' show isSecretFieldName;
 import 'share_models.dart';
 import 'share_net.dart';
@@ -42,7 +38,7 @@ enum IntegrityStatus { verified, unverifiable, mismatch }
 
 /// The engine an import goes to.
 class ImportTarget {
-  const ImportTarget(this.connection, {required this.isActive, this.safeMode = false, this.installRefused = false});
+  const ImportTarget(this.connection, {required this.isActive, this.installRefused = false});
 
   final HostConnection connection;
 
@@ -50,15 +46,14 @@ class ImportTarget {
   final bool isActive;
 
   /// The on-device engine runs its repair profile: no installs.
-  final bool safeMode;
+
 
   /// The engine takes no market installs (HarmonyOS's own).
   final bool installRefused;
 
-  bool get isLocal => connection.isLocal;
   String get label => connection.label;
   DshClient get client => connection.client;
-  bool get canInstall => !safeMode && !installRefused && client.canInstallPlugins;
+  bool get canInstall => !installRefused && client.canInstallPlugins;
 }
 
 /// One row of the diff.
@@ -241,7 +236,7 @@ String _settingsDetail(List<_SettingChange> changes) {
 }
 
 /// Compares [payload] with [target] (and, on the device, its files).
-Future<ImportPlan> planImport(SharePayload payload, ImportTarget target, {required ShareNet net, GuestFs? fs}) async {
+Future<ImportPlan> planImport(SharePayload payload, ImportTarget target, {required ShareNet net}) async {
   final client = target.client;
   final changes = <ImportChange>[];
   final plugins = switch (payload) {
@@ -312,7 +307,7 @@ Future<ImportPlan> planImport(SharePayload payload, ImportTarget target, {requir
             title: p.displayTitle,
             kind: ChangeKind.enable,
             plugin: p,
-            blocked: target.safeMode ? _cantInstall(target) : null,
+            blocked: target.canInstall ? null : _cantInstall(target),
           ),
         );
       }
@@ -441,96 +436,37 @@ Future<ImportPlan> planImport(SharePayload payload, ImportTarget target, {requir
       );
     }
 
-    // Skills and AGENTS.md: only the on-device engine's files can be written.
-    final files = target.isLocal ? fs : null;
+    // Skills and AGENTS.md: 手机本地引擎已删除，远程主机没有对应写入口，
+    // 因此这两类始终只有说明，不落盘。
     for (final skill in payload.skills) {
-      final id = 'skill:${skill.name}';
-      if (files == null) {
-        changes.add(
-          ImportChange(
-            id: id,
-            section: ImportSection.skills,
-            title: skill.name,
-            kind: ChangeKind.unavailable,
-            blocked: appL10n.pluginsImportLocalOnly,
-            skill: skill,
-          ),
-        );
-        continue;
-      }
-      Map<String, String>? current;
-      try {
-        final bytes = files.readSkillForImport(skill.name);
-        current = bytes?.map((path, value) => MapEntry(path, utf8.decode(value)));
-      } on Object catch (error) {
-        if (error is! FileSystemException && error is! FormatException) rethrow;
-        changes.add(
-          ImportChange(
-            id: id,
-            section: ImportSection.skills,
-            title: skill.name,
-            kind: ChangeKind.unavailable,
-            blocked: appL10n.pluginsFileWriteFailed,
-            defaultOn: false,
-            skill: skill,
-          ),
-        );
-        continue;
-      }
-      if (current != null && _sameFiles(current, skill.files)) continue;
       changes.add(
         ImportChange(
-          id: id,
+          id: 'skill:${skill.name}',
           section: ImportSection.skills,
           title: skill.name,
-          kind: current == null ? ChangeKind.add : ChangeKind.change,
-          detail: current == null ? null : appL10n.pluginsReplaceSkill,
-          defaultOn: false,
+          kind: ChangeKind.unavailable,
+          blocked: appL10n.pluginsImportLocalOnly,
           skill: skill,
         ),
       );
     }
     if (payload.agentsMd case final text?) {
-      if (files == null) {
-        changes.add(
-          ImportChange(
-            id: 'agents-md',
-            section: ImportSection.agentsMd,
-            title: 'AGENTS.md',
-            kind: ChangeKind.unavailable,
-            blocked: appL10n.pluginsImportLocalOnly,
-            text: text,
-          ),
-        );
-      } else {
-        final current = await files.readImportedAgentsMd();
-        if (current?.trim() != text.trim()) {
-          changes.add(
-            ImportChange(
-              id: 'agents-md',
-              section: ImportSection.agentsMd,
-              title: 'AGENTS.md',
-              kind: current == null ? ChangeKind.add : ChangeKind.change,
-              detail: current == null
-                  ? appL10n.pluginsLineCount(text.split('\n').length)
-                  : appL10n.pluginsReplaceContent,
-              defaultOn: false,
-              text: text,
-            ),
-          );
-        }
-      }
+      changes.add(
+        ImportChange(
+          id: 'agents-md',
+          section: ImportSection.agentsMd,
+          title: 'AGENTS.md',
+          kind: ChangeKind.unavailable,
+          blocked: appL10n.pluginsImportLocalOnly,
+          text: text,
+        ),
+      );
     }
   }
   return ImportPlan(payload: payload, target: target, changes: changes);
 }
 
-bool _sameFiles(Map<String, String> a, Map<String, String> b) =>
-    a.length == b.length && a.entries.every((e) => b[e.key]?.trim() == e.value.trim());
-
-String _cantInstall(ImportTarget target) => target.safeMode
-    ? appL10n.pluginsSafeModeInstallBlocked
-    : target.installRefused
+String _cantInstall(ImportTarget target) => target.installRefused
     ? appL10n.marketInstallRefused
     : appL10n.pluginsHostInstallBlocked;
 
@@ -570,10 +506,9 @@ abstract class ImportPluginRunner {
 
 /// Straight to a host's plugin manager (a target that isn't the active host).
 class DirectPluginRunner implements ImportPluginRunner {
-  DirectPluginRunner(this.client, {required this.isLocal});
+  DirectPluginRunner(this.client);
 
   final DshClient client;
-  final bool isLocal;
   static var _seq = 0;
 
   @override
@@ -582,7 +517,7 @@ class DirectPluginRunner implements ImportPluginRunner {
       if (request.replaceInstalled) {
         final removed = await client.removeBundle(request.name);
         if (!removed.succeeded) {
-          return PluginStepOutcome.failed(describeOperationFailure(removed, isLocal: isLocal).title);
+          return PluginStepOutcome.failed(describeOperationFailure(removed).title);
         }
       }
       final result = await client.installBundle(
@@ -593,7 +528,7 @@ class DirectPluginRunner implements ImportPluginRunner {
         registry: request.registry,
       );
       if (result.succeeded) return PluginStepOutcome.ok(needsRestart: request.needsRestartAfter(result));
-      return PluginStepOutcome.failed(describeOperationFailure(result, isLocal: isLocal).title);
+      return PluginStepOutcome.failed(describeOperationFailure(result).title);
     } on Object catch (error) {
       return PluginStepOutcome.failed(describePluginError(error).title);
     }
@@ -604,7 +539,7 @@ class DirectPluginRunner implements ImportPluginRunner {
     try {
       final result = await client.setBundleEnabled(name, true);
       if (result.succeeded) return PluginStepOutcome.ok(needsRestart: result.needsRestart);
-      return PluginStepOutcome.failed(describeOperationFailure(result, isLocal: isLocal).title);
+      return PluginStepOutcome.failed(describeOperationFailure(result).title);
     } on Object catch (error) {
       return PluginStepOutcome.failed(describePluginError(error).title);
     }
@@ -613,11 +548,10 @@ class DirectPluginRunner implements ImportPluginRunner {
 
 /// The active host's install queue (progress also shows on the plugin pages).
 class QueuedPluginRunner implements ImportPluginRunner {
-  QueuedPluginRunner(this.installs, this.client, {required this.isLocal});
+  QueuedPluginRunner(this.installs, this.client);
 
   final PluginInstallsController installs;
   final DshClient client;
-  final bool isLocal;
 
   @override
   Future<PluginStepOutcome> install(PluginInstallRequest request) async {
@@ -630,17 +564,14 @@ class QueuedPluginRunner implements ImportPluginRunner {
   }
 
   @override
-  Future<PluginStepOutcome> enable(String name) => DirectPluginRunner(client, isLocal: isLocal).enable(name);
+  Future<PluginStepOutcome> enable(String name) => DirectPluginRunner(client).enable(name);
 }
 
 class ImportResult {
-  const ImportResult({required this.statuses, required this.needsRestart, required this.restorePoint});
+  const ImportResult({required this.statuses, required this.needsRestart});
 
   final Map<String, StepStatus> statuses;
   final bool needsRestart;
-
-  /// A restore point was recorded before anything changed.
-  final bool restorePoint;
 
   int get failed => statuses.values.where((s) => s.state == ImportStepState.failed).length;
   int get done => statuses.values.where((s) => s.state == ImportStepState.done).length;
@@ -651,7 +582,6 @@ Future<ImportResult> applyImport(
   ImportPlan plan,
   Set<String> selected, {
   required ImportPluginRunner runner,
-  GuestFs? fs,
   void Function(String id, StepStatus status)? onStep,
   bool Function()? cancelled,
   DateTime Function() now = DateTime.now,
@@ -664,12 +594,6 @@ Future<ImportResult> applyImport(
   }
 
   final target = plan.target;
-  final files = target.isLocal ? fs : null;
-  var restorePoint = false;
-  if (plan.isProfile && target.isLocal && files != null) {
-    restorePoint = await RestorePoint(files).pinCurrentProfile(now: now());
-  }
-  final backup = files == null ? null : RestorePoint(files).backupDir(now());
   var needsRestart = false;
   final pluginOk = <String, bool>{};
 
@@ -739,28 +663,8 @@ Future<ImportResult> applyImport(
     }
   }
 
-  for (final step in steps.where((s) => s.section == ImportSection.skills || s.section == ImportSection.agentsMd)) {
-    if (cancelled?.call() ?? false) break;
-    if (files == null || backup == null) {
-      set(step.id, const StepStatus(ImportStepState.skipped));
-      continue;
-    }
-    set(step.id, StepStatus.running);
-    try {
-      final point = RestorePoint(files);
-      if (step.section == ImportSection.skills) {
-        point.replaceSkill(backup, step.skill!);
-      } else {
-        await point.backupAgentsMd(backup);
-        await files.writeImportedAgentsMd(step.text!);
-      }
-      set(step.id, StepStatus.done);
-    } catch (_) {
-      set(step.id, StepStatus(ImportStepState.failed, appL10n.pluginsFileWriteFailed));
-    }
-  }
   for (final s in steps) {
     if (statuses[s.id]?.state == ImportStepState.pending) set(s.id, const StepStatus(ImportStepState.skipped));
   }
-  return ImportResult(statuses: statuses, needsRestart: needsRestart, restorePoint: restorePoint);
+  return ImportResult(statuses: statuses, needsRestart: needsRestart);
 }

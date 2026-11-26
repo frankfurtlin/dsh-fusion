@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/connection_state.dart';
 import '../../state/sessions_state.dart';
 import '../../state/workspaces_state.dart';
 import '../common/app_dialog.dart';
@@ -177,7 +176,6 @@ class _WorkspaceActions extends ConsumerWidget {
     final workspace = ref.watch(workspacesProvider.select((s) => s.byId(workspaceId)));
     final prefs = ref.watch(workspacePrefsProvider);
     final count = ref.watch(workspaceCountsProvider.select((c) => c[workspaceId] ?? 0));
-    final local = ref.watch(activeConnectionProvider.select((c) => c.value?.isLocal ?? true));
     final theme = Theme.of(context);
     final colors = DshColors.of(context);
     if (workspace == null) {
@@ -202,7 +200,7 @@ class _WorkspaceActions extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    displayPath(workspace.path, local: local),
+                    displayPath(workspace.path),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppType.monoLabel(color: theme.colorScheme.onSurfaceVariant),

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/connection_state.dart';
 import '../../state/drawer_view_state.dart';
 import '../../state/sessions_state.dart';
 import '../../state/workspaces_state.dart';
@@ -128,7 +127,6 @@ class WorkspaceSheet extends ConsumerWidget {
     final selected = ref.watch(selectedWorkspaceProvider)?.workspaceId;
     final counts = ref.watch(workspaceCountsProvider);
     final total = ref.watch(sessionsProvider.select((s) => s.value?.length ?? 0));
-    final local = ref.watch(activeConnectionProvider.select((c) => c.value?.isLocal ?? true));
     final prefs = ref.read(workspacePrefsProvider.notifier);
 
     void pick(String? id) {
@@ -168,7 +166,7 @@ class WorkspaceSheet extends ConsumerWidget {
                       _ChoiceRow(
                         icon: AppIcons.workspace,
                         title: workspaceTitle(w),
-                        subtitle: displayPath(w.path, local: local),
+                        subtitle: displayPath(w.path),
                         count: counts[w.workspaceId] ?? 0,
                         selected: selected == w.workspaceId,
                         onTap: () => pick(w.workspaceId),

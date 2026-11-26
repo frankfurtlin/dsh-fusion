@@ -8,19 +8,12 @@ import '../../state/hosts_state.dart';
 import '../../state/plugins_state.dart' show installedPluginsProvider;
 import '../../state/settings_state.dart';
 import '../../state/ui_mode_state.dart';
-import 'local_web_screen.dart';
 import 'web_target.dart';
 import 'web_view_page.dart';
 
 /// Where the active host's DSH Web can be opened from.
 sealed class DshWebAccess {
   const DshWebAccess();
-}
-
-/// 本机: the on-device engine's `dsh web` ([LocalWebScreen] handles a
-/// stopped engine itself).
-final class LocalDshWeb extends DshWebAccess {
-  const LocalDshWeb();
 }
 
 /// An SSH host: the remote `dsh web` through the app's local forward.
@@ -39,14 +32,16 @@ final class NoDshWeb extends DshWebAccess {
   final String reason;
 }
 
+/// `http://127.0.0.1:<port>/?token=…`: the token only buys the session cookie.
+Uri localWebUri(String baseUrl, String token) =>
+    Uri.parse(baseUrl).replace(path: '/', queryParameters: {'token': token});
+
 /// The active host's DSH Web, if it has one the app can reach.
 final dshWebAccessProvider = Provider.autoDispose<DshWebAccess>((ref) {
   final host = ref.watch(activeHostProvider);
   switch (host.kind) {
     case HostKind.web:
       return NoDshWeb(appL10n.webLoginNoWebview);
-    case HostKind.local:
-      return const LocalDshWeb();
     case HostKind.relay:
       return NoDshWeb(appL10n.webRelayUnavailable);
     case HostKind.ssh:
@@ -97,8 +92,6 @@ void openDshWeb(BuildContext context, WidgetRef ref, {DshWebTarget target = cons
   }
   final Widget page;
   switch (ref.read(dshWebAccessProvider)) {
-    case LocalDshWeb():
-      page = LocalWebScreen(target: target);
     case SshDshWeb(:final url, :final hostName):
       page = WebViewPage(
         url: url,
