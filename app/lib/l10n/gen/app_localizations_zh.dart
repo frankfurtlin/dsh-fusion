@@ -8460,9 +8460,6 @@ class L10nZh extends L10n {
   String get harmonyPluginRefusedHint => '可以开关随包插件，或连接电脑管理插件';
 
   @override
-  String get harmonyVoiceLocalLine => '鸿蒙本机没有语音模型';
-
-  @override
   String get harmonyPasswordStorageHelp => '只保存在这台手机上，由系统密钥库加密';
 
   @override
@@ -8478,7 +8475,7 @@ class L10nZh extends L10n {
   String get harmonyVoiceSystemHintChinese => '使用系统的语音识别，只认中文';
 
   @override
-  String get harmonyVoiceAutoHint => '有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用系统识别';
+  String get harmonyVoiceAutoHint => '系统识别，或下面选的云端转写接口';
 
   @override
   String get harmonyVoiceSystemUnavailable => '系统语音识别不可用';
@@ -15109,9 +15106,6 @@ class L10nZh extends L10n {
   String get searchKwVoice => '语音识别,麦克风,听写,说话,语音,朗读,语音通话,打电话,TTS,声音';
 
   @override
-  String get searchKwVoiceReading => '朗读,朗读的声音,TTS,音色,海星,暗潮,声音';
-
-  @override
   String get searchKwNotifications => '提醒,推送,横幅,消息,铃声';
 
   @override
@@ -16456,12 +16450,6 @@ class L10nZh extends L10n {
   String get speechReadAloudStop => '停止朗读';
 
   @override
-  String get speechReadSection => '朗读';
-
-  @override
-  String get speechReadFooter => '回复下方的朗读键、伙伴小屋和语音通话都用这个声音。';
-
-  @override
   String get speechVoiceTitle => '朗读的声音';
 
   @override
@@ -16481,12 +16469,6 @@ class L10nZh extends L10n {
 
   @override
   String get speechVoiceTide => '暗潮（男声）';
-
-  @override
-  String get speechVoiceStellaShort => '海星';
-
-  @override
-  String get speechVoiceTideShort => '暗潮';
 
   @override
   String get speechVoiceFollow => '跟朗读一样';
@@ -19779,16 +19761,10 @@ class L10nZh extends L10n {
   String get voiceModeSystem => '系统';
 
   @override
-  String get voiceModeEngine => '语音模型';
-
-  @override
-  String get voiceModeAutoHint => '有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用语音模型或系统识别';
+  String get voiceModeAutoHint => '系统识别，或下面选的云端转写接口';
 
   @override
   String get voiceModeSystemHint => '使用手机设置中的识别服务';
-
-  @override
-  String get voiceModeEngineHint => '用引擎里的语音模型识别';
 
   @override
   String get voiceFallbackStarted => '已改用语音模型，请再说一次';
@@ -19859,18 +19835,6 @@ class L10nZh extends L10n {
   String get voiceModeSection => '识别方式';
 
   @override
-  String get voiceModelSection => '语音模型';
-
-  @override
-  String get voiceModelFooter => '下载后在手机上识别中文、英文、粤语、日语和韩语，录音不出手机。';
-
-  @override
-  String get voiceModelWaiting => '引擎启动后可以下载';
-
-  @override
-  String get voiceModelUnsupported => '当前引擎不支持语音模型';
-
-  @override
   String get voiceModelAbsent => '未下载';
 
   @override
@@ -19888,107 +19852,10 @@ class L10nZh extends L10n {
   }
 
   @override
-  String voiceModelReadyNote(String size) {
-    return '已占用 $size，可以离线使用';
-  }
-
-  @override
-  String voiceModelAbsentNote(String size) {
-    return '下载约 $size';
-  }
-
-  @override
-  String get voiceModelWaitingNote => '下载会在引擎启动后开始';
-
-  @override
-  String get voiceModelFailNetwork => '网络连接失败';
-
-  @override
-  String get voiceModelFailTimeout => '下载长时间没有进展';
-
-  @override
-  String get voiceModelFailCertificate => '安全连接失败，请检查手机时间';
-
-  @override
-  String get voiceModelFailServer => '下载源暂时不可用';
-
-  @override
-  String get voiceModelFailIntegrity => '文件校验没有通过';
-
-  @override
-  String voiceModelFailStorage(String size) {
-    return '存储空间不足，还需要约 $size';
-  }
-
-  @override
-  String get voiceModelFailEngine => '引擎没有响应';
-
-  @override
-  String get voiceModelFailUnknown => '下载没有完成';
-
-  @override
   String get voiceModelDownload => '下载';
 
   @override
   String get voiceModelResume => '继续下载';
-
-  @override
-  String get voiceModelRedownload => '重新下载';
-
-  @override
-  String get voiceModelMeteredTitle => '用移动数据下载？';
-
-  @override
-  String voiceModelMeteredBody(String size) {
-    return '语音模型约 $size，会使用移动数据流量。';
-  }
-
-  @override
-  String get voiceModelDeleteTitle => '删除语音模型？';
-
-  @override
-  String get voiceModelDeleteBody => '删除后语音输入改用系统识别，需要时可以重新下载。';
-
-  @override
-  String get voiceModelDeleteFailed => '没能删除语音模型，请重试';
-
-  @override
-  String get voiceModelDeleteStopping => '下载还在停止，请稍后再删';
-
-  @override
-  String voiceModelStartedToast(String size) {
-    return '语音模型开始下载 · 约 $size';
-  }
-
-  @override
-  String voiceModelResumedToast(String size) {
-    return '继续下载语音模型 · 还剩约 $size';
-  }
-
-  @override
-  String get voiceModelReadyToast => '语音输入已就绪';
-
-  @override
-  String voiceModelFailedToast(String reason) {
-    return '语音模型下载失败：$reason';
-  }
-
-  @override
-  String voiceModelNoticeDownloading(int percent) {
-    return '正在下载语音模型 $percent%';
-  }
-
-  @override
-  String get voiceModelNoticePreparing => '正在校验语音模型';
-
-  @override
-  String get voiceModelNoticeFailed => '语音模型下载失败，打开 App 重试';
-
-  @override
-  String get voiceModeDeepseek => 'DeepSeek';
-
-  @override
-  String get voiceModeDeepseekHint => '用 DeepSeek 的语音识别，登录的账号或 API Key 付费';
 
   @override
   String get voiceModeCloud => '其他云端服务';

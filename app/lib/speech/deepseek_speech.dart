@@ -6,6 +6,12 @@
 // (`/dsh-go/v1/speech`, runtime/bridge/dsh-go-bridge/lib/speech.js), which
 // sends them with it. Without an account, the API key in 设置 goes straight to
 // api.deepseek.com from the phone. Account first: it is what 默认免配置 means.
+//
+// 1.2.0: the signed-in DeepSeek account was removed from the app, so in
+// practice only the API key (or the host's own key) pays now. 设置 › 语音 no
+// longer offers DeepSeek's voices — 朗读 and 语音通话 use the phone's own TTS —
+// so what still comes here is 伙伴小屋's DeepSeek voice (synthesize) and
+// DeepSeek recognition (transcribe, through voice_cloud.dart).
 
 import 'dart:async';
 import 'dart:convert';

@@ -1,7 +1,10 @@
-// Recognizers in the cloud for 语音输入 and 语音通话: DeepSeek's (the signed-in
-// account or the API key, deepseek_speech.dart), or an OpenAI-compatible
-// `/audio/transcriptions` service the person set up (speech_settings.dart).
-// Both take a whole recording; nothing is recognized while still speaking.
+// Recognizers in the cloud for 语音输入 and 语音通话: DeepSeek's (paid by the API
+// key in 设置 or by the host's own key, deepseek_speech.dart), or an
+// OpenAI-compatible `/audio/transcriptions` service the person set up
+// (speech_settings.dart). 设置 › 语音 no longer offers DeepSeek as a mode of its
+// own (1.2.0: its account was removed); its recognizer is still what 自动 asks
+// for first when a key can pay. Both take a whole recording; nothing is
+// recognized while still speaking.
 
 import 'dart:async';
 import 'dart:convert';

@@ -406,6 +406,11 @@ abstract class VoiceOutputSettingsController extends Notifier<CompanionVoiceSett
   /// What a person who never saved anything gets.
   CompanionVoiceSettings get defaults;
 
+  /// What a saved [settings] mean now: a controller whose choice was taken away
+  /// maps the old one here once, as the settings are read ([ready] answers with
+  /// the mapped value).
+  CompanionVoiceSettings migrate(CompanionVoiceSettings saved) => saved;
+
   String get _onKey => keys.on;
   String get _plainKey => keys.plain;
   String get _openaiKeyKey => keys.openaiKey;
@@ -450,6 +455,7 @@ abstract class VoiceOutputSettingsController extends Notifier<CompanionVoiceSett
       } on Object {
         // No secure storage (tests, a broken keystore): no keys, nothing else lost.
       }
+      settings = migrate(settings);
       if (ref.mounted && state == null) state = settings;
     } on Object {
       if (ref.mounted && state == null) state = defaults;

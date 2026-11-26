@@ -15638,12 +15638,6 @@ abstract class L10n {
   /// **'可以开关随包插件，或连接电脑管理插件'**
   String get harmonyPluginRefusedHint;
 
-  /// No description provided for @harmonyVoiceLocalLine.
-  ///
-  /// In zh, this message translates to:
-  /// **'鸿蒙本机没有语音模型'**
-  String get harmonyVoiceLocalLine;
-
   /// No description provided for @harmonyPasswordStorageHelp.
   ///
   /// In zh, this message translates to:
@@ -15677,7 +15671,7 @@ abstract class L10n {
   /// No description provided for @harmonyVoiceAutoHint.
   ///
   /// In zh, this message translates to:
-  /// **'有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用系统识别'**
+  /// **'系统识别，或下面选的云端转写接口'**
   String get harmonyVoiceAutoHint;
 
   /// No description provided for @harmonyVoiceSystemUnavailable.
@@ -27746,12 +27740,6 @@ abstract class L10n {
   /// **'语音识别,麦克风,听写,说话,语音,朗读,语音通话,打电话,TTS,声音'**
   String get searchKwVoice;
 
-  /// No description provided for @searchKwVoiceReading.
-  ///
-  /// In zh, this message translates to:
-  /// **'朗读,朗读的声音,TTS,音色,海星,暗潮,声音'**
-  String get searchKwVoiceReading;
-
   /// No description provided for @searchKwNotifications.
   ///
   /// In zh, this message translates to:
@@ -30212,18 +30200,6 @@ abstract class L10n {
   /// **'停止朗读'**
   String get speechReadAloudStop;
 
-  /// No description provided for @speechReadSection.
-  ///
-  /// In zh, this message translates to:
-  /// **'朗读'**
-  String get speechReadSection;
-
-  /// No description provided for @speechReadFooter.
-  ///
-  /// In zh, this message translates to:
-  /// **'回复下方的朗读键、伙伴小屋和语音通话都用这个声音。'**
-  String get speechReadFooter;
-
   /// No description provided for @speechVoiceTitle.
   ///
   /// In zh, this message translates to:
@@ -30265,18 +30241,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'暗潮（男声）'**
   String get speechVoiceTide;
-
-  /// No description provided for @speechVoiceStellaShort.
-  ///
-  /// In zh, this message translates to:
-  /// **'海星'**
-  String get speechVoiceStellaShort;
-
-  /// No description provided for @speechVoiceTideShort.
-  ///
-  /// In zh, this message translates to:
-  /// **'暗潮'**
-  String get speechVoiceTideShort;
 
   /// No description provided for @speechVoiceFollow.
   ///
@@ -36080,16 +36044,10 @@ abstract class L10n {
   /// **'系统'**
   String get voiceModeSystem;
 
-  /// No description provided for @voiceModeEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型'**
-  String get voiceModeEngine;
-
   /// No description provided for @voiceModeAutoHint.
   ///
   /// In zh, this message translates to:
-  /// **'有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用语音模型或系统识别'**
+  /// **'系统识别，或下面选的云端转写接口'**
   String get voiceModeAutoHint;
 
   /// No description provided for @voiceModeSystemHint.
@@ -36097,12 +36055,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'使用手机设置中的识别服务'**
   String get voiceModeSystemHint;
-
-  /// No description provided for @voiceModeEngineHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'用引擎里的语音模型识别'**
-  String get voiceModeEngineHint;
 
   /// No description provided for @voiceFallbackStarted.
   ///
@@ -36236,30 +36188,6 @@ abstract class L10n {
   /// **'识别方式'**
   String get voiceModeSection;
 
-  /// No description provided for @voiceModelSection.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型'**
-  String get voiceModelSection;
-
-  /// No description provided for @voiceModelFooter.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载后在手机上识别中文、英文、粤语、日语和韩语，录音不出手机。'**
-  String get voiceModelFooter;
-
-  /// No description provided for @voiceModelWaiting.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎启动后可以下载'**
-  String get voiceModelWaiting;
-
-  /// No description provided for @voiceModelUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前引擎不支持语音模型'**
-  String get voiceModelUnsupported;
-
   /// No description provided for @voiceModelAbsent.
   ///
   /// In zh, this message translates to:
@@ -36290,72 +36218,6 @@ abstract class L10n {
   /// **'{done} / {total}'**
   String voiceModelBytes(String done, String total);
 
-  /// No description provided for @voiceModelReadyNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'已占用 {size}，可以离线使用'**
-  String voiceModelReadyNote(String size);
-
-  /// No description provided for @voiceModelAbsentNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载约 {size}'**
-  String voiceModelAbsentNote(String size);
-
-  /// No description provided for @voiceModelWaitingNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载会在引擎启动后开始'**
-  String get voiceModelWaitingNote;
-
-  /// No description provided for @voiceModelFailNetwork.
-  ///
-  /// In zh, this message translates to:
-  /// **'网络连接失败'**
-  String get voiceModelFailNetwork;
-
-  /// No description provided for @voiceModelFailTimeout.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载长时间没有进展'**
-  String get voiceModelFailTimeout;
-
-  /// No description provided for @voiceModelFailCertificate.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全连接失败，请检查手机时间'**
-  String get voiceModelFailCertificate;
-
-  /// No description provided for @voiceModelFailServer.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载源暂时不可用'**
-  String get voiceModelFailServer;
-
-  /// No description provided for @voiceModelFailIntegrity.
-  ///
-  /// In zh, this message translates to:
-  /// **'文件校验没有通过'**
-  String get voiceModelFailIntegrity;
-
-  /// No description provided for @voiceModelFailStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'存储空间不足，还需要约 {size}'**
-  String voiceModelFailStorage(String size);
-
-  /// No description provided for @voiceModelFailEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎没有响应'**
-  String get voiceModelFailEngine;
-
-  /// No description provided for @voiceModelFailUnknown.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载没有完成'**
-  String get voiceModelFailUnknown;
-
   /// No description provided for @voiceModelDownload.
   ///
   /// In zh, this message translates to:
@@ -36367,102 +36229,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'继续下载'**
   String get voiceModelResume;
-
-  /// No description provided for @voiceModelRedownload.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新下载'**
-  String get voiceModelRedownload;
-
-  /// No description provided for @voiceModelMeteredTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'用移动数据下载？'**
-  String get voiceModelMeteredTitle;
-
-  /// No description provided for @voiceModelMeteredBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型约 {size}，会使用移动数据流量。'**
-  String voiceModelMeteredBody(String size);
-
-  /// No description provided for @voiceModelDeleteTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除语音模型？'**
-  String get voiceModelDeleteTitle;
-
-  /// No description provided for @voiceModelDeleteBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除后语音输入改用系统识别，需要时可以重新下载。'**
-  String get voiceModelDeleteBody;
-
-  /// No description provided for @voiceModelDeleteFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能删除语音模型，请重试'**
-  String get voiceModelDeleteFailed;
-
-  /// No description provided for @voiceModelDeleteStopping.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载还在停止，请稍后再删'**
-  String get voiceModelDeleteStopping;
-
-  /// No description provided for @voiceModelStartedToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型开始下载 · 约 {size}'**
-  String voiceModelStartedToast(String size);
-
-  /// No description provided for @voiceModelResumedToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'继续下载语音模型 · 还剩约 {size}'**
-  String voiceModelResumedToast(String size);
-
-  /// No description provided for @voiceModelReadyToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音输入已就绪'**
-  String get voiceModelReadyToast;
-
-  /// No description provided for @voiceModelFailedToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型下载失败：{reason}'**
-  String voiceModelFailedToast(String reason);
-
-  /// No description provided for @voiceModelNoticeDownloading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在下载语音模型 {percent}%'**
-  String voiceModelNoticeDownloading(int percent);
-
-  /// No description provided for @voiceModelNoticePreparing.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在校验语音模型'**
-  String get voiceModelNoticePreparing;
-
-  /// No description provided for @voiceModelNoticeFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音模型下载失败，打开 App 重试'**
-  String get voiceModelNoticeFailed;
-
-  /// No description provided for @voiceModeDeepseek.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek'**
-  String get voiceModeDeepseek;
-
-  /// No description provided for @voiceModeDeepseekHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'用 DeepSeek 的语音识别，登录的账号或 API Key 付费'**
-  String get voiceModeDeepseekHint;
 
   /// No description provided for @voiceModeCloud.
   ///

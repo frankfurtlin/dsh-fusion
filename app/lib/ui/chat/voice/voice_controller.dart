@@ -1,10 +1,14 @@
 // Composer dictation. Automatic mode uses DeepSeek's recognizer when someone
-// can pay for it (the signed-in account or the API key: speech/voice_cloud.dart),
-// then the engine's voice model when it is ready (the on-device SenseVoice
-// model, voice settings); otherwise the system
+// can pay for it (the API key in 设置 or the host's own key:
+// speech/voice_cloud.dart), then the engine's voice model when it is ready
+// (voice settings); otherwise the system
 // service, retried once with engine transcription after a non-user service
 // failure. Audio is recorded again; the system service's earlier audio is never
 // claimed to be recoverable.
+//
+// 1.2.0: the DeepSeek account and the phone-local engine were removed, so 设置 ›
+// 语音 offers neither a 「DeepSeek」 nor a 「语音模型」 mode; the names below
+// still exist for the recognizer code (and the pet voice dialog).
 
 import 'dart:async';
 

@@ -1,8 +1,6 @@
 {
   "speechReadAloud": "Read aloud",
   "speechReadAloudStop": "Stop reading",
-  "speechReadSection": "Read aloud",
-  "speechReadFooter": "Used by the read-aloud key under replies, the companion room and voice calls.",
   "speechVoiceTitle": "Reading voice",
   "speechVoiceHello": "Hello, this is the reading voice.",
   "speechVoiceDeepseek": "DeepSeek",
@@ -10,8 +8,6 @@
   "speechVoiceDeepseekFooter": "Billed by the number of characters read; see the DeepSeek platform for prices. Code blocks, tables and link addresses are left out.",
   "speechVoiceStella": "Stella (female)",
   "speechVoiceTide": "Tide (male)",
-  "speechVoiceStellaShort": "Stella",
-  "speechVoiceTideShort": "Tide",
   "speechVoiceFollow": "Same as read aloud",
   "speechVoiceFollowHint": "The reading voice in Settings › Voice",
   "speechNotSetUp": "The reading voice isn't set up yet. See Settings › Voice",

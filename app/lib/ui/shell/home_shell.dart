@@ -24,7 +24,6 @@ import '../chat/chat_screen.dart';
 import '../chat/composer_toast.dart' show composerToastGap;
 import '../features/all_features_page.dart';
 import '../notify/chat_alert_host.dart';
-import '../notify/voice_model_host.dart';
 import '../plugins/plugins_screen.dart';
 import '../pets/pet_settings_page.dart';
 import '../phone/phone_stop_watcher.dart';
@@ -353,8 +352,6 @@ class _HomeShellState extends ConsumerState<HomeShell> with TickerProviderStateM
                       // 每日更新检查：读的是我们自己的清单（COS / update.json），不是上游仓库。
                       // 启动 6 秒后跑一次，24 小时内不重复；有新版本时弹更新页（绘制层为空）。
                       const UpdateLaunchCheck(),
-                      // The voice model chosen during setup: download, resume, ready / failed notices (draws nothing).
-                      const VoiceModelHost(),
                       // App links / shared files: routes them to their feature (draws nothing).
                       const LinkHost(),
                       // Share codes (分享码): registers its links and files with the router.

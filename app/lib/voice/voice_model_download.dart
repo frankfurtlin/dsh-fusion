@@ -3,6 +3,10 @@
 // SHA-256 before the file takes its final name, and stopped by a stall rather
 // than by a total deadline (a 240 MB file on a slow line is fine; a dead one
 // is not). Runs in its own isolate: hashing 240 MB must not touch the UI.
+//
+// 手机本地引擎已于 1.2.0 删除：这条通道唯一的调用方 state/voice_model_state.dart
+// 随「语音模型」卡片一起不再可达（没有引擎就没有可下载的落点）。代码与原生依赖
+// 保留，不删。
 
 import 'dart:async';
 import 'dart:io';

@@ -2,6 +2,12 @@
 // bundle): status, download, cancel, delete, and the first-run download the
 // person asked for during onboarding.
 //
+// 手机本地引擎已删除（1.2.0），设置 › 语音 里的「语音模型」卡片随之移除：没有
+// 引擎就没有放模型的地方（[DeviceVoiceModelPlatform.files] 恒为 null，状态只会
+// 是 [VoiceModelStatus.unsupported]），所以这一整条下载通道现在不再可达。代码
+// 连同下面的下载隔离（voice/voice_model_download.dart）一起保留，不删原生依赖；
+// 只有 [voiceModelMegabytes] 还被实时字幕的卡片借用。
+//
 // The model lives in the on-device engine only (its rootfs): this controller
 // talks to the local connection, never to a remote host. A download:
 //   1. checks free space, then fetches the files from a mainland mirror into
