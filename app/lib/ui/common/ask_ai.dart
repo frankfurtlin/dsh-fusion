@@ -34,7 +34,7 @@ Future<void> askAiQuestion(BuildContext context, String question, {String guideP
   unawaited(HapticFeedback.selectionClick());
   final host = container.read(activeHostProvider);
   final route = guideRouteFor(
-    local: host.isLocal,
+    local: false,
     filesAllowed: canStageFiles(container.read(activeConnectionProvider).value, host),
   );
   final request = await askAiQuestionRequest(

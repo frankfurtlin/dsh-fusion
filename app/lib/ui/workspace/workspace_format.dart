@@ -4,25 +4,14 @@
 import 'package:dsh_client/dsh_client.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_paths.dart';
 
-/// Where the phone's shared storage appears inside the engine
-/// (`PhoneStorage.GUEST_PATH`).
+/// `/sdcard`: 手机本地引擎已删除，这个根目录只剩展示旧路径时认得出来。
 const phoneStorageRoot = '/sdcard';
 
-/// Home of the engine's user on the phone.
-String get localHome => LocalPaths.home;
-
-/// [path] for display: the phone's storage as 「手机存储」, the home folder as
-/// `~` (the engine's `/root` on the phone, [home] elsewhere when known).
-String displayPath(String path, {required bool local, String? home}) {
-  if (local) {
-    if (path == phoneStorageRoot) return appL10n.remoteDirectoryPhoneStorage;
-    if (path.startsWith('$phoneStorageRoot/')) {
-      return appL10n.remoteDirectoryPhonePath(path.substring(phoneStorageRoot.length + 1));
-    }
-  }
-  final base = local ? localHome : home;
+/// [path] for display: the home folder as `~` ([home], when known).
+/// 手机本地引擎已删除：本机 `/sdcard` 那套显示随引擎一起删了。
+String displayPath(String path, {String? home}) {
+  final base = home;
   if (base != null && base.length > 1) {
     if (path == base) return '~';
     if (path.startsWith('$base/')) return '~/${path.substring(base.length + 1)}';

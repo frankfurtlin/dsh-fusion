@@ -13,7 +13,7 @@ import '../../l10n/l10n.dart';
 import '../../state/app_info.dart';
 import '../../state/community_state.dart';
 import '../../state/plugins_state.dart';
-import '../../state/safe_mode_state.dart' show repairDraftProvider;
+import '../../state/repair_draft.dart';
 import '../common/empty_view.dart';
 import '../common/feature_tile.dart';
 import '../common/list_page_row.dart';

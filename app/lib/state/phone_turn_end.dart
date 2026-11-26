@@ -158,7 +158,7 @@ class _DeferredPhoneEnd {
 }
 
 /// Watches the phone task and ends it with its turn ([onTurnEnd], called by
-/// ChatAlertsController for every local turn end). Kept alive with
+/// ChatAlertsController for every turn end on the active host). Kept alive with
 /// [phoneStopWatcherProvider] by the home shell, so it has seen the task begin.
 class PhoneTurnEndController extends Notifier<void> {
   final link = PhoneTurnLink();
@@ -178,7 +178,7 @@ class PhoneTurnEndController extends Notifier<void> {
   void build() {
     final lifetime = _lifetime = Object();
     final channel = ref.watch(phoneChannelProvider);
-    ref.listen(localConnectionProvider, (before, after) {
+    ref.listen(activeConnectionProvider, (before, after) {
       final old = before?.value?.client;
       final next = after.value?.client;
       if (old != null && !identical(old, next)) {
@@ -263,10 +263,10 @@ class PhoneTurnEndController extends Notifier<void> {
       _ownerClient = null;
       _ownerGeneration = null;
       _trace('task=${link.taskId} event=begin');
-      // iOS binds the task to the authenticated engine request at admission.
+      // iOS binds the task to the authenticated host request at admission.
       // A session-list snapshot is for legacy Android tasks with no owner; it
       // can be ambiguous or still pending while the exact iOS owner is known.
-      final client = ref.read(localConnectionProvider).value?.client;
+      final client = ref.read(activeConnectionProvider).value?.client;
       final owner = legacy.ownerSessionId;
       if (owner != null && owner.isNotEmpty && client != null) {
         _ownerClient = client;
@@ -284,28 +284,29 @@ class PhoneTurnEndController extends Notifier<void> {
   Future<void> _nativeEnded(PhoneTaskStatus task) async {
     final id = task.id!, session = task.sessionId!;
     final lifetime = _lifetime;
-    final client = ref.read(localConnectionProvider).value?.client;
+    final client = ref.read(activeConnectionProvider).value?.client;
     final generation = client?.mux.generation;
     final reopen = ref.read(phoneReturnPrefProvider) && !ref.read(appForegroundProvider);
-    final bot = ref.read(dsBotSessionFilterProvider)(HostRef.local, session);
+    final host = ref.read(activeHostProvider);
+    final bot = ref.read(dsBotSessionFilterProvider)(host, session);
     final result = await ref.read(phoneChannelProvider).finishTask(
-      taskId: id, sessionId: session, host: HostRef.local.encode(), reopen: reopen,
+      taskId: id, sessionId: session, host: host.encode(), reopen: reopen,
       runId: task.endedRunId, generation: task.endedGeneration, appOnly: bot,
     );
     if (!ref.mounted || !identical(_lifetime, lifetime) || !result.current ||
         _nativeLatest[session] != id ||
-        !identical(ref.read(localConnectionProvider).value?.client, client) ||
+        !identical(ref.read(activeConnectionProvider).value?.client, client) ||
         !identical(client?.mux.generation, generation)) {
       return;
     }
     if (result.opened && result.launched && !bot) ref.read(chatRevealProvider.notifier).reveal(session);
     if (result.closed && reopen && !result.opened && !result.notified && !bot && !ref.read(appForegroundProvider)) {
       await ref.read(notifyChannelProvider).tryShow(
-        NotifyPost(group: notifyGroup(HostRef.local, session), key: 'phone-$id', attention: true,
+        NotifyPost(group: notifyGroup(host, session), key: 'phone-$id', attention: true,
           title: AppInfo.name, text: task.completion == 'completed' ? appL10n.phoneTaskResultReady : appL10n.phoneTaskEndedResult, publicText: appL10n.phoneTaskEndedResult,
-          sessionId: session, host: HostRef.local, kind: 'phone-result'),
+          sessionId: session, host: host, kind: 'phone-result'),
         stillCurrent: () => ref.mounted && identical(_lifetime, lifetime) && _nativeLatest[session] == id &&
-          !ref.read(appForegroundProvider) && identical(ref.read(localConnectionProvider).value?.client, client) &&
+          !ref.read(appForegroundProvider) && identical(ref.read(activeConnectionProvider).value?.client, client) &&
           identical(client?.mux.generation, generation),
       );
     }
@@ -318,7 +319,7 @@ class PhoneTurnEndController extends Notifier<void> {
       identical(_reading, read) &&
       link.armed &&
       link.taskId == read.taskId &&
-      identical(ref.read(localConnectionProvider).value?.client, read.client) &&
+      identical(ref.read(activeConnectionProvider).value?.client, read.client) &&
       identical(read.client.mux.generation, read.generation);
 
   void _settleDeferred(_OwnerRead read, {required bool resume}) {
@@ -346,7 +347,7 @@ class PhoneTurnEndController extends Notifier<void> {
 
   Future<void> _snapshot(int taskId) async {
     final scope = ref;
-    final client = scope.read(localConnectionProvider).value?.client;
+    final client = scope.read(activeConnectionProvider).value?.client;
     if (client == null) return;
     final previous = _reading;
     if (previous != null && previous.taskId == taskId && identical(previous.client, client)) return;
@@ -387,7 +388,7 @@ class PhoneTurnEndController extends Notifier<void> {
   /// requeue forever or turn the currently viewed conversation into proof.
   bool deferTurnEnd(ChatAlert alert, void Function() ready) {
     final read = _reading;
-    if (!alert.host.isLocal ||
+    if (alert.host.isNone ||
         alert.key != turnKey ||
         alert.turnEndKind == null ||
         !link.armed ||
@@ -415,10 +416,10 @@ class PhoneTurnEndController extends Notifier<void> {
   /// conversation) and the future says how it went.
   Future<PhoneFinish>? onTurnEnd(ChatAlert alert) {
     if (_sessionTasks) return null;
-    if (!alert.host.isLocal || alert.key != turnKey || alert.turnEndKind == null) return null;
+    if (alert.host.isNone || alert.key != turnKey || alert.turnEndKind == null) return null;
     final scope = ref;
     final lifetime = _lifetime;
-    final client = scope.read(localConnectionProvider).value?.client;
+    final client = scope.read(activeConnectionProvider).value?.client;
     final generation = client?.mux.generation;
     if (link.candidates != null &&
         (!identical(client, _ownerClient) || !identical(client?.mux.generation, _ownerGeneration))) {
@@ -450,7 +451,7 @@ class PhoneTurnEndController extends Notifier<void> {
           !identical(_lifetime, lifetime) ||
           link.taskId != taskId ||
           !result.current ||
-          !identical(scope.read(localConnectionProvider).value?.client, client) ||
+          !identical(scope.read(activeConnectionProvider).value?.client, client) ||
           !identical(client?.mux.generation, generation)) {
         return result.retired();
       }
@@ -480,7 +481,7 @@ class PhoneTurnEndController extends Notifier<void> {
                   identical(_lifetime, lifetime) &&
                   link.taskId == taskId &&
                   !scope.read(appForegroundProvider) &&
-                  identical(scope.read(localConnectionProvider).value?.client, client) &&
+                  identical(scope.read(activeConnectionProvider).value?.client, client) &&
                   identical(client?.mux.generation, generation),
             );
         if (notified) return result.withNotice();

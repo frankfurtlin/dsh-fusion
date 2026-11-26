@@ -1,7 +1,7 @@
-// 系统操作 (HarmonyOS): the local engine's phone tools reach the system through
-// one [DshPhoneSession], which this controller opens and closes. It lives while
-// the switch is on, the local engine is connected and DSH Pocket is on screen; the
-// engine refuses new work off screen anyway. A call already under way is left to
+// 系统操作 (HarmonyOS): the host's phone tools reach the system through one
+// [DshPhoneSession], which this controller opens and closes. It lives while the
+// switch is on, the active host is connected and DSH Pocket is on screen; the
+// host refuses new work off screen anyway. A call already under way is left to
 // finish when the app goes away (`open` itself sends it away; a handoff waits for
 // the person to come back), and the session goes once that call has ended.
 
@@ -15,8 +15,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../phone/phone_channel.dart' show PhoneLogEntry;
-import '../runtime/phone_callback_bridge.dart';
-import '../runtime/runtime_state.dart';
+import '../device/device_bridge.dart';
+import '../device/phone_callback_bridge.dart';
 import 'connection_state.dart';
 
 /// [OhosPhoneNative]; tests swap it.
@@ -29,7 +29,7 @@ enum ReminderAccess { available, notThisBuild, notThisDevice }
 /// Null while it's being asked, or if the native side couldn't say.
 final reminderAccessProvider = FutureProvider<ReminderAccess?>((ref) async {
   try {
-    return switch (await ref.read(runtimeBridgeProvider).reminderAccess()) {
+    return switch (await ref.read(deviceBridgeProvider).reminderAccess()) {
       'granted' => ReminderAccess.available,
       'denied' => ReminderAccess.notThisBuild,
       'unsupported' => ReminderAccess.notThisDevice,
@@ -154,7 +154,7 @@ class SystemActionsController extends Notifier<SystemActionsState> {
         _sync();
       },
     );
-    ref.listen(localConnectionProvider, (_, _) => _startOver());
+    ref.listen(activeConnectionProvider, (_, _) => _startOver());
     ref.onDispose(() {
       lifecycle.dispose();
       _retry?.cancel();
@@ -261,8 +261,9 @@ class SystemActionsController extends Notifier<SystemActionsState> {
     }());
   }
 
+  /// 手机本地引擎已删除：这条连接跟着当前活动主机走。
   DshConnection? get _engine {
-    final carrier = ref.read(localConnectionProvider).value?.client.carrier;
+    final carrier = ref.read(activeConnectionProvider).value?.client.carrier;
     return carrier is DshHttpCarrier ? carrier.connection : null;
   }
 

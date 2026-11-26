@@ -13,7 +13,6 @@ import 'dart:convert';
 import 'package:dsh_client/dsh_client.dart';
 
 import '../l10n/l10n.dart';
-import 'guest_fs.dart';
 import 'namespace_labels.dart';
 import 'plugin_share.dart';
 import 'settings_sanitizer.dart';
@@ -58,7 +57,6 @@ class ExportItem {
 class ProfileExportSource {
   ProfileExportSource({
     required this.hostLabel,
-    required this.isLocal,
     required this.items,
     required this.settings,
     required this.plugins,
@@ -68,7 +66,6 @@ class ProfileExportSource {
   });
 
   final String hostLabel;
-  final bool isLocal;
   final List<ExportItem> items;
 
   /// Cleaned user layers by namespace.
@@ -122,13 +119,9 @@ String _pluginSubtitle(SharedPlugin p) => switch (p.source) {
   PluginSourceKind.official => appL10n.pluginsOfficialPlugin,
 };
 
-/// Reads everything [client] (and, for the on-device engine, [fs]) can share.
-Future<ProfileExportSource> loadProfileExport(
-  DshClient client, {
-  required String hostLabel,
-  required bool isLocal,
-  GuestFs? fs,
-}) async {
+/// Reads everything [client] can share. 手机本地引擎已删除：不再从本机 rootfs
+/// 读技能与 AGENTS.md，只读主机自己报的清单。
+Future<ProfileExportSource> loadProfileExport(DshClient client, {required String hostLabel}) async {
   final items = <ExportItem>[];
   final settings = <String, Map<String, Object?>>{};
   final plugins = <String, SharedPlugin>{};
@@ -218,44 +211,11 @@ Future<ProfileExportSource> loadProfileExport(
     // No plugin list over this carrier.
   }
 
-  // The on-device engine's files.
-  String? agentsMd;
-  if (isLocal && fs != null) {
-    for (final local in await fs.readUserSkills()) {
-      final unavailable = local.skill.files.values.any(containsSecret) ? appL10n.pluginsSecretsUnshareable : null;
-      if (unavailable == null) skills[local.name] = local.skill;
-      items.add(
-        ExportItem(
-          id: 'skill:${local.name}',
-          section: ExportSection.skills,
-          title: local.name,
-          subtitle: unavailable ?? local.description,
-          bytes: _jsonBytes(local.skill.toJson()),
-          unavailable: unavailable,
-        ),
-      );
-    }
-    agentsMd = await fs.readUserAgentsMd();
-    if (agentsMd != null) {
-      final unavailable = containsSecret(agentsMd) ? appL10n.pluginsSecretsUnshareable : null;
-      items.add(
-        ExportItem(
-          id: 'agents-md',
-          section: ExportSection.agentsMd,
-          title: 'AGENTS.md',
-          subtitle: unavailable ?? appL10n.pluginsLineCount(agentsMd.split('\n').length),
-          bytes: _jsonBytes(agentsMd),
-          unavailable: unavailable,
-          defaultOn: false,
-        ),
-      );
-      if (unavailable != null) agentsMd = null;
-    }
-  }
+  // 手机本地引擎已删除：本机的技能与 AGENTS.md 不再可导出。
+  const String? agentsMd = null;
 
   return ProfileExportSource(
     hostLabel: hostLabel,
-    isLocal: isLocal,
     items: items,
     settings: settings,
     plugins: plugins,

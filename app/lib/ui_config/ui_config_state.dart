@@ -1,21 +1,18 @@
 // ui.json as app state. Each host has its own file: [uiConfigProvider] follows
-// one host's, keeps its last good text per host for the next cold start, and
+// one host's over its connection (手机本地引擎已删除，rootfs 那一侧随引擎一起删),
+// keeps its last good text per host for the next cold start, and
 // [uiOverridesProvider] gives the active host's configuration minus the
 // settings set aside with 「恢复默认」. The ui*Provider values at the bottom merge
 // ui.json over the app's own settings for the screens to read, each with the
 // entry that set it (for 「来自 ui.json」).
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/material.dart' show AppLifecycleListener, Color, ThemeMode;
+import 'package:flutter/material.dart' show Color, ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../plugins/seams/seat_models.dart' show SeatOverride, SeatOverrides;
-import '../runtime/runtime_bridge.dart' show RuntimePhase;
-import '../runtime/runtime_state.dart';
-import '../share_code/guest_fs.dart';
 import '../state/appearance_state.dart';
 import '../state/connection_state.dart';
 import '../state/drawer_view_state.dart';
@@ -32,26 +29,6 @@ import 'ui_config_source.dart';
 /// Moments to look again: the app came to the front, the network changed.
 final uiConfigKicksProvider = Provider<Stream<void>>((ref) => ref.watch(networkKicksProvider));
 
-/// Moments to look at the on-device file again: the app came to the front
-/// (a network change says nothing about a local file).
-final uiLocalKicksProvider = Provider<Stream<void>>((ref) {
-  final kicks = StreamController<void>.broadcast();
-  final lifecycle = AppLifecycleListener(onResume: () => kicks.add(null));
-  ref.onDispose(() {
-    lifecycle.dispose();
-    unawaited(kicks.close());
-  });
-  return kicks.stream;
-});
-
-/// The on-device rootfs (guest `/`), or null before the runtime is installed.
-typedef UiRootfsResolver = Future<Directory?> Function();
-
-final uiRootfsResolverProvider = Provider<UiRootfsResolver>(
-  (ref) =>
-      () async => (await GuestFs.local())?.root,
-);
-
 /// Makes the source for [host], using the caller's [ref] (so the config
 /// follows the connection); null when the host can't be read now.
 typedef UiConfigSourceBuilder = UiConfigSource? Function(Ref ref, HostRef host);
@@ -62,24 +39,11 @@ UiConfigSourceBuilder defaultUiConfigSourceBuilder = defaultUiConfigSource;
 
 final uiConfigSourceBuilderProvider = Provider<UiConfigSourceBuilder>((ref) => defaultUiConfigSourceBuilder);
 
-/// Local: the rootfs file, looked at again on resumes and runtime changes.
-/// Remote: only the active host's, over its open connection.
+/// Only the active host's file, over its open connection.
 UiConfigSource? defaultUiConfigSource(Ref ref, HostRef host) {
-  if (host.isLocal) {
-    final kicks = StreamController<void>.broadcast();
-    ref.onDispose(kicks.close);
-    ref.listen(localRuntimeProvider.select((s) => s.status.phase), (_, _) => kicks.add(null));
-    final resumes = ref.watch(uiLocalKicksProvider).listen(kicks.add);
-    ref.onDispose(resumes.cancel);
-    return LocalUiConfigSource(
-      rootfs: ref.read(uiRootfsResolverProvider),
-      kicks: kicks.stream,
-      mayWrite: () => ref.read(localRuntimeProvider).status.phase != RuntimePhase.installing,
-    );
-  }
   if (ref.watch(activeHostProvider) != host) return null;
   final conn = ref.watch(activeConnectionProvider.select((c) => c.value));
-  if (conn == null || conn.isLocal || conn.kind != host.kind || conn.hostId != host.id) return null;
+  if (conn == null || conn.kind != host.kind || conn.hostId != host.id) return null;
   return RemoteUiConfigSource(host: DshUiRemoteHost(conn.client), kicks: ref.watch(uiConfigKicksProvider));
 }
 
@@ -99,9 +63,6 @@ enum UiConfigAvailability {
 
   /// There is no ui.json.
   absent,
-
-  /// The on-device runtime is not installed.
-  noRuntime,
 
   /// A remote host with no conversation yet.
   noSession,
@@ -258,20 +219,12 @@ class UiConfigController extends Notifier<UiConfigState> {
         _report(null);
       case UiConfigUnavailable(:final reason):
         final availability = switch (reason) {
-          UiConfigUnavailableReason.noRuntime => UiConfigAvailability.noRuntime,
           UiConfigUnavailableReason.noSession => UiConfigAvailability.noSession,
           UiConfigUnavailableReason.noSkill => UiConfigAvailability.noSkill,
           UiConfigUnavailableReason.unsupported => UiConfigAvailability.unsupported,
           UiConfigUnavailableReason.denied => UiConfigAvailability.denied,
         };
-        // Nothing to read on the phone: no file. Elsewhere keep what the
-        // host said last.
-        if (reason == UiConfigUnavailableReason.noRuntime) {
-          _lastText = null;
-          _set(UiConfigState(availability: availability, restored: true));
-        } else {
-          _set(_now.copyWith(availability: availability, restored: true));
-        }
+        _set(_now.copyWith(availability: availability, restored: true));
     }
   }
 
@@ -406,11 +359,4 @@ final uiSeatOverridesProvider = Provider<SeatOverrides>((ref) {
 /// Whether ui.json hides [UiHideItem] on the active host.
 final uiHiddenProvider = Provider.family<bool, UiHideItem>(
   (ref, item) => ref.watch(uiOverridesProvider.select((o) => o.hides(item))),
-);
-
-// ── Skill auto-install hook ─────────────────────────────────────────────────
-
-/// True while the on-device engine is running (the skill installer's cue).
-final uiLocalEngineRunningProvider = Provider<bool>(
-  (ref) => ref.watch(localRuntimeProvider.select((s) => s.status.phase == RuntimePhase.running)),
 );

@@ -622,7 +622,7 @@ class EngineSettingsController extends AsyncNotifier<EngineSettings?> {
       namespaces: described.namespaces,
       writable: described.writable,
       credentials: _credentialsFor(described.namespaces),
-      local: conn.isLocal,
+      local: false,
       hostLabel: conn.label,
       origin: origin,
     );

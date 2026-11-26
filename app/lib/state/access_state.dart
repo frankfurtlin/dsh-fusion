@@ -23,17 +23,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../device/device_bridge.dart';
 import '../pets/overlay_channel.dart';
 import '../pets/pet_prefs.dart';
-import '../runtime/background_net.dart' show backgroundSettingsProvider;
-import '../runtime/runtime_bridge.dart' show RuntimePhase;
-import '../runtime/runtime_state.dart';
 import '../ui/chat/voice/voice_bridge.dart' show VoicePermission;
 import 'android_features.dart';
-import 'engine_control.dart';
 import 'notify_state.dart';
 import 'phone_state.dart';
-import 'settings_state.dart';
 import 'system_actions_state.dart';
 import 'voice_model_state.dart' show VoiceModelController, voiceModelDefaultBytes;
 import 'voice_state.dart';
@@ -318,7 +314,7 @@ class SystemAccessDriver implements AccessDriver {
       ref.invalidate(notifySystemStatusProvider);
       return readings;
     }
-    final bridge = ref.read(runtimeBridgeProvider);
+    final bridge = ref.read(deviceBridgeProvider);
     final phone = ref.read(phoneProvider.notifier);
     final pet = ref.read(petOverlayProvider.notifier);
     final info = _safe(() => ref.read(backgroundSettingsProvider.future));
@@ -359,7 +355,7 @@ class SystemAccessDriver implements AccessDriver {
 
   @override
   Future<bool> open(AccessItem item, {bool again = false}) async {
-    final bridge = ref.read(runtimeBridgeProvider);
+    final bridge = ref.read(deviceBridgeProvider);
     final opened = await _safe<bool>(() async {
       switch (item) {
         case AccessItem.mic:
@@ -574,9 +570,7 @@ class AccessSetupController extends Notifier<AccessSetup> {
   /// Turns on what was picked, as far as the phone allows: 访问手机文件 once
   /// files may be reached, 手机操控 (its disclosure was accepted on the pick),
   /// the default pet unless one was chosen, its floating window once it can
-  /// be drawn. An engine running or starting restarts once
-  /// so its mounts and tools follow: one starting already took the old
-  /// settings with it.
+  /// be drawn.
   Future<void> apply(AccessReadings readings) async {
     final features = state.features ?? const <AccessFeature>{};
     // Each on its own: one that fails (no native side) leaves the others.
@@ -588,16 +582,9 @@ class AccessSetupController extends Notifier<AccessSetup> {
       }
     }
 
-    var restart = false;
-    if (features.contains(AccessFeature.files) &&
-        readings.storage == true &&
-        !ref.read(settingsProvider).phoneStorage) {
-      await attempt(() => ref.read(settingsProvider.notifier).setPhoneStorage(true));
-      restart = true;
-    }
-    var restarting = false;
+    // 手机本地引擎已删除：存储授权不再需要把它挂进任何运行环境，因此这里只读权限。
     if (features.contains(AccessFeature.phone) && !ref.read(phoneProvider).status.enabled) {
-      restarting = (await attempt(() => ref.read(phoneProvider.notifier).setEnabled(true)))?.restarting ?? false;
+      await attempt(() => ref.read(phoneProvider.notifier).setEnabled(true));
     }
     if (features.contains(AccessFeature.phone)) {
       // The pick's 确认方式, if it didn't go in then; still pending after this,
@@ -606,10 +593,6 @@ class AccessSetupController extends Notifier<AccessSetup> {
     }
     if (features.contains(AccessFeature.systemActions)) {
       await attempt(() => ref.read(systemActionsProvider.notifier).setEnabled(true));
-    }
-    final phase = ref.read(localRuntimeProvider).status.phase;
-    if (restart && !restarting && (phase == RuntimePhase.running || phase == RuntimePhase.starting)) {
-      unawaited(EngineControl.restart(ref.container));
     }
     if (features.contains(AccessFeature.pet)) {
       // The pet itself, or the floating window has nothing to show (a light

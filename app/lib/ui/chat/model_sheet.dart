@@ -523,7 +523,7 @@ class _ModelSheetState extends ConsumerState<_ModelSheet> {
       if (groups.isEmpty) {
         body = _EmptyCatalog(
           // A failing provider counts: something is set up, just not working.
-          configured: ref.watch(settingsProvider.select((s) => s.hasModelAccess)) || catalog.failures.isNotEmpty,
+          configured: ref.watch(settingsProvider.select((s) => s.hasApiKey)) || catalog.failures.isNotEmpty,
           failure: catalog.failures.isEmpty ? null : catalog.failures.first.message,
         );
       } else {
@@ -1012,7 +1012,7 @@ class _EmptyCatalog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             FilledButton(
-              onPressed: () => push(const ApiKeyPage(onboarding: false)),
+              onPressed: () => push(const ApiKeyPage()),
               child: Text(l10n.viewModelEnterKey),
             ),
             const SizedBox(height: 4),

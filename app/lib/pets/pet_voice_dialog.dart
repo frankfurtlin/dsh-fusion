@@ -36,7 +36,7 @@ class _PetVoiceDialogState extends ConsumerState<PetVoiceDialog> with WidgetsBin
         VoiceInputController(
             input: _input,
             bridge: ref.read(voiceBridgeProvider),
-            client: () => mounted ? ref.read(localConnectionProvider).value?.client : null,
+            client: () => mounted ? ref.read(activeConnectionProvider).value?.client : null,
             mode: () async => VoiceMode.engine,
             requiredProviderId: voiceModelProviderId,
             modelReady: () => true,

@@ -15,13 +15,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../notify/chat_alerts.dart' show approvalText, questionText;
-import '../../runtime/local_footprint.dart' show RuntimeMissing;
-import '../../runtime/runtime_bridge.dart' show RuntimePhase;
-import '../../runtime/runtime_state.dart' show localRuntimeProvider;
 import '../../speech/read_aloud.dart';
 import '../../speech/voice_cloud.dart';
 import '../../state/android_features.dart';
-import '../../state/account_state.dart';
 import '../speech/voice_call_page.dart';
 import '../../state/streaming_asr_state.dart';
 import '../../state/streaming_pcm_state.dart';
@@ -30,7 +26,6 @@ import '../../voice/live_words_model.dart';
 import '../../voice/streaming_pcm.dart';
 import '../../state/agents_state.dart' show subagentParentProvider;
 import '../../state/attachments.dart';
-import '../../state/balance_state.dart';
 import '../../state/chat_error_text.dart';
 import '../../state/chat_state.dart';
 import '../../state/commands_state.dart';
@@ -41,22 +36,20 @@ import '../../state/composer_quote.dart';
 import '../../state/connection_state.dart';
 import '../../state/draft_store.dart';
 import '../../state/drawer_view_state.dart';
-import '../../state/engine_control.dart';
 import '../../state/engine_settings_state.dart' show engineSettingsProvider;
 import '../../state/features_state.dart' show agentPresetsProvider, permissionStateProvider;
-import '../../state/hosts_state.dart' show HostKind, HostRef, activeHostProvider;
+import '../../state/hosts_state.dart' show HostRef, activeHostProvider;
 import '../../state/media_generation.dart';
 import '../../state/mention_state.dart';
 import '../../state/models_state.dart';
 import '../../state/new_chat_modes.dart';
 import '../../state/session_search.dart' show folderLabel;
-import '../../state/safe_mode_state.dart';
+import '../../state/repair_draft.dart';
 import '../../state/session_modes.dart';
 import '../../state/sessions_state.dart';
 import '../../state/settings_state.dart';
 import '../../state/usage_state.dart';
 import '../../state/voice_state.dart';
-import '../../state/voice_model_state.dart';
 import '../../state/voice_settings.dart';
 import '../../state/workspaces_state.dart' show selectedWorkspaceProvider, workspaceTitle;
 import '../../usage/usage_stats.dart';
@@ -69,15 +62,12 @@ import '../common/smooth_size.dart';
 import '../common/status_dot.dart';
 import '../features/all_features_page.dart';
 import '../features/session_export_page.dart';
-import '../onboarding/local_install.dart';
 import '../pets/pet_perch.dart';
 import '../pets/pet_stage.dart';
 import '../plugins/native/composer_strip.dart' show ComposerStripSlot;
 import '../plugins/native/native_composer_bar.dart';
 import '../plugins/native/native_taps.dart' show NativeComposerHost, NativeComposerScope, runNativeAction;
 import '../plugins/seats/plugin_overlay_layer.dart';
-import '../safe_mode/engine_failure_card.dart';
-import '../safe_mode/safe_mode_banner.dart';
 import '../session/session_detail_page.dart';
 import '../settings/media_settings_page.dart' show MediaSettingsPage, showMediaInstallSheet, showMediaUnavailableSheet;
 import '../settings/settings_widgets.dart' show SettingsTile;
@@ -88,7 +78,6 @@ import '../theme/theme.dart';
 import '../wallpaper/wallpaper_backdrop.dart';
 import '../workspace/workspace_switcher.dart' show showWorkspaceSheet;
 import '../workspace/workspaces_page.dart';
-import 'balance_widgets.dart';
 import 'chat_header.dart';
 import 'chat_list.dart';
 import 'composer.dart';
@@ -376,7 +365,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
       harmony: () => ref.read(operatingSystemProvider) == 'ohos',
       cloud: (mode) => ref.read(voiceCloudProvider)(mode),
       cloudLikely: () => ref.read(voiceCloudLikelyProvider)(),
-      signedIn: () => ref.read(accountProvider).signedIn,
+      // DeepSeek 账号已删除：语音输入只剩 API Key / 云服务配置这两条路。
+      signedIn: () => false,
       liveWords: (onWords) async {
         final pcm = ref.read(streamingPcmCaptureProvider);
         final asr = ref.read(streamingAsrProvider);
@@ -391,11 +381,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
           return null;
         }
       },
-      // The voice model lives in the on-device engine: it counts for that host only.
-      modelReady: () =>
-          mounted &&
-          (ref.read(activeConnectionProvider).value?.isLocal ?? false) &&
-          ref.read(voiceModelProvider).status == VoiceModelStatus.ready,
+      // 手机本地引擎已删除：本机语音模型不再是可用的语音听写来源。
+      modelReady: () => false,
       // The capability probe is async and can finish after this page is gone.
       client: () => mounted ? ref.read(activeConnectionProvider).value?.client : null,
       inputOwner: () => mounted ? ref.read(activeHostProvider) : null,
@@ -403,12 +390,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
         if (mounted) ref.read(usageStatsProvider.notifier).count(UsageCount.voice);
       },
     );
-    // A download or deletion changes capabilities without replacing the host.
-    ref.listenManual(voiceModelProvider.select((s) => s.status == VoiceModelStatus.ready), (_, _) {
-      if (mounted && (ref.read(activeConnectionProvider).value?.isLocal ?? false)) {
-        unawaited(_voice.refreshAfterModelChange());
-      }
-    });
     _voiceFlag = ref.read(voiceInputActiveProvider.notifier);
     _voice.addListener(_reportVoice);
     _draftKey = ref.read(currentSessionProvider) ?? 'new';
@@ -439,9 +420,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
         setState(() => _showDraft(ref.read(draftStoreProvider).drafts[_draftKey]));
       }
     });
-    // Opening the chat counts as "open" for the balance (throttled to 1/min).
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(balanceProvider.notifier).refresh();
       // Asked for from another page before this one was built.
       if (mounted && ref.read(repairDraftProvider) != null) _takeRepairDraft();
       if (mounted && ref.read(composerInsertProvider) != null) {
@@ -1534,15 +1513,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
     if (_sameConnection(client, generation)) _giveBackLost(sessionId, lost);
   }
 
-  /// The engine could not be reached: try again.
-  void _reconnect() {
-    final host = ref.read(activeHostProvider);
-    if (host.kind == HostKind.local) {
-      ref.invalidate(localConnectionProvider);
-    } else {
-      ref.read(remoteConnectionProvider(host).notifier).retry();
-    }
-  }
+  /// The host could not be reached: try again.
+  void _reconnect() => ref.read(remoteConnectionProvider(ref.read(activeHostProvider)).notifier).retry();
 
   void _onSuggestion(ChatSuggestion suggestion) {
     _input.value = TextEditingValue(
@@ -1606,48 +1578,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
     final connAsync = ref.watch(activeConnectionProvider);
     final conn = connAsync.value;
     final connected = conn != null;
-    final local = ref.watch(activeHostProvider.select((h) => h.kind == HostKind.local));
-    final starting = local && ref.watch(localRuntimeProvider.select((s) => s.status.phase == RuntimePhase.starting));
-    final tidying = starting && ref.watch(localRuntimeProvider.select((s) => s.status.tidyingFiles));
-    // The engine stopped on its own: the failure card above the empty state
-    // carries the recovery, so the empty state offers no second one.
-    final failureCard = local && ref.watch(localRuntimeProvider.select((s) => EngineFailureCard.visibleFor(s.status)));
-    // 本机 down for good: no runtime (notInstalled), or stopped with auto
-    // start off (installed). Null otherwise.
-    final localIdle = local && !failureCard
-        ? ref.watch(
-            localRuntimeProvider.select(
-              (s) => s.status.runtimeMissing
-                  ? RuntimePhase.notInstalled
-                  : s.status.phase == RuntimePhase.installed
-                  ? RuntimePhase.installed
-                  : null,
-            ),
-          )
-        : null;
-    final idle = switch (localIdle) {
-      RuntimePhase.notInstalled => switch (localMissingCopy(
-        l10n,
-        available: ref.watch(localRuntimeProvider.select((s) => s.available)),
-      )) {
-        final copy => ChatIdleAction(
-          message: copy.title,
-          label: copy.action,
-          onTap: () => unawaited(openLocalInstall(context)),
-        ),
-      },
-      RuntimePhase.installed => ChatIdleAction(
-        message: l10n.shellEngineNotRunning,
-        label: l10n.shellStartEngine,
-        onTap: () => unawaited(EngineControl.ensureStarted(ProviderScope.containerOf(context, listen: false))),
-      ),
-      _ => null,
-    };
-    // A conversation open with nothing loaded while 本机 is down (a cold
-    // start back into the last one, auto start off): the empty page with its
-    // one fix rather than a blank list.
-    final idleBlank =
-        idle != null && sessionId != null && ref.watch(chatProvider(sessionId).select((s) => s.items.isEmpty));
+    // 手机本地引擎已删除：不再有本机引擎的启动/停止/失败状态。
+    const starting = false;
+    const tidying = false;
+    const ChatIdleAction? idle = null;
+    const idleBlank = false;
 
     // 只盯顶栏 / 输入条需要的几个字段:流式增量不重建整页。
     final chat = sessionId == null
@@ -1714,7 +1649,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
             null || 'completed' || 'max-tokens' => l10n.chatTurnCompleted,
             _ => l10n.chatTurnError,
           };
-          ref.read(balanceProvider.notifier).refresh();
         }
       });
     }
@@ -1729,11 +1663,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
       connecting: connAsync.isLoading && conn == null,
       starting: starting,
       connected: connected,
-      idleLabel: switch (localIdle) {
-        RuntimePhase.notInstalled => l10n.phoneEngineNotInstalled,
-        RuntimePhase.installed => l10n.commonStopped,
-        _ => null,
-      },
+      idleLabel: null,
       streamLost: chat?.streamLost ?? false,
       syncing: chat?.syncing ?? false,
       label: conn?.label ?? l10n.commonThisPhone,
@@ -1851,10 +1781,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    // The on-device engine stopped on its
-                                    // own (a remote host has its own errors).
-                                    if (failureCard)
-                                      const EngineFailureCard(padding: EdgeInsets.fromLTRB(16, 0, 16, 20)),
                                     ChatEmptyState(
                                       connected: connected,
                                       suggestions: ref.watch(settingsProvider.select((s) => s.chatSuggestions))
@@ -1864,7 +1790,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
                                       starting: starting,
                                       tidying: tidying,
                                       idle: idle,
-                                      onReconnect: connAsync.hasError && !connAsync.isLoading && !failureCard
+                                      onReconnect: connAsync.hasError && !connAsync.isLoading
                                           ? _reconnect
                                           : null,
                                       onSuggestion: _onSuggestion,
@@ -2119,15 +2045,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
                                     duration: AppMotion.of(context, AppMotion.standard),
                                     curve: AppMotion.std,
                                     alignment: Alignment.bottomCenter,
-                                    child: connected
-                                        ? const _BalanceBannerSlot()
-                                        : const SizedBox(width: double.infinity),
+                                    child: const SizedBox(width: double.infinity),
                                   ),
-                                ),
-                                // Safe mode / trial banner; draws nothing otherwise.
-                                const PetPerch(
-                                  kind: PerchKind.banner,
-                                  child: SafeModeBanner(padding: EdgeInsets.only(bottom: 8)),
                                 ),
                                 if (connected && sessionId != null)
                                   PetPerch(
@@ -2448,18 +2367,6 @@ class _ChatComposerHost implements NativeComposerHost {
 
   @override
   BuildContext? get context => _state.mounted ? _state.context : null;
-}
-
-/// 低余额横幅的位置:没有要说的时候是零高。
-class _BalanceBannerSlot extends ConsumerWidget {
-  const _BalanceBannerSlot();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final show = ref.watch(balanceProvider.select((b) => b.showBanner));
-    if (!show) return const SizedBox(width: double.infinity);
-    return const Padding(padding: EdgeInsets.only(bottom: 8), child: LowBalanceBanner());
-  }
 }
 
 /// The dock (todo / goal bars, the run strip) folding toward the composer

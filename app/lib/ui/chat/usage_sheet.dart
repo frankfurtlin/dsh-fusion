@@ -14,7 +14,6 @@ import '../../state/providers_state.dart';
 import '../common/app_sheet.dart';
 import '../common/sheet_title_bar.dart';
 import '../theme/theme.dart';
-import 'balance_widgets.dart';
 
 /// `999` / `1K` / `43K` / `500K` / `1.05M` / `100M`: K is a thousand and M a
 /// million in every UI language (no 万/亿), the same units model context
@@ -187,10 +186,9 @@ class UsageSheet extends ConsumerWidget {
             SheetTitleBar(l10n.activityUsage),
             SessionUsageSections(usage: usage, pricing: pricing, sheet: true, margin: _margin),
             const SizedBox(height: 16),
+            // 余额随手机本地引擎与 DeepSeek 账号一起删除：订阅额度还在时才显示。
             if (Subscription.fromWire(model?.provider) case final subscription?)
-              _SubscriptionQuota(subscription: subscription, margin: _margin)
-            else
-              BalanceCard(title: l10n.activityUsageBalance, margin: _margin),
+              _SubscriptionQuota(subscription: subscription, margin: _margin),
           ],
         ),
       ),
@@ -209,7 +207,8 @@ class _SubscriptionQuota extends ConsumerWidget {
     final profile = ref.watch(subscriptionProfileProvider(subscription));
     final currentProfile = profile.isLoading || profile.hasError ? null : profile.value;
     if (currentProfile != null && !isSubscriptionRoute(currentProfile)) {
-      return BalanceCard(title: l10n.activityUsageBalance, margin: margin);
+      // A model behind another route has no quota of its own; 余额 is gone.
+      return const SizedBox.shrink();
     }
     Widget message(String text) => SheetGroup(
       margin: margin,

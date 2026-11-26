@@ -80,7 +80,6 @@ PluginFailure _installRefusedFailure() =>
 /// version's index publish time, used to explain pnpm's 24-hour cooldown.
 PluginFailure describeOperationFailure(
   PluginOperationResult result, {
-  required bool isLocal,
   DateTime? published,
   DateTime? now,
 }) {
@@ -133,8 +132,8 @@ PluginFailure describeOperationFailure(
       return PluginFailure(
         PluginFailureKind.pnpmMissing,
         appL10n.statePluginPnpmMissing,
-        isLocal ? appL10n.statePluginPhonePnpmMissing : appL10n.statePluginHostPnpmMissing,
-        detail: [?d, if (!isLocal) 'npm install -g pnpm'].join('\n\n'),
+        appL10n.statePluginHostPnpmMissing,
+        detail: [?d, 'npm install -g pnpm'].join('\n\n'),
       );
     case 'not-found':
       return PluginFailure(

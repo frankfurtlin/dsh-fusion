@@ -9,7 +9,7 @@
 //   picked recently. The Host has no pin or group for a workspace, so these
 //   stay on this phone.
 
-import '../runtime/container_paths.dart';
+import '../device/container_paths.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -296,7 +296,7 @@ class WorkspacePrefsController extends Notifier<WorkspacePrefs> {
   WorkspacePrefs build() {
     final key = keyFor(ref.watch(activeHostProvider));
     _key = key;
-    _loading = _load(key, ref.read(activeHostProvider).isLocal);
+    _loading = _load(key, ref.read(activeHostProvider).isNone);
     return const WorkspacePrefs();
   }
 
@@ -349,7 +349,7 @@ class WorkspacePrefsController extends Notifier<WorkspacePrefs> {
   Future<void> relocate(ContainerPaths paths) async {
     final key = _key;
     await _loading;
-    if (!ref.mounted || _key != key || !ref.read(activeHostProvider).isLocal) return;
+    if (!ref.mounted || _key != key || ref.read(activeHostProvider).isNone) return;
     final next = _relocated(state, paths);
     state = next;
     try {

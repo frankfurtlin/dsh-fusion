@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../plugins/native/native_state.dart';
-import '../../state/hosts_state.dart';
 import '../../state/plugins_state.dart';
 import '../common/ask_ai.dart';
 import '../features/feature_kit.dart';
@@ -111,7 +110,7 @@ class _PluginsScreenState extends ConsumerState<PluginsScreen> {
     if (host.safeMode) return appL10n.pluginsSafeModeOperationsBlocked;
     if (host.installRefused) return appL10n.marketInstallRefused;
     if (!host.canInstall) return appL10n.pluginsRelayToggleOnly(host.label);
-    return host.kind == HostKind.local ? appL10n.pluginsInstallThisPhone : appL10n.pluginsInstallHost(host.label);
+    return appL10n.pluginsInstallHost(host.label);
   }
 }
 

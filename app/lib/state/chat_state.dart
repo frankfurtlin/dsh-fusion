@@ -520,10 +520,8 @@ class ChatController extends Notifier<ChatState> {
   /// replacement attachment is a new submission even with the same name.
   ({String content, String requestId})? _unsettled;
 
-  /// Device minus Host clock; null until a live event was seen (and always
-  /// null on the on-device engine, which shares the clock).
+  /// Device minus Host clock; null until a live event was seen.
   Duration? _skew;
-  bool _sameClock = false;
 
   DshClient? get _client => ref.read(activeConnectionProvider).value?.client;
 
@@ -625,13 +623,8 @@ class ChatController extends Notifier<ChatState> {
     // Not connected is a screen state (the composer explains it), not an
     // error. What was loaded stays until a new snapshot replaces it.
     if (client == null) return _retained(loading: false);
-    _sameClock = ref.read(activeConnectionProvider).value!.isLocal;
-    if (_sameClock) {
-      _quiet = false;
-    } else {
-      _onScreen(ref.read(appForegroundProvider), building: true);
-      ref.listen(appForegroundProvider, (_, onScreen) => _onScreen(onScreen));
-    }
+    _onScreen(ref.read(appForegroundProvider), building: true);
+    ref.listen(appForegroundProvider, (_, onScreen) => _onScreen(onScreen));
     // Token speed and compaction for the activity pill (see run_pulse.dart).
     final pulse = ref.watch(runPulseProvider(sessionId));
     _listen(client, pulse, building: true);
@@ -852,7 +845,7 @@ class ChatController extends Notifier<ChatState> {
               }
             }
             _trackClock(event);
-            pulse.observe(event, skew: _sameClock ? Duration.zero : _skew);
+            pulse.observe(event, skew: _skew);
             _trackModel(event);
             _trackCommands(event);
             _countTokens(event);
@@ -1017,7 +1010,7 @@ class ChatController extends Notifier<ChatState> {
   /// the best estimate. Snapshot history and replays only ever overestimate
   /// and lose to live samples; anything over an hour is ignored as replay.
   void _trackClock(DshEvent event) {
-    if (_sameClock || event is! SessionLogEvent) return;
+    if (event is! SessionLogEvent) return;
     final sample = DateTime.now().difference(event.time);
     if (sample.abs() > const Duration(hours: 1)) return;
     final skew = _skew;

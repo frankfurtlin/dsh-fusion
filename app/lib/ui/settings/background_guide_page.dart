@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/background_net.dart';
-import '../../runtime/background_protection.dart';
-import '../../runtime/runtime_state.dart';
+import '../../device/background_protection.dart';
+import '../../device/device_bridge.dart';
 import '../../state/android_features.dart';
 import '../../state/app_info.dart';
 import '../../state/notify_state.dart';
@@ -133,7 +132,7 @@ class _KeepRunningGuideState extends ConsumerState<_KeepRunningGuide> {
                 title: mine.key,
                 subtitle: named(mine.path),
                 chevron: true,
-                onTap: () => unawaited(ref.read(runtimeBridgeProvider).openBackgroundSettings()),
+                onTap: () => unawaited(ref.read(deviceBridgeProvider).openBackgroundSettings()),
               ),
             ],
           ),
@@ -150,7 +149,7 @@ class _KeepRunningGuideState extends ConsumerState<_KeepRunningGuide> {
                 onTap: exempt
                     ? null
                     : () async {
-                        await ref.read(runtimeBridgeProvider).requestBatteryExempt();
+                        await ref.read(deviceBridgeProvider).requestBatteryExempt();
                         if (mounted) ref.invalidate(batteryExemptProvider);
                       },
               ),
@@ -218,7 +217,7 @@ class _SuspendedPageState extends ConsumerState<_SuspendedPage> {
     var failed = false;
     try {
       final result = await ref
-          .read(runtimeBridgeProvider)
+          .read(deviceBridgeProvider)
           .setBackgroundProtection(
             audioEnabled: audioEnabled,
             locationEnabled: locationEnabled,
@@ -248,7 +247,7 @@ class _SuspendedPageState extends ConsumerState<_SuspendedPage> {
   }
 
   Future<void> _openProtectionSettings() async {
-    final opened = await ref.read(runtimeBridgeProvider).openBackgroundProtectionSettings();
+    final opened = await ref.read(deviceBridgeProvider).openBackgroundProtectionSettings();
     if (!mounted) return;
     ref.invalidate(backgroundProtectionProvider);
     if (!opened) showBriefNotice(context, context.l10n.accessOpenFailed);
@@ -358,18 +357,15 @@ class _SuspendedPageState extends ConsumerState<_SuspendedPage> {
     final system = ref.watch(notifySystemStatusProvider).value;
     // Unknown (not answered, or it couldn't tell): no value rather than a wrong one.
     final notifications = system == null || !system.native ? null : system.allOpen;
-    final longTask = ref.watch(localRuntimeProvider.select((s) => s.status.longTaskEligible));
+    // 手机本地引擎已删除：长任务豁免（本机引擎的 HarmonyOS 授权）不再适用，
+    // 因此这里只讲远程主机与系统自己的后台策略。
     return AppPage.list(
       title: l10n.pluginsBackgroundTitle,
-      subtitle: Text(longTask ? l10n.harmonyBackgroundSubtitleLong : l10n.harmonyBackgroundSubtitle),
+      subtitle: Text(l10n.harmonyBackgroundSubtitle),
       children: [
         SettingsSection(
           title: l10n.harmonyBackgroundAway,
           children: [
-            SettingsTile(
-              title: l10n.phoneEngineLocal,
-              subtitle: longTask ? l10n.harmonyBackgroundLocalLong : l10n.harmonyBackgroundLocal,
-            ),
             SettingsTile(title: l10n.harmonyBackgroundRemoteTitle, subtitle: l10n.harmonyBackgroundRemote),
           ],
         ),

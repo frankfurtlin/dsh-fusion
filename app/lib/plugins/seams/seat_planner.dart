@@ -234,7 +234,7 @@ class SlotAdapterRegistry {
     if (policy.optIn && override != SeatOverride.island) return null;
     if (!seat.webAvailable) return null;
     // Local islands only once the engine guards its plugin routes.
-    if (seat.host.isLocal && !inventory.routeGuard) return null;
+    if (!inventory.routeGuard) return null;
     // Hiding official entries takes the bridge, and a reported occupant.
     if (policy.needsOccupancy && (inventory.tier != ClientInventoryTier.bridge || o.inferred)) return null;
     if (o.inferred && policy.inference == SlotInference.none) return null;

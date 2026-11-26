@@ -29,7 +29,7 @@ class HostChip extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final host = ref.watch(activeHostProvider);
-    final name = ref.watch(hostNameProvider(host)) ?? (host.isLocal ? l10n.commonThisPhone : l10n.commonRemoteHost);
+    final name = ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
     final view = watchHostStatus(ref, host);
     return Semantics(
       button: true,
@@ -173,7 +173,7 @@ class _HostRow extends ConsumerWidget {
     // Live state for 本机 and the active remote host; presence for relay
     // hosts; nothing for idle SSH hosts (connecting just to show a dot
     // would cost a login).
-    final HostStatusView? view = host.isLocal || active ? watchHostStatus(ref, host) : null;
+    final HostStatusView? view = active ? watchHostStatus(ref, host) : null;
     return Semantics(
       key: ValueKey('host-row-${host.kind.name}-${host.id}'),
       selected: active,

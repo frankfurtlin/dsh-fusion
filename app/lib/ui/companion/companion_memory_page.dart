@@ -269,7 +269,7 @@ class _CompanionMemoryPageState extends ConsumerState<CompanionMemoryPage> {
     final host = ref.watch(activeHostProvider);
     final hostName = widget.phone != null
         ? l10n.commonThisPhone
-        : ref.watch(hostNameProvider(host)) ?? (host.isLocal ? l10n.commonThisPhone : l10n.commonRemoteHost);
+        : ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
     final list = _list;
     final Widget body;
     switch (_load) {

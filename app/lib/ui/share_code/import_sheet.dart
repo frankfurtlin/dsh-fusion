@@ -9,14 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../share_code/guest_fs.dart';
 import '../../share_code/profile_export.dart' show formatShareBytes;
 import '../../share_code/share_code_state.dart';
 import '../../share_code/share_codec.dart';
 import '../../share_code/share_import.dart';
 import '../../share_code/share_models.dart';
 import '../../share_code/share_net.dart';
-import '../../state/engine_control.dart';
 import '../common/app_sheet.dart';
 import '../common/list_page_row.dart';
 import '../common/scroll_edge_fade.dart';
@@ -75,7 +73,6 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
   _Phase _phase = _Phase.planning;
   final _steps = <String, StepStatus>{};
   ImportResult? _result;
-  bool _restarting = false;
 
   bool get _isProfile => widget.payload is ProfileShare;
 
@@ -88,8 +85,7 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
       _phase = _Phase.planning;
     });
     try {
-      final fs = target.isLocal ? await ref.read(guestFsProvider.future) : null;
-      final plan = await planImport(widget.payload, target, net: ref.read(shareNetProvider), fs: fs);
+      final plan = await planImport(widget.payload, target, net: ref.read(shareNetProvider));
       if (!mounted || seq != _planSeq) return;
       setState(() {
         _plan = plan;
@@ -111,7 +107,6 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
     if (plan == null || target == null || _phase != _Phase.ready) return;
     final container = ProviderScope.containerOf(context, listen: false);
     final runner = container.read(pluginRunnerFactoryProvider)(container, target);
-    final fs = target.isLocal ? await container.read(guestFsProvider.future) : null;
     setState(() {
       _phase = _Phase.running;
       _steps.clear();
@@ -120,7 +115,6 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
       plan,
       _selected,
       runner: runner,
-      fs: fs,
       onStep: (id, status) {
         if (mounted) setState(() => _steps[id] = status);
       },
@@ -130,15 +124,6 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
       _result = result;
       _phase = _Phase.done;
     });
-  }
-
-  Future<void> _restart() async {
-    if (_restarting) return;
-    setState(() => _restarting = true);
-    final container = ProviderScope.containerOf(context, listen: false);
-    final navigator = Navigator.of(context);
-    unawaited(EngineControl.restart(container));
-    navigator.pop();
   }
 
   List<ImportTarget> get _targets => ref.read(importTargetsProvider);
@@ -469,49 +454,24 @@ class _ShareImportSheetState extends ConsumerState<ShareImportSheet> {
       case _Phase.done:
         final result = _result!;
         final failed = result.failed;
-        final local = _target?.isLocal ?? true;
         final message = failed > 0
             ? (_isProfile
                   ? appL10n.pluginsImportFailedCount(failed)
                   : (result.statuses.values.firstOrNull?.message ?? appL10n.pluginsCouldNotInstall))
             : result.needsRestart
-            ? (local
-                  ? appL10n.pluginsEngineRestartToApply
-                  : appL10n.pluginsRemoteRestartToApply(_target?.label ?? appL10n.pluginsThatComputer))
+            ? appL10n.pluginsRemoteRestartToApply(_target?.label ?? appL10n.pluginsThatComputer)
             : (_isProfile ? appL10n.pluginsImportedCount(result.done) : appL10n.commonCompleted);
-        final done = OutlinedButton(
-          key: const ValueKey('share-import-done'),
-          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(appL10n.commonDone),
-        );
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             note(message, danger: failed > 0),
-            if (result.needsRestart && local)
-              Row(
-                children: [
-                  Expanded(child: done),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      key: const ValueKey('share-import-restart'),
-                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-                      onPressed: _restarting ? null : _restart,
-                      child: Text(appL10n.pluginsRestartEngine),
-                    ),
-                  ),
-                ],
-              )
-            else
-              FilledButton(
-                key: const ValueKey('share-import-primary'),
-                style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(failed > 0 ? appL10n.commonClose : appL10n.commonDone),
-              ),
+            FilledButton(
+              key: const ValueKey('share-import-primary'),
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(failed > 0 ? appL10n.commonClose : appL10n.commonDone),
+            ),
           ],
         );
     }

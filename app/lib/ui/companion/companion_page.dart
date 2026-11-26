@@ -49,7 +49,6 @@ import '../../state/connection_state.dart';
 import '../../state/hosts_state.dart';
 import '../../state/sessions_state.dart';
 import '../../state/settings_state.dart';
-import '../../state/voice_model_state.dart';
 import '../../state/voice_settings.dart';
 import '../../state/voice_state.dart';
 import '../../usage/usage_stats.dart';
@@ -330,10 +329,8 @@ class _CompanionPageState extends ConsumerState<CompanionPage> implements Compan
       mode: () => ref.read(voiceSettingsProvider.notifier).ready(),
       cloud: (mode) => ref.read(voiceCloudProvider)(mode),
       cloudLikely: () => ref.read(voiceCloudLikelyProvider)(),
-      modelReady: () =>
-          mounted &&
-          (ref.read(activeConnectionProvider).value?.isLocal ?? false) &&
-          ref.read(voiceModelProvider).status == VoiceModelStatus.ready,
+      // 手机本地引擎已删除：本机语音模型不再是语音听写来源。
+      modelReady: () => false,
       client: () => mounted ? ref.read(activeConnectionProvider).value?.client : null,
       onRecognized: () {
         final current = _currentRoom();
@@ -711,8 +708,8 @@ class _CompanionPageState extends ConsumerState<CompanionPage> implements Compan
       if (old != null) _signals.retireSource(old);
       _hostSignals = null;
       if (connection != null && client != null && generation != null) {
-        // The alert tracker's key for this connection: 本机 is local whatever host is picked.
-        final hostKey = companionHostKey(connection.isLocal ? HostRef.local : ref.read(activeHostProvider));
+        // The alert tracker's key for this connection.
+        final hostKey = companionHostKey(ref.read(activeHostProvider));
         try {
           late final CompanionSignalSource source;
           source = CompanionSignalSource.dsh(

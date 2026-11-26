@@ -11,7 +11,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../runtime/runtime_state.dart';
+import '../device/device_bridge.dart';
 
 /// What asking for a pinned shortcut came to.
 enum PinRequest {
@@ -66,5 +66,5 @@ class IconShortcutChannel {
 }
 
 final iconShortcutChannelProvider = Provider<IconShortcutChannel>(
-  (ref) => IconShortcutChannel(openPermissions: () => ref.read(runtimeBridgeProvider).openVendorSettings('popup')),
+  (ref) => IconShortcutChannel(openPermissions: () => ref.read(deviceBridgeProvider).openVendorSettings('popup')),
 );

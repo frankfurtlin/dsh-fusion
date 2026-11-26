@@ -22,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../diagnostics/diagnostics_channel.dart';
-import '../share_code/guest_fs.dart';
 import '../voice/voice_model_assets.dart';
 import '../voice/voice_model_download.dart';
 import 'connection_state.dart';
@@ -158,10 +157,10 @@ class DeviceVoiceModelPlatform implements VoiceModelPlatform {
   static const _runtime = MethodChannel('dsh/runtime');
 
   @override
-  Future<VoiceModelFiles?> files() async {
-    final fs = await GuestFs.local();
-    return fs == null ? null : VoiceModelFiles(fs.root);
-  }
+  Future<VoiceModelFiles?> files() async =>
+      // 手机本地引擎已删除：语音模型原本下载进本机 rootfs，现在没有落点，
+      // 状态因此是 [VoiceModelStatus.unsupported]（设置里的说明文案照旧）。
+      null;
 
   @override
   Future<int?> freeBytes() async {
@@ -329,9 +328,9 @@ class VoiceModelController extends Notifier<VoiceModelState> {
       _gate.dispose();
       unawaited(_events.close());
     });
-    ref.listen(localConnectionProvider, (_, next) => _connected(next.value?.client), fireImmediately: false);
+    ref.listen(activeConnectionProvider, (_, next) => _connected(next.value?.client), fireImmediately: false);
     _loaded = _load();
-    scheduleMicrotask(() => _connected(ref.read(localConnectionProvider).value?.client));
+    scheduleMicrotask(() => _connected(ref.read(activeConnectionProvider).value?.client));
     return const VoiceModelState();
   }
 

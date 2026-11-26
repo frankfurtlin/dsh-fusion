@@ -1,6 +1,5 @@
-// The diagnostics snapshot as one compact Markdown file. The app writes it
-// inside the engine's rootfs (`$DSH_HOME/dsh-app/diagnostics.md`) so the
-// agent there can read it by itself when the person reports a problem.
+// The diagnostics snapshot as one compact Markdown file: what the person can
+// copy into a bug report (手机本地引擎已删除，不再写进任何 rootfs).
 
 import 'dart:convert';
 
@@ -9,9 +8,6 @@ import 'diagnostics_bundle.dart';
 import 'diagnostics_channel.dart';
 import 'redact.dart';
 
-/// Most lines kept from each log tail (the model reads this file, not a zip).
-const diagnosticsEngineLines = 80;
-const diagnosticsFailureLines = 60;
 const diagnosticsErrorLines = 10;
 const diagnosticsSystemImeEvents = 12;
 
@@ -23,9 +19,9 @@ const diagnosticsMarkdownBytes = 16 * 1024;
 /// [redactDiagnostics] on the way out. The UTF-8 budget includes the notice.
 String diagnosticsMarkdown(DiagnosticsSnapshot s, {int maxBytes = diagnosticsMarkdownBytes}) {
   final b = StringBuffer()
-    ..writeln('# DSH Pocket 本机诊断')
+    ..writeln('# DSH Pocket 诊断')
     ..writeln()
-    ..writeln('> App 写在引擎里的环境快照，给排查问题用；已脱敏。生成时间：${_time(s.at)}。')
+    ..writeln('> 环境快照，给排查问题用；已脱敏。生成时间：${_time(s.at)}。')
     ..writeln();
   _systemIme(b, s);
   _environment(b, s);
@@ -34,8 +30,6 @@ String diagnosticsMarkdown(DiagnosticsSnapshot s, {int maxBytes = diagnosticsMar
   _phone(b, s);
   _performance(b, s);
   _errors(b, s);
-  _log(b, '引擎日志（尾部）', s.engineLog, diagnosticsEngineLines);
-  _log(b, '失败前后的日志（尾部）', s.failureLog, diagnosticsFailureLines);
   final text = redactDiagnostics(b.toString());
   final bytes = utf8.encode(text);
   if (bytes.length <= maxBytes) return text;
@@ -99,7 +93,6 @@ void _systemIme(StringBuffer b, DiagnosticsSnapshot s) {
 }
 
 void _environment(StringBuffer b, DiagnosticsSnapshot s) {
-  final st = s.status;
   final app = s.native.app;
   final device = s.native.device;
   final manifest = s.native.manifest;
@@ -107,8 +100,7 @@ void _environment(StringBuffer b, DiagnosticsSnapshot s) {
     ..writeln('## 环境')
     ..writeln('- App：${_join([AppInfo.version, app['versionName'], app['versionCode']?.toString()])}')
     ..writeln('- 设备：${_join([device['manufacturer'], device['brand'], device['model'], _android(device)], mono: true)}')
-    ..writeln('- 设备资源：${_join([_mb(device['memoryMb'], '内存'), _mb(device['freeStorageMb'], '剩余存储')])}')
-    ..writeln('- ABI：${st.abi ?? '—'}');
+    ..writeln('- 设备资源：${_join([_mb(device['memoryMb'], '内存'), _mb(device['freeStorageMb'], '剩余存储')])}');
   final display = device['display'];
   if (display is Map) {
     final d = {for (final e in display.entries) '${e.key}': e.value};
@@ -118,26 +110,9 @@ void _environment(StringBuffer b, DiagnosticsSnapshot s) {
   }
   if (manifest.isNotEmpty) {
     b.writeln(
-      '- 内置运行时：${_join([manifest['runtimeVersion'], manifest['dshVersion'], manifest['nodeVersion']], mono: true)}',
+      '- 内置技能与资源：${_join([manifest['runtimeVersion'], manifest['dshVersion'], manifest['nodeVersion']], mono: true)}',
     );
   }
-  b
-    ..writeln(
-      '- 运行时状态：${st.phase.name} · 模式 ${st.mode.name}'
-      '${st.safeState.name != 'off' ? ' · 安全模式 ${st.safeState.name}${st.safeReason == null ? '' : '（${st.safeReason}）'}' : ''}'
-      '${st.strikes > 0 ? ' · 连续失败 ${st.strikes}' : ''}',
-    )
-    ..writeln(
-      '- 版本：内置 ${_short(st.bundledVersion)} · 已装 ${_short(st.installedVersion)} · DSH ${st.dshVersion ?? '—'} · Node ${st.nodeVersion ?? '—'}',
-    )
-    ..writeln(
-      '- 启动方式：${st.currentExecutionMode ?? st.launchSelectedMode ?? (st.directEngineEnabled ? 'direct（未观测）' : 'proot')}'
-      '${st.launchFailureReason == null ? '' : ' · 最近失败 ${st.launchFailureReason}'}'
-      '${st.directEngineFallbackReason == null ? '' : ' · 回退 ${st.directEngineFallbackReason}'}',
-    )
-    ..writeln('- 引擎地址：${st.baseUrl ?? '—'}（token 不回传）');
-  if (st.error case final error? when error.isNotEmpty) b.writeln('- 最近错误：$error');
-  if (st.networkBlocked) b.writeln('- 系统限制联网：${_time(st.networkBlockedAt ?? s.at)} 起');
   b
     ..writeln()
     ..writeln('## 设置')
@@ -146,9 +121,7 @@ void _environment(StringBuffer b, DiagnosticsSnapshot s) {
       ' · 主题 ${s.settings.themeMode.name} · 对话字号 ${s.settings.chatTextScale}',
     )
     ..writeln(
-      '- 自动起本机引擎 ${s.settings.autoStartLocal} · 自动批准命令 ${s.settings.autoApproveCommands}'
-      ' · 手机存储 ${s.settings.phoneStorage} · 完成后收起过程 ${s.settings.foldCompletedTurns}'
-      ' · 可视化回复 ${s.settings.visualReplies}',
+      '- 完成后收起过程 ${s.settings.foldCompletedTurns}',
     )
     ..writeln();
 }
@@ -245,17 +218,6 @@ void _errors(StringBuffer b, DiagnosticsSnapshot s) {
   b.writeln();
 }
 
-void _log(StringBuffer b, String title, List<String> lines, int maxLines) {
-  if (lines.isEmpty) return;
-  final tail = lines.length <= maxLines ? lines : lines.sublist(lines.length - maxLines);
-  b
-    ..writeln('## $title（${lines.length} 行，取最后 ${tail.length} 行）')
-    ..writeln('```log')
-    ..writeln(tail.join('\n'))
-    ..writeln('```')
-    ..writeln();
-}
-
 String _join(List<Object?> parts, {bool mono = false}) {
   final text = parts.where((p) => p != null && '$p'.trim().isNotEmpty).map((p) => '$p'.trim()).join(' · ');
   return mono && text.isNotEmpty ? '`$text`' : text;
@@ -278,8 +240,6 @@ String _mb(Object? value, String label) {
   if (value is! num) return '';
   return '$label ${value.round()} MB';
 }
-
-String _short(String? version) => version == null ? '—' : (version.length > 22 ? version.substring(0, 22) : version);
 
 String _time(DateTime at) {
   String two(int n) => n.toString().padLeft(2, '0');

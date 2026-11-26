@@ -5,11 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../phone/phone_channel.dart';
 import '../l10n/l10n.dart';
-import '../runtime/runtime_bridge.dart';
-import '../runtime/runtime_state.dart';
 import 'connection_state.dart';
-import 'engine_control.dart';
-import 'hosts_state.dart';
 
 export '../phone/phone_channel.dart';
 
@@ -69,12 +65,9 @@ class PhoneState {
 
 /// Outcome of flipping the master switch.
 class PhoneToggleResult {
-  const PhoneToggleResult({required this.ok, this.restarting = false});
+  const PhoneToggleResult({required this.ok});
 
   final bool ok;
-
-  /// The local engine is restarting so the plugin mounts or unmounts.
-  final bool restarting;
 }
 
 class PhoneController extends Notifier<PhoneState> {
@@ -188,29 +181,18 @@ class PhoneController extends Notifier<PhoneState> {
     } catch (_) {}
   }
 
-  /// Flips 「手机操控」, then restarts a running local engine so the phone plugin
-  /// mounts or unmounts (tools are fixed per DSH launch). In safe mode nothing
-  /// loads plugins anyway: turning on is refused, turning off needs no restart.
+  /// Flips 「手机操控」. 手机本地引擎已删除：开关不再需要重启本机运行环境
+  /// （插件装在宿主上，与这台手机无关）。
   Future<PhoneToggleResult> setEnabled(bool enabled) async {
     if (state.toggling) return const PhoneToggleResult(ok: false);
-    final runtime = ref.read(localRuntimeProvider).status;
-    if (enabled && runtime.inSafeMode) {
-      return const PhoneToggleResult(ok: false);
-    }
     state = state.copyWith(toggling: true);
-    var restarting = false;
     try {
       final ok = await _channel.setEnabled(enabled);
       if (!ref.mounted) return PhoneToggleResult(ok: ok);
       if (!ok) return const PhoneToggleResult(ok: false);
       state = state.copyWith(status: state.status.copyWith(enabled: enabled));
-      final now = ref.read(localRuntimeProvider).status;
-      if (!now.inSafeMode && (now.phase == RuntimePhase.running || now.phase == RuntimePhase.starting)) {
-        restarting = true;
-        unawaited(EngineControl.restart(ref.container));
-      }
       unawaited(refreshStatus());
-      return PhoneToggleResult(ok: true, restarting: restarting);
+      return const PhoneToggleResult(ok: true);
     } finally {
       if (ref.mounted) state = state.copyWith(toggling: false);
     }
@@ -468,21 +450,11 @@ final phoneProvider = NotifierProvider<PhoneController, PhoneState>(PhoneControl
 enum PhoneBlocker {
   /// The native module didn't answer: 未就绪.
   notReady,
-
-  /// The local engine runs (or will start) the rescue profile, which loads no plugins.
-  safeMode,
-
-  /// The chat is on a remote host; phone tools exist only in the local engine.
-  remoteHost,
 }
 
 final phoneBlockerProvider = Provider<PhoneBlocker?>((ref) {
   final phone = ref.watch(phoneProvider.select((s) => (s.loaded, s.status.ready)));
   if (phone.$1 && !phone.$2) return PhoneBlocker.notReady;
-  if (ref.watch(localRuntimeProvider.select((s) => s.status.inSafeMode))) {
-    return PhoneBlocker.safeMode;
-  }
-  if (!ref.watch(activeHostProvider).isLocal) return PhoneBlocker.remoteHost;
   return null;
 });
 
@@ -565,7 +537,7 @@ final phoneStopWatcherProvider = Provider<void>((ref) {
       // Ambient interruption stops phone work, not every conversation on the host.
       final userStop = s.task.stopped && (s.task.stopSource == null || s.task.stopSource == 'USER');
       if (userStop && !userStopped && interrupted && !modernSeen && (capability != null || !versioned)) {
-        unawaited(_cancelLocalTurns(ref));
+        unawaited(_cancelActiveTurns(ref));
       }
       // A later ambient source in the same hold must not re-arm cancel-all.
       userStopped = s.task.stopped && (userStopped || userStop);
@@ -574,8 +546,8 @@ final phoneStopWatcherProvider = Provider<void>((ref) {
   }());
 });
 
-Future<void> _cancelLocalTurns(Ref ref) async {
-  final client = ref.read(localConnectionProvider).value?.client;
+Future<void> _cancelActiveTurns(Ref ref) async {
+  final client = ref.read(activeConnectionProvider).value?.client;
   if (client == null) return;
   try {
     for (final s in await client.listSessions()) {
@@ -584,6 +556,6 @@ Future<void> _cancelLocalTurns(Ref ref) async {
       }
     }
   } catch (_) {
-    // The engine may be restarting; nothing left to stop then.
+    // The host may be reconnecting; nothing left to stop then.
   }
 }

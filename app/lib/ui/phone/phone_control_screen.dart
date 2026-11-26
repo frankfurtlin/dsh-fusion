@@ -5,12 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_footprint.dart';
-import '../../runtime/runtime_bridge.dart';
-import '../../runtime/runtime_state.dart';
-import '../../state/connection_state.dart';
 import '../../state/android_features.dart';
-import '../../state/hosts_state.dart';
 import '../../state/ios_phone_link_state.dart';
 import '../../state/phone_overlay_prefs.dart';
 import '../../state/phone_state.dart';
@@ -238,15 +233,7 @@ class _PhoneControlScreenState extends ConsumerState<PhoneControlScreen> {
       _toast(next ? context.l10n.phoneEnableFailed : context.l10n.phoneDisableFailed);
       return;
     }
-    final runtime = ref.read(localRuntimeProvider).status;
-    final String done;
-    if (result.restarting) {
-      done = next ? context.l10n.phoneControlEnabledRestarting : context.l10n.phoneControlDisabledRestarting;
-    } else if (next && runtime.phase != RuntimePhase.running) {
-      done = context.l10n.phoneControlEnabledPending;
-    } else {
-      done = next ? context.l10n.phoneEnabled : context.l10n.phoneDisabled;
-    }
+    final done = next ? context.l10n.phoneEnabled : context.l10n.phoneDisabled;
     // A confirmation: brief. The failure above keeps the default four seconds.
     showBriefNotice(context, done);
     if (next) await _offerBackgroundGuide();
@@ -329,7 +316,6 @@ class _PhoneControlScreenState extends ConsumerState<PhoneControlScreen> {
     final l10n = context.l10n;
     final state = ref.watch(phoneProvider);
     final blocker = ref.watch(phoneBlockerProvider);
-    final runtime = ref.watch(localRuntimeProvider.select((s) => s.status));
     final status = state.status;
     final ready = state.loaded && status.ready;
     final toggle = _switchHandler(state, blocker);
@@ -371,7 +357,7 @@ class _PhoneControlScreenState extends ConsumerState<PhoneControlScreen> {
               duration: AppMotion.of(context, AppMotion.quick),
               layoutBuilder: (current, previous) =>
                   Stack(alignment: Alignment.centerLeft, children: [...previous, ?current]),
-              child: Text(_statusLine(state, runtime, blocker), key: ValueKey(_statusLine(state, runtime, blocker))),
+              child: Text(_statusLine(state, blocker), key: ValueKey(_statusLine(state, blocker))),
             ),
             onTap: toggle == null ? null : () => _onToggle(!status.enabled),
             trailing: state.toggling
@@ -682,22 +668,15 @@ class _PhoneControlScreenState extends ConsumerState<PhoneControlScreen> {
   ValueChanged<bool>? _switchHandler(PhoneState state, PhoneBlocker? blocker) {
     if (state.toggling || !state.loaded) return null;
     if (blocker == PhoneBlocker.notReady) return null;
-    // Safe mode loads no plugins: allow turning off (the plugin may be the
-    // problem), not on.
-    if (blocker == PhoneBlocker.safeMode && !state.status.enabled) return null;
     return (v) => unawaited(_onToggle(v));
   }
 
   /// The overview's one line: what state it is in, or the one thing left.
-  String _statusLine(PhoneState state, RuntimeStatus runtime, PhoneBlocker? blocker) {
+  String _statusLine(PhoneState state, PhoneBlocker? blocker) {
     final s = state.status;
     if (!state.loaded) return context.l10n.phoneControlReadingEllipsis;
     if (blocker == PhoneBlocker.notReady) return context.l10n.phoneControlNotReady;
     if (!s.enabled) return context.l10n.phoneControlNotEnabled;
-    if (blocker == PhoneBlocker.safeMode) return context.l10n.phoneControlSafeModeNotLoaded;
-    if (blocker == PhoneBlocker.remoteHost) return context.l10n.phoneControlLocalOnly;
-    if (runtime.runtimeMissing) return context.l10n.localEnvPhoneNeedsRuntime;
-    if (runtime.phase != RuntimePhase.running) return context.l10n.phoneControlAfterEngineStarts;
     if (!s.a11y.enabled) return context.l10n.phoneControlNeedsAccessibility;
     return context.l10n.phoneControlReady;
   }
@@ -940,24 +919,11 @@ class _BlockerNote extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final host = ref.watch(activeHostProvider);
-    final hostName = ref.watch(hostNameProvider(host));
     return switch (blocker) {
       PhoneBlocker.notReady => PhoneNote(
         tone: NoteTone.warn,
         title: l10n.phoneControlNotReady,
         text: l10n.phoneControlModuleNotReady,
-      ),
-      PhoneBlocker.safeMode => PhoneNote(
-        tone: NoteTone.warn,
-        icon: AppIcons.safeMode,
-        title: l10n.phoneControlSafeModeUnavailable,
-        text: l10n.phoneControlSafeModeHint,
-      ),
-      PhoneBlocker.remoteHost => PhoneNote(
-        icon: AppIcons.remoteHost,
-        title: l10n.phoneControlRemoteHost,
-        text: l10n.phoneControlRemoteHint(hostName ?? l10n.commonRemoteHost),
       ),
     };
   }

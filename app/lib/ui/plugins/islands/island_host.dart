@@ -300,9 +300,7 @@ final liveIslandBudgetProvider = Provider<IslandBudget>((ref) {
   host.addListener(changed);
   ref.onDispose(() => host.removeListener(changed));
   final active = ref.watch(activeHostProvider);
-  final gates = <HostRef, bool>{
-    HostRef.local: ref.watch(islandHostGateProvider(HostRef.local)),
-    active: ref.watch(islandHostGateProvider(active)),
-  };
+  // 手机本地引擎已删除：只剩当前主机这一份门。
+  final gates = <HostRef, bool>{active: ref.watch(islandHostGateProvider(active))};
   return host.snapshot(allowHost: (spec) => gates[spec.host] ?? false);
 });

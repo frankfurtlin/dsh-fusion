@@ -420,8 +420,7 @@ class _HostRuns {
   }
 }
 
-/// Every running conversation and subagent on the on-device engine and the
-/// active remote host.
+/// Every running conversation and subagent on the active remote host.
 class PetRunsController extends Notifier<List<PetRun>> {
   final Map<HostRef, _HostRuns> _hosts = {};
   bool _built = false;
@@ -435,14 +434,13 @@ class PetRunsController extends Notifier<List<PetRun>> {
       }
       _hosts.clear();
     });
-    ref.listen(localConnectionProvider, (_, next) => _attach(HostRef.local, next.value), fireImmediately: true);
     ref.listen(activeConnectionProvider, (_, next) {
       final conn = next.value;
-      final host = conn == null || conn.isLocal ? null : ref.read(activeHostProvider);
+      final host = conn == null ? null : ref.read(activeHostProvider);
       for (final other in [..._hosts.keys]) {
-        if (!other.isLocal && other != host) _attach(other, null);
+        if (other != host) _attach(other, null);
       }
-      if (host != null && !host.isLocal) _attach(host, conn);
+      if (host != null) _attach(host, conn);
     }, fireImmediately: true);
     _built = true;
     return _collect();

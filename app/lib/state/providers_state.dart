@@ -450,7 +450,7 @@ String describeProviderError(Object error) {
 final providerBackendProvider = Provider<ProviderBackend?>((ref) {
   final conn = ref.watch(readListLiveConnectionProvider);
   if (conn == null) return null;
-  return ClientProviderBackend(conn.client, isLocal: conn.isLocal, hostLabel: conn.label);
+  return ClientProviderBackend(conn.client, isLocal: false, hostLabel: conn.label);
 });
 
 /// The active engine's custom providers, re-read whenever the engine says

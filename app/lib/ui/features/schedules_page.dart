@@ -15,7 +15,6 @@ import '../../l10n/l10n.dart';
 import '../../state/android_features.dart';
 import '../../state/connection_state.dart';
 import '../../state/features_state.dart';
-import '../../state/hosts_state.dart';
 import '../../state/schedule_editor_state.dart';
 import '../../state/sessions_state.dart';
 import '../common/app_dialog.dart';
@@ -144,7 +143,7 @@ class _SchedulesPageState extends ConsumerState<SchedulesPage> {
       ],
       children: [
         // The on-device engine is suspended with the app: a remote host's tasks don't care.
-        if (!ref.watch(androidSystemFeaturesProvider) && ref.watch(activeHostProvider).isLocal)
+        if (!ref.watch(androidSystemFeaturesProvider))
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
             child: Text(l10n.harmonySchedulesLocal, style: Theme.of(context).textTheme.bodySmall),

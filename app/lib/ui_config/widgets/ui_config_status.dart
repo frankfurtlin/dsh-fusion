@@ -48,7 +48,7 @@ class UiConfigStatusTile extends ConsumerWidget {
     final load = state.load;
     if (load == null) {
       final installer = ref.watch(uiSkillRemoteInstallerProvider);
-      if (host.isLocal || !state.needsSkill || installer == null) return const SizedBox.shrink();
+      if (!state.needsSkill || installer == null) return const SizedBox.shrink();
       return SettingsTile(
         key: const ValueKey('ui-config-status'),
         icon: icon,

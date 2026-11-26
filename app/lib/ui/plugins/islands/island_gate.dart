@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../plugins/seams/seat_state.dart' show seatRouteGuardReportProvider;
 import '../../../remote/ssh/ssh_link.dart';
-import '../../../runtime/runtime_state.dart';
 import '../../../state/connection_state.dart';
 import '../../../state/hosts_state.dart';
 
@@ -45,8 +44,7 @@ bool islandHostAllowed(
   HostKind.relay => false,
   // 网页登录主机没有本地隧道/端口，岛屿（内嵌的 DSH Web）不在这里开。
   HostKind.web => false,
-  HostKind.ssh => true,
-  HostKind.local => override || (reported == true && probed == RouteGuard.present),
+  HostKind.ssh => override || (reported == true && probed == RouteGuard.present),
   // 没有主机：没有可开的岛屿。
   HostKind.none => false,
 };
@@ -86,48 +84,12 @@ final islandRouteGuardReportProvider = Provider.family<bool?, HostRef>(
   (ref, host) => ref.watch(seatRouteGuardReportProvider(host)),
 );
 
-/// The cookieless probe against the on-device engine, rerun per engine
-/// start (a new base URL / token is a new process) and whenever the bridge's
-/// own report changes. An inconclusive answer (the engine still starting,
-/// the bridge's routes not registered yet) is asked again every few seconds
-/// for a minute, instead of keeping islands off until the next restart.
-final localRouteGuardProbeProvider = FutureProvider<RouteGuard>((ref) async {
-  final status = ref.watch(localRuntimeProvider.select((s) => s.status));
-  ref.watch(islandRouteGuardReportProvider(HostRef.local));
-  final base = status.baseUrl;
-  if (!status.isRunning || base == null) return RouteGuard.unknown;
-  final uri = Uri.tryParse(base);
-  if (uri == null) return RouteGuard.unknown;
-  final result = await probeRouteGuard(uri);
-  final process = '$base|${status.token}';
-  if (result == RouteGuard.unknown) {
-    final attempt = (_probeAttempts[process] ?? 0) + 1;
-    _probeAttempts[process] = attempt;
-    if (attempt <= routeGuardProbeRetries) {
-      final timer = Timer(routeGuardProbeRetry, ref.invalidateSelf);
-      ref.onDispose(timer.cancel);
-    }
-  } else {
-    _probeAttempts.remove(process);
-  }
-  return result;
-});
-
-/// Retries of an inconclusive guard probe (per engine process).
-const routeGuardProbeRetries = 12;
-const routeGuardProbeRetry = Duration(seconds: 5);
-final _probeAttempts = <String, int>{};
-
 /// Whether [host] may have islands now.
 final islandHostGateProvider = Provider.family<bool, HostRef>((ref, host) {
-  if (host.kind != HostKind.local) return islandHostAllowed(host.kind);
+  if (host.kind != HostKind.ssh) return islandHostAllowed(host.kind);
   final reported = ref.watch(islandRouteGuardReportProvider(host));
-  // Only probe once the bridge claims a guard (or the override is on).
-  if (reported != true && !islandsWithoutGuard) return false;
-  final probed = islandsWithoutGuard
-      ? RouteGuard.unknown
-      : ref.watch(localRouteGuardProbeProvider).value ?? RouteGuard.unknown;
-  return islandHostAllowed(host.kind, reported: reported, probed: probed, override: islandsWithoutGuard);
+  // 手机本地引擎已删除：探测只会发生在主机自己身上，这里只认它的自报。
+  return islandHostAllowed(host.kind, reported: reported, override: islandsWithoutGuard);
 });
 
 /// The DSH Web launch URL for [host]'s islands (same as the 网页版's,
@@ -137,10 +99,6 @@ final islandHostUrlProvider = Provider.autoDispose.family<Uri?, HostRef>((ref, h
   switch (host.kind) {
     case HostKind.web:
       return null;
-    case HostKind.local:
-      final status = ref.watch(localRuntimeProvider.select((s) => s.status));
-      if (!status.isRunning || status.baseUrl == null || status.token == null) return null;
-      return islandLaunchUri(status.baseUrl!, status.token!);
     case HostKind.ssh:
       ref.watch(hostLinkStatusProvider(host));
       final link = ref.watch(hostLinkProvider(host));

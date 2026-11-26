@@ -13,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../l10n/l10n.dart';
-import 'android_features.dart' show operatingSystemProvider;
 import 'artifacts.dart';
 import 'connection_state.dart';
 
@@ -56,9 +55,7 @@ String artifactErrorText(Object error) {
 
 /// Artifact files of the active connection.
 ///
-/// The local engine's files are already on the phone (inside the Linux
-/// environment, or in shared storage): Android gets them in place. A remote
-/// Host's file is downloaded once into the app cache (`artifacts/`), keyed by
+/// A Host's file is downloaded once into the app cache (`artifacts/`), keyed by
 /// Host, session and path, and fetched again when the Host reports a new
 /// version. HarmonyOS logical workspace files use the same Session-aware
 /// byte service because their logical paths are not platform file paths.
@@ -68,27 +65,22 @@ class ArtifactFiles {
     required this.channel,
     Future<void> Function(ShareParams params)? share,
     Future<Directory> Function()? cacheRoot,
-    String? operatingSystem,
   }) : _share = share ?? _systemShare,
-       _cacheRoot = cacheRoot ?? getTemporaryDirectory,
-       _operatingSystem = operatingSystem ?? Platform.operatingSystem;
+       _cacheRoot = cacheRoot ?? getTemporaryDirectory;
 
   final HostConnection? connection;
   final FilesChannel channel;
   final Future<void> Function(ShareParams params) _share;
   final Future<Directory> Function() _cacheRoot;
-  final String _operatingSystem;
 
   static Future<void> _systemShare(ShareParams params) async {
     await SharePlus.instance.share(params);
   }
 
-  bool get isLocal => connection?.isLocal ?? false;
-
   /// Whether open / share / save can get at the file at all.
   bool get canFetch {
     final conn = connection;
-    return conn != null && (conn.isLocal || conn.client.canReadFileBytes);
+    return conn != null && conn.client.canReadFileBytes;
   }
 
   /// Whether the Host can turn Office files into PDFs for a preview.
@@ -142,12 +134,6 @@ class ArtifactFiles {
     if (conn == null) throw const ArtifactError('offline');
     // This prefix selects a transport, not authority. The existing Session
     // file service still resolves the path and checks its workspace grant.
-    final sessionCopy = conn.isLocal && _operatingSystem == 'ohos' && artifact.path.startsWith('/workspaces/');
-    if (conn.isLocal && !sessionCopy) {
-      final host = await channel.resolveGuest(artifact.path);
-      if (host == null) throw const ArtifactError('missing');
-      return File(host);
-    }
     final client = conn.client;
     if (!client.canReadFileBytes) throw const ArtifactError('unsupported');
     final stat = await client.statFile(sessionId, artifact.path);
@@ -183,7 +169,6 @@ class ArtifactFiles {
               ? null
               : (received, total) => onProgress(total == null || total == 0 ? null : received / total),
         );
-        if (sessionCopy) await sink.flush();
       } finally {
         await sink.close();
       }
@@ -235,11 +220,9 @@ class ArtifactFiles {
     }
     final conn = connection;
     if (conn == null) return null;
-    if (!conn.isLocal) {
-      final stat = await conn.client.statFile(sessionId, artifact.path);
-      if ((stat.bytes ?? maxThumbnailBytes + 1) > maxThumbnailBytes) {
-        return null;
-      }
+    final stat = await conn.client.statFile(sessionId, artifact.path);
+    if ((stat.bytes ?? maxThumbnailBytes + 1) > maxThumbnailBytes) {
+      return null;
     }
     final file = await materialize(sessionId, artifact, maxBytes: maxThumbnailBytes);
     if (await file.length() > maxThumbnailBytes) return null;
@@ -286,7 +269,6 @@ final artifactFilesProvider = Provider<ArtifactFiles>(
   (ref) => ArtifactFiles(
     connection: ref.watch(activeConnectionProvider).value,
     channel: ref.watch(filesChannelProvider),
-    operatingSystem: ref.watch(operatingSystemProvider),
   ),
 );
 

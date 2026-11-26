@@ -8,7 +8,7 @@ import 'dart:ui';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../runtime/container_paths.dart';
+import '../device/container_paths.dart';
 
 /// What the file is.
 enum LaunchMediaKind {

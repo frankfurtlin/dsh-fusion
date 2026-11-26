@@ -17,7 +17,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../state/account_state.dart';
 import '../state/connection_state.dart';
 import '../state/settings_state.dart';
 
@@ -443,13 +442,10 @@ final deepSeekSpeechProvider = Provider<DeepSeekSpeechResolver>((ref) {
   };
 });
 
-/// Why [deepSeekSpeechProvider] has nothing to offer: signed in, the account
-/// cannot pay for speech here; else there is no account and no key.
+/// Why [deepSeekSpeechProvider] has nothing to offer.
+/// 手机本地引擎与 DeepSeek 账号已删除：现在只有「没有可用凭据」这一种原因。
 final deepSeekSpeechGapProvider = Provider<DeepSeekSpeechFailure Function()>(
-  (ref) =>
-      () => ref.read(accountProvider).signedIn
-      ? DeepSeekSpeechFailure.accountUnusable
-      : DeepSeekSpeechFailure.noCredential,
+  (ref) => () => DeepSeekSpeechFailure.noCredential,
 );
 
 /// Adds a WAV header to DeepSeek's PCM, for players and tools that want a file.

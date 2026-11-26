@@ -34,7 +34,8 @@ class UnknownResults {
 final unknownResultsProvider = FutureProvider.autoDispose.family<UnknownResults?, String>((ref, sessionId) async {
   if (!ref.watch(durableCallsHostProvider)) return null;
   final connection = ref.watch(activeConnectionProvider).value;
-  if (connection == null || !connection.isLocal) return null;
+  // 手机本地引擎已删除：未知结果的补读只在本机成立，这里不再有入口。
+  if (connection == null) return null;
   try {
     return UnknownResults(connection.client, await connection.client.getLifecycleStatus(sessionId));
   } on DshException {

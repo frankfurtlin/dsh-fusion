@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../state/android_features.dart';
 import '../state/artifact_files.dart';
-import '../state/artifacts.dart';
 
 /// No URL entry point: the caller must materialize through its captured Host.
 class MediaVideoChannel {
@@ -107,10 +106,6 @@ Future<ImageProvider?> mediaVideoThumbnail(
   String sessionId,
   MediaItem item,
 ) {
-  final cache = _posters[files] ??= {};
-  final key = (sessionId, item.path);
-  if (cache[key] case final existing?) return existing;
-  if (!files.isLocal) return Future.value(null);
   return cacheMediaVideoThumbnail(files, video, sessionId, item);
 }
 
@@ -127,13 +122,11 @@ Future<ImageProvider?> cacheMediaVideoThumbnail(
   if (!video._refreshMaterializedPoster || materialized == null) {
     if (cache[key] case final existing?) return existing;
   }
-  if (materialized == null && !files.isLocal) return Future.value(null);
+  if (materialized == null) return Future.value(null);
   if (cache.length >= 24 && !cache.containsKey(key)) cache.remove(cache.keys.first);
   final future = () async {
     try {
-      final file =
-          materialized ??
-          await files.materialize(sessionId, Artifact(path: item.path, origin: ArtifactOrigin.linked, turn: 0));
+      final file = materialized;
       final bytes = await video.poster(file.path);
       return bytes == null || bytes.isEmpty ? null : MemoryImage(bytes);
     } catch (_) {

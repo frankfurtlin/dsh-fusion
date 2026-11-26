@@ -1,12 +1,10 @@
-// Where ui.json comes from. On the phone's own engine the app reads the file
-// straight from the rootfs and follows it with inotify; on a remote host it
-// reads through the Host's `workspaceFiles/read` and follows
+// Where ui.json comes from: only a remote host now (手机本地引擎已删除).
+// The app reads through the Host's `workspaceFiles/read` and follows
 // `workspaceFiles/changes`, falling back to a 60-second check while the app is
-// in front. Both only read.
+// in front. It only reads.
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dsh_client/dsh_client.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleState, WidgetsBinding;
@@ -56,9 +54,6 @@ final class UiConfigUnavailable extends UiConfigRead {
 }
 
 enum UiConfigUnavailableReason {
-  /// The on-device runtime is not installed yet.
-  noRuntime,
-
   /// A remote host with no conversation: `workspaceFiles/*` needs one.
   noSession,
 
@@ -82,219 +77,6 @@ abstract interface class UiConfigSource {
 /// (`ui.status.json`), for the agent to check its own work.
 abstract interface class UiConfigStatusSink {
   Future<void> writeStatus(UiConfigLoad? load);
-}
-
-// ── On-device engine ────────────────────────────────────────────────────────
-
-/// `<rootfs>/root/.dsh/dsh-go/ui.json`, followed with a directory watch
-/// (inotify) and re-read on every [kicks] event (app resumes, runtime state
-/// changes); bursts settle for [debounce] first.
-class LocalUiConfigSource implements UiConfigSource, UiConfigStatusSink {
-  LocalUiConfigSource({
-    required this.rootfs,
-    this.kicks = const Stream.empty(),
-    this.debounce = const Duration(milliseconds: 300),
-    bool Function()? mayWrite,
-  }) : mayWrite = mayWrite ?? _always;
-
-  static bool _always() => true;
-
-  /// The rootfs directory (guest `/`), or null before the runtime is
-  /// installed. Asked again on every kick.
-  final Future<Directory?> Function() rootfs;
-  final Stream<void> kicks;
-  final Duration debounce;
-
-  /// Whether the app may create `dsh-go/` or write `ui.status.json` now:
-  /// not while an install swaps the rootfs and moves /root around
-  /// (RuntimeInstaller.activateRootfs), where a new file could make the
-  /// move fail.
-  final bool Function() mayWrite;
-
-  /// DSH home inside the guest.
-  static const guestDshHome = '/root/.dsh';
-
-  StreamController<UiConfigRead>? _out;
-  StreamSubscription<void>? _kicks;
-  StreamSubscription<FileSystemEvent>? _watch;
-  Directory? _dir;
-  Timer? _timer;
-  String? _lastStatus;
-  bool _refreshing = false;
-  bool _again = false;
-
-  @override
-  Stream<UiConfigRead> watch() {
-    late final StreamController<UiConfigRead> out;
-    out = StreamController<UiConfigRead>(
-      onListen: () {
-        _out = out;
-        _kicks = kicks.listen((_) => unawaited(_refresh()));
-        unawaited(_refresh());
-      },
-      onCancel: () async {
-        _out = null;
-        _timer?.cancel();
-        await _kicks?.cancel();
-        await _watch?.cancel();
-        _watch = null;
-      },
-    );
-    return out.stream;
-  }
-
-  void _emit(UiConfigRead read) {
-    final out = _out;
-    if (out != null && !out.isClosed) out.add(read);
-  }
-
-  Future<void> _refresh() async {
-    if (_refreshing) {
-      _again = true;
-      return;
-    }
-    _refreshing = true;
-    try {
-      do {
-        _again = false;
-        await _arm();
-        _read();
-      } while (_again && _out != null);
-    } finally {
-      _refreshing = false;
-    }
-  }
-
-  /// Finds the directory and (re)starts the watch; creates `dsh-go/` once
-  /// DSH home exists.
-  Future<void> _arm() async {
-    Directory? root;
-    try {
-      root = await rootfs();
-    } catch (_) {
-      root = null;
-    }
-    if (_out == null) return;
-    if (root == null) {
-      await _disarm();
-      _dir = null;
-      return;
-    }
-    final home = Directory('${root.path}$guestDshHome');
-    final dir = Directory('${home.path}/dsh-go');
-    if (_watch != null && _dir?.path == dir.path) return;
-    await _disarm();
-    _dir = dir;
-    if (!dir.existsSync()) {
-      if (!home.existsSync() || !mayWrite()) return;
-      try {
-        dir.createSync(recursive: true);
-      } catch (_) {
-        return;
-      }
-    }
-    try {
-      _watch = dir.watch().listen(
-        (event) {
-          if (_touchesConfig(event)) _schedule();
-        },
-        onError: (Object _) => unawaited(_lost()),
-        onDone: () => unawaited(_lost()),
-      );
-    } catch (_) {
-      // No inotify here: kicks still re-read.
-    }
-  }
-
-  Future<void> _lost() async {
-    _watch = null;
-    _schedule();
-  }
-
-  Future<void> _disarm() async {
-    final watch = _watch;
-    _watch = null;
-    await watch?.cancel();
-  }
-
-  static bool _isConfig(String path) => path == 'ui.json' || path.endsWith('/ui.json');
-
-  static bool _touchesConfig(FileSystemEvent event) =>
-      _isConfig(event.path) || (event is FileSystemMoveEvent && _isConfig(event.destination ?? ''));
-
-  void _schedule() {
-    _timer?.cancel();
-    _timer = Timer(debounce, () {
-      if (_watch == null) {
-        unawaited(_refresh());
-      } else {
-        _read();
-      }
-    });
-  }
-
-  void _read() {
-    if (_out == null) return;
-    final dir = _dir;
-    if (dir == null) {
-      _emit(const UiConfigUnavailable(UiConfigUnavailableReason.noRuntime));
-      return;
-    }
-    final file = File('${dir.path}/ui.json');
-    try {
-      final stat = file.statSync();
-      if (stat.type != FileSystemEntityType.file) {
-        _emit(const UiConfigAbsent());
-        return;
-      }
-      final version = '${stat.modified.millisecondsSinceEpoch}:${stat.size}';
-      if (stat.size > UiSchema.maxBytes) {
-        _emit(UiConfigBroken(UiMessages.fileTooLarge, version: version));
-        return;
-      }
-      final bytes = file.readAsBytesSync();
-      if (bytes.length > UiSchema.maxBytes) {
-        _emit(UiConfigBroken(UiMessages.fileTooLarge, version: version));
-        return;
-      }
-      _emit(UiConfigText(utf8.decode(bytes, allowMalformed: true), version: version));
-    } on FileSystemException {
-      _emit(const UiConfigAbsent());
-    }
-  }
-
-  /// `dsh-go/ui.status.json`: what the app applied, for the agent. Written
-  /// only when it changes; removed when there is no ui.json.
-  @override
-  Future<void> writeStatus(UiConfigLoad? load) async {
-    final dir = _dir;
-    if (dir == null || !dir.existsSync() || !mayWrite()) return;
-    final file = File('${dir.path}/ui.status.json');
-    try {
-      if (load == null) {
-        _lastStatus = null;
-        if (file.existsSync()) file.deleteSync();
-        return;
-      }
-      final body = {
-        'version': UiSchema.version,
-        'applied': load.appliedCount,
-        'fatal': load.fatal,
-        'usingPrevious': load.fromLastGood,
-        'issues': [for (final i in load.issues) i.toJson()],
-      };
-      final key = jsonEncode(body);
-      if (key == _lastStatus && file.existsSync()) return;
-      final text = const JsonEncoder.withIndent('  ')
-          .convert({'readAt': load.readAt.toUtc().toIso8601String(), ...body});
-      final tmp = File('${file.path}.tmp');
-      tmp.writeAsStringSync('$text\n', flush: true);
-      tmp.renameSync(file.path);
-      _lastStatus = key;
-    } catch (_) {
-      // Best effort: the app works without it.
-    }
-  }
 }
 
 // ── Remote hosts ────────────────────────────────────────────────────────────
@@ -335,7 +117,8 @@ String? dshHomeFromSkillPath(String path) {
   return home.isEmpty ? null : home;
 }
 
-/// A remote host's `$DSH_HOME/dsh-go/ui.json` over `workspaceFiles/*`.
+/// A remote host's `$DSH_HOME/dsh-go/ui.json`, read over its connection and
+/// re-read on every [kicks] event; bursts settle for [debounce] first.
 class RemoteUiConfigSource implements UiConfigSource {
   RemoteUiConfigSource({
     required this.host,

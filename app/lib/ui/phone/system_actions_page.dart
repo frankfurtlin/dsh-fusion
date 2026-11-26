@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/hosts_state.dart';
 import '../../state/sessions_state.dart';
 import '../../state/system_actions_state.dart';
 import '../common/feature_tile.dart';
@@ -64,14 +63,8 @@ class _SystemActionsPageState extends ConsumerState<SystemActionsPage> {
       title: l10n.systemActionsTitle,
       subtitle: Text(l10n.systemActionsSubtitle),
       children: [
-        if (!ref.watch(activeHostProvider).isLocal) ...[
-          PhoneNote(
-            icon: AppIcons.remoteHost,
-            title: l10n.systemActionsRemoteTitle,
-            text: l10n.systemActionsRemoteHint,
-          ),
-          const SizedBox(height: 10),
-        ],
+        // 手机本地引擎已删除：原来「只在本机引擎里可用」的说明不再需要 ——
+        // 系统操作现在跟当前主机走。
         OverviewCard(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           leading: const FeatureTile(FeatureKind.phone, size: OverviewCard.avatarSize),

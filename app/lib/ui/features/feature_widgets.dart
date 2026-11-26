@@ -56,19 +56,12 @@ class FeatureOffline extends ConsumerWidget {
     final l10n = context.l10n;
     final connection = ref.watch(activeConnectionProvider);
     final host = ref.watch(activeHostProvider);
-    final name = host.isLocal ? null : ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
+    final name = ref.watch(hostNameProvider(host)) ?? l10n.commonRemoteHost;
     if (connection.hasError) {
-      if (host.isLocal) {
-        return FeatureMessage(
-          icon: AppIcons.error,
-          title: l10n.commonEngineUnreachable,
-          action: (l10n.commonRetry, () => ref.invalidate(localConnectionProvider)),
-        );
-      }
       final status = ref.watch(hostLinkStatusProvider(host)).value ?? HostLinkStatus.idle;
       return FeatureMessage(
         icon: AppIcons.disconnected,
-        title: l10n.featuresHostUnreachable(name ?? l10n.commonRemoteHost),
+        title: l10n.featuresHostUnreachable(name),
         body: status.error?.message,
         action: status.error?.retryable ?? true
             ? (l10n.commonRetry, () => ref.read(remoteConnectionProvider(host).notifier).retry())
@@ -76,9 +69,7 @@ class FeatureOffline extends ConsumerWidget {
       );
     }
     if (connection.isLoading) {
-      return host.isLocal
-          ? const QuietSpinner()
-          : QuietSpinner(label: l10n.featuresHostConnecting(name ?? l10n.commonRemoteHost));
+      return QuietSpinner(label: l10n.featuresHostConnecting(name));
     }
     return FeatureMessage(icon: AppIcons.offline, title: l10n.commonEngineUnreachable);
   }

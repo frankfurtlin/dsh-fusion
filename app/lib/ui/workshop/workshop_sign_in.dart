@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/account_state.dart' show accountBrowserProvider;
+import '../../state/external_browser.dart';
 import '../../state/workshop_account_state.dart';
 import '../common/app_sheet.dart';
 import '../common/brief_notice.dart';
@@ -103,7 +103,7 @@ class _SignInSheetState extends ConsumerState<_SignInSheet> {
           onPressed: () async {
             await _copy(code);
             if (!mounted) return;
-            await ref.read(accountBrowserProvider).open(uri);
+            await ref.read(externalBrowserProvider).open(uri);
           },
           child: Text(l10n.workshopSignInOpen),
         ),

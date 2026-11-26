@@ -9,7 +9,6 @@ import '../state/android_features.dart';
 import '../state/connection_state.dart';
 import '../state/plugins_state.dart';
 import '../state/runtime_capabilities_state.dart';
-import 'guest_fs.dart';
 import 'profile_export.dart';
 import 'share_codec.dart';
 import 'share_import.dart';
@@ -42,28 +41,21 @@ String? _codeOf(String fileText) {
   }
 }
 
-/// Engines an import can go to: 本机 when its engine runs, and the active
-/// remote host when connected. The active host comes first.
+/// Hosts an import can go to: the active remote host when connected.
+/// 手机本地引擎已删除，本机不再是导入目标。
 final importTargetsProvider = Provider.autoDispose<List<ImportTarget>>((ref) {
-  final local = ref.watch(localConnectionProvider).value;
   final active = ref.watch(activeConnectionProvider).value;
-  final safeMode = ref.watch(localSafeModeProvider);
-  // The capability is the active engine's; HarmonyOS's own refuses whichever is active.
+  // The capability is the active host's; HarmonyOS's own refuses whichever is active.
   final ohos = ref.watch(operatingSystemProvider) == 'ohos';
   final refused = ohos && ref.watch(marketInstallRefusedProvider);
-  return [
-    if (active != null && !active.isLocal) ImportTarget(active, isActive: true, installRefused: refused),
-    if (local != null)
-      ImportTarget(local, isActive: active?.isLocal ?? false, safeMode: safeMode, installRefused: ohos),
-  ];
+  return [if (active != null) ImportTarget(active, isActive: true, installRefused: refused)];
 });
 
 /// The checklist for 「分享配置」 on the active engine; null while disconnected.
 final profileExportProvider = FutureProvider.autoDispose<ProfileExportSource?>((ref) async {
   final connection = ref.watch(activeConnectionProvider).value;
   if (connection == null) return null;
-  final fs = connection.isLocal ? await ref.watch(guestFsProvider.future) : null;
-  return loadProfileExport(connection.client, hostLabel: connection.label, isLocal: connection.isLocal, fs: fs);
+  return loadProfileExport(connection.client, hostLabel: connection.label);
 });
 
 /// How plugin steps reach [target]: the active host's install queue, or
@@ -71,8 +63,8 @@ final profileExportProvider = FutureProvider.autoDispose<ProfileExportSource?>((
 final pluginRunnerFactoryProvider = Provider<ImportPluginRunner Function(ProviderContainer, ImportTarget)>(
   (ref) =>
       (container, target) => target.isActive
-      ? QueuedPluginRunner(container.read(pluginInstallsProvider.notifier), target.client, isLocal: target.isLocal)
-      : DirectPluginRunner(target.client, isLocal: target.isLocal),
+      ? QueuedPluginRunner(container.read(pluginInstallsProvider.notifier), target.client)
+      : DirectPluginRunner(target.client),
 );
 
 /// GitHub token for Gist links, kept for this app session only.

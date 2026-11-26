@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_features.dart';
-import 'hosts_state.dart';
 
 /// How 语音输入 listens. [deepseek]: DeepSeek's recognizer (the signed-in account or
 /// the API key); [cloud]: an OpenAI-compatible service set up in 设置 › 语音; auto
@@ -15,7 +14,8 @@ VoiceMode voiceModeOnHarmonyLocal(VoiceMode mode) => mode == VoiceMode.engine ? 
 
 /// HarmonyOS, talking to its own engine, which has no voice model.
 final harmonyLocalVoiceProvider = Provider<bool>(
-  (ref) => ref.watch(operatingSystemProvider) == 'ohos' && ref.watch(activeHostProvider).isLocal,
+  // 手机本地引擎已删除：OS 语音朗读不再跟本机主机绑定（保留 ohos 判断）。
+  (ref) => ref.watch(operatingSystemProvider) == 'ohos',
 );
 
 class VoiceSettingsController extends Notifier<VoiceMode> {

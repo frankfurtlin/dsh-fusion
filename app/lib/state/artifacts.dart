@@ -9,10 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/l10n.dart';
-import '../runtime/local_paths.dart';
 import 'chat_state.dart';
-import 'connection_state.dart';
-import 'settings_state.dart';
 
 /// What sort of file an artifact is (icon, label, preview, MIME type).
 enum ArtifactKind {
@@ -536,56 +533,10 @@ bool savedInChosenPlace(String where) => where.contains('://');
 /// so nothing to say. Android has no such window and never answers this.
 bool saveWindowDismissed(Object error) => error is PlatformException && error.code == 'cancelled';
 
-/// The local engine's output folder ([phoneOutputDir]); empty unless the
-/// engine is on this phone with "访问手机文件" on (on HarmonyOS the folder is in
-/// the app's own files and needs no such access). Scanned when first needed and
-/// again whenever a turn ends ([refresh]).
-class PhoneOutputsController extends Notifier<List<PhoneOutput>> {
-  bool _enabled = false;
-
-  @override
-  List<PhoneOutput> build() {
-    final local = ref.watch(activeConnectionProvider.select((c) => c.value?.isLocal ?? false));
-    final storage = ref.watch(settingsProvider.select((s) => s.phoneStorage));
-    _enabled = local && (storage || LocalPaths.noGuest);
-    if (_enabled) unawaited(refresh());
-    return const [];
-  }
-
-  Future<void> refresh() async {
-    if (!_enabled) return;
-    try {
-      final files = await ref.read(filesChannelProvider).listOutputs();
-      if (!ref.mounted || !_enabled) return;
-      if (_same(files, state)) return;
-      state = List.unmodifiable(files);
-    } catch (_) {
-      // No channel (tests) or no access: nothing to add.
-    }
-  }
-
-  static bool _same(List<PhoneOutput> a, List<PhoneOutput> b) {
-    if (a.length != b.length) return false;
-    for (var i = 0; i < a.length; i++) {
-      if (a[i].path != b[i].path || a[i].modified != b[i].modified || a[i].bytes != b[i].bytes) {
-        return false;
-      }
-    }
-    return true;
-  }
-}
-
-final phoneOutputsProvider = NotifierProvider<PhoneOutputsController, List<PhoneOutput>>(PhoneOutputsController.new);
-
 /// Every finished turn's artifacts in one session ([deriveArtifacts]).
 final sessionArtifactsProvider = Provider.autoDispose.family<List<TurnArtifacts>, String>((ref, sessionId) {
   final turns = ref.watch(chatProvider(sessionId).select((s) => s.turns));
-  ref.listen(chatProvider(sessionId).select((s) => s.running), (was, running) {
-    if (was == true && !running) {
-      unawaited(ref.read(phoneOutputsProvider.notifier).refresh());
-    }
-  });
-  final outputs = ref.watch(phoneOutputsProvider);
   final chat = ref.read(chatProvider(sessionId).notifier);
-  return deriveArtifacts(events: chat.events, turns: turns, cwd: chat.header?.cwd, phoneOutputs: outputs);
+  // 手机本地引擎已删除：不再扫描本机运行环境的产出目录。
+  return deriveArtifacts(events: chat.events, turns: turns, cwd: chat.header?.cwd, phoneOutputs: const []);
 });

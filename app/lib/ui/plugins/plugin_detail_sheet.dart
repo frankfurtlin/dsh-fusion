@@ -23,7 +23,6 @@ import '../theme/app_icons.dart';
 import '../theme/theme.dart';
 import 'config/plugin_config_entries.dart';
 import 'market_widgets.dart';
-import 'plugin_reload_action.dart';
 import 'native/native_plugin_section.dart';
 import 'plugin_actions.dart';
 import 'plugin_load_status.dart';
@@ -230,7 +229,7 @@ class MarketPluginSheet extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              PluginTrustNote(local: host?.isLocal ?? true, thirdParty: true),
+              PluginTrustNote(local: false, thirdParty: true),
             ],
           ),
         ),
@@ -517,7 +516,6 @@ class BundleSheet extends ConsumerWidget {
                     style: theme.textTheme.bodySmall?.copyWith(color: colors.textTertiary, height: 1.6),
                   ),
                 ),
-              if (!gone) PluginReloadAction(bundle: bundle),
               if (configSeated) ...[
                 // A third-party plugin's own config page in DSH Web: its
                 // schema form, its island page, or the way to DSH Web.
@@ -593,7 +591,7 @@ class BundleSheet extends ConsumerWidget {
                   onCancel: () => unawaited(ref.read(pluginInstallsProvider.notifier).cancel(name)),
                 ),
               ],
-              if (bundle.isOnDemand) ...[const SizedBox(height: 16), PluginTrustNote(local: host?.isLocal ?? true)],
+              if (bundle.isOnDemand) ...[const SizedBox(height: 16), PluginTrustNote(local: false)],
             ],
           ),
         ),

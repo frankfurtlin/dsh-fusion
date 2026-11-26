@@ -15,39 +15,17 @@ class AppSettings {
   const AppSettings({
     this.apiKey = '',
     this.themeMode = ThemeMode.system,
-    this.autoStartLocal = true,
-    this.autoStartLocalExplicit = true,
-    this.autoApproveCommands = false,
-    this.automaticDiagnostics = false,
-    this.phoneStorage = false,
     this.webPhoneLayout = true,
     this.chatSuggestions = true,
     this.hardwareEnterSends = false,
     this.chatTextScale = 1.0,
     this.foldCompletedTurns = true,
-    this.visualReplies = true,
     this.customProviderIds = const {},
     this.loaded = false,
   });
 
   final String apiKey;
   final ThemeMode themeMode;
-
-  /// Start the local DSH automatically when the app opens.
-  final bool autoStartLocal;
-
-  /// A stored user choice. Policy defaults never create this preference.
-  final bool autoStartLocalExplicit;
-
-  /// New local sessions use DSH's `danger-full-access` preset (commands run without asking).
-  /// Off by default: there is no sandbox on Android, so each command escalation asks first.
-  final bool autoApproveCommands;
-
-  /// Explicit opt-in to sending content-free local failure facts to the model.
-  final bool automaticDiagnostics;
-
-  /// Mount the phone's shared storage at /sdcard in the Linux environment.
-  final bool phoneStorage;
 
   /// Fit the embedded DSH Web to a phone (`assets/web/`). Off shows the
   /// official layout untouched, e.g. to check a plugin that restyles it.
@@ -67,52 +45,30 @@ class AppSettings {
   /// messages into one summary line above the answer (DSH Web's default).
   final bool foldCompletedTurns;
 
-  /// Tell the local DSH it may answer with ```dsh-ui views (charts, cards,
-  /// options): a section of the managed AGENTS.md, written at engine start.
-  /// Off only drops the instructions; views that arrive are still drawn.
-  final bool visualReplies;
-
-  /// Custom providers created on the local engine whose key is kept on the
-  /// phone ([ProviderKeyVault]). Known at launch, before the engine runs, so
-  /// the first-run gate can tell "has a model to talk to" without it.
+  /// Custom providers whose key is kept on the phone ([ProviderKeyVault]).
   final Set<String> customProviderIds;
   final bool loaded;
 
   bool get hasApiKey => apiKey.trim().isNotEmpty;
 
-  /// A DeepSeek key or a custom provider on the local engine.
-  bool get hasModelAccess => hasApiKey || customProviderIds.isNotEmpty;
-
   AppSettings copyWith({
     String? apiKey,
     ThemeMode? themeMode,
-    bool? autoStartLocal,
-    bool? autoStartLocalExplicit,
-    bool? autoApproveCommands,
-    bool? automaticDiagnostics,
-    bool? phoneStorage,
     bool? webPhoneLayout,
     bool? chatSuggestions,
     bool? hardwareEnterSends,
     double? chatTextScale,
     bool? foldCompletedTurns,
-    bool? visualReplies,
     Set<String>? customProviderIds,
     bool? loaded,
   }) => AppSettings(
     apiKey: apiKey ?? this.apiKey,
     themeMode: themeMode ?? this.themeMode,
-    autoStartLocal: autoStartLocal ?? this.autoStartLocal,
-    autoStartLocalExplicit: autoStartLocalExplicit ?? this.autoStartLocalExplicit,
-    autoApproveCommands: autoApproveCommands ?? this.autoApproveCommands,
-    automaticDiagnostics: automaticDiagnostics ?? this.automaticDiagnostics,
-    phoneStorage: phoneStorage ?? this.phoneStorage,
     webPhoneLayout: webPhoneLayout ?? this.webPhoneLayout,
     chatSuggestions: chatSuggestions ?? this.chatSuggestions,
     hardwareEnterSends: hardwareEnterSends ?? this.hardwareEnterSends,
     chatTextScale: chatTextScale ?? this.chatTextScale,
     foldCompletedTurns: foldCompletedTurns ?? this.foldCompletedTurns,
-    visualReplies: visualReplies ?? this.visualReplies,
     customProviderIds: customProviderIds ?? this.customProviderIds,
     loaded: loaded ?? this.loaded,
   );
@@ -129,26 +85,18 @@ List<(double, String)> get chatTextScales => [
 class SettingsController extends Notifier<AppSettings> {
   static const _apiKeyKey = 'deepseek_api_key';
   static const _themeKey = 'theme_mode';
-  static const _autoStartKey = 'auto_start_local';
-  static const _autoApproveKey = 'auto_approve_commands';
-  static const _automaticDiagnosticsKey = 'automatic_diagnostics';
-  static const _phoneStorageKey = 'phone_storage';
   static const _webPhoneLayoutKey = 'web_phone_layout';
   static const _chatSuggestionsKey = 'chat_suggestions';
   static const _hardwareEnterKey = 'hardware_enter_sends';
   static const _chatTextScaleKey = 'chat_text_scale';
   static const _foldTurnsKey = 'fold_completed_turns';
-  static const _visualRepliesKey = 'visual_replies';
   static const _secure = AppSecureStorage();
   late Future<void> _loaded;
 
   @override
   AppSettings build() {
-    ref.listen(performanceDefaultsProvider.select((p) => p.autoStartLocal), (_, next) {
-      if (!state.autoStartLocalExplicit) state = state.copyWith(autoStartLocal: next);
-    });
     _loaded = _load();
-    return const AppSettings(autoStartLocalExplicit: false);
+    return const AppSettings();
   }
 
   Future<void> _load() async {
@@ -176,17 +124,11 @@ class SettingsController extends Notifier<AppSettings> {
         (m) => m.name == prefs.getString(_themeKey),
         orElse: () => ThemeMode.system,
       ),
-      autoStartLocal: prefs.getBool(_autoStartKey) ?? ref.read(performanceDefaultsProvider).autoStartLocal,
-      autoStartLocalExplicit: prefs.containsKey(_autoStartKey),
-      autoApproveCommands: prefs.getBool(_autoApproveKey) ?? false,
-      automaticDiagnostics: prefs.getBool(_automaticDiagnosticsKey) ?? false,
-      phoneStorage: prefs.getBool(_phoneStorageKey) ?? false,
       webPhoneLayout: prefs.getBool(_webPhoneLayoutKey) ?? true,
       chatSuggestions: prefs.getBool(_chatSuggestionsKey) ?? true,
       hardwareEnterSends: prefs.getBool(_hardwareEnterKey) ?? false,
       chatTextScale: _knownScale(prefs.getDouble(_chatTextScaleKey)),
       foldCompletedTurns: prefs.getBool(_foldTurnsKey) ?? true,
-      visualReplies: prefs.getBool(_visualRepliesKey) ?? true,
       customProviderIds: providerIds,
       loaded: true,
     );
@@ -241,36 +183,6 @@ class SettingsController extends Notifier<AppSettings> {
     state = state.copyWith(themeMode: mode);
   }
 
-  Future<void> setAutoApproveCommands(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_autoApproveKey, value);
-    state = state.copyWith(autoApproveCommands: value);
-  }
-
-  Future<void> setAutomaticDiagnostics(bool value) async {
-    await _loaded;
-    if (!ref.mounted) return;
-    // Revocation is immediate; enabling must not start a paid request before
-    // its opt-in is durably saved. Storage exceptions fail closed too.
-    if (!value) state = state.copyWith(automaticDiagnostics: false);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!await prefs.setBool(_automaticDiagnosticsKey, value)) {
-        throw StateError('automatic_diagnostics_store_failed');
-      }
-      if (ref.mounted && value) state = state.copyWith(automaticDiagnostics: true);
-    } catch (_) {
-      if (ref.mounted) state = state.copyWith(automaticDiagnostics: false);
-      rethrow;
-    }
-  }
-
-  Future<void> setPhoneStorage(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_phoneStorageKey, value);
-    state = state.copyWith(phoneStorage: value);
-  }
-
   static double _knownScale(double? v) => chatTextScales.any((s) => s.$1 == v) ? v! : 1.0;
 
   Future<void> setChatTextScale(double value) async {
@@ -283,14 +195,6 @@ class SettingsController extends Notifier<AppSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_foldTurnsKey, value);
     state = state.copyWith(foldCompletedTurns: value);
-  }
-
-  /// Takes effect at the next engine start (the instructions live in the
-  /// managed AGENTS.md, written before DSH starts).
-  Future<void> setVisualReplies(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_visualRepliesKey, value);
-    state = state.copyWith(visualReplies: value);
   }
 
   Future<void> setWebPhoneLayout(bool value) async {
@@ -313,14 +217,6 @@ class SettingsController extends Notifier<AppSettings> {
     state = state.copyWith(chatSuggestions: value);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_chatSuggestionsKey, value);
-  }
-
-  Future<void> setAutoStartLocal(bool value) async {
-    await _loaded;
-    if (!ref.mounted) return;
-    state = state.copyWith(autoStartLocal: value, autoStartLocalExplicit: true);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_autoStartKey, value);
   }
 }
 

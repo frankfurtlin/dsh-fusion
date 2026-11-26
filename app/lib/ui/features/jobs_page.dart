@@ -16,7 +16,7 @@ import '../chat/render/ansi_text.dart' show stripAnsi;
 import '../common/app_dialog.dart';
 import '../common/list_page_row.dart';
 import '../common/status_dot.dart';
-import '../engine/log_view.dart' show TerminalCard;
+import '../common/terminal_card.dart' show TerminalCard;
 import '../shell/page_frame.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';

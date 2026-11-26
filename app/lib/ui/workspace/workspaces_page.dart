@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../state/connection_state.dart';
 import '../../state/workspaces_state.dart';
 import '../common/feature_tile.dart';
 import '../common/list_page_row.dart';
@@ -27,7 +26,6 @@ class WorkspacesPage extends ConsumerWidget {
     final state = ref.watch(workspacesProvider);
     final sections = ref.watch(workspaceSectionsProvider);
     final counts = ref.watch(workspaceCountsProvider);
-    final local = ref.watch(activeConnectionProvider.select((c) => c.value?.isLocal ?? true));
 
     void add() => addWorkspace(context);
 
@@ -69,7 +67,7 @@ class WorkspacesPage extends ConsumerWidget {
                       child: ListPageRow(
                         icon: AppIcons.workspace,
                         title: workspaceTitle(w),
-                        subtitle: displayPath(w.path, local: local),
+                        subtitle: displayPath(w.path),
                         meta: conversationCountLabel(counts[w.workspaceId] ?? 0),
                         onTap: () => showWorkspaceActions(
                           context,
