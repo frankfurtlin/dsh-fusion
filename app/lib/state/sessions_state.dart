@@ -565,6 +565,14 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
   /// event — a new conversation untitled, or missing, until its turn ends.
   Future<void> refresh() => _refresh(afterBuild: true);
 
+  /// 用户主动要的新鲜数据（下拉刷新、点刷新、切主机回来）：不受节流限制。
+  Future<void> reload() async {
+    final r = ref;
+    final conn = r.read(readListLiveConnectionProvider);
+    if (conn == null) return;
+    return _refreshNow(force: true);
+  }
+
   /// [refresh]; without [afterBuild] only the list being read lands (a host
   /// event that changed no conversation).
   Future<void> _refresh({required bool afterBuild}) async {
@@ -586,10 +594,24 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     return _refreshNow();
   }
 
-  Future<void> _refreshNow() async {
+  /// Last successful read, for the refresh throttle. Kept per controller.
+  DateTime? _lastLoadedAt;
+  Object? _lastLoadedClient;
+
+  /// 20 秒内的重复后台刷新不再打一次全量请求：抽屉开合、切页面、回到前台都会
+  /// 触发 refresh，而列表本身靠 mux 事件增量更新（见 [_applyInPlace]）。
+  static const _refreshThrottle = Duration(seconds: 20);
+
+  Future<void> _refreshNow({bool force = false}) async {
     final r = ref;
     final conn = r.read(readListLiveConnectionProvider);
     if (conn == null) return;
+    final last = _lastLoadedAt;
+    if (!force && last != null && identical(_lastLoadedClient, conn.client) &&
+        DateTime.now().difference(last) < _refreshThrottle) {
+      PerfTrace.note('session_list_skipped', 0);
+      return;
+    }
     final seq = ++_loadSeq;
     final identity = r.read(readListIdentityProvider);
     final cache = r.read(readListCacheProvider);
@@ -597,6 +619,8 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     try {
       final sessions = await _load(r, conn.client, seq, identity);
       if (r.mounted && seq == _loadSeq) {
+        _lastLoadedAt = DateTime.now();
+        _lastLoadedClient = conn.client;
         state = AsyncData(sessions);
         cache.finishRefresh(ReadListKind.sessions, activity);
         _appliedRefreshSeq = seq;

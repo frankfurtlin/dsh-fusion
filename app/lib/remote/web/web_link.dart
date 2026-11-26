@@ -15,6 +15,43 @@ import 'gateway_login.dart';
 import 'web_host_config.dart';
 
 class WebHostLink implements HostLink {
+  /// 同一台主机在整个 App 里只保留一条 link。
+  ///
+  /// 之前每个页面（抽屉、远程主机页、会话页）各建一条，每条 open() 都会重新走一次
+  /// 网关登录并抢一次 mux：第二条抢不到就无限重试，界面就永远显示「登录…」，
+  /// 同时把网关登录与 /api 往返拖慢（会话列表 6–8 s 的抖动）。[obtain] 返回已有实例。
+  static final _live = <String, WebHostLink>{};
+
+  static String keyOf(WebHostConfig config) => '${config.id}\u0000${config.connectionKey}';
+
+  static WebHostLink obtain({
+    required WebHostConfig config,
+    required Future<String?> Function() loadPassword,
+    Stream<void>? kicks,
+    GatewayLogin? login,
+  }) {
+    final key = keyOf(config);
+    final existing = _live[key];
+    if (existing != null && !existing._closed) {
+      existing.config = config;
+      return existing;
+    }
+    final link = WebHostLink._(config: config, loadPassword: loadPassword, login: login, kicks: kicks);
+    _live[key] = link;
+    return link;
+  }
+
+  WebHostLink._({
+    required this.config,
+    required this.loadPassword,
+    GatewayLogin? login,
+    Stream<void>? kicks,
+  }) : _login = login ?? GatewayLogin(),
+       _backoff = Backoff() {
+    _kickSub = kicks?.listen((_) => kick());
+  }
+
+  /// 直接构造（测试用；正式路径走 [obtain]）。
   WebHostLink({
     required this.config,
     required this.loadPassword,
@@ -85,6 +122,8 @@ class WebHostLink implements HostLink {
   }
 
   Future<DshClient> _run() async {
+    final live = currentClient;
+    if (live != null) return live;
     _backoff.reset();
     var last = HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed, retryable: true);
     while (!_closed) {
@@ -126,10 +165,15 @@ class WebHostLink implements HostLink {
     _emit(_stage(HostLinkStep.login, detail: config.username));
 
     final GatewaySession session;
-    try {
-      session = await _login.login(config.base, username: config.username, password: password);
-    } on GatewayLoginError catch (error) {
-      throw _hostError(error);
+    final cached = _session;
+    if (cached != null && !cached.isExpiredAt(DateTime.now())) {
+      session = cached;
+    } else {
+      try {
+        session = await _login.login(config.base, username: config.username, password: password);
+      } on GatewayLoginError catch (error) {
+        throw _hostError(error);
+      }
     }
     if (_closed) throw StateError('link closed');
     if (attempt != _attempt) throw HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed);
@@ -252,6 +296,7 @@ class WebHostLink implements HostLink {
   Future<void> close() async {
     if (_closed) return;
     _closed = true;
+    _live.removeWhere((_, link) => identical(link, this));
     _delay.skip();
     await _kickSub?.cancel();
     await _client?.close().catchError((_) {});

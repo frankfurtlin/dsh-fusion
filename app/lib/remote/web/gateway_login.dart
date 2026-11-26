@@ -86,7 +86,24 @@ class GatewayLogin {
   static const cookieName = 'dsh_gateway_token';
   static const csrfCookieName = 'dsh_csrf';
 
+  /// 整个登录（取 CSRF + 提交 + 读响应体）都在 [timeout] 内完成。
+  /// 早先只有连接与首包设了超时，网关偶发挂住时读 body 的 future 永不完成，
+  /// 界面上就会永远停在「登录…」。
   Future<GatewaySession> login(
+    Uri base, {
+    required String username,
+    required String password,
+  }) async {
+    try {
+      return await _loginOnce(base, username: username, password: password).timeout(
+        timeout + const Duration(seconds: 5),
+      );
+    } on TimeoutException {
+      throw const GatewayLoginError(GatewayLoginErrorKind.unreachable, '登录超时，网络可能不稳');
+    }
+  }
+
+  Future<GatewaySession> _loginOnce(
     Uri base, {
     required String username,
     required String password,

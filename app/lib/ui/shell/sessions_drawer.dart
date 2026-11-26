@@ -482,7 +482,7 @@ class _SessionList extends ConsumerWidget {
             icon: AppIcons.offline,
             title: l10n.shellChatsLoadFailed,
             actionLabel: l10n.commonRetry,
-            onAction: () => ref.read(sessionsProvider.notifier).refresh(),
+            onAction: () => ref.read(sessionsProvider.notifier).reload(),
           ),
         );
       }
