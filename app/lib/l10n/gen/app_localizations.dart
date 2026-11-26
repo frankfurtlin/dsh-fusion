@@ -11510,6 +11510,36 @@ abstract class L10n {
   /// **'服务器每 6 小时生成一次。下拉可以立即刷新。'**
   String get digestEmptyDetail;
 
+  /// No description provided for @digestHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'推送历史'**
+  String get digestHistory;
+
+  /// No description provided for @digestHistoryCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 条'**
+  String digestHistoryCount(int count);
+
+  /// No description provided for @digestHistoryEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有历史'**
+  String get digestHistoryEmpty;
+
+  /// No description provided for @digestHistoryEmptyDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器每 6 小时留一份，保存最近 30 天'**
+  String get digestHistoryEmptyDetail;
+
+  /// No description provided for @digestHistoryError.
+  ///
+  /// In zh, this message translates to:
+  /// **'拉不到历史，检查网络后再试'**
+  String get digestHistoryError;
+
   /// No description provided for @engineNewChatDefaultsLast.
   ///
   /// In zh, this message translates to:

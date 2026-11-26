@@ -6174,6 +6174,23 @@ class L10nZh extends L10n {
   String get digestEmptyDetail => '服务器每 6 小时生成一次。下拉可以立即刷新。';
 
   @override
+  String get digestHistory => '推送历史';
+
+  @override
+  String digestHistoryCount(int count) {
+    return '$count 条';
+  }
+
+  @override
+  String get digestHistoryEmpty => '还没有历史';
+
+  @override
+  String get digestHistoryEmptyDetail => '服务器每 6 小时留一份，保存最近 30 天';
+
+  @override
+  String get digestHistoryError => '拉不到历史，检查网络后再试';
+
+  @override
   String get engineNewChatDefaultsLast => '新对话默认（上次选择）';
 
   @override

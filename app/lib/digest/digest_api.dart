@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -81,6 +82,72 @@ class DigestSnapshot {
   }
 }
 
+
+/// 一批推送（服务端每 6 小时一轮，留最近 30 天）。
+class DigestBatch {
+  const DigestBatch({required this.id, required this.at, required this.count, required this.titles});
+
+  final String id;
+
+  /// `generatedAt` 原文（ISO 8601，带 +08:00）。
+  final String at;
+  final int count;
+
+  /// 这批的标题（服务端只给前 120 字，列表页够用；详情再取全文）。
+  final List<String> titles;
+
+  /// 本地时间显示用；解析不了返回 null。
+  DateTime? get localTime => DateTime.tryParse(at)?.toLocal();
+
+  static DigestBatch? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final id = json['id'] as String? ?? '';
+    if (id.isEmpty) return null;
+    return DigestBatch(
+      id: id,
+      at: json['at'] as String? ?? '',
+      count: (json['count'] as num?)?.toInt() ?? 0,
+      titles: [
+        for (final t in (json['titles'] as List? ?? const []))
+          if (t is String && t.trim().isNotEmpty) t.trim(),
+      ],
+    );
+  }
+}
+
+/// `history/index.json` 的解析结果（坏条目跳过，不整页报错）。
+class DigestHistoryIndex {
+  const DigestHistoryIndex(this.batches);
+
+  final List<DigestBatch> batches;
+
+  static const empty = DigestHistoryIndex([]);
+
+  bool get isEmpty => batches.isEmpty;
+
+  static DigestHistoryIndex parse(String raw) {
+    if (raw.isEmpty) return empty;
+    try {
+      final root = jsonDecode(raw);
+      if (root is! Map) return empty;
+      final batches = [
+        for (final entry in (root['batches'] as List? ?? const [])) ?DigestBatch.fromJson(entry),
+      ]..sort((a, b) => b.id.compareTo(a.id));
+      return DigestHistoryIndex(batches);
+    } catch (_) {
+      return empty;
+    }
+  }
+}
+
+/// 服务端那一份摘要所在的目录（`.../digest.json` 去掉文件名）；拿不到返回 null。
+String? digestDirectoryOf(String? manifestUrl) {
+  if (manifestUrl == null || manifestUrl.isEmpty) return null;
+  final cut = manifestUrl.lastIndexOf('/');
+  if (cut <= 'https://'.length) return null;
+  return manifestUrl.substring(0, cut + 1);
+}
+
 /// 与 Kotlin 侧的通道：后台拉取、缓存、开关都在那边，这里只读结果。
 class DigestApi {
   const DigestApi._();
@@ -105,6 +172,53 @@ class DigestApi {
       'items': snapshot.items.length,
     });
     return snapshot;
+  }
+
+  /// 摘要目录（用 Kotlin 侧记下的地址推出来）。
+  static Future<String?> directory() async {
+    final result = await _channel.invokeMapMethod<String, Object?>('load');
+    return digestDirectoryOf(result?['url'] as String?);
+  }
+
+  /// 推送历史：读服务端的 `history/index.json`。失败抛异常，页面显示重试。
+  static Future<DigestHistoryIndex> history() async {
+    final base = await directory();
+    if (base == null) return DigestHistoryIndex.empty;
+    final raw = await _getJson('${base}history/index.json');
+    final index = DigestHistoryIndex.parse(raw);
+    PocketLog.instance.log('digest_history', {'batches': index.batches.length});
+    return index;
+  }
+
+  /// 某一批的全部条目（点开历史条目时才取）。
+  static Future<List<DigestItem>> batchItems(String id) async {
+    final base = await directory();
+    if (base == null) return const [];
+    final raw = await _getJson('${base}history/$id.json');
+    try {
+      final root = jsonDecode(raw);
+      if (root is! Map) return const [];
+      return [for (final entry in (root['items'] as List? ?? const [])) ?DigestItem.fromJson(entry)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// 一个很小的只读 GET：不走 App 的 HTTP 栈，历史页自己用。
+  static Future<String> _getJson(String url) async {
+    final client = HttpClient()..connectionTimeout = const Duration(seconds: 10);
+    try {
+      final request = await client.getUrl(Uri.parse(url)).timeout(const Duration(seconds: 15));
+      request.headers.set(HttpHeaders.userAgentHeader, 'dsh-pocket/1.0');
+      final response = await request.close().timeout(const Duration(seconds: 20));
+      if (response.statusCode != HttpStatus.ok) {
+        await response.drain<void>();
+        throw HttpException('HTTP ${response.statusCode}', uri: Uri.parse(url));
+      }
+      return await response.transform(utf8.decoder).join();
+    } finally {
+      client.close(force: true);
+    }
   }
 
   static Future<bool> setEnabled(bool enabled) async {

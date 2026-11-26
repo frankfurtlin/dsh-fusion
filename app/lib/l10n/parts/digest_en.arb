@@ -5,5 +5,10 @@
   "digestPushSubtitle": "Every 6 hours, only when there is something new",
   "digestError": "Couldn't fetch new items this time; what's cached is still here.",
   "digestEmptyTitle": "Nothing yet",
-  "digestEmptyDetail": "The server builds this every 6 hours. Pull down to refresh now."
+  "digestEmptyDetail": "The server builds this every 6 hours. Pull down to refresh now.",
+  "digestHistory": "Push history",
+  "digestHistoryCount": "{count} items",
+  "digestHistoryEmpty": "No history yet",
+  "digestHistoryEmptyDetail": "The server keeps one batch every 6 hours for the last 30 days",
+  "digestHistoryError": "Couldn't load the history — check the network and retry"
 }

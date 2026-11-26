@@ -3619,6 +3619,18 @@
   "digestError": "这次没拉到新内容，稍后再试；已有的还是能看。",
   "digestEmptyTitle": "还没有内容",
   "digestEmptyDetail": "服务器每 6 小时生成一次。下拉可以立即刷新。",
+  "digestHistory": "推送历史",
+  "digestHistoryCount": "{count} 条",
+  "@digestHistoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "digestHistoryEmpty": "还没有历史",
+  "digestHistoryEmptyDetail": "服务器每 6 小时留一份，保存最近 30 天",
+  "digestHistoryError": "拉不到历史，检查网络后再试",
   "engineNewChatDefaultsLast": "新对话默认（上次选择）",
   "engineNewChatDefaultsFixed": "新对话默认（固定）",
   "engineNewChatUseLast": "沿用上次",
