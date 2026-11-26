@@ -201,6 +201,9 @@ class _ActivityStripState extends State<ActivityStrip> {
     setState(() {});
   }
 
+  /// 无障碍标签里细节部分的最大长度（字符）。
+  static const _a11yDetailMax = 96;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -211,7 +214,11 @@ class _ActivityStripState extends State<ActivityStrip> {
 
     return Semantics(
       button: widget.onTap != null,
-      label: '${a.title} ${a.detail}',
+      // 命令与输出可能上千字（曾经一条 heredoc 就 8 KB），读屏会一字不漏念完。
+      // 标题保留，细节截断到一句话，完整内容仍在点开的轨迹里。
+      label: a.detail.length <= _a11yDetailMax
+          ? '${a.title} ${a.detail}'
+          : '${a.title} ${a.detail.substring(0, _a11yDetailMax)}…',
       onTapHint: l10n.chatViewTurnTrace,
       onTap: widget.onTap,
       onLongPress: _showStats,

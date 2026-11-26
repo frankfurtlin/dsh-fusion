@@ -323,7 +323,7 @@ class _SearchBody extends ConsumerWidget {
       return _Notice(
         icon: AppIcons.offline,
         title: l10n.shellChatsLoadFailed,
-        action: (l10n.commonRetry, () => ref.read(sessionsProvider.notifier).refresh()),
+        action: (l10n.commonRetry, () => ref.read(sessionsProvider.notifier).reload()),
       );
     }
     if (view.query.isEmpty && !archivedOnly) {
