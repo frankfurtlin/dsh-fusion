@@ -1,14 +1,12 @@
-// 她的声音: whether she speaks, and in whose voice. The same as 朗读's (设置 ›
-// 语音); DeepSeek's; the phone's own; an OpenAI-compatible speech API; or any
-// HTTP API the person describes (companion_voice_source.dart). Fields save as
-// they are edited; 试听 says a line with what is filled in now.
+// 她的声音: whether she speaks, and in whose voice. DeepSeek's; the phone's own;
+// an OpenAI-compatible speech API; or any HTTP API the person describes
+// (companion_voice_source.dart). Fields save as they are edited; 试听 says a
+// line with what is filled in now.
 //
-// [CompanionVoicePage.shared] is the app's own 朗读 voice instead (opened from
-// 语音通话's settings since 1.2.0): the voice replies are read aloud in and
-// 语音通话 speaks with — no switch, no following, no cloned voice. It has no
-// DeepSeek source: the account behind it was removed, so reading aloud is the
-// phone's own TTS and old DeepSeek voices are mapped to it when read
-// (speech_settings.dart).
+// 伙伴小屋 only (the full mode since 1.2.1): 朗读 and 语音通话 speak with the
+// phone's own TTS (speech_settings.dart), and their pages no longer open a
+// voice chooser. The preset / OpenAI-compatible / custom cloud voices below
+// are therefore reachable from here alone.
 
 import 'dart:async';
 import 'dart:io';
@@ -30,10 +28,7 @@ import '../theme/app_icons.dart';
 import '../theme/semantic_colors.dart';
 
 class CompanionVoicePage extends ConsumerStatefulWidget {
-  const CompanionVoicePage({super.key, this.shared = false});
-
-  /// 朗读的声音 (the app's), not hers.
-  final bool shared;
+  const CompanionVoicePage({super.key});
 
   @override
   ConsumerState<CompanionVoicePage> createState() => _CompanionVoicePageState();
@@ -55,24 +50,18 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
 
   // Held from the start: edits still waiting are saved as the page closes,
   // when it can no longer read providers.
-  late final VoiceOutputSettingsController _store = widget.shared
-      ? ref.read(speechVoiceSettingsProvider.notifier)
-      : ref.read(companionVoiceSettingsProvider.notifier);
+  late final CompanionVoiceSettingsController _store = ref.read(companionVoiceSettingsProvider.notifier);
 
-  CompanionVoiceSettings? _watch() =>
-      widget.shared ? ref.watch(speechVoiceSettingsProvider) : ref.watch(companionVoiceSettingsProvider);
-
-  CompanionSpeaker get _speaker => ref.read(widget.shared ? speechSpeakerProvider : companionSpeakerProvider);
+  CompanionSpeaker get _speaker => ref.read(companionSpeakerProvider);
 
   /// What actually speaks: hers may be 朗读's.
   CompanionVoiceSettings _speaking(CompanionVoiceSettings s) {
-    if (widget.shared) return s;
     if (ref.read(operatingSystemProvider) == 'ohos') {
       return s.copyWith(source: CompanionVoiceSource.system, follow: false, cloneOn: false);
     }
     if (!s.follow) return s;
-    final shared = ref.read(speechVoiceSettingsProvider);
-    return (shared ?? const CompanionVoiceSettings(source: CompanionVoiceSource.deepseek)).copyWith(on: s.on);
+    final reading = ref.read(speechVoiceSettingsProvider);
+    return (reading ?? const CompanionVoiceSettings(source: CompanionVoiceSource.deepseek)).copyWith(on: s.on);
   }
 
   CompanionVoiceSettings? _seen;
@@ -270,8 +259,7 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
   Future<void> _try(CompanionVoiceSettings s) async {
     _flush();
     setState(() => _preview = '');
-    final hello = widget.shared ? context.l10n.speechVoiceHello : context.l10n.companionVoiceHello;
-    final why = await _speaker.preview(_speaking(_fromFields(s)), hello);
+    final why = await _speaker.preview(_speaking(_fromFields(s)), context.l10n.companionVoiceHello);
     if (mounted) setState(() => _preview = why ?? 'ok');
   }
 
@@ -337,16 +325,15 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final colors = DshColors.of(context);
-    final title = widget.shared ? l10n.speechVoiceTitle : l10n.companionMenuVoice;
-    final s = _seen = _watch();
+    final title = l10n.companionMenuVoice;
+    final s = _seen = ref.watch(companionVoiceSettingsProvider);
     if (s == null) return AppPage.list(title: title, children: const []);
-    // HarmonyOS plays DeepSeek's stream for 朗读 and its own voice everywhere; the
-    // others have no player there yet, and her room has only the phone's voice
+    // HarmonyOS has no player for the cloud voices: her room uses the phone's
+    // own voice there, and only that source is offered
     // (companionEffectiveVoiceProvider).
     final ohos = ref.watch(operatingSystemProvider) == 'ohos';
-    final room = ohos && !widget.shared;
-    final following = !room && !widget.shared && s.follow;
-    final chosen = room ? CompanionVoiceSource.system : s.source;
+    final following = !ohos && s.follow;
+    final chosen = ohos ? CompanionVoiceSource.system : s.source;
     _fill(s);
     if (s.cloneSample.isNotEmpty && _recordingFor != s.cloneSample) unawaited(_describe(s.cloneSample));
     final busy = _preview == '';
@@ -363,23 +350,22 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
     return AppPage.list(
       title: title,
       children: [
-        if (!widget.shared)
-          SettingsSection(
-            footer: s.on ? null : Text(l10n.companionVoiceOffHint),
-            children: [
-              SettingsSwitchTile(
-                icon: AppIcons.companionVoice,
-                tinted: false,
-                title: l10n.companionVoiceOn,
-                value: s.on,
-                onChanged: busy ? null : (on) => unawaited(_turn(s, on)),
-              ),
-            ],
-          ),
+        SettingsSection(
+          footer: s.on ? null : Text(l10n.companionVoiceOffHint),
+          children: [
+            SettingsSwitchTile(
+              icon: AppIcons.companionVoice,
+              tinted: false,
+              title: l10n.companionVoiceOn,
+              value: s.on,
+              onChanged: busy ? null : (on) => unawaited(_turn(s, on)),
+            ),
+          ],
+        ),
         SettingsSection(
           title: l10n.companionVoiceSource,
           children: [
-            if (!widget.shared && !room)
+            if (!ohos)
               SettingsTile(
                 key: const ValueKey('voice-source-follow'),
                 title: l10n.speechVoiceFollow,
@@ -392,9 +378,8 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
                 },
               ),
             for (final (source, title, hint) in [
-              // 朗读的声音 no longer offers DeepSeek (1.2.0: its account was removed).
-              if (!room && !widget.shared)
-                (CompanionVoiceSource.deepseek, l10n.speechVoiceDeepseek, l10n.speechVoiceDeepseekHint),
+              // HarmonyOS has no player for DeepSeek's stream: not offered there.
+              if (!ohos) (CompanionVoiceSource.deepseek, l10n.speechVoiceDeepseek, l10n.speechVoiceDeepseekHint),
               (CompanionVoiceSource.system, l10n.companionVoiceSystem, l10n.companionVoiceSystemHint),
               if (!ohos) ...[
                 (CompanionVoiceSource.preset, l10n.companionVoicePreset, l10n.companionVoicePresetHint),
@@ -415,7 +400,7 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
               ),
           ],
         ),
-        if (!widget.shared && !following && chosen == CompanionVoiceSource.deepseek)
+        if (!following && chosen == CompanionVoiceSource.deepseek)
           SettingsSection(
             title: l10n.companionVoiceVoice,
             footer: Text(l10n.speechVoiceDeepseekFooter),
@@ -460,7 +445,7 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
                     helper: l10n.companionVoiceKeyWhere(s.presetInfo.site),
                     child: _text(_presetKey, hint: 'sk-…', secret: true),
                   ),
-                  if (s.presetInfo.clones && !widget.shared)
+                  if (s.presetInfo.clones)
                     FormFieldBlock(
                       label: l10n.companionVoiceVoice,
                       child: SegmentedPill<bool>(
@@ -475,7 +460,7 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
                         },
                       ),
                     ),
-                  if (s.cloning && !widget.shared)
+                  if (s.cloning)
                     FormFieldBlock(
                       label: l10n.companionCloneRecording,
                       helper: _recordingError == null ? l10n.companionCloneHelper : null,

@@ -20,6 +20,11 @@ import '../speech/deepseek_speech.dart';
 
 /// The order the voice page lists them in. [deepseek] is DeepSeek's own speech
 /// API, paid by the signed-in account or the API key (deepseek_speech.dart).
+///
+/// [preset], [openai] and [custom] are cloud voices: since 1.2.1 only 伙伴小屋's
+/// full voice page (ui/companion/companion_voice_page.dart) offers them —
+/// 朗读 and 语音通话 always use the phone's own TTS, and their old cloud values
+/// are mapped to [system] when read (speech_settings.dart).
 enum CompanionVoiceSource { deepseek, system, preset, openai, custom }
 
 /// Her style, for services that take one, when the person hasn't written their own.

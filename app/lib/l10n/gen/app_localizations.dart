@@ -30200,18 +30200,6 @@ abstract class L10n {
   /// **'停止朗读'**
   String get speechReadAloudStop;
 
-  /// No description provided for @speechVoiceTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'朗读的声音'**
-  String get speechVoiceTitle;
-
-  /// No description provided for @speechVoiceHello.
-  ///
-  /// In zh, this message translates to:
-  /// **'你好，这是朗读的声音。'**
-  String get speechVoiceHello;
-
   /// No description provided for @speechVoiceDeepseek.
   ///
   /// In zh, this message translates to:
@@ -30709,12 +30697,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'声音和识别'**
   String get speechCallSpeechSection;
-
-  /// No description provided for @speechCallVoice.
-  ///
-  /// In zh, this message translates to:
-  /// **'她的声音'**
-  String get speechCallVoice;
 
   /// No description provided for @speechCallSpeechHint.
   ///

@@ -17394,12 +17394,6 @@ class L10nEn extends L10n {
   String get speechReadAloudStop => 'Stop reading';
 
   @override
-  String get speechVoiceTitle => 'Reading voice';
-
-  @override
-  String get speechVoiceHello => 'Hello, this is the reading voice.';
-
-  @override
   String get speechVoiceDeepseek => 'DeepSeek';
 
   @override
@@ -17667,9 +17661,6 @@ class L10nEn extends L10n {
 
   @override
   String get speechCallSpeechSection => 'Voice and recognition';
-
-  @override
-  String get speechCallVoice => 'Her voice';
 
   @override
   String get speechCallSpeechHint => 'Changes apply from the next sentence.';

@@ -22,7 +22,12 @@ const speechVoiceKeys = VoiceSettingsKeys(
 );
 
 /// The 朗读 voice: the phone's own text-to-speech, always. Its `on` is unused
-/// (reading aloud is a button, not a switch).
+/// (reading aloud is a button, not a switch). 语音通话 speaks its replies the
+/// same way (voice_call_page.dart).
+///
+/// The cloud branches of [CompanionVoiceSettings] (preset / OpenAI-compatible /
+/// custom) are kept: since 1.2.1 no 朗读 or 通话 page offers them, and only
+/// 伙伴小屋's full voice page can still choose one.
 class SpeechVoiceSettingsController extends VoiceOutputSettingsController {
   @override
   VoiceSettingsKeys get keys => speechVoiceKeys;
