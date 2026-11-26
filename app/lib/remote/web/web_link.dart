@@ -94,6 +94,11 @@ class WebHostLink implements HostLink {
   @override
   DshClient? get currentClient => _status.isConnected ? _client : null;
 
+  /// 手上还握着客户端。相位可能滞后（重连/换新时先发过 connecting），
+  /// [currentClient] 在那种时刻也报 null，所以读状态的人要靠它看真实连接。
+  /// 只读，不改变任何连接行为。
+  bool get hasClient => _client != null;
+
   /// 网关会话还有多久过期（诊断用）。
   DateTime? get sessionExpiresAt => _session?.expiresAt;
 
@@ -162,6 +167,9 @@ class WebHostLink implements HostLink {
       throw HostLinkError(HostLinkErrorKind.authFailed, appL10n.webLoginErrNoPassword);
     }
     if (_closed) throw StateError('link closed');
+    // 旧 attempt 不能在新的 attempt 已经连上之后再发 connecting 事件，否则相位会被拉回
+    // 「登录…」（根因 B）。所有 await 之后重新进场都要重新确认自己还是当次 attempt。
+    if (attempt != _attempt) throw HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed);
     _emit(_stage(HostLinkStep.login, detail: config.username));
 
     final GatewaySession session;
@@ -178,6 +186,7 @@ class WebHostLink implements HostLink {
     if (_closed) throw StateError('link closed');
     if (attempt != _attempt) throw HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed);
 
+    if (attempt != _attempt) throw HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed);
     _emit(_stage(HostLinkStep.login, detail: appL10n.webLoginOpeningDsh));
     final previous = _client;
     _client = null;
