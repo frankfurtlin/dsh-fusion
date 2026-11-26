@@ -14,7 +14,10 @@ class HostStatusView {
   final StatusTone tone;
   final String label;
 
+  /// A link already holding a client is connected, even if its last status
+  /// still says connecting (an event that overtook the one that finished).
   static HostStatusView ofLink(HostLinkStatus status) => switch (status.phase) {
+    HostLinkPhase.connecting when status.hasClient => HostStatusView(StatusTone.ok, appL10n.remoteConnected),
     HostLinkPhase.idle => HostStatusView(StatusTone.idle, appL10n.commonNotConnected),
     HostLinkPhase.connecting => HostStatusView(
       StatusTone.busy,

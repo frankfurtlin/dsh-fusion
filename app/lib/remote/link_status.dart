@@ -193,11 +193,17 @@ class HostLinkStatus {
     this.detail,
     this.path,
     this.network,
+    this.hasClient = false,
   });
 
   static const idle = HostLinkStatus(HostLinkPhase.idle);
 
   final HostLinkPhase phase;
+
+  /// Metadata for a status whose [phase] still says connecting / reconnecting
+  /// while the link does hold a client: display code may show it as connected.
+  /// The phase itself is never rewritten here.
+  final bool hasClient;
 
   /// Stage in progress while connecting / reconnecting.
   final HostLinkStep? step;
@@ -229,6 +235,7 @@ class HostLinkStatus {
     detail: detail,
     path: value.path,
     network: value,
+    hasClient: hasClient,
   );
 
   bool get isConnected => phase == HostLinkPhase.connected;
@@ -244,6 +251,7 @@ class HostLinkStatus {
     },
     attempt: attempt,
     detail: detail,
+    hasClient: hasClient,
   );
 
   /// Short status text for chips and rows.

@@ -144,15 +144,55 @@ final hostLinkProvider = Provider.autoDispose.family<HostLink?, HostRef>((ref, h
   }
 });
 
-/// Status of a host's link for the UI (idle for 本机).
+/// Status of a host's link for the UI (idle for 本机, and for every host that
+/// is not the current one: watching [hostLinkProvider] for each row of the host
+/// list would open one link — and one gateway login — per host).
+///
+/// The truth comes from the connection itself: while a client is live the
+/// status is connected, whatever a late connecting / reconnecting event says.
+/// [HostLink.currentClient] alone cannot tell: every link reports a client only
+/// while its own phase already says connected — the very field that gets stuck.
+/// The snapshot is read *after* subscribing to [HostLink.statuses]: a broadcast
+/// event emitted in between would otherwise be lost, and the UI would sit on
+/// 「登录…」 for good.
 final hostLinkStatusProvider = StreamProvider.autoDispose.family<HostLinkStatus, HostRef>((ref, host) async* {
+  // 非当前主机：不建 link（否则列表里每台主机都会各登录一次），列表行因此显示
+  // 「未连接」。
+  if (ref.watch(activeHostProvider) != host) {
+    yield HostLinkStatus.idle;
+    return;
+  }
   final link = ref.watch(hostLinkProvider(host));
   if (link == null) {
     yield HostLinkStatus.idle;
     return;
   }
-  yield link.status;
-  yield* link.statuses;
+  // 真相来自连接本身：手上还握着客户端就按已连接显示。[HostLink.currentClient]
+  // 不够用——三个 link 都只在自身相位已经是 connected 时才报客户端，而卡住的正是
+  // 这个相位；网关 link 的 [WebHostLink.hasClient] 看的是它手里的客户端本身。
+  bool hasLiveClient() => link.currentClient != null || (link is WebHostLink && link.hasClient);
+  HostLinkStatus asConnected(HostLinkStatus status) => HostLinkStatus(
+    HostLinkPhase.connected,
+    completed: const {HostLinkStep.connect, HostLinkStep.login},
+    detail: status.detail,
+    path: status.path,
+    network: status.network,
+    hasClient: true,
+  );
+  HostLinkStatus withClient(HostLinkStatus status) {
+    final working = status.phase == HostLinkPhase.connecting || status.phase == HostLinkPhase.reconnecting;
+    return working && hasLiveClient() ? asConnected(status) : status;
+  }
+
+  // Subscribe first, then snapshot: nothing can slip through in between.
+  final statuses = StreamController<HostLinkStatus>();
+  final subscription = link.statuses.listen(statuses.add, onError: statuses.addError, onDone: statuses.close);
+  ref.onDispose(() {
+    unawaited(subscription.cancel());
+    unawaited(statuses.close());
+  });
+  yield withClient(link.status);
+  yield* statuses.stream.map(withClient);
 });
 
 /// Display name of a host as currently known.
