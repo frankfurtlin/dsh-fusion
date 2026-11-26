@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../companion/companion_voice_source.dart';
 import '../../l10n/l10n.dart';
 import '../../speech/speech_audio.dart';
 import '../../speech/speech_settings.dart';
@@ -28,18 +27,6 @@ String voiceModeLabel(L10n l10n, VoiceMode mode) => switch (mode) {
   // 端侧引擎与 DeepSeek 账号已于 1.2.0 移除：这两个名字只剩识别代码里的旧值，
   // 设置里既选不到、读出来也会先归一到 自动。
   VoiceMode.auto || VoiceMode.deepseek || VoiceMode.engine => l10n.voiceModeAuto,
-};
-
-/// The 朗读 voice in a few words, for its row.
-String speechVoiceLabel(L10n l10n, CompanionVoiceSettings? voice) => switch (voice) {
-  null => '',
-  // 1.2.0：朗读统一用手机自己的 TTS（DeepSeek 账号已移除，旧存的云端音色在读取
-  // 时也归一到系统）。
-  CompanionVoiceSettings(source: CompanionVoiceSource.deepseek || CompanionVoiceSource.system) =>
-    l10n.companionVoiceSystem,
-  CompanionVoiceSettings(source: CompanionVoiceSource.preset) => voice.presetInfo.name,
-  CompanionVoiceSettings(source: CompanionVoiceSource.openai) => l10n.companionVoiceOpenai,
-  CompanionVoiceSettings(source: CompanionVoiceSource.custom) => l10n.companionVoiceCustom,
 };
 
 /// Card edge → content, on all four sides (the cards under 实时字幕).

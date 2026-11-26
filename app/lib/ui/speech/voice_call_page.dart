@@ -180,12 +180,16 @@ class _VoiceCallPageState extends ConsumerState<VoiceCallPage> with WidgetsBindi
   /// Her voice for the next reply.
   late CompanionVoiceSettings _voice;
 
-  /// [_voice] from the settings: DeepSeek's with nobody to pay for it here
-  /// becomes the phone's own; the phone's own warms up.
+  /// [_voice] from the settings: the 朗读 voice, always the phone's own TTS
+  /// (speech_settings.dart's migrate() maps any old saved cloud voice to it);
+  /// the phone's engine warms up.
   Future<void> _settleVoice({bool warm = false}) async {
     final mine = ++_settling;
     var next = await ref.read(speechVoiceSettingsProvider.notifier).ready();
     if (!mounted) return;
+    // From when DeepSeek's voice could still be chosen: migrate() rules it out
+    // now, and the guard stays as a cheap net (the call itself needs no cloud
+    // voice branch).
     if (next.source == CompanionVoiceSource.deepseek) {
       final speech = await ref.read(deepSeekSpeechProvider)();
       if (speech == null) {
@@ -340,8 +344,7 @@ class _VoiceCallPageState extends ConsumerState<VoiceCallPage> with WidgetsBindi
           CallEnd.permission => l10n.speechCallEndPermission,
           CallEnd.microphone => l10n.speechCallEndMicrophone,
           // DeepSeek 账号已删除：没有「登录后可识别」的那一档说法了。
-          CallEnd.noRecognizer =>
-            wordsForIos ? l10n.iosSpeechCallEndNoRecognizer : l10n.speechCallEndNoRecognizer,
+          CallEnd.noRecognizer => wordsForIos ? l10n.iosSpeechCallEndNoRecognizer : l10n.speechCallEndNoRecognizer,
           CallEnd.background => l10n.speechCallEndBackground,
           CallEnd.failed => l10n.speechCallEndFailed,
           CallEnd.hungUp || null => l10n.speechCallEnded,
@@ -552,10 +555,7 @@ class _VoiceCallPageState extends ConsumerState<VoiceCallPage> with WidgetsBindi
                           live: !ended && _since != null,
                           blur: keyBlur,
                           onTranscript: _openTranscript,
-                          onBackdrop: ended
-                              ? null
-                              // Trying voices out plays on her speaker: she stops this reply first.
-                              : () => unawaited(showCallBackdropSheet(context, inCall: true, beforeVoice: _call.skip)),
+                          onBackdrop: ended ? null : () => unawaited(showCallBackdropSheet(context, inCall: true)),
                         ),
                         distance: -14,
                       ),

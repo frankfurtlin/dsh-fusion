@@ -22,7 +22,6 @@ import '../../../speech/speech_settings.dart';
 import '../../../state/voice_settings.dart';
 import '../../common/app_sheet.dart';
 import '../../companion/companion_stage.dart';
-import '../../companion/companion_voice_page.dart';
 import '../../settings/settings_widgets.dart';
 import '../../settings/voice_settings_page.dart';
 import '../../theme/app_icons.dart';
@@ -172,26 +171,23 @@ class _CompanionBackdropState extends ConsumerState<CompanionBackdrop> {
 // ── Choosing ───────────────────────────────────────────────────────────────
 
 /// The three backdrops side by side; picking one applies it at once.
-/// [inCall]: opened from a call, which also offers her voice and the
-/// recognition; [beforeVoice] runs before her voice's page opens.
-Future<void> showCallBackdropSheet(BuildContext context, {bool inCall = false, VoidCallback? beforeVoice}) =>
-    showAppSheet<void>(
-      context,
-      isScrollControlled: true,
-      // Scrolls on a short screen (a phone on its side): the in-call rows are below the fold there.
-      builder: (sheet) => SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          child: _BackdropChooser(inCall: inCall, beforeVoice: beforeVoice),
-        ),
-      ),
-    );
+/// [inCall]: opened from a call, which also offers the recognition. Its voice
+/// is the phone's own TTS, the same as 朗读 (speech_settings.dart), so there is
+/// no voice row here.
+Future<void> showCallBackdropSheet(BuildContext context, {bool inCall = false}) => showAppSheet<void>(
+  context,
+  isScrollControlled: true,
+  // Scrolls on a short screen (a phone on its side): the in-call rows are below the fold there.
+  builder: (sheet) => SafeArea(
+    top: false,
+    child: SingleChildScrollView(child: _BackdropChooser(inCall: inCall)),
+  ),
+);
 
 class _BackdropChooser extends ConsumerStatefulWidget {
-  const _BackdropChooser({required this.inCall, this.beforeVoice});
+  const _BackdropChooser({required this.inCall});
 
   final bool inCall;
-  final VoidCallback? beforeVoice;
 
   @override
   ConsumerState<_BackdropChooser> createState() => _BackdropChooserState();
@@ -326,18 +322,6 @@ class _BackdropChooserState extends ConsumerState<_BackdropChooser> {
             SheetGroup(
               margin: EdgeInsets.zero,
               children: [
-                SettingsTile(
-                  key: const ValueKey('call-voice'),
-                  title: l10n.speechCallVoice,
-                  value: Text(speechVoiceLabel(l10n, ref.watch(speechVoiceSettingsProvider))),
-                  onTap: () {
-                    widget.beforeVoice?.call();
-                    unawaited(
-                      Navigator.of(context)
-                          .push(MaterialPageRoute<void>(builder: (_) => const CompanionVoicePage(shared: true))),
-                    );
-                  },
-                ),
                 SettingsTile(
                   key: const ValueKey('call-recognition'),
                   title: l10n.voiceModeSection,

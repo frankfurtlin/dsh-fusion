@@ -16450,12 +16450,6 @@ class L10nZh extends L10n {
   String get speechReadAloudStop => '停止朗读';
 
   @override
-  String get speechVoiceTitle => '朗读的声音';
-
-  @override
-  String get speechVoiceHello => '你好，这是朗读的声音。';
-
-  @override
   String get speechVoiceDeepseek => 'DeepSeek';
 
   @override
@@ -16712,9 +16706,6 @@ class L10nZh extends L10n {
 
   @override
   String get speechCallSpeechSection => '声音和识别';
-
-  @override
-  String get speechCallVoice => '她的声音';
 
   @override
   String get speechCallSpeechHint => '改了从下一句开始生效。';
