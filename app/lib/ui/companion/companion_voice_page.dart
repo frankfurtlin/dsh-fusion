@@ -3,9 +3,12 @@
 // HTTP API the person describes (companion_voice_source.dart). Fields save as
 // they are edited; 试听 says a line with what is filled in now.
 //
-// With [CompanionVoicePage.shared] it is 设置 › 语音 › 朗读的声音 instead: the
-// voice replies are read aloud in and 语音通话 speaks with — no switch, no
-// following, no cloned voice.
+// [CompanionVoicePage.shared] is the app's own 朗读 voice instead (opened from
+// 语音通话's settings since 1.2.0): the voice replies are read aloud in and
+// 语音通话 speaks with — no switch, no following, no cloned voice. It has no
+// DeepSeek source: the account behind it was removed, so reading aloud is the
+// phone's own TTS and old DeepSeek voices are mapped to it when read
+// (speech_settings.dart).
 
 import 'dart:async';
 import 'dart:io';
@@ -389,7 +392,9 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
                 },
               ),
             for (final (source, title, hint) in [
-              if (!room) (CompanionVoiceSource.deepseek, l10n.speechVoiceDeepseek, l10n.speechVoiceDeepseekHint),
+              // 朗读的声音 no longer offers DeepSeek (1.2.0: its account was removed).
+              if (!room && !widget.shared)
+                (CompanionVoiceSource.deepseek, l10n.speechVoiceDeepseek, l10n.speechVoiceDeepseekHint),
               (CompanionVoiceSource.system, l10n.companionVoiceSystem, l10n.companionVoiceSystemHint),
               if (!ohos) ...[
                 (CompanionVoiceSource.preset, l10n.companionVoicePreset, l10n.companionVoicePresetHint),
@@ -410,7 +415,7 @@ class _CompanionVoicePageState extends ConsumerState<CompanionVoicePage> {
               ),
           ],
         ),
-        if (!following && chosen == CompanionVoiceSource.deepseek)
+        if (!widget.shared && !following && chosen == CompanionVoiceSource.deepseek)
           SettingsSection(
             title: l10n.companionVoiceVoice,
             footer: Text(l10n.speechVoiceDeepseekFooter),

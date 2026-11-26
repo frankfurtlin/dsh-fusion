@@ -5177,13 +5177,12 @@
   "harmonyTerminalSupportedHosts": "在 SSH 主机上可用",
   "harmonyPluginRemoveRefused": "这个引擎不能卸载插件",
   "harmonyPluginRefusedHint": "可以开关随包插件，或连接电脑管理插件",
-  "harmonyVoiceLocalLine": "鸿蒙本机没有语音模型",
   "harmonyPasswordStorageHelp": "只保存在这台手机上，由系统密钥库加密",
   "harmonyKeyStorageHelp": "只保存在这台手机上，由系统密钥库加密。支持 Ed25519、RSA、ECDSA",
   "harmonyUsageNotSent": "鸿蒙版暂不发送使用统计",
   "harmonyVoiceSystemHint": "使用系统的语音识别",
   "harmonyVoiceSystemHintChinese": "使用系统的语音识别，只认中文",
-  "harmonyVoiceAutoHint": "有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用系统识别",
+  "harmonyVoiceAutoHint": "系统识别，或下面选的云端转写接口",
   "harmonyVoiceSystemUnavailable": "系统语音识别不可用",
   "harmonyNetworkRelayOnly": "当前版本走 Relay 中继，全程端到端加密。",
   "harmonyNetworkFallbackRelayOnly": "当前版本只走 Relay 中继",
@@ -9028,7 +9027,6 @@
   "searchKwPets": "宠物,小鲸,桌宠,悬浮,鲸鱼",
   "searchKwPerformance": "省电,流畅,卡顿,发热,轻量,完整",
   "searchKwVoice": "语音识别,麦克风,听写,说话,语音,朗读,语音通话,打电话,TTS,声音",
-  "searchKwVoiceReading": "朗读,朗读的声音,TTS,音色,海星,暗潮,声音",
   "searchKwNotifications": "提醒,推送,横幅,消息,铃声",
   "searchKwPhone": "无障碍,操作手机,自动点击,代操作,点按",
   "searchKwAppRules": "名单,黑名单,白名单,禁止,应用",
@@ -9867,8 +9865,6 @@
   },
   "speechReadAloud": "朗读",
   "speechReadAloudStop": "停止朗读",
-  "speechReadSection": "朗读",
-  "speechReadFooter": "回复下方的朗读键、伙伴小屋和语音通话都用这个声音。",
   "speechVoiceTitle": "朗读的声音",
   "speechVoiceHello": "你好，这是朗读的声音。",
   "speechVoiceDeepseek": "DeepSeek",
@@ -9876,8 +9872,6 @@
   "speechVoiceDeepseekFooter": "按朗读的字数计费，价格见 DeepSeek 开放平台。读出前会去掉代码块、表格和链接地址。",
   "speechVoiceStella": "海星（女声）",
   "speechVoiceTide": "暗潮（男声）",
-  "speechVoiceStellaShort": "海星",
-  "speechVoiceTideShort": "暗潮",
   "speechVoiceFollow": "跟朗读一样",
   "speechVoiceFollowHint": "用设置 › 语音里朗读的声音",
   "speechNotSetUp": "朗读的声音还没设置好，去设置 › 语音看看",
@@ -12291,10 +12285,8 @@
   "voiceSettingsTitle": "语音",
   "voiceModeAuto": "自动",
   "voiceModeSystem": "系统",
-  "voiceModeEngine": "语音模型",
-  "voiceModeAutoHint": "有 DeepSeek 账号或 API Key 时用 DeepSeek，否则用语音模型或系统识别",
+  "voiceModeAutoHint": "系统识别，或下面选的云端转写接口",
   "voiceModeSystemHint": "使用手机设置中的识别服务",
-  "voiceModeEngineHint": "用引擎里的语音模型识别",
   "voiceFallbackStarted": "已改用语音模型，请再说一次",
   "voiceChooseSystem": "请在系统设置中选择语音识别服务",
   "voiceConfigureEngine": "请先在语音设置里下载语音模型",
@@ -12324,10 +12316,6 @@
   },
   "voiceSettingsFailed": "没能读取语音设置，请重试",
   "voiceModeSection": "识别方式",
-  "voiceModelSection": "语音模型",
-  "voiceModelFooter": "下载后在手机上识别中文、英文、粤语、日语和韩语，录音不出手机。",
-  "voiceModelWaiting": "引擎启动后可以下载",
-  "voiceModelUnsupported": "当前引擎不支持语音模型",
   "voiceModelAbsent": "未下载",
   "voiceModelPreparing": "正在校验和加载",
   "voiceModelReady": "已就绪",
@@ -12343,91 +12331,8 @@
       }
     }
   },
-  "voiceModelReadyNote": "已占用 {size}，可以离线使用",
-  "@voiceModelReadyNote": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelAbsentNote": "下载约 {size}",
-  "@voiceModelAbsentNote": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelWaitingNote": "下载会在引擎启动后开始",
-  "voiceModelFailNetwork": "网络连接失败",
-  "voiceModelFailTimeout": "下载长时间没有进展",
-  "voiceModelFailCertificate": "安全连接失败，请检查手机时间",
-  "voiceModelFailServer": "下载源暂时不可用",
-  "voiceModelFailIntegrity": "文件校验没有通过",
-  "voiceModelFailStorage": "存储空间不足，还需要约 {size}",
-  "@voiceModelFailStorage": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelFailEngine": "引擎没有响应",
-  "voiceModelFailUnknown": "下载没有完成",
   "voiceModelDownload": "下载",
   "voiceModelResume": "继续下载",
-  "voiceModelRedownload": "重新下载",
-  "voiceModelMeteredTitle": "用移动数据下载？",
-  "voiceModelMeteredBody": "语音模型约 {size}，会使用移动数据流量。",
-  "@voiceModelMeteredBody": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelDeleteTitle": "删除语音模型？",
-  "voiceModelDeleteBody": "删除后语音输入改用系统识别，需要时可以重新下载。",
-  "voiceModelDeleteFailed": "没能删除语音模型，请重试",
-  "voiceModelDeleteStopping": "下载还在停止，请稍后再删",
-  "voiceModelStartedToast": "语音模型开始下载 · 约 {size}",
-  "@voiceModelStartedToast": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelResumedToast": "继续下载语音模型 · 还剩约 {size}",
-  "@voiceModelResumedToast": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelReadyToast": "语音输入已就绪",
-  "voiceModelFailedToast": "语音模型下载失败：{reason}",
-  "@voiceModelFailedToast": {
-    "placeholders": {
-      "reason": {
-        "type": "String"
-      }
-    }
-  },
-  "voiceModelNoticeDownloading": "正在下载语音模型 {percent}%",
-  "@voiceModelNoticeDownloading": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "voiceModelNoticePreparing": "正在校验语音模型",
-  "voiceModelNoticeFailed": "语音模型下载失败，打开 App 重试",
-  "voiceModeDeepseek": "DeepSeek",
-  "voiceModeDeepseekHint": "用 DeepSeek 的语音识别，登录的账号或 API Key 付费",
   "voiceModeCloud": "其他云端服务",
   "voiceModeCloudHint": "OpenAI 兼容的语音转写接口，例如 Whisper、硅基流动",
   "voiceCloudSection": "云端识别服务",

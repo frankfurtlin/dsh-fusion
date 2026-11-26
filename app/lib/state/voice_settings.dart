@@ -3,10 +3,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_features.dart';
 
-/// How 语音输入 listens. [deepseek]: DeepSeek's recognizer (the signed-in account or
-/// the API key); [cloud]: an OpenAI-compatible service set up in 设置 › 语音; auto
-/// uses DeepSeek's when someone can pay for it, else as before.
+/// How 语音输入 listens. [auto]: whatever can listen (the phone's service, or
+/// the cloud recognizer chosen below); [cloud]: an OpenAI-compatible service
+/// set up in 设置 › 语音; [system]: the phone's own service.
+///
+/// [deepseek] (DeepSeek's own recognizer) and [engine] (the engine's voice
+/// model) are left over from before 1.2.0: the on-device engine and the
+/// DeepSeek account were removed from the app, so neither can be chosen or
+/// stored any more. The names stay because the recognizer code (and the pet
+/// voice dialog) still spells them; nothing reaches them from 设置.
 enum VoiceMode { auto, deepseek, system, engine, cloud }
+
+/// What 识别方式 offers, in order: every value a person can pick, and every
+/// value [VoiceSettingsController] can read back. [VoiceMode.deepseek] and
+/// [VoiceMode.engine] are not here (1.2.0).
+const voiceModeChoices = [VoiceMode.auto, VoiceMode.system, VoiceMode.cloud];
 
 /// [mode] as it works on HarmonyOS's own engine, which has no voice model: one
 /// chosen for a remote host's recognizer is automatic here.
@@ -28,12 +39,21 @@ class VoiceSettingsController extends Notifier<VoiceMode> {
     return VoiceMode.auto;
   }
 
+  /// What a stored value means now. 端侧引擎与 DeepSeek 账号已于 1.2.0 移除：
+  /// 「语音模型」(engine) 与「DeepSeek」(deepseek) 的旧选择静默归一到 自动，别的
+  /// 认不出的值也一样。
+  static VoiceMode _read(String? stored) {
+    for (final mode in voiceModeChoices) {
+      if (mode.name == stored) return mode;
+    }
+    return VoiceMode.auto;
+  }
+
   Future<void> _load() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!ref.mounted) return;
-      final stored = prefs.getString(preferenceKey);
-      state = VoiceMode.values.firstWhere((mode) => mode.name == stored, orElse: () => VoiceMode.auto);
+      state = _read(prefs.getString(preferenceKey));
     } catch (_) {
       // Unreadable preferences: stay on auto for this run.
     }

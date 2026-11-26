@@ -1,6 +1,6 @@
-// 设置 › 语音: whose voice reads replies aloud (the same choices as her voice
-// in 伙伴小屋, DeepSeek's first), the cloud recognizer for 语音输入 when it
-// isn't DeepSeek's, and how a 语音通话 behaves.
+// 设置 › 语音: whose voice reads replies aloud (the phone's own since 1.2.0:
+// the DeepSeek account it could also use was removed), the cloud recognizer
+// for 语音输入 when it isn't DeepSeek's, and how a 语音通话 behaves.
 
 import 'dart:async';
 import 'dart:convert';
@@ -21,14 +21,20 @@ const speechVoiceKeys = VoiceSettingsKeys(
   presetKeys: 'speech_voice_preset_keys',
 );
 
-/// The 朗读 voice: DeepSeek's until the person picks another. Its `on` is
-/// unused (reading aloud is a button, not a switch).
+/// The 朗读 voice: the phone's own text-to-speech, always. Its `on` is unused
+/// (reading aloud is a button, not a switch).
 class SpeechVoiceSettingsController extends VoiceOutputSettingsController {
   @override
   VoiceSettingsKeys get keys => speechVoiceKeys;
 
   @override
-  CompanionVoiceSettings get defaults => const CompanionVoiceSettings(source: CompanionVoiceSource.deepseek);
+  CompanionVoiceSettings get defaults => const CompanionVoiceSettings(source: CompanionVoiceSource.system);
+
+  /// DeepSeek 账号已于 1.2.0 移除，朗读统一走手机自己的 TTS：旧存的 DeepSeek
+  /// 海星 / 暗潮（或别的云端音色）在读到时静默归一到系统，不再报「没有凭据」。
+  @override
+  CompanionVoiceSettings migrate(CompanionVoiceSettings saved) =>
+      saved.source == CompanionVoiceSource.system ? saved : saved.copyWith(source: CompanionVoiceSource.system);
 }
 
 final speechVoiceSettingsProvider = NotifierProvider<SpeechVoiceSettingsController, CompanionVoiceSettings?>(

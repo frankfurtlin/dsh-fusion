@@ -1,8 +1,6 @@
 {
   "speechReadAloud": "朗读",
   "speechReadAloudStop": "停止朗读",
-  "speechReadSection": "朗读",
-  "speechReadFooter": "回复下方的朗读键、伙伴小屋和语音通话都用这个声音。",
   "speechVoiceTitle": "朗读的声音",
   "speechVoiceHello": "你好，这是朗读的声音。",
   "speechVoiceDeepseek": "DeepSeek",
@@ -10,8 +8,6 @@
   "speechVoiceDeepseekFooter": "按朗读的字数计费，价格见 DeepSeek 开放平台。读出前会去掉代码块、表格和链接地址。",
   "speechVoiceStella": "海星（女声）",
   "speechVoiceTide": "暗潮（男声）",
-  "speechVoiceStellaShort": "海星",
-  "speechVoiceTideShort": "暗潮",
   "speechVoiceFollow": "跟朗读一样",
   "speechVoiceFollowHint": "用设置 › 语音里朗读的声音",
   "speechNotSetUp": "朗读的声音还没设置好，去设置 › 语音看看",

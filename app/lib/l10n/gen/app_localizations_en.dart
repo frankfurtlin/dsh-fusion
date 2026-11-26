@@ -8937,9 +8937,6 @@ class L10nEn extends L10n {
       'You can turn bundled plugins on or off, or connect a computer to manage plugins';
 
   @override
-  String get harmonyVoiceLocalLine => 'On-device HarmonyOS has no voice model';
-
-  @override
   String get harmonyPasswordStorageHelp => 'Saved only on this phone, encrypted by the system keystore';
 
   @override
@@ -8956,8 +8953,7 @@ class L10nEn extends L10n {
   String get harmonyVoiceSystemHintChinese => 'Uses the system\'s speech recognition, Chinese only';
 
   @override
-  String get harmonyVoiceAutoHint =>
-      'Uses DeepSeek when you\'re signed in or have an API key, otherwise the system\'s speech recognition';
+  String get harmonyVoiceAutoHint => 'Uses the phone’s own speech recognition, or the cloud recognizer chosen below';
 
   @override
   String get harmonyVoiceSystemUnavailable => 'The system\'s speech recognition isn\'t available';
@@ -15934,9 +15930,6 @@ class L10nEn extends L10n {
   String get searchKwVoice => 'speech recognition,dictation,microphone,mic,voice,read aloud,voice call,call,TTS,speech';
 
   @override
-  String get searchKwVoiceReading => 'read aloud,reading voice,TTS,voice,Stella,Tide,speech';
-
-  @override
   String get searchKwNotifications => 'alerts,push,banner,sound';
 
   @override
@@ -17401,12 +17394,6 @@ class L10nEn extends L10n {
   String get speechReadAloudStop => 'Stop reading';
 
   @override
-  String get speechReadSection => 'Read aloud';
-
-  @override
-  String get speechReadFooter => 'Used by the read-aloud key under replies, the companion room and voice calls.';
-
-  @override
   String get speechVoiceTitle => 'Reading voice';
 
   @override
@@ -17428,12 +17415,6 @@ class L10nEn extends L10n {
 
   @override
   String get speechVoiceTide => 'Tide (male)';
-
-  @override
-  String get speechVoiceStellaShort => 'Stella';
-
-  @override
-  String get speechVoiceTideShort => 'Tide';
 
   @override
   String get speechVoiceFollow => 'Same as read aloud';
@@ -20929,17 +20910,10 @@ class L10nEn extends L10n {
   String get voiceModeSystem => 'System';
 
   @override
-  String get voiceModeEngine => 'Voice model';
-
-  @override
-  String get voiceModeAutoHint =>
-      'Uses DeepSeek when you’re signed in or have an API key, otherwise the voice model or the phone’s service';
+  String get voiceModeAutoHint => 'Uses the phone’s own speech recognition, or the cloud recognizer chosen below';
 
   @override
   String get voiceModeSystemHint => 'Use the recognition service selected on this phone';
-
-  @override
-  String get voiceModeEngineHint => 'Recognizes speech with the engine’s voice model';
 
   @override
   String get voiceFallbackStarted => 'Switched to the voice model. Please speak again.';
@@ -21010,19 +20984,6 @@ class L10nEn extends L10n {
   String get voiceModeSection => 'Recognition';
 
   @override
-  String get voiceModelSection => 'Voice model';
-
-  @override
-  String get voiceModelFooter =>
-      'Once downloaded, Chinese, English, Cantonese, Japanese and Korean are recognized on the phone; recordings stay on it.';
-
-  @override
-  String get voiceModelWaiting => 'Available once the engine is running';
-
-  @override
-  String get voiceModelUnsupported => 'This engine has no voice model';
-
-  @override
   String get voiceModelAbsent => 'Not downloaded';
 
   @override
@@ -21040,108 +21001,10 @@ class L10nEn extends L10n {
   }
 
   @override
-  String voiceModelReadyNote(String size) {
-    return 'Uses $size; works offline';
-  }
-
-  @override
-  String voiceModelAbsentNote(String size) {
-    return 'About $size to download';
-  }
-
-  @override
-  String get voiceModelWaitingNote => 'The download starts once the engine is running';
-
-  @override
-  String get voiceModelFailNetwork => 'Couldn’t reach the download source';
-
-  @override
-  String get voiceModelFailTimeout => 'The download stopped making progress';
-
-  @override
-  String get voiceModelFailCertificate => 'Secure connection failed; check the phone’s date';
-
-  @override
-  String get voiceModelFailServer => 'The download source is unavailable for now';
-
-  @override
-  String get voiceModelFailIntegrity => 'The files didn’t pass verification';
-
-  @override
-  String voiceModelFailStorage(String size) {
-    return 'Not enough storage; about $size more is needed';
-  }
-
-  @override
-  String get voiceModelFailEngine => 'The engine didn’t respond';
-
-  @override
-  String get voiceModelFailUnknown => 'The download didn’t finish';
-
-  @override
   String get voiceModelDownload => 'Download';
 
   @override
   String get voiceModelResume => 'Resume';
-
-  @override
-  String get voiceModelRedownload => 'Re-download';
-
-  @override
-  String get voiceModelMeteredTitle => 'Download over mobile data?';
-
-  @override
-  String voiceModelMeteredBody(String size) {
-    return 'The voice model is about $size and will use mobile data.';
-  }
-
-  @override
-  String get voiceModelDeleteTitle => 'Delete the voice model?';
-
-  @override
-  String get voiceModelDeleteBody =>
-      'Voice input will use the phone’s service. You can download the model again any time.';
-
-  @override
-  String get voiceModelDeleteFailed => 'Couldn’t delete the voice model. Try again.';
-
-  @override
-  String get voiceModelDeleteStopping => 'The download is still stopping. Delete again in a moment.';
-
-  @override
-  String voiceModelStartedToast(String size) {
-    return 'Downloading the voice model · about $size';
-  }
-
-  @override
-  String voiceModelResumedToast(String size) {
-    return 'Resuming the voice model · about $size left';
-  }
-
-  @override
-  String get voiceModelReadyToast => 'Voice input is ready';
-
-  @override
-  String voiceModelFailedToast(String reason) {
-    return 'Voice model download failed: $reason';
-  }
-
-  @override
-  String voiceModelNoticeDownloading(int percent) {
-    return 'Downloading the voice model $percent%';
-  }
-
-  @override
-  String get voiceModelNoticePreparing => 'Checking the voice model';
-
-  @override
-  String get voiceModelNoticeFailed => 'Voice model download failed. Open the app to retry.';
-
-  @override
-  String get voiceModeDeepseek => 'DeepSeek';
-
-  @override
-  String get voiceModeDeepseekHint => 'DeepSeek’s recognizer, paid by your signed-in account or API key';
 
   @override
   String get voiceModeCloud => 'Another cloud service';
