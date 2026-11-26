@@ -16,7 +16,7 @@ import '../theme/theme.dart';
 import 'host_key_dialog.dart';
 import 'host_status.dart';
 
-/// Drawer-header chip: `● 本机 · 运行中 ⌄` / `● 电脑 · 已连接 ⌄`. Opens the
+/// Drawer-header chip: `● 电脑 · 已连接 ⌄` / `● 远程主机 · 未连接 ⌄`. Opens the
 /// host sheet.
 class HostChip extends ConsumerWidget {
   const HostChip({super.key, required this.onTap});
@@ -64,9 +64,11 @@ class HostChip extends ConsumerWidget {
   }
 }
 
-/// "切换主机": 本机, saved SSH hosts and the DSH Remote account's hosts, each
-/// with its state; picking one makes it active. [onManage] opens the remote
-/// page.
+/// "切换主机": the saved SSH hosts and 伙伴小屋, each with its state; picking a
+/// host makes it active. [onManage] opens the remote page.
+///
+/// 本机引擎已下线（2026-11-26）：这里不再有「本机」一行，也没有别的入口能把
+/// 本机选成当前主机；没有主机时首屏是远程主机页（root_gate.dart）。
 Future<void> showHostSheet(BuildContext context, {required VoidCallback onManage}) {
   return showAppSheet<void>(context, isScrollControlled: true, builder: (sheet) => HostSheet(onManage: onManage));
 }

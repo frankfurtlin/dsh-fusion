@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
-import '../../runtime/local_footprint.dart';
-import '../../runtime/runtime_state.dart';
 import '../../state/connection_state.dart';
 import '../../remote/web/web_host_config.dart';
 import '../../state/hosts_state.dart';
@@ -57,23 +55,21 @@ class RemoteScreen extends ConsumerWidget {
     if (ok && navigator.mounted) navigator.maybePop();
   }
 
-  /// A host added while this phone has nothing to run on (no runtime, first
-  /// run) is the one to use: take it at once instead of a second tap.
-  /// 新建网页登录主机；和 SSH 一样，本机什么都没装时直接拿它当当前主机。
+  /// A host added while there is no host at all (first run: this page *is* the
+  /// first page) is the one to use: take it at once instead of a second tap.
+  /// 本机引擎已下线，所以不再看本机运行环境，只看「有没有主机」。
   Future<void> _addWeb(BuildContext context, WidgetRef ref) async {
     final saved = await Navigator.of(context)
         .push<WebHostConfig>(MaterialPageRoute(builder: (_) => const WebHostFormPage()));
     if (saved == null || !context.mounted) return;
-    final nothingHere = ref.read(localRuntimeProvider).status.runtimeMissing;
-    if (nothingHere && ref.read(activeHostProvider).isLocal) await _use(context, ref, HostRef.web(saved.id));
+    if (ref.read(activeHostProvider).isNone) await _use(context, ref, HostRef.web(saved.id));
   }
 
   Future<void> _addSsh(BuildContext context, WidgetRef ref) async {
     final saved = await Navigator.of(context)
         .push<SshHostConfig>(MaterialPageRoute(builder: (_) => const SshHostFormPage()));
     if (saved == null || !context.mounted) return;
-    final nothingHere = ref.read(localRuntimeProvider).status.runtimeMissing;
-    if (nothingHere && ref.read(activeHostProvider).isLocal) await _use(context, ref, HostRef.ssh(saved.id));
+    if (ref.read(activeHostProvider).isNone) await _use(context, ref, HostRef.ssh(saved.id));
   }
 
   @override
@@ -175,7 +171,7 @@ class RemoteScreen extends ConsumerWidget {
 }
 
 /// What the chat is talking to right now (only for a remote host), with live
-/// state, the way back to 本机, and the failure with its one fix.
+/// state and the failure with its one fix.
 class _ActiveCard extends ConsumerWidget {
   const _ActiveCard({required this.active});
 
@@ -184,7 +180,8 @@ class _ActiveCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    if (active.isLocal) return const SizedBox.shrink();
+    // 没有主机时这张卡没有可说的（本机引擎已下线，也没有「切回本机」）。
+    if (active.isLocal || active.isNone) return const SizedBox.shrink();
     final status = ref.watch(hostLinkStatusProvider(active)).value ?? HostLinkStatus.idle;
     final view = HostStatusView.ofLink(status);
     final name = ref.watch(hostNameProvider(active)) ?? l10n.commonRemoteHost;
@@ -199,8 +196,6 @@ class _ActiveCard extends ConsumerWidget {
         (error?.kind == HostLinkErrorKind.hostKeyMismatch || error?.kind == HostLinkErrorKind.hostKeyUnverified);
     void reconnect() => ref.read(remoteConnectionProvider(active).notifier).retry();
     final failed = status.phase == HostLinkPhase.failed && error != null;
-    // No runtime on this phone: 本机 is nowhere to go back to.
-    final canGoLocal = ref.watch(localRuntimeProvider.select((s) => !s.status.runtimeMissing));
     return OverviewCard(
       leading: OverviewGlyph(hostKindIcon(active.kind), tint: hostKindTint(active.kind)),
       title: Text(l10n.remoteActiveHost(name)),
@@ -222,12 +217,7 @@ class _ActiveCard extends ConsumerWidget {
           ],
         ),
       ),
-      trailing: canGoLocal
-          ? _EdgeTextButton(
-              label: l10n.remoteSwitchToPhone,
-              onPressed: () => ref.read(activeHostProvider.notifier).select(HostRef.local),
-            )
-          : null,
+      // 「切回本机」已去掉：本机引擎下线后，本机不再是可回退的主机。
       footer: failed
           ? Padding(
               padding: const EdgeInsets.only(left: OverviewCard.inset, right: OverviewCard.inset - 12),
@@ -307,34 +297,6 @@ class _HostState extends StatelessWidget {
         const SizedBox(width: 6),
         Text(view.label),
       ],
-    );
-  }
-}
-
-/// A trailing text button whose label ends exactly at the row's 16dp edge.
-class _EdgeTextButton extends StatelessWidget {
-  const _EdgeTextButton({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback? onPressed;
-
-  /// Horizontal padding inside the button.
-  static const _pad = 8.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      // Row padding (12) + button padding (8) − nudge (4) = 16 to the label.
-      offset: const Offset(SettingsMetrics.trailingPad + _pad - SettingsMetrics.inset, 0),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: _pad),
-          minimumSize: const Size(0, 40),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        onPressed: onPressed,
-        child: Text(label),
-      ),
     );
   }
 }

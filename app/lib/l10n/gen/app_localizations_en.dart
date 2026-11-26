@@ -16348,7 +16348,7 @@ class L10nEn extends L10n {
   String get remoteAutoConnectOnStartup => 'Connect to the last host';
 
   @override
-  String get remoteAutoConnectOnStartupHint => 'When off, start on this phone';
+  String get remoteAutoConnectOnStartupHint => 'When off, start on the remote-host page';
 
   @override
   String get remoteStepConnect => 'Connect to server';

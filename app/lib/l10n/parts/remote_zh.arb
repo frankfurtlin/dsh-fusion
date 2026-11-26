@@ -17,7 +17,7 @@
   "remoteDshAttached": "已连接既有 DSH",
   "remoteStartupSection": "启动",
   "remoteAutoConnectOnStartup": "连接上次使用的主机",
-  "remoteAutoConnectOnStartupHint": "关闭后从本机开始",
+  "remoteAutoConnectOnStartupHint": "关闭后从「远程主机」页开始",
   "remoteStepConnect": "连接服务器",
   "remoteStepVerifyHostKey": "验证主机指纹",
   "remoteStepStartDsh": "启动 DSH",

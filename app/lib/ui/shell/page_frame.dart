@@ -238,11 +238,15 @@ class _AppPageState extends State<AppPage> {
                       middleSpacing: 8,
                       leading: Center(
                         widthFactor: 1,
-                        child: GlassIconButton(
-                          icon: AppIcons.back,
-                          tooltip: l10n.commonBack,
-                          onPressed: () => Navigator.of(context).maybePop(),
-                        ),
+                        // 引导页（没有主机时的首屏）直接当根页面显示，没有可返回的
+                        // 地方：不摆一个按了没反应的后退键。
+                        child: (ModalRoute.of(context)?.canPop ?? false)
+                            ? GlassIconButton(
+                                icon: AppIcons.back,
+                                tooltip: l10n.commonBack,
+                                onPressed: () => Navigator.of(context).maybePop(),
+                              )
+                            : const SizedBox(width: 44),
                       ),
                       middle: ValueListenableBuilder<double>(
                         valueListenable: _offset,

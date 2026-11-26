@@ -202,11 +202,12 @@ final webLinkFactoryProvider = Provider<WebLinkFactory>(
   ),
 );
 
-/// The live link to a remote host; null for 本机 or an unknown host. Kept while
-/// something watches it (the active connection, a status row); closed after.
+/// The live link to a remote host; null for 本机, no host at all, or an
+/// unknown host. Kept while something watches it (the active connection, a
+/// status row); closed after.
 final hostLinkProvider = Provider.autoDispose.family<HostLink?, HostRef>((ref, host) {
   switch (host.kind) {
-    case HostKind.local:
+    case HostKind.local || HostKind.none:
       return null;
     case HostKind.web:
       final key = ref.watch(hostsProvider.select((s) => s.webById(host.id)?.connectionKey));
@@ -278,6 +279,8 @@ final hostNameProvider = Provider.autoDispose.family<String?, HostRef>((ref, hos
     HostKind.web => ref.watch(hostsProvider.select((s) => s.webById(host.id)?.name)),
     HostKind.ssh => ref.watch(hostsProvider.select((s) => s.sshById(host.id)?.name)),
     HostKind.relay => ref.watch(relayAccountProvider.select((a) => a.value?.hostById(host.id)?.name)) ?? host.name,
+    // 没有主机：界面显示「连接电脑或服务器」，不摆一个主机名。
+    HostKind.none => null,
   };
 });
 
@@ -568,6 +571,9 @@ final activeConnectionProvider = Provider<AsyncValue<HostConnection?>>((ref) {
 
 AsyncValue<HostConnection?> _connectionForHost(Ref ref, HostRef host) {
   switch (host.kind) {
+    case HostKind.none:
+      // 没有主机：什么都不连（本机引擎已下线，不再拿本机连接兜底）。
+      return const AsyncData(null);
     case HostKind.local:
       return ref.watch(localConnectionProvider);
     case HostKind.web:

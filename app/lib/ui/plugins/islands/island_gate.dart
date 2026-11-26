@@ -47,6 +47,8 @@ bool islandHostAllowed(
   HostKind.web => false,
   HostKind.ssh => true,
   HostKind.local => override || (reported == true && probed == RouteGuard.present),
+  // 没有主机：没有可开的岛屿。
+  HostKind.none => false,
 };
 
 /// The route that answers the probe: the bridge's own inventory, which the
@@ -147,6 +149,9 @@ final islandHostUrlProvider = Provider.autoDispose.family<Uri?, HostRef>((ref, h
       if (port == null || token == null) return null;
       return islandLaunchUri('http://127.0.0.1:$port', token);
     case HostKind.relay:
+      return null;
+    case HostKind.none:
+      // 没有主机：没有 DSH Web 可开。
       return null;
   }
 });

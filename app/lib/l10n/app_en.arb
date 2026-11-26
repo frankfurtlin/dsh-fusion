@@ -4756,7 +4756,7 @@
   "remoteDshAttached": "Connected to existing DSH",
   "remoteStartupSection": "On launch",
   "remoteAutoConnectOnStartup": "Connect to the last host",
-  "remoteAutoConnectOnStartupHint": "When off, start on this phone",
+  "remoteAutoConnectOnStartupHint": "When off, start on the remote-host page",
   "remoteStepConnect": "Connect to server",
   "remoteStepVerifyHostKey": "Verify host fingerprint",
   "remoteStepStartDsh": "Start DSH",

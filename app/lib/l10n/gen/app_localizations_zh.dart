@@ -15543,7 +15543,7 @@ class L10nZh extends L10n {
   String get remoteAutoConnectOnStartup => '连接上次使用的主机';
 
   @override
-  String get remoteAutoConnectOnStartupHint => '关闭后从本机开始';
+  String get remoteAutoConnectOnStartupHint => '关闭后从「远程主机」页开始';
 
   @override
   String get remoteStepConnect => '连接服务器';

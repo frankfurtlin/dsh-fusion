@@ -143,6 +143,9 @@ final readListIdentityProvider = Provider<ReadListIdentity?>((ref) {
   }
 
   switch (selected.kind) {
+    case HostKind.none:
+      // 没有主机：没有可证明的列表身份。
+      return null;
     case HostKind.local:
       final runtime = ref.watch(localRuntimeProvider);
       final rootEpoch = ref.watch(_rootEpochProvider);
