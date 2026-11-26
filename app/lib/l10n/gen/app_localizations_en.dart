@@ -6523,7 +6523,7 @@ class L10nEn extends L10n {
       'Memory only; cleared on restart. A new capture replaces old evidence. Included only in manual AI diagnostics or ZIP exports. Clearing does not retract snapshots or files already exported.';
 
   @override
-  String get digestTitle => 'Discover';
+  String get digestTitle => 'Interests';
 
   @override
   String get digestRefresh => 'Refresh';

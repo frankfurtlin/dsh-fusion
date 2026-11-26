@@ -11471,7 +11471,7 @@ abstract class L10n {
   /// No description provided for @digestTitle.
   ///
   /// In zh, this message translates to:
-  /// **'发现'**
+  /// **'兴趣推送'**
   String get digestTitle;
 
   /// No description provided for @digestRefresh.

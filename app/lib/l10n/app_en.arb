@@ -1896,7 +1896,7 @@
   "systemImePermissionsHint": "Configure a privileged channel only if you wish; it is not required for diagnostics. Existing phone permissions are not consent for this capture.",
   "systemImeClear": "Clear evidence and cancel capture",
   "systemImeMemory": "Memory only; cleared on restart. A new capture replaces old evidence. Included only in manual AI diagnostics or ZIP exports. Clearing does not retract snapshots or files already exported.",
-  "digestTitle": "Discover",
+  "digestTitle": "Interests",
   "digestRefresh": "Refresh",
   "digestPushTitle": "Interest push",
   "digestPushSubtitle": "Every 6 hours, only when there is something new",
