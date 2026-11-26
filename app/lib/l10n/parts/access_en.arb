@@ -125,7 +125,6 @@
     }
   },
   "accessSummaryMessage": "Turn on the rest anytime in Settings › General › System permissions",
-  "accessFinishFailed": "Couldn’t finish setup",
   "accessVoiceDownload": "The voice model (about {size} MB) starts downloading once the engine is ready. Follow it in Settings › General › Voice input.",
   "@accessVoiceDownload": {
     "placeholders": {

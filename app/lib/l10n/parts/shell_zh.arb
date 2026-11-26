@@ -8,18 +8,10 @@
   "shellEnterApiKey": "输入 API Key",
   "shellApiKeyBilling": "费用由 DeepSeek 开放平台按量结算",
   "shellSaving": "正在保存",
-  "shellSaveContinue": "保存并继续",
-  "shellSetUpLater": "稍后设置",
   "shellClearField": "清空",
   "shellShow": "显示",
   "shellApiKeyEncrypted": "加密保存在本机",
   "shellGetApiKey": "获取 API Key",
-  "shellConnectDeepSeek": "连接 DeepSeek",
-  "shellConnectDeepSeekMessage": "登录 DeepSeek 账号即可开始，无需 API Key",
-  "shellAccountSignInUnsupported": "当前引擎不支持账号登录",
-  "shellSignInDeepSeek": "用 DeepSeek 账号登录",
-  "shellUseApiKey": "使用 API Key",
-  "shellOtherProviders": "其他模型渠道",
   "shellOnboardingStep": "第 {step} 步，共 {steps} 步",
   "@shellOnboardingStep": {
     "placeholders": {
@@ -31,38 +23,6 @@
       }
     }
   },
-  "shellRuntimeUpdating": "正在更新运行环境",
-  "shellRuntimePreparing": "正在准备运行环境",
-  "shellRuntimeReady": "准备就绪",
-  "shellRuntimeIncomplete": "安装未完成",
-  "shellRuntimeFilesKept": "对话和文件都会保留",
-  "shellRuntimeFirstSetup": "首次准备约需一两分钟",
-  "shellRuntimeContinuing": "即将继续",
-  "shellRuntimeRestoreFailed": "没能放回保留的内容",
-  "shellRuntimeExtractFailed": "解压时出错",
-  "shellInstallLogs": "安装日志",
-  "shellRuntimeLocalOnly": "全程在本机完成",
-  "shellRuntimeContinueWithoutKept": "不保留，继续安装",
-  "shellRuntimeAlmostDone": "马上就好",
-  "shellRuntimeSecondsRemaining": "约 {count} 秒",
-  "@shellRuntimeSecondsRemaining": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "shellRuntimeMinutesRemaining": "约 {count} 分钟",
-  "@shellRuntimeMinutesRemaining": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "shellEngineLogs": "引擎日志",
-  "shellWelcomeMessage": "把 DeepSeek 智能体\n装进口袋",
-  "shellGetStarted": "开始",
   "shellSearchChats": "搜索对话",
   "shellCollapseChatList": "收起对话列表",
   "shellExpandChatList": "展开对话列表",
@@ -192,7 +152,6 @@
   "shellCurrentlyRunning": "正在运行",
   "shellUnread": "未读",
   "shellPinned": "已置顶",
-  "shellEngineNotRunning": "引擎未运行",
   "shellHostNotConnected": "还没连上「{name}」",
   "@shellHostNotConnected": {
     "placeholders": {
@@ -257,10 +216,6 @@
   "shellWorkspaceNoChats": "这里还没有对话",
   "shellWorkspaceNewChatsHint": "新对话会放进这个工作区。旧对话不会自动移入，可在「全部对话」中找到。",
   "shellNewChatsHint": "新对话会出现在这里",
-  "shellEngineStarting": "引擎正在启动",
-  "shellChatsAfterStarting": "启动后显示你的对话",
-  "shellStartEngine": "启动引擎",
-  "shellEngineStatusHint": "在「引擎」中查看状态",
   "shellHostUnreachable": "连不上「{name}」",
   "@shellHostUnreachable": {
     "placeholders": {

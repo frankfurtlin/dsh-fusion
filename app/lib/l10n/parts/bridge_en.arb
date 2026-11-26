@@ -46,6 +46,5 @@
   "bridgeLoginPassword": "Password",
   "bridgeLoginButton": "Sign in and save token",
   "bridgeLoginFailed": "Sign-in failed",
-  "bridgeA11yAllow": "Allow the bridge to use accessibility",
-  "bridgeA11yAllowHint": "Two gates: this switch and the system service. Both must be on for remote automation."
+  "bridgeA11yAllow": "Allow the bridge to use accessibility"
 }

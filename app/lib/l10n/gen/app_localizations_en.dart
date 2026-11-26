@@ -278,9 +278,6 @@ class L10nEn extends L10n {
   String get accessSummaryMessage => 'Turn on the rest anytime in Settings › General › System permissions';
 
   @override
-  String get accessFinishFailed => 'Couldn’t finish setup';
-
-  @override
   String accessVoiceDownload(int size) {
     return 'The voice model (about $size MB) starts downloading once the engine is ready. Follow it in Settings › General › Voice input.';
   }
@@ -1279,16 +1276,10 @@ class L10nEn extends L10n {
   String get activitySummaryTodo => 'Updated to-dos';
 
   @override
-  String get activityUsageBalance => 'DeepSeek balance';
-
-  @override
   String get activityUsageContext => 'Context';
 
   @override
   String get activityUsageChat => 'This chat';
-
-  @override
-  String get activityUsageAfterMessage => 'Appears after you send a message';
 
   @override
   String get activityUsageWaiting => 'Waiting for context usage data';
@@ -1314,16 +1305,6 @@ class L10nEn extends L10n {
 
   @override
   String get activitySpanTiny => '<0.1 sec';
-
-  @override
-  String activityTokensTenThousands(String value) {
-    return '${value}K';
-  }
-
-  @override
-  String activityTokensHundredMillions(String value) {
-    return '${value}M';
-  }
 
   @override
   String activityUsageContextSemantics(String percent) {
@@ -2633,26 +2614,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get botsUpdateRequired => 'DS Bot needs an update';
-
-  @override
   String get botsInstall => 'Install DS Bot';
-
-  @override
-  String get botsUpdateForPhone => 'Update to use it on your phone';
-
-  @override
-  String get botsInstallDescription => 'Always-on bots, each with its own memory and role';
-
-  @override
-  String botsInstallOnHost(String host) {
-    return 'Install on $host to get started';
-  }
-
-  @override
-  String botsRunsOnHost(String host) {
-    return 'Runs on $host';
-  }
 
   @override
   String get botsInstalling => 'Installing';
@@ -3548,6 +3510,9 @@ class L10nEn extends L10n {
   String get botsCreationConnectionChanged => 'The connection changed. Reopen this form to create on the current host.';
 
   @override
+  String get botsTerminalInput => 'Terminal input';
+
+  @override
   String get brandXiaomi => 'Xiaomi / Redmi';
 
   @override
@@ -3576,9 +3541,6 @@ class L10nEn extends L10n {
 
   @override
   String get brandSamsungOs => 'Samsung (One UI)';
-
-  @override
-  String get brandZhihu => 'Zhihu';
 
   @override
   String get bridgeA11yHint =>
@@ -3731,10 +3693,6 @@ class L10nEn extends L10n {
   String get bridgeA11yAllow => 'Allow the bridge to use accessibility';
 
   @override
-  String get bridgeA11yAllowHint =>
-      'Two gates: this switch and the system service. Both must be on for remote automation.';
-
-  @override
   String get catalogCurrentChat => 'Current chat';
 
   @override
@@ -3807,19 +3765,10 @@ class L10nEn extends L10n {
   String get catalogSchedulesSummary => 'Scheduled and recurring tasks';
 
   @override
-  String get catalogAgentModelsSection => 'Agents and models';
-
-  @override
   String get catalogPermission => 'Permissions';
 
   @override
   String get catalogPermissionSummary => 'Choose when to ask for approval';
-
-  @override
-  String get catalogAgentPresets => 'Agent presets';
-
-  @override
-  String get catalogAgentPresetsSummary => 'How new chats work';
 
   @override
   String get catalogModels => 'Models';
@@ -3828,40 +3777,10 @@ class L10nEn extends L10n {
   String get catalogModelsSummary => 'Subscriptions and custom providers';
 
   @override
-  String get catalogSubagentSettings => 'Subagent settings';
-
-  @override
-  String get catalogSubagentSettingsSummary => 'Depth, parallelism and models';
-
-  @override
-  String get catalogAgentLoop => 'Agent loop';
-
-  @override
-  String get catalogAgentLoopSummary => 'Parallel tool call limit';
-
-  @override
-  String get catalogShellSettings => 'Command execution';
-
-  @override
-  String get catalogShellSettingsSummary => 'Timeouts and output limits';
-
-  @override
-  String get catalogWebSearch => 'Web search';
-
-  @override
-  String get catalogWebSearchSummary => 'Search service and budget';
-
-  @override
   String get catalogPlugins => 'Plugins';
 
   @override
   String get catalogPluginsSummary => 'Installed plugins and markets';
-
-  @override
-  String get catalogPluginInventory => 'Plugin inventory';
-
-  @override
-  String get catalogPluginInventorySummary => 'All loaded plugins';
 
   @override
   String get catalogCordisSummary => 'Dynamic panels from plugins';
@@ -3888,18 +3807,6 @@ class L10nEn extends L10n {
   String get catalogCommunitySharingSection => 'Community and sharing';
 
   @override
-  String get catalogForum => 'Forum';
-
-  @override
-  String get catalogForumSummary => 'Ask, share and meet others';
-
-  @override
-  String get catalogCommunity => 'Community';
-
-  @override
-  String get catalogCommunitySummary => 'Highlights and group chats';
-
-  @override
   String get catalogBotSummary => 'Bot teams and group chats';
 
   @override
@@ -3909,37 +3816,16 @@ class L10nEn extends L10n {
   String get catalogShareProfileSummary => 'Plugins, settings and skills';
 
   @override
-  String get catalogHostsSettingsSection => 'Hosts and settings';
-
-  @override
   String get catalogSearch => 'Search chats';
 
   @override
   String get catalogSearchSummary => 'Find by title or content';
 
   @override
-  String get catalogNotifications => 'Notifications';
-
-  @override
-  String get catalogNotificationsSummary => 'Completion and approval alerts';
-
-  @override
   String get catalogWorkspaces => 'Workspaces';
 
   @override
   String get catalogWorkspacesSummary => 'Add and switch folders';
-
-  @override
-  String get catalogGeneral => 'General';
-
-  @override
-  String get catalogGeneralSummary => 'Display, sending and log uploads';
-
-  @override
-  String get catalogAccount => 'Account';
-
-  @override
-  String get catalogAccountSummary => 'Sign in, balance and top-ups';
 
   @override
   String get catalogRemoteSummary => 'Connect to a computer or server';
@@ -3949,18 +3835,6 @@ class L10nEn extends L10n {
 
   @override
   String get catalogPhoneControlSummary => 'See your screen and tap for you';
-
-  @override
-  String get catalogEngine => 'Local engine';
-
-  @override
-  String get catalogEngineSummary => 'Engine status and logs on this phone';
-
-  @override
-  String get catalogDiagnostics => 'Diagnostics';
-
-  @override
-  String get catalogDiagnosticsSummary => 'Export diagnostics bundle';
 
   @override
   String get catalogWebSummary => 'Official DSH interface';
@@ -4058,18 +3932,6 @@ class L10nEn extends L10n {
 
   @override
   String get catalogAllSettings => 'All settings';
-
-  @override
-  String get diagnosticsForAi => 'Let the AI read diagnostics';
-
-  @override
-  String get diagnosticsForAiHint => 'Write the snapshot where the engine can read it';
-
-  @override
-  String get diagnosticsForAiDone => 'Written — ask the AI to \"check the diagnostics\"';
-
-  @override
-  String get diagnosticsForAiFailed => 'Not written: the local runtime is not installed';
 
   @override
   String get chatBackgroundTaskNotice => 'Background task notice';
@@ -4534,28 +4396,10 @@ class L10nEn extends L10n {
   String get chatVoicePermissionNeeded => 'Voice input needs microphone access';
 
   @override
-  String get chatVoiceUnavailable => 'Speech recognition isn’t available on this phone';
-
-  @override
   String get chatVoiceNotHeard => 'Didn’t catch that. Try again.';
 
   @override
   String get chatVoiceTranscriptionFailed => 'Couldn’t transcribe this recording';
-
-  @override
-  String get chatVoiceNetworkFailed => 'Couldn’t transcribe. Check your connection.';
-
-  @override
-  String get chatVoiceLanguageUnsupported => 'This language isn’t supported yet';
-
-  @override
-  String get chatVoiceMicrophoneBusy => 'Microphone is in use';
-
-  @override
-  String get chatVoiceBusy => 'Speech recognition is busy. Try again later.';
-
-  @override
-  String get chatVoiceRecognitionFailed => 'Speech recognition failed';
 
   @override
   String get chatListening => 'Listening';
@@ -5220,9 +5064,6 @@ class L10nEn extends L10n {
     );
     return '$_temp0';
   }
-
-  @override
-  String get chatMe => 'Me';
 
   @override
   String chatGoalSemantics(String objective) {
@@ -6050,9 +5891,6 @@ class L10nEn extends L10n {
   String get companionMenuVoice => 'Her voice';
 
   @override
-  String get companionMenuVoiceHint => 'Reads her words aloud with the phone\'s own voice';
-
-  @override
   String get companionVoiceHello => 'Hi, this is my voice. Keep it on if you like it.';
 
   @override
@@ -6376,70 +6214,6 @@ class L10nEn extends L10n {
   String get companionAdaptNetwork => 'no connection';
 
   @override
-  String get automaticDiagnosticsRecover => 'Recover local records';
-
-  @override
-  String get automaticDiagnosticsRecoverHint =>
-      'Only recovers analysis records on this phone, skips retained failures, and never resends old requests.';
-
-  @override
-  String get automaticDiagnosticsTitle => 'Automatic failure analysis';
-
-  @override
-  String get automaticDiagnosticsHint =>
-      'Off by default. Local, foreground and engine-ready only. Same-version failures are merged for 24 hours. Disabling stops new requests; sent data cannot be retracted.';
-
-  @override
-  String get automaticDiagnosticsConsentTitle => 'Enable automatic failure analysis?';
-
-  @override
-  String get automaticDiagnosticsConsent =>
-      'On a failure, the app sends redacted versions, device and system facts, runtime state, error categories, voice stages and its own process exit reasons to the model provider configured on your local engine. Model charges may apply. No chat text, recordings, credentials or raw logs are included. Reports stay in a separate read-only analysis conversation without changing your current chat. No automatic repairs or GitHub publication. Disabling or switching hosts blocks new analyses and attempts to stop existing analysis; data already sent cannot be retracted.';
-
-  @override
-  String get automaticDiagnosticsEnable => 'Agree and enable';
-
-  @override
-  String get automaticDiagnosticsOff => 'Off';
-
-  @override
-  String get automaticDiagnosticsWaiting => 'Waiting for a local connection, foreground and ready engine';
-
-  @override
-  String get automaticDiagnosticsReady => 'Enabled; waiting for a new failure';
-
-  @override
-  String get automaticDiagnosticsCollecting => 'Collecting structured failure facts';
-
-  @override
-  String get automaticDiagnosticsAnalyzing => 'Analyzing in a separate conversation (up to 2 minutes)';
-
-  @override
-  String get automaticDiagnosticsComplete => 'Analysis complete';
-
-  @override
-  String get automaticDiagnosticsCancelled => 'Stopped or interrupted; no automatic retry';
-
-  @override
-  String get automaticDiagnosticsFailed => 'Analysis failed; this failure will not be retried automatically';
-
-  @override
-  String get automaticDiagnosticsStoreFailed => 'Cannot save diagnostics settings or state; automatic analysis stopped';
-
-  @override
-  String get automaticDiagnosticsCancelFailed => 'Stop request failed; check the report conversation and stop manually';
-
-  @override
-  String get automaticDiagnosticsViewReport => 'View latest analysis conversation';
-
-  @override
-  String get automaticDiagnosticsReportHint =>
-      'Opens only when tapped; never interrupts your current chat. The report may still be running or interrupted.';
-
-  @override
-  String get automaticDiagnosticsReportTitle => 'Automatic failure analysis report';
-
-  @override
   String get systemImeTitle => 'System input-method diagnostics';
 
   @override
@@ -6603,146 +6377,16 @@ class L10nEn extends L10n {
       'The model changed for this chat, but new chat defaults were not saved. Check Settings › Models and retry.';
 
   @override
-  String get engineAccountSignedIn => 'Signed in to DeepSeek';
-
-  @override
-  String get engineAccountSignOutTitle => 'Sign out of DeepSeek?';
-
-  @override
-  String get engineAccountSignOutBusy =>
-      'Some tasks are using account models. Signing out interrupts them immediately. Your chats and files stay.';
-
-  @override
-  String get engineAccountSignOutBody =>
-      'Account models will be unavailable. Your chats, files and API key stay. You can sign in again anytime.';
-
-  @override
-  String get engineAccountSignOutUnknown =>
-      'Can’t check whether any tasks are using account models. Signing out interrupts any that are.';
-
-  @override
-  String get engineAccountSignOutFailed => 'Couldn’t sign out. Try again later.';
-
-  @override
   String get engineAccountTitle => 'Account';
-
-  @override
-  String get engineAccountRefresh => 'Refresh';
-
-  @override
-  String get engineAccountDeepSeek => 'DeepSeek account';
-
-  @override
-  String get engineAccountProfileUnavailable => 'Can’t load account details right now';
-
-  @override
-  String get engineAccountBalance => 'Balance';
-
-  @override
-  String get engineAccountBalanceHint => 'Account models are charged to your balance';
-
-  @override
-  String get engineAccountBalanceEngineOff => 'Start the engine to see your balance';
-
-  @override
-  String get engineAccountTopUp => 'Top up';
-
-  @override
-  String get engineAccountUsageDetails => 'Usage details';
-
-  @override
-  String get engineAccountToppedUpBalance => 'Topped-up balance';
-
-  @override
-  String get engineAccountGrantedBalance => 'Granted balance';
-
-  @override
-  String get engineAccountBalanceUnavailable => 'Can’t load your balance right now';
-
-  @override
-  String get engineAccountNoKeyNeeded => 'No API key needed when signed in';
-
-  @override
-  String get engineAccountUnsupported => 'This engine doesn’t support account sign-in';
-
-  @override
-  String get engineAccountSignInDeepSeek => 'Sign in with DeepSeek';
-
-  @override
-  String get engineAccountAutoStart => 'Signing in starts the engine automatically';
-
-  @override
-  String get engineAccountReplaceKey => 'Replace key';
-
-  @override
-  String get engineAccountClearKeyTitle => 'Clear API key?';
-
-  @override
-  String get engineAccountClearKeyBody =>
-      'Deletes the key saved in the app. While the engine on this phone is running, the key in the engine is deleted too.';
 
   @override
   String get engineAccountBrowserFailed => 'Couldn’t open the browser';
 
   @override
-  String get engineAccountSignInSuccess => 'Signed in';
-
-  @override
-  String get engineAccountAlmostReady => 'Almost ready';
-
-  @override
-  String get engineAccountStartingEngine => 'Starting engine';
-
-  @override
-  String get engineAccountOpenSignInNext => 'The sign-in page opens next';
-
-  @override
-  String get engineAccountPreparingSignIn => 'Preparing sign-in';
-
-  @override
-  String get engineAccountOpenDeepSeekNext => 'Opening DeepSeek sign-in';
-
-  @override
   String get engineAccountFinishInBrowser => 'Finish sign-in in your browser';
 
   @override
-  String get engineAccountReturnToDsh => 'Return to DSH Pocket after signing in';
-
-  @override
-  String get engineAccountFinishingSignIn => 'Finishing sign-in';
-
-  @override
-  String get engineAccountSavingSignIn => 'Saving sign-in details';
-
-  @override
-  String get engineAccountAwaitingResult => 'Still waiting for sign-in';
-
-  @override
-  String get engineAccountCopySignInLink => 'Copy sign-in link';
-
-  @override
-  String get engineAccountReopenSignIn => 'Reopen sign-in';
-
-  @override
-  String get engineAccountCancelSignIn => 'Cancel sign-in';
-
-  @override
-  String get engineAccountSignInLinkCopied => 'Sign-in link copied';
-
-  @override
-  String get engineAccountSigningIn => 'Signing in';
-
-  @override
   String get engineAccountSignedOut => 'Signed out';
-
-  @override
-  String get engineAccountUsageFact => 'Usage is charged to your account balance';
-
-  @override
-  String get engineAccountBrowserFact => 'Sign in with your browser. DSH never sees your password';
-
-  @override
-  String get engineAccountCredentialsFact => 'Sign-in credentials stay on this phone';
 
   @override
   String get engineSubagentTitle => 'Subagent';
@@ -7403,12 +7047,6 @@ class L10nEn extends L10n {
   String get engineProvidersNotConfiguredHere => 'Not configured on this host';
 
   @override
-  String get engineProvidersSigningIn => 'Signing in…';
-
-  @override
-  String get engineProvidersSignInOrKey => 'Sign in or enter an API key';
-
-  @override
   String get engineProvidersOfficial => 'Official';
 
   @override
@@ -7473,11 +7111,6 @@ class L10nEn extends L10n {
 
   @override
   String get engineSubscriptionTryAgain => 'Try again';
-
-  @override
-  String engineAccountWelcome(String name) {
-    return 'Welcome, $name';
-  }
 
   @override
   String engineLayerCount(int count) {
@@ -7662,11 +7295,6 @@ class L10nEn extends L10n {
   String engineProvidersSummary(int total, int ready) {
     String _temp0 = intl.Intl.pluralLogic(total, locale: localeName, other: '$total providers', one: '1 provider');
     return '$_temp0 · $ready ready';
-  }
-
-  @override
-  String engineProvidersAccount(String name) {
-    return 'Account · $name';
   }
 
   @override
@@ -9183,10 +8811,6 @@ class L10nEn extends L10n {
   String get harmonyBackgroundAway => 'When the app leaves the screen';
 
   @override
-  String get harmonyBackgroundLocal =>
-      'A running conversation may go on for a short while, as long as the system allows. Then it pauses with the app, and tries to pick up when you come back';
-
-  @override
   String get harmonyBackgroundRemoteTitle => 'Connected remote host';
 
   @override
@@ -9202,13 +8826,7 @@ class L10nEn extends L10n {
   String get harmonyBackgroundUseRemote => 'Or run them on a connected remote host';
 
   @override
-  String get harmonyEngineBackgroundHint => 'The on-device engine pauses soon after the app leaves the screen';
-
-  @override
   String get harmonyKwBackground => 'background activity,keep alive,suspended,paused,killed';
-
-  @override
-  String get harmonyPausedInBackground => 'May have paused in the background';
 
   @override
   String get harmonyAlertsRequirement =>
@@ -9260,86 +8878,6 @@ class L10nEn extends L10n {
   @override
   String get harmonyIconChangeFailed =>
       'Couldn’t change it. The launcher icon can’t change under a custom theme or in an app twin.';
-
-  @override
-  String get harmonyEngineUnclean => 'Didn\'t exit cleanly';
-
-  @override
-  String get harmonyFailureUnclean => 'The engine didn\'t exit cleanly';
-
-  @override
-  String get harmonyFailureUncleanHint =>
-      'The cause isn\'t known: the system may have reclaimed the app, the app may have been closed, or the engine may have hit an error.';
-
-  @override
-  String get harmonyFailureHeld =>
-      'This has happened several times in a row, so the engine won\'t start by itself. Try again, or start another way.';
-
-  @override
-  String get harmonyResetKept =>
-      'Your host list, app settings and saved keys aren\'t affected. The app reopens and finishes the reset as it opens.';
-
-  @override
-  String get harmonyResetReopening => 'Reset saved. The app is reopening';
-
-  @override
-  String get harmonyResetCommittedTitle => 'The app still needs to reopen';
-
-  @override
-  String get harmonyResetCommittedBody =>
-      'The reset is saved and finishes the next time the app opens. Reopen now, or close and open it yourself.';
-
-  @override
-  String get harmonyResetUnknownTitle => 'Not sure the reset was saved';
-
-  @override
-  String get harmonyResetUnknownBody =>
-      'Reopen the app. If it was saved, the reset finishes then. If not, your chats and files are still there.';
-
-  @override
-  String get harmonyResetNotCommittedTitle => 'Nothing was reset';
-
-  @override
-  String get harmonyResetNotCommittedBody =>
-      'Your chats and files are still there. The engine has stopped and comes back when the app reopens.';
-
-  @override
-  String get harmonyResetInstalling => 'The runtime is installing. Try again once it\'s done';
-
-  @override
-  String get harmonyResetOlderPendingTitle => 'A reset is already waiting';
-
-  @override
-  String get harmonyResetOlderPendingBody => 'Reopen the app to finish it. These choices weren\'t applied.';
-
-  @override
-  String get harmonyReopenApp => 'Reopen';
-
-  @override
-  String get harmonyResetPendingTitle => 'The reset isn\'t finished';
-
-  @override
-  String get harmonyResetPendingBody => 'Reopen the app to go on. The local engine won\'t start until then.';
-
-  @override
-  String get harmonyResetFinishing => 'Finishing the reset';
-
-  @override
-  String get harmonyResetDone => 'The runtime has been reset';
-
-  @override
-  String get harmonyResetMaybeDone =>
-      'The app reopened. If your chats are still there, this reset didn\'t take effect and you can try again.';
-
-  @override
-  String get harmonyUninstallHint => 'Deletes the unpacked runtime and local data';
-
-  @override
-  String get harmonyUninstallBody =>
-      'This phone\'s chats, workspaces, plugins, settings, interface config and skills are deleted too, and the app reopens. The copy of the runtime inside the app package stays; only uninstalling the app frees it.';
-
-  @override
-  String get harmonyKwEngineUninstall => 'uninstall,remove runtime,clear local data';
 
   @override
   String get harmonyUpdateNoticeTitle => 'See the release page for how to get it';
@@ -9431,15 +8969,6 @@ class L10nEn extends L10n {
   String get harmonyNetworkFallbackRelayOnly => 'This version only uses the relay';
 
   @override
-  String get harmonySetupStay => 'Stay on this page while it installs';
-
-  @override
-  String get harmonyLaunchEmbedded => 'Inside the app';
-
-  @override
-  String get harmonyLaunchNodeExited => 'The engine exited';
-
-  @override
   String get harmonyKwAccent => 'color,colour,accent,palette';
 
   @override
@@ -9447,21 +8976,6 @@ class L10nEn extends L10n {
 
   @override
   String get harmonyKwVoice => 'speech recognition,dictation,microphone,mic,voice';
-
-  @override
-  String get harmonyBackgroundSubtitleLong =>
-      'A running conversation tries to keep going after the app leaves the screen';
-
-  @override
-  String get harmonyBackgroundLocalLong =>
-      'This version can ask for a long-running task: the conversation goes on in the background, with a notice in the notification bar. If the system says no or takes it back, it pauses with the app, and tries to pick up when you come back';
-
-  @override
-  String get harmonyEngineBackgroundHintLong => 'A running conversation tries to keep going after you leave the screen';
-
-  @override
-  String get harmonyAlertsRequirementLong =>
-      'Alerts need the app running: they go out while a conversation carries on in the background, and stop once the system suspends the app';
 
   @override
   String get harmonySaveToFile => 'Save to file';
@@ -9477,24 +8991,6 @@ class L10nEn extends L10n {
 
   @override
   String get harmonyCommandExportDescription => 'Export this chat’s full history as a ZIP to share or save to a file';
-
-  @override
-  String get harmonySafeEnterTitle => 'Start in Safe mode?';
-
-  @override
-  String get harmonySafeEnterBody =>
-      'Starts with the default configuration that comes with the app, without the plugins you installed. Your chats stay, and your own configuration isn\'t changed.';
-
-  @override
-  String get harmonySafeReopenNote => 'Replies in progress stop, and the app reopens.';
-
-  @override
-  String get harmonyRestoredReopening => 'Restored the last good configuration. The app is reopening';
-
-  @override
-  String harmonySafeRepairPrompt(String what) {
-    return 'My DSH has a problem in normal mode ($what). It\'s in Safe mode now, on the default configuration that comes with the app, and my own configuration is untouched. Find the cause, and tell me what you\'d change before changing it.';
-  }
 
   @override
   String get harmonyRemindersTitle => 'Alarms and timers';
@@ -9638,44 +9134,16 @@ class L10nEn extends L10n {
   String get hubSettingsStorageAllow => 'Allow access';
 
   @override
-  String get hubSettingsStorageDenied =>
-      'Storage access wasn’t granted. Allow “All files access” for DSH Pocket in system settings, then try again.';
-
-  @override
-  String get hubSettingsRestartRequired => 'Takes effect after restarting the engine';
-
-  @override
-  String get hubSettingsRestartNow => 'Restart now';
-
-  @override
   String get hubSettingsInterface => 'Interface';
 
   @override
   String get hubSettingsChat => 'Chat';
 
   @override
-  String get hubSettingsAutoCommands => 'Auto-run commands';
-
-  @override
   String get hubSettingsPhoneFiles => 'Access phone files';
 
   @override
-  String get hubSettingsPhoneFilesHint => 'AI can read and write phone storage';
-
-  @override
   String get hubSettingsVisualReplies => 'Visual replies';
-
-  @override
-  String get hubSettingsVisualRepliesHint => 'Charts, comparisons and tappable options';
-
-  @override
-  String get hubSettingsPhoneControl => 'Phone control';
-
-  @override
-  String get hubSettingsPhoneControlHint => 'See your screen and tap for you';
-
-  @override
-  String get hubSettingsPreferences => 'Personal preferences';
 
   @override
   String get hubSettingsAppearance => 'Appearance';
@@ -9687,25 +9155,10 @@ class L10nEn extends L10n {
   String get hubSettingsCollapseSteps => 'Collapse steps when done';
 
   @override
-  String get hubSettingsCollapseStepsHint => 'Fold thinking and tool calls into one line';
-
-  @override
-  String get hubSettingsWebPhoneLayout => 'Web phone layout';
-
-  @override
   String get hubSettingsWebPhoneLayoutHint => 'Adapt DSH Web to phone screens';
 
   @override
-  String get hubSettingsEngineExtensions => 'Engine and extensions';
-
-  @override
-  String get hubSettingsEngine => 'Local engine';
-
-  @override
   String get hubSettingsProviders => 'Models';
-
-  @override
-  String get hubSettingsEngineSettings => 'Engine parameters';
 
   @override
   String get hubSettingsShareConfig => 'Share configuration';
@@ -9714,34 +9167,10 @@ class L10nEn extends L10n {
   String get hubSettingsAllFeatures => 'All features';
 
   @override
-  String get hubSettingsAbout => 'About';
-
-  @override
   String get hubSettingsCommunity => 'Community';
 
   @override
   String get hubSettingsLicenses => 'Open-source licenses';
-
-  @override
-  String get hubSettingsAccount => 'DeepSeek account';
-
-  @override
-  String get hubSettingsSigningIn => 'Signing in…';
-
-  @override
-  String get hubSettingsInvalidKey => 'Invalid API key. Can’t check balance';
-
-  @override
-  String get hubSettingsNoApiKey => 'No API key set';
-
-  @override
-  String get hubSettingsApiKeyHint => 'Add an API key to start chatting';
-
-  @override
-  String get hubSettingsSignInAccount => 'Sign in to DeepSeek';
-
-  @override
-  String get hubSettingsOrApiKey => 'Or add an API key';
 
   @override
   String get hubPluginShare => 'Share plugin';
@@ -9899,27 +9328,9 @@ class L10nEn extends L10n {
       'AI can read and change your photos, downloads and documents. The engine restarts once.';
 
   @override
-  String hubSettingsBalance(String amount) {
-    return 'Balance $amount';
-  }
-
-  @override
-  String hubSettingsBalanceLow(String amount) {
-    return 'Balance $amount · Low balance';
-  }
-
-  @override
-  String hubSettingsAccountSemantics(String title, String subtitle) {
-    return 'Account: $title, $subtitle';
-  }
-
-  @override
   String hubSettingsHostSemantics(String name, String status) {
     return 'Remote host: $name, $status';
   }
-
-  @override
-  String get hubSettingsApiKey => 'DeepSeek API key';
 
   @override
   String hubPluginBrowserFailed(String address) {
@@ -9984,12 +9395,6 @@ class L10nEn extends L10n {
   String get hubPersonalization => 'Personalization';
 
   @override
-  String get hubPersonalizationAboutYou => 'About you';
-
-  @override
-  String get hubPersonalizationReplies => 'Replies';
-
-  @override
   String get hubPersonalizationWorkStyle => 'Working style';
 
   @override
@@ -10035,22 +9440,7 @@ class L10nEn extends L10n {
   String get hubAbout => 'About DSH Pocket';
 
   @override
-  String get hubAboutAuthor => 'Original author of DSH Pocket';
-
-  @override
-  String get hubAboutBilibili => 'Bilibili profile';
-
-  @override
-  String get hubAboutX => 'X profile';
-
-  @override
-  String get hubAboutGithub => 'GitHub profile';
-
-  @override
   String get hubAboutNewVersion => 'Update available';
-
-  @override
-  String get hubValueSet => 'Set';
 
   @override
   String get hubValueOff => 'Off';
@@ -10071,16 +9461,10 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get hubValueNoHosts => 'None';
-
-  @override
   String hubValuePlugins(int count) {
     String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count plugins', one: '1 plugin');
     return '$_temp0';
   }
-
-  @override
-  String get hubEngineStartup => 'Startup';
 
   @override
   String get hubThemeLightDark => 'Light and dark';
@@ -10154,96 +9538,7 @@ class L10nEn extends L10n {
   String get iosPhotosDenied => 'Couldn’t save. Photos access is off.';
 
   @override
-  String get iosRelocationOriginUnavailable =>
-      'Found older chats, but not where they used to be. Everything is still here, but these chats can’t continue for now.';
-
-  @override
-  String get iosRelocationSessionIsolated =>
-      'Some chats couldn’t be moved and were set aside. The files and the reason are kept. You can export them from Diagnostics and report it.';
-
-  @override
   String get iosAccessSubtitle => 'What each feature needs from iOS';
-
-  @override
-  String get iosLinuxTitle => 'Linux environment';
-
-  @override
-  String get iosLinuxIntro =>
-      'After installation and a local-engine restart, ordinary commands run in Linux. Install Python and other packages with apk. Changes to the Linux system still need approval for that call. App files remain limited to the workspace and temporary folder.';
-
-  @override
-  String get iosLinuxInstall => 'Install the Linux environment';
-
-  @override
-  String get iosLinuxDownloadSize => 'About 4 MB';
-
-  @override
-  String get iosLinuxDownloading => 'Downloading';
-
-  @override
-  String get iosLinuxVerifying => 'Checking';
-
-  @override
-  String get iosLinuxExtracting => 'Unpacking';
-
-  @override
-  String get iosLinuxFinishing => 'Finishing';
-
-  @override
-  String get iosLinuxSystem => 'System';
-
-  @override
-  String get iosLinuxStorage => 'Storage used';
-
-  @override
-  String get iosLinuxUninstall => 'Uninstall the Linux environment';
-
-  @override
-  String get iosLinuxUninstallBody =>
-      'This deletes the Linux environment and everything installed in it. Files in your workspaces stay.';
-
-  @override
-  String get iosLinuxUninstallConfirm => 'Uninstall';
-
-  @override
-  String get iosLinuxUninstalling => 'Uninstalling…';
-
-  @override
-  String get iosLinuxRestartEngine => 'Installed. Restart the engine on this phone for commands to use it.';
-
-  @override
-  String get iosLinuxErrorNetwork => 'The download didn\'t work. Check the connection and try again.';
-
-  @override
-  String get iosLinuxErrorDamaged => 'The download was incomplete and has been discarded. Try again.';
-
-  @override
-  String get iosLinuxErrorNoSpace => 'There isn\'t enough storage on this phone.';
-
-  @override
-  String get iosLinuxErrorInUse => 'The Linux environment is in use. Reopen the app to uninstall it.';
-
-  @override
-  String get iosLinuxErrorOther => 'That didn\'t finish. Try again.';
-
-  @override
-  String get iosLinuxState => 'Status';
-
-  @override
-  String get iosLinuxStatePaused => 'Paused';
-
-  @override
-  String get iosLinuxSuspendedBody =>
-      'When the app last closed, a command was still running in Linux, and it may be what made the app crash. So that it doesn\'t happen again, Linux is paused; everything else works as usual. Turn it back on when you want it.';
-
-  @override
-  String get iosLinuxResume => 'Turn Linux back on';
-
-  @override
-  String get iosLinuxResumed => 'Turned back on. Restart the local engine for commands to use it.';
-
-  @override
-  String get iosLinuxErrorBusy => 'Linux is still in use. Try again once the command stops, or reopen the app.';
 
   @override
   String get iosPhoneLinkTitle => 'On-device connection';
@@ -10395,10 +9690,6 @@ class L10nEn extends L10n {
   @override
   String get iosSpeechCallEndNoRecognizer =>
       'Voice calls need a way to recognize recordings: sign in to DeepSeek, add an API key, or configure another available cloud recognizer. The local voice model is not available on iOS yet.';
-
-  @override
-  String get iosSpeechCallEndNoRecognizerSignedIn =>
-      'This connection can\'t use your signed-in account to recognize call recordings (for example, through DSH Remote). Add a DeepSeek API key or configure another available cloud recognizer. The local voice model is not available on iOS yet.';
 
   @override
   String get iosPhoneLinkErrorPairingRejected =>
@@ -10625,151 +9916,6 @@ class L10nEn extends L10n {
   String get searchKwIconShortcut => 'shortcut,custom icon,home screen picture';
 
   @override
-  String get linuxTitle => 'Linux environment';
-
-  @override
-  String get linuxSubtitle => 'Run gh, Python, git and other command-line tools on this phone';
-
-  @override
-  String get linuxSwitch => 'Turn on Linux';
-
-  @override
-  String get linuxStatus => 'Status';
-
-  @override
-  String get linuxFirstHint =>
-      'The first time downloads a 3.5 MB base system and installs it, which takes a minute or two. After that it starts in seconds.';
-
-  @override
-  String get linuxMemoryNote =>
-      'While Linux is on, the app uses roughly 100 MB more memory. Turning it off gives that back; turning it on again then needs the app reopened.';
-
-  @override
-  String get linuxStateOn => 'On';
-
-  @override
-  String get linuxStateOff => 'Off';
-
-  @override
-  String get linuxStateInstalling => 'Getting ready';
-
-  @override
-  String get linuxStateStopping => 'Turning off';
-
-  @override
-  String get linuxStateFailed => 'Failed';
-
-  @override
-  String get linuxStateUnavailable => 'Unavailable';
-
-  @override
-  String get linuxStageDownload => 'Downloading the base system';
-
-  @override
-  String get linuxStageDisk => 'Preparing disks';
-
-  @override
-  String get linuxStageBoot => 'Starting';
-
-  @override
-  String get linuxStageTools => 'Installing tools';
-
-  @override
-  String get linuxEngineOffline => 'The on-device engine isn’t running. Start it, then turn Linux on.';
-
-  @override
-  String get linuxRequestFailed => 'Couldn’t reach the engine. Try again in a moment.';
-
-  @override
-  String get linuxRestartRequired => 'Linux has stopped. Reopen the app to turn it on again.';
-
-  @override
-  String get linuxReopenApp => 'Reopen app';
-
-  @override
-  String get linuxReopenFailed => 'Couldn\'t reopen the app. Quit it and open it again.';
-
-  @override
-  String linuxErrorWithCode(String code) {
-    return 'Couldn’t turn on: $code';
-  }
-
-  @override
-  String get linuxReinstall => 'Reinstall Linux';
-
-  @override
-  String get linuxReinstallHint => 'Deletes everything inside Linux; turning it on again installs it fresh';
-
-  @override
-  String get linuxReinstallAfterRestart =>
-      'Linux already started in this run of the app. Quit and reopen the app to reinstall';
-
-  @override
-  String get linuxReinstallTitle => 'Reinstall Linux?';
-
-  @override
-  String get linuxReinstallBody =>
-      'This deletes everything inside Linux: installed software and Python packages, files that exist only inside Linux, and accounts signed in there (such as gh). Files in your chat workspaces aren’t touched.\n\nThe switch stays off; turning it on afterwards downloads and installs Linux again.';
-
-  @override
-  String linuxRetainedRefused(String code) {
-    return 'The existing Linux data can’t be used any more (usually after an app update), and the app won’t overwrite it on its own. Tap Reinstall Linux to delete it, then turn Linux on for a fresh install. ($code)';
-  }
-
-  @override
-  String get linuxReinstallRestart =>
-      'Linux already started in this run of the app, so its data may still be in use. Quit and reopen the app, then tap Reinstall Linux.';
-
-  @override
-  String linuxReinstallFailed(String code) {
-    return 'Couldn’t reinstall: $code';
-  }
-
-  @override
-  String get linuxProxyTitle => 'Network proxy';
-
-  @override
-  String get linuxProxyFooter =>
-      'Applies only to commands inside Linux. Gitee, Huawei Cloud and other mirrors in China always connect directly.';
-
-  @override
-  String get linuxProxyMode => 'Mode';
-
-  @override
-  String get linuxProxyInherit => 'Same as app';
-
-  @override
-  String get linuxProxyDirect => 'No proxy';
-
-  @override
-  String get linuxProxyManual => 'Manual';
-
-  @override
-  String get linuxProxyHttp => 'HTTP proxy';
-
-  @override
-  String get linuxProxyHttps => 'HTTPS proxy';
-
-  @override
-  String get linuxProxyNoProxy => 'Bypass for';
-
-  @override
-  String get linuxProxyUnset => 'Not set';
-
-  @override
-  String get linuxProxySameAsHttp => 'Same as HTTP';
-
-  @override
-  String get linuxProxyLoopbackNote => '127.0.0.1 means this phone, not your computer.';
-
-  @override
-  String get linuxProxyUrlInvalid =>
-      'Enter an address starting with http:// or https://, such as http://127.0.0.1:7890';
-
-  @override
-  String get searchKwLinux => 'Linux,terminal,command line,virtual machine,gh,GitHub CLI,python,pip,proxy';
-
-  @override
   String get liveThinking => 'Thinking';
 
   @override
@@ -10865,132 +10011,7 @@ class L10nEn extends L10n {
   String get localeEn => 'English';
 
   @override
-  String get localEnvChooseTitle => 'Where should DSH run?';
-
-  @override
-  String get localEnvChooseMessage => 'You can change this later in Settings';
-
-  @override
-  String localEnvThisPhoneDetail(int storage, int memory) {
-    return '$storage MB storage · $memory MB memory';
-  }
-
-  @override
-  String localEnvThisPhoneDetailShort(int memory) {
-    return '$memory MB memory while running';
-  }
-
-  @override
-  String localEnvLowStorage(int needed) {
-    return 'Needs about $needed MB free';
-  }
-
-  @override
-  String get localEnvRemoteDetail => 'Use DSH on your computer or server';
-
-  @override
-  String get localEnvUnavailable => 'DSH can\'t run on this device yet';
-
-  @override
-  String get localEnvUnsupported => 'Not supported';
-
-  @override
-  String get localEnvRecommended => 'Recommended';
-
-  @override
-  String get localEnvInstallTitle => 'Install on this phone';
-
-  @override
-  String get localEnvInstallMessage => 'Run DSH right on this phone';
-
-  @override
-  String localEnvFactStorage(int storage) {
-    return 'About $storage MB of storage';
-  }
-
-  @override
-  String localEnvFactMemory(int memory) {
-    return 'About $memory MB of memory while running';
-  }
-
-  @override
-  String get localEnvUseRemote => 'Use a remote host instead';
-
-  @override
-  String get localEnvNotInstalled => 'Not installed on this phone';
-
-  @override
-  String get localEnvUninstall => 'Uninstall runtime';
-
-  @override
-  String get localEnvUninstallHint => 'Free up storage';
-
-  @override
-  String get localEnvUninstallTitle => 'Uninstall the runtime?';
-
-  @override
-  String get localEnvUninstallBody =>
-      'Chats, workspaces, plugins, settings, interface settings and skills on this phone will be deleted.';
-
-  @override
-  String get localEnvUninstallConfirm => 'Uninstall';
-
-  @override
-  String get localEnvUninstallFailed => 'Couldn’t uninstall. Try again.';
-
-  @override
-  String get localEnvPhoneNeedsRuntime => 'Available after installing on this phone';
-
-  @override
-  String get localEnvSignInNeedsRuntime => 'Needs DSH on this phone';
-
-  @override
-  String get localEnvSignInInstallFirst => 'Install it to sign in';
-
-  @override
-  String get engineStartReopensApp =>
-      'The engine starts once each time the app opens, so starting it again reopens the app.';
-
-  @override
-  String get engineReopenFailed => 'The engine needs the app reopened before it can start again. Please reopen it.';
-
-  @override
-  String get engineCapShell => 'Command line';
-
-  @override
-  String engineCapShellBuiltin(int count) {
-    return '$count built-in commands';
-  }
-
-  @override
-  String get engineCapShellSystem => 'System';
-
-  @override
-  String get engineCapNodeScripts => 'Node scripts';
-
-  @override
-  String get engineCapMarket => 'Market plugins';
-
-  @override
-  String get engineCapBackground => 'In the background';
-
-  @override
-  String get engineCapMayFreeze => 'May be paused by the system';
-
-  @override
-  String get engineCapKeepsRunning => 'Keeps running';
-
-  @override
-  String get engineCapYes => 'Available';
-
-  @override
-  String get engineCapNone => 'Unavailable';
-
-  @override
   String get marketInstallRefused => 'This engine can\'t install market plugins';
-
-  @override
-  String get localEnvChooseUseTitle => 'How will you use dsh-Go?';
 
   @override
   String get marketSectionOfficial => 'Official';
@@ -11204,11 +10225,6 @@ class L10nEn extends L10n {
 
   @override
   String get mediaGenerating => 'Generating';
-
-  @override
-  String mediaGeneratingProgress(String progress) {
-    return 'Generating · $progress';
-  }
 
   @override
   String get mediaCancelled => 'Cancelled';
@@ -11570,9 +10586,6 @@ class L10nEn extends L10n {
   String get mediaSettingsBaseUrl => 'API base URL';
 
   @override
-  String get mediaSettingsBaseUrlInvalid => 'The address must start with https://';
-
-  @override
   String get mediaSettingsProvider => 'Provider id';
 
   @override
@@ -11839,9 +10852,6 @@ class L10nEn extends L10n {
   String get performanceFollowMode => 'Follow the performance mode';
 
   @override
-  String get performanceRemoteHint => 'Connect to a computer or server to reduce work on this phone';
-
-  @override
   String get performanceRefresh => 'Refresh rate';
 
   @override
@@ -11926,152 +10936,13 @@ class L10nEn extends L10n {
   String get phoneDiagnosticsExport => 'Export diagnostics bundle';
 
   @override
-  String get phoneSafeMode => 'Safe mode';
-
-  @override
-  String get phoneEngineStartingSafeEllipsis => 'Starting in Safe mode…';
-
-  @override
-  String get phoneEngineStartingEllipsis => 'Starting…';
-
-  @override
   String get phoneEngineTidyingFilesEllipsis => 'Tidying plugin files…';
-
-  @override
-  String get phoneEngineStoppingEllipsis => 'Stopping…';
-
-  @override
-  String get phoneEngineStoppedNextSafe => 'Stopped · Next start in Safe mode';
-
-  @override
-  String get phoneEngineInstallingRuntime => 'Installing runtime…';
-
-  @override
-  String get phoneEngineRuntimeNotInstalled => 'Runtime not installed';
-
-  @override
-  String get phoneEngineErrorSeeLogs => 'Engine error. See logs for details.';
-
-  @override
-  String get phoneEngineTitle => 'Local engine';
-
-  @override
-  String get phoneEngineLocal => 'This phone’s engine';
-
-  @override
-  String get phoneEngineLogs => 'Logs';
-
-  @override
-  String get phoneEngineAutoStart => 'Start when DSH Pocket opens';
 
   @override
   String get phoneEngineKeepAlive => 'Background running';
 
   @override
-  String get phoneEngineKeepAliveHint => 'Prevent Android from stopping the engine';
-
-  @override
   String get phoneEngineDiagnostics => 'Diagnostics';
-
-  @override
-  String get phoneEngineDiagnosticsHint => 'Runtime info and bug reports';
-
-  @override
-  String get phoneEngineRuntime => 'Runtime';
-
-  @override
-  String get phoneEngineArchitecture => 'Architecture';
-
-  @override
-  String get phoneEngineStopTitle => 'Stop the engine?';
-
-  @override
-  String get phoneEngineStopBody => 'Active chats will be interrupted. You can start it again anytime.';
-
-  @override
-  String get phoneEngineInstallRuntime => 'Install runtime';
-
-  @override
-  String get phoneEngineStartAgain => 'Start again';
-
-  @override
-  String get phoneEngineStart => 'Start';
-
-  @override
-  String get phoneEngineRestart => 'Restart';
-
-  @override
-  String get phoneEngineResetFailed => 'Couldn’t reset';
-
-  @override
-  String get phoneEngineReset => 'Reset runtime';
-
-  @override
-  String get phoneEngineResetHint => 'Delete chats and files, then extract again';
-
-  @override
-  String get phoneEngineResetTitle => 'Reset the runtime?';
-
-  @override
-  String get phoneResetAlsoDeletes =>
-      'Anything else in the home folder (/root) goes too, including files in your workspaces, AGENTS.md and data that plugins store themselves, such as memories.';
-
-  @override
-  String get phoneEngineKeepUiSkills => 'Keep interface settings and skills';
-
-  @override
-  String get phoneEngineKeepPluginsSettings => 'Keep installed plugins and settings';
-
-  @override
-  String get phoneEngineDeleteReset => 'Delete and reset';
-
-  @override
-  String get phoneEngineNotInstalled => 'Not installed';
-
-  @override
-  String get phoneEngineInstalling => 'Installing';
-
-  @override
-  String get phoneEngineStoppedSafe => 'Stopped · Safe mode';
-
-  @override
-  String get phoneEngineStartingSafe => 'Starting in Safe mode';
-
-  @override
-  String get phoneEngineStarting => 'Starting';
-
-  @override
-  String get phoneEngineTidyingFiles => 'Tidying plugin files';
-
-  @override
-  String get phoneEngineRunningProbation => 'Running · Trial';
-
-  @override
-  String get phoneEngineStartupFailed => 'Couldn’t start';
-
-  @override
-  String get phoneEngineCrashed => 'Crashed';
-
-  @override
-  String get phoneEngineKilled => 'Stopped by Android';
-
-  @override
-  String get phoneEngineError => 'Something went wrong';
-
-  @override
-  String get phoneEngineRuntimeCorrupt => 'The bundled runtime is damaged. Reinstall DSH.';
-
-  @override
-  String get phoneEngineExited => 'The engine quit unexpectedly';
-
-  @override
-  String get phoneEngineRuntimeMissing => 'The runtime isn’t installed yet';
-
-  @override
-  String get phoneEngineSafeUnsupported => 'This runtime doesn’t support Safe mode. Update DSH.';
-
-  @override
-  String get phoneEngineRuntimeIncomplete => 'The bundled runtime is incomplete. Reinstall DSH.';
 
   @override
   String get phoneLogEmpty => 'No logs yet';
@@ -12081,9 +10952,6 @@ class L10nEn extends L10n {
 
   @override
   String get phoneLogCopyAll => 'Copy all';
-
-  @override
-  String get phoneBackgroundAllow => 'Allow access';
 
   @override
   String get phoneToolScreen => 'Read screen';
@@ -12309,9 +11177,6 @@ class L10nEn extends L10n {
   String get phoneDndDirectAdb => 'Direct ADB';
 
   @override
-  String get phoneDndChannels => 'Connection';
-
-  @override
   String get phoneDndShizukuFor => 'Phones with the Shizuku app';
 
   @override
@@ -12364,9 +11229,6 @@ class L10nEn extends L10n {
       'Sui wasn’t found. Install the Sui module in Magisk or KernelSU, restart the phone, then come back.';
 
   @override
-  String get phoneDndSuiRunning => 'Sui interface available';
-
-  @override
   String get phoneDndSuiStopped =>
       'The Sui interface isn’t available. Check that the Sui module is enabled, restart the phone and try again.';
 
@@ -12411,20 +11273,8 @@ class L10nEn extends L10n {
   String get phoneDndShizukuAllSet => 'Shizuku is running and authorized. Connect the background screen next.';
 
   @override
-  String get phoneDndShizukuInstalled => 'Shizuku installed';
-
-  @override
-  String get phoneDndShizukuRunning => 'Shizuku running';
-
-  @override
-  String get phoneDndShizukuGranted => 'DSH Pocket allowed';
-
-  @override
   String get phoneDndShizukuCompatibility =>
       'This Android version has compatibility issues with the official Shizuku release.';
-
-  @override
-  String get phoneDndWirelessDebuggingOn => 'Wireless debugging on';
 
   @override
   String get phoneDndPaired => 'Paired';
@@ -12584,15 +11434,6 @@ class L10nEn extends L10n {
   String get phoneControlNotEnabled => 'Off';
 
   @override
-  String get phoneControlSafeModeNotLoaded => 'Not loaded in Safe mode';
-
-  @override
-  String get phoneControlLocalOnly => 'Only available with this phone’s engine';
-
-  @override
-  String get phoneControlAfterEngineStarts => 'Takes effect when the engine starts';
-
-  @override
   String get phoneControlNeedsAccessibility => 'One step left: turn on accessibility';
 
   @override
@@ -12670,15 +11511,6 @@ class L10nEn extends L10n {
 
   @override
   String get phoneControlModuleNotReady => 'Phone control isn’t ready in this version';
-
-  @override
-  String get phoneControlSafeModeUnavailable => 'Unavailable in Safe mode';
-
-  @override
-  String get phoneControlSafeModeHint => 'Safe mode skips plugins. Switch to normal mode to use this.';
-
-  @override
-  String get phoneControlRemoteHost => 'Connected to a remote host';
 
   @override
   String get phoneControlCapabilities => 'What you can do';
@@ -12901,181 +11733,6 @@ class L10nEn extends L10n {
   String get phoneScreenReadNote => 'This is what the model would see. This read wasn’t sent to the model.';
 
   @override
-  String get phoneFailureSafeStartup => 'Couldn’t start even in Safe mode';
-
-  @override
-  String get phoneFailureSafeStartupHint => 'Likely a global configuration or runtime issue';
-
-  @override
-  String get phoneFailureKilled => 'Android stopped the engine';
-
-  @override
-  String get phoneFailureKilledHint => 'Likely low memory or battery restrictions';
-
-  @override
-  String get phoneFailureLaunch => 'Local runtime couldn’t start';
-
-  @override
-  String get phoneFailureLaunchHint => 'Check the logs, or connect to a remote host to continue';
-
-  @override
-  String get phoneFailureTawcHint =>
-      'PRoot couldn’t run the local engine. Try starting with tawcroot to use your existing runtime and data.';
-
-  @override
-  String get phoneFailureRetryWithTawcroot => 'Start with tawcroot';
-
-  @override
-  String get phoneFailureNoSpaceHint => 'Free up some space and try again';
-
-  @override
-  String get phoneFailureStartup => 'DSH couldn’t start';
-
-  @override
-  String get phoneFailureCrashedEarly => 'DSH crashed soon after starting';
-
-  @override
-  String get phoneFailureCrashedLate => 'DSH crashed while running';
-
-  @override
-  String get phoneFailureFatal => 'The engine reported a fatal error';
-
-  @override
-  String get phoneFailureRestore => 'Restore configuration';
-
-  @override
-  String get phoneFailureEnterSafe => 'Enter Safe mode';
-
-  @override
-  String get phoneFailureStartNormal => 'Start normally';
-
-  @override
-  String get phoneFailureGlobalPatch => 'Global patch';
-
-  @override
-  String get phoneFailureEnvironment => 'Environment variables';
-
-  @override
-  String get phoneSafeMoveAsideTitle => 'Move these files aside first?';
-
-  @override
-  String get phoneSafeMoveAsideIntro => 'They affect all configurations, including Safe mode:';
-
-  @override
-  String get phoneSafeMoveAsideNote =>
-      'Files are renamed (with .off-timestamp), never deleted. You can rename them back after fixing the issue.';
-
-  @override
-  String get phoneSafeStartDirectly => 'Start directly';
-
-  @override
-  String get phoneSafeMoveAsideStart => 'Move and start';
-
-  @override
-  String get phoneSafeNoRestoreNeeded => 'Configuration matches the last working version. No restore needed.';
-
-  @override
-  String get phoneSafeNoRestoreRecord => 'No previous working configuration recorded';
-
-  @override
-  String get phoneSafeRestoreTitle => 'Restore the last working configuration?';
-
-  @override
-  String get phoneSafeRestoreStart => 'Restore and start';
-
-  @override
-  String get phoneSafeRestoredStarting => 'Restored the last working configuration. Starting…';
-
-  @override
-  String get phoneSafeRestoreFailed => 'Couldn’t restore';
-
-  @override
-  String get phoneSafeStopIncomplete =>
-      'Could not confirm that the engine has stopped. Configuration was not changed. Check the engine logs before trying again.';
-
-  @override
-  String get phoneSafeRestartIncomplete =>
-      'The configuration operation finished, but the engine has not stopped or restarted. Wait for it to stop before starting it again.';
-
-  @override
-  String get phoneSafeRestoreIntro => 'DSH will restore the last working configuration:';
-
-  @override
-  String get phoneSafeRestoreSettings => '• Restore settings to that version (save current settings as a backup)';
-
-  @override
-  String get phoneSafeRestoreNote =>
-      'No plugins will be uninstalled. No internet needed. You can re-enable disabled plugins later.';
-
-  @override
-  String get phoneSafeLeaveTitle => 'Return to normal mode?';
-
-  @override
-  String get phoneSafeLeaveBody =>
-      'Start with your original configuration and plugins. Web settings changed in Safe mode won’t be kept.';
-
-  @override
-  String get phoneSafeLeave => 'Return to normal mode';
-
-  @override
-  String get phoneSafeMovePatch => 'Move patch aside';
-
-  @override
-  String get phoneSafeMoveFiles => 'Move files aside';
-
-  @override
-  String get phoneSafeFailureLog => 'Logs around the failure';
-
-  @override
-  String get phoneSafeFailureLogEmpty => 'No output recorded at the time of failure';
-
-  @override
-  String get phoneSafeBannerTitle => 'Safe mode · Plugins not loaded';
-
-  @override
-  String get phoneSafeBannerProbation => 'Trying normal mode';
-
-  @override
-  String get phoneSafeBannerProbationHint =>
-      'If no errors occur within 2 minutes, recovery is complete. Otherwise, Safe mode returns automatically.';
-
-  @override
-  String get phoneSafeBannerRunningHint => 'Your chats are safe. Fix the configuration, then return to normal mode.';
-
-  @override
-  String get phoneSafeBannerFailedHint => 'Couldn’t start even in Safe mode. Check the engine page.';
-
-  @override
-  String get phoneSafeBannerStoppedHint => 'Engine stopped. Next start will still use Safe mode.';
-
-  @override
-  String get phoneSafeRepair => 'Help me fix it';
-
-  @override
-  String get phoneSafeReasonStartup => 'Failed to start twice in a row';
-
-  @override
-  String get phoneSafeReasonProbation => 'Crashed again after recovery';
-
-  @override
-  String get phoneSafeReasonManual => 'Turned on manually';
-
-  @override
-  String get phoneSafeNormalSettingsHint => 'Restart with original configuration and plugins';
-
-  @override
-  String get phoneSafeStartSettings => 'Start in Safe mode';
-
-  @override
-  String get phoneSafeStartSettingsHint => 'Skip plugins to troubleshoot startup';
-
-  @override
-  String get phoneSafeAutoSettings => 'Automatic Safe mode';
-
-  @override
-  String get phoneSafeAutoSettingsHint => 'Turn on after repeated startup failures';
-
-  @override
   String get phoneAccentMist => 'Mist';
 
   @override
@@ -13095,16 +11752,6 @@ class L10nEn extends L10n {
 
   @override
   String get phoneAccentCustom => 'Custom';
-
-  @override
-  String phoneEngineInstallPercent(int percent) {
-    return 'Installing · $percent%';
-  }
-
-  @override
-  String phoneEngineStatusSemantics(String prefix, String status) {
-    return '$prefix engine: $status';
-  }
 
   @override
   String phoneLogLineCount(int count) {
@@ -13205,11 +11852,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String phoneControlRemoteHint(String host) {
-    return 'DSH on “$host” can’t control this phone. Switch to “This phone” to use it.';
-  }
-
-  @override
   String phoneRestrictedSubtitle(String place) {
     return 'Allow this for sideloaded apps to enable the $place switch';
   }
@@ -13220,109 +11862,12 @@ class L10nEn extends L10n {
   }
 
   @override
-  String phoneFailurePlugins(String plugins) {
-    return 'May be related to plugins “$plugins”';
-  }
-
-  @override
-  String phoneFailureRequired(String components) {
-    return 'Required components $components failed startup checks';
-  }
-
-  @override
-  String phoneSafeRestoreAt(String when) {
-    return 'DSH will restore the working configuration from $when:';
-  }
-
-  @override
-  String phoneSafeRestoreDisable(String plugins) {
-    return '• Disable: $plugins';
-  }
-
-  @override
-  String phoneSafeRestoreChanged(String plugins) {
-    return '  ($plugins updated since then; can only be disabled for now)';
-  }
-
-  @override
-  String phoneSafeRestoreEnable(String plugins) {
-    return '• Re-enable: $plugins';
-  }
-
-  @override
-  String phoneSafeTodayTime(String time) {
-    return 'Today $time';
-  }
-
-  @override
-  String phoneSafeReasonPlugins(String plugins) {
-    return 'Failed to start twice in a row. Suspected plugins: $plugins';
-  }
-
-  @override
-  String get phoneListSeparator => ', ';
-
-  @override
-  String get phonePluginQuoteSeparator => '”, “';
-
-  @override
-  String phoneEngineRunningAt(String address) {
-    return 'Running · $address';
-  }
-
-  @override
-  String phoneEngineSafeAt(String address) {
-    return 'Safe mode · $address';
-  }
-
-  @override
   String get phoneAppRulesLoosenBody =>
       'Banking and payment apps detect automation and may restrict sign-in or freeze your account. By default, DSH won’t enter passwords or pay.';
 
   @override
   String get phoneAppRulesSkipStepsBody =>
       'Apps like WeChat watch for automation, and phone assistants have had accounts signed out. With “As usual”, only actions like sending messages still ask first.';
-
-  @override
-  String get phoneResetDeletesChatsWorkspaces => 'chats and workspaces';
-
-  @override
-  String get phoneResetBodyChatsWorkspaces => 'This will delete chats and workspaces, then reinstall the runtime.';
-
-  @override
-  String get phoneResetDeletesWithPlugins => 'chats, workspaces, plugins and settings';
-
-  @override
-  String get phoneResetBodyWithPlugins =>
-      'This will delete chats, workspaces, plugins and settings, then reinstall the runtime.';
-
-  @override
-  String get phoneResetDeletesWithUi => 'chats, workspaces, interface settings and skills';
-
-  @override
-  String get phoneResetBodyWithUi =>
-      'This will delete chats, workspaces, interface settings and skills, then reinstall the runtime.';
-
-  @override
-  String get phoneResetDeletesEverything => 'chats, workspaces, plugins, settings, interface settings and skills';
-
-  @override
-  String get phoneResetBodyEverything =>
-      'This will delete chats, workspaces, plugins, settings, interface settings and skills, then reinstall the runtime.';
-
-  @override
-  String phoneEngineStorageDetails(String needed, String free) {
-    return 'Not enough storage: about $needed MB needed, $free MB available';
-  }
-
-  @override
-  String get phoneControlEnabledRestarting => 'On · Restarting the engine';
-
-  @override
-  String get phoneControlDisabledRestarting => 'Off · Restarting the engine';
-
-  @override
-  String get phoneControlEnabledPending => 'On · Takes effect when the engine starts';
 
   @override
   String get phoneReturnAfterDone => 'Back to DSH Pocket when done';
@@ -13341,106 +11886,6 @@ class L10nEn extends L10n {
 
   @override
   String get phoneAutoCollapseHint => 'Shrinks to a ball; tap to open';
-
-  @override
-  String get phoneDeveloperOptions => 'Developer options';
-
-  @override
-  String get phoneDirectEngine => 'Direct local engine launch';
-
-  @override
-  String get phoneDirectHint =>
-      'Experimental and off by default; applies on the next start. Some phones (Android 16, for one) block a direct start, and the app then goes back to compatible launch on its own. Your data isn’t affected.';
-
-  @override
-  String get phoneDirectFailedHint =>
-      'Direct launch didn’t work on this phone, so compatible launch is used. Stop the engine and turn this on to try again.';
-
-  @override
-  String get phoneDirectCompatibleHint =>
-      'This start used compatible launch; the reason is above. Your choice is kept, and the next start tries again.';
-
-  @override
-  String get phoneDirectStopFirst => 'Stop the local engine before changing its launch method.';
-
-  @override
-  String get phoneDirectSafeHint =>
-      'Safe mode uses compatible launch. This choice applies when you return to normal mode.';
-
-  @override
-  String get phoneDirectNeedsRuntime => 'This option needs a runtime with direct launch support.';
-
-  @override
-  String get phoneDirectChangeFailed => 'Could not change the launch method. Stop the local engine and try again.';
-
-  @override
-  String get phoneTawcEngine => 'tawcroot fast launch';
-
-  @override
-  String get phoneTawcHint =>
-      'On by default; a change applies on the next start. Only one of this and direct launch can be on. Runs the local engine with tawcroot instead of compatible launch: it starts about three times faster, and package installs and apt get faster too. If it can’t start, the app goes back to compatible launch on its own. The first start after you turn it off first turns the hard links it made into ordinary files, which can take a little longer.';
-
-  @override
-  String get phoneTawcFailedHint =>
-      'tawcroot didn’t start on this phone, so compatible launch is used. Stop the engine and turn this on to try again.';
-
-  @override
-  String get phoneTawcUnavailable =>
-      'This build doesn’t include tawcroot, or the phone runs a version older than Android 10.';
-
-  @override
-  String get phoneLaunchTawcroot => 'tawcroot';
-
-  @override
-  String get phoneTawcLaunchFailed => 'tawcroot failed to start';
-
-  @override
-  String get phoneTawcUnsupported =>
-      'This start’s settings aren’t supported by tawcroot yet, compatible launch for now';
-
-  @override
-  String get phoneActualLaunchMode => 'Current launch';
-
-  @override
-  String get phoneLaunchNotObserved => 'Not running';
-
-  @override
-  String get phoneLastLaunchSelection => 'Last launch';
-
-  @override
-  String get phoneDirectRejectedReason => 'Fallback reason';
-
-  @override
-  String get phoneLaunchFailureReason => 'Last failure';
-
-  @override
-  String get phoneReturnCompatible => 'Use compatible launch';
-
-  @override
-  String get phoneLaunchDirect => 'Direct launch';
-
-  @override
-  String get phoneLaunchCompatible => 'Compatible launch';
-
-  @override
-  String get phoneDirectIncompatibleFiles => 'Plugin files not tidied yet, compatible launch for now';
-
-  @override
-  String get phoneDirectNotEnoughSpace => 'Not enough storage, compatible launch for now';
-
-  @override
-  String get phoneDirectMigrationFailed => 'File tidy-up unfinished, compatible launch for now';
-
-  @override
-  String get phoneDirectLaunchFailed => 'Direct launch failed';
-
-  @override
-  String get phoneLaunchStartFailed => 'Didn\'t finish starting';
-
-  @override
-  String phoneLaunchExited(String code) {
-    return 'Exit code $code';
-  }
 
   @override
   String get phoneDndManualConnect => 'Connect by port';
@@ -13866,9 +12311,6 @@ class L10nEn extends L10n {
   String get phoneBackgroundGuideTitle => 'Confirmations and return';
 
   @override
-  String get phoneBackgroundGuideSubtitle => 'See confirmations and task results in time';
-
-  @override
   String get phoneBackgroundGuideBody =>
       'When a step needs your decision, a DSH Pocket card appears. If the card is unavailable, the app tries a notification or returns here. Allow phone-control notifications and pop-up alerts in system settings.';
 
@@ -13921,9 +12363,6 @@ class L10nEn extends L10n {
 
   @override
   String get phonePrivilegedGrantSuiPermission => 'Authorize Sui, then grant';
-
-  @override
-  String get phonePrivilegedSuggested => 'Suggested';
 
   @override
   String get phonePrivilegedRootRiskTitle => 'Give DSH Pocket root access?';
@@ -14545,33 +12984,6 @@ class L10nEn extends L10n {
   String get pluginsOperationHostChanged => 'Host changed — nothing was done';
 
   @override
-  String get pluginsReloadLocal => 'Restart engine to reload';
-
-  @override
-  String get pluginsReloadInterrupts => 'Interrupts running tasks';
-
-  @override
-  String pluginsReloadConfirm(String name) {
-    return 'Reload “$name”?';
-  }
-
-  @override
-  String get pluginsReloadExplanation =>
-      'This restarts the local engine and reloads plugins. Running tasks will be interrupted.';
-
-  @override
-  String get pluginsReloadProceed => 'Restart and reload';
-
-  @override
-  String get pluginsReloadRequested => 'Engine restart requested';
-
-  @override
-  String get pluginsReloadChanged => 'The host or plugin state changed. Try again.';
-
-  @override
-  String get pluginsReloadFailed => 'Couldn’t restart the engine. Check its logs.';
-
-  @override
   String get pluginsFile => 'File';
 
   @override
@@ -14667,9 +13079,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get pluginsSecretsUnshareable => 'Contains secrets, can’t share';
-
-  @override
   String pluginsLineCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count lines', one: '1 line');
     return '$_temp0';
@@ -14722,15 +13131,6 @@ class L10nEn extends L10n {
   String get pluginsImportLocalOnly => 'Can only import to this phone';
 
   @override
-  String get pluginsReplaceSkill => 'Replace skill with the same name';
-
-  @override
-  String get pluginsReplaceContent => 'Replace existing content';
-
-  @override
-  String get pluginsSafeModeInstallBlocked => 'Can’t install plugins in Safe mode';
-
-  @override
   String get pluginsHostInstallBlocked => 'Can’t install plugins on this host from here';
 
   @override
@@ -14747,9 +13147,6 @@ class L10nEn extends L10n {
 
   @override
   String get pluginsHostUnreachable => 'Can’t reach the host';
-
-  @override
-  String get pluginsFileWriteFailed => 'Couldn’t write the file';
 
   @override
   String get pluginsProfileTitle => 'DSH Pocket settings';
@@ -14889,17 +13286,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get pluginsRestartRequired => 'Engine restart needed';
-
-  @override
-  String pluginsRestartExplanation(String name) {
-    return 'Restart the engine to apply “$name”. Replies in progress will be interrupted.';
-  }
-
-  @override
-  String get pluginsRestartEngine => 'Restart engine';
-
-  @override
   String get pluginsAllowBuildScripts => 'Allow build scripts?';
 
   @override
@@ -14941,9 +13327,6 @@ class L10nEn extends L10n {
   String pluginsUninstalledNamed(String title) {
     return 'Uninstalled “$title”';
   }
-
-  @override
-  String get pluginsRestartNow => 'Restart now';
 
   @override
   String get pluginsUninstallFailed => 'Couldn’t uninstall';
@@ -15113,9 +13496,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get pluginsInstallThisPhone => 'Install to: This phone';
-
-  @override
   String pluginsInstallHost(String host) {
     return 'Install to: $host';
   }
@@ -15134,9 +13514,6 @@ class L10nEn extends L10n {
   String get pluginsTheme => 'Theme';
 
   @override
-  String get pluginsAppearance => 'Appearance';
-
-  @override
   String get pluginsColors => 'Colors';
 
   @override
@@ -15144,9 +13521,6 @@ class L10nEn extends L10n {
 
   @override
   String get pluginsAppIcon => 'App icon';
-
-  @override
-  String get pluginsPet => 'Pet';
 
   @override
   String get pluginsCustomColor => 'Custom';
@@ -15301,25 +13675,7 @@ class L10nEn extends L10n {
   String get pluginsDiagnosticsDescription => 'Include with bug reports. No API keys or tokens.';
 
   @override
-  String get pluginsRuntime => 'Runtime';
-
-  @override
-  String get pluginsArchitecture => 'Architecture';
-
-  @override
-  String get pluginsBundledVersion => 'Bundled version';
-
-  @override
-  String get pluginsInstalledVersion => 'Installed version';
-
-  @override
-  String get pluginsErrorLabel => 'Error';
-
-  @override
   String get pluginsConnection => 'Connection';
-
-  @override
-  String get pluginsAddress => 'Address';
 
   @override
   String get pluginsClient => 'Client';
@@ -15424,15 +13780,6 @@ class L10nEn extends L10n {
 
   @override
   String get pluginsPersonalPreferences => 'Personal preferences';
-
-  @override
-  String get pluginsPreferencesDescription => 'New chats will follow these instructions';
-
-  @override
-  String get pluginsPreferencesHint => 'For example: Reply in Chinese. I mainly write Flutter.';
-
-  @override
-  String get pluginsSaving => 'Saving';
 
   @override
   String get pluginsShareLink => 'Share link';
@@ -15541,9 +13888,6 @@ class L10nEn extends L10n {
 
   @override
   String get pluginsCouldNotInstall => 'Couldn’t install';
-
-  @override
-  String get pluginsEngineRestartToApply => 'Restart the engine to apply';
 
   @override
   String pluginsRemoteRestartToApply(String host) {
@@ -15674,11 +14018,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String pluginsUninstalledRestartLocal(String title) {
-    return 'Uninstalled “$title”. Restart the engine to finish removing it.';
-  }
-
-  @override
   String pluginsUninstalledRestartRemote(String title, String host) {
     return 'Uninstalled “$title”. Restart DSH on $host to finish removing it.';
   }
@@ -15690,15 +14029,9 @@ class L10nEn extends L10n {
   String get pluginsDisableFailed => 'Couldn’t disable';
 
   @override
-  String get pluginsEnabledRestartLocal => 'Enabled. Restart the engine to apply.';
-
-  @override
   String pluginsEnabledRestartRemote(String host) {
     return 'Enabled. Restart DSH on $host to apply.';
   }
-
-  @override
-  String get pluginsDisabledRestartLocal => 'Disabled. Restart the engine to apply.';
 
   @override
   String pluginsDisabledRestartRemote(String host) {
@@ -15897,25 +14230,12 @@ class L10nEn extends L10n {
   String get plugslotsPanelOffline => 'Can\'t reach the plugin';
 
   @override
-  String plugslotsIssueTooMany(int max) {
-    return 'Up to $max; the rest are hidden';
-  }
-
-  @override
   String plugslotsIssueTrimmed(int max) {
     return 'Over $max characters; shortened';
   }
 
   @override
-  String plugslotsIssueNeedsApp(String version) {
-    return 'Needs DSH Pocket $version or later';
-  }
-
-  @override
   String get plugslotsIssueNewerProtocol => 'Needs a newer app';
-
-  @override
-  String get plugslotsIssueUnknownIcon => 'Unknown icon; using the default';
 
   @override
   String plugslotsIssueUnknownEffect(String name) {
@@ -15937,23 +14257,10 @@ class L10nEn extends L10n {
   String get plugslotsIssueThrottled => 'Notices too frequent; skipped';
 
   @override
-  String plugslotsIssueInvoke(String message) {
-    return 'Call failed: $message';
-  }
-
-  @override
-  String plugslotsIssueStream(String message) {
-    return 'Data failed: $message';
-  }
-
-  @override
   String get plugslotsIssueMissing => 'Missing a required field';
 
   @override
   String get plugslotsIssueDuplicate => 'Duplicate id; skipped';
-
-  @override
-  String get plugslotsIssueNoPlacement => 'Nowhere to show it';
 
   @override
   String plugslotsWantsMessage(String plugin) {
@@ -16647,419 +14954,7 @@ class L10nEn extends L10n {
   String get remoteHostedTtlForever => 'Forever';
 
   @override
-  String get remoteForumSignIn => 'Sign in to Forum';
-
-  @override
-  String get remoteForumSignInBenefits => 'Post, reply and like';
-
-  @override
-  String get remoteForumFinishSignIn => 'Finish signing in in your browser';
-
-  @override
-  String get remoteReopenBrowser => 'Reopen browser';
-
-  @override
-  String get remoteForumSettings => 'Forum settings';
-
-  @override
-  String get remoteForumAccount => 'Forum account';
-
-  @override
-  String get remoteForumTopic => 'Topic';
-
-  @override
-  String get remoteForumLikesReceived => 'Likes received';
-
-  @override
-  String get remoteForumDaysVisited => 'Days visited';
-
-  @override
-  String get remoteForumNotifications => 'Notifications';
-
-  @override
-  String remoteForumUnreadCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count unread', one: '1 unread');
-    return '$_temp0';
-  }
-
-  @override
-  String get remoteForumErrAddress => 'Invalid address';
-
-  @override
-  String get remoteForumAddress => 'Forum address';
-
-  @override
-  String remoteForumDefaultAddress(String host) {
-    return 'Default: $host';
-  }
-
-  @override
-  String get remoteRestoreDefault => 'Restore default';
-
-  @override
-  String get remoteForumUploadingImage => 'Uploading image…';
-
-  @override
-  String get remoteForumErrUploadImage => 'Couldn’t upload image';
-
-  @override
-  String get remoteForumTitleRequired => 'Add a title first';
-
-  @override
-  String get remoteForumCategoryRequired => 'Choose a category';
-
-  @override
-  String get remoteForumBodyRequired => 'Write something before sending';
-
-  @override
-  String remoteForumReplyCaption(String username, String title) {
-    return 'Reply to @$username · $title';
-  }
-
-  @override
-  String get remoteForumNewTopic => 'New topic';
-
-  @override
-  String get remoteForumTitle => 'Title';
-
-  @override
-  String get remoteForumComposerHint => 'Write something. Markdown supported.';
-
-  @override
-  String get remoteForumPublish => 'Publish';
-
-  @override
-  String get remoteForumImage => 'Image';
-
-  @override
-  String get remoteForumAttachShareCode => 'Attach share code';
-
-  @override
-  String get remoteForumPendingApproval => 'Submitted. Visible after approval.';
-
-  @override
-  String get remoteForumLatest => 'Latest';
-
-  @override
-  String get remoteForumTop => 'Top';
-
-  @override
-  String get remoteForumErrOpen => 'Couldn’t open Forum';
-
-  @override
-  String get remoteForumNoTopics => 'No topics yet';
-
-  @override
-  String get remoteForumPost => 'Post';
-
-  @override
-  String get remoteForum => 'Forum';
-
-  @override
-  String remoteForumNotificationsUnread(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Notifications, $count unread',
-      one: 'Notifications, 1 unread',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get remoteForumSearch => 'Search';
-
-  @override
-  String get remoteForumSearchHint => 'Search topics and posts';
-
-  @override
-  String get remoteForumSignedIn => 'Signed in to Forum';
-
-  @override
-  String get remoteForumSignInForNotifications => 'Sign in to see notifications';
-
-  @override
-  String get remoteForumErrNotifications => 'Couldn’t load notifications';
-
-  @override
-  String get remoteForumNoNotifications => 'No notifications yet';
-
-  @override
-  String get remoteForumMarkAllRead => 'Mark all read';
-
-  @override
-  String get remoteForumSomeone => 'Someone';
-
-  @override
-  String remoteForumNotificationMention(String who) {
-    return '$who mentioned you';
-  }
-
-  @override
-  String remoteForumNotificationGroupMention(String who) {
-    return '$who mentioned your group';
-  }
-
-  @override
-  String remoteForumNotificationReply(String who) {
-    return '$who replied to you';
-  }
-
-  @override
-  String remoteForumNotificationQuote(String who) {
-    return '$who quoted you';
-  }
-
-  @override
-  String remoteForumNotificationEdit(String who) {
-    return '$who edited your post';
-  }
-
-  @override
-  String remoteForumNotificationLikes(String who, int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$who and others ($count people) liked your post',
-      one: '$who liked your post',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumNotificationLike(String who) {
-    return '$who liked your post';
-  }
-
-  @override
-  String remoteForumNotificationLikedPosts(String who, int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$who liked $count of your posts',
-      one: '$who liked 1 of your posts',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumNotificationReaction(String who) {
-    return '$who reacted to your post';
-  }
-
-  @override
-  String remoteForumNotificationMessage(String who) {
-    return '$who sent you a private message';
-  }
-
-  @override
-  String remoteForumNotificationMessageInvite(String who) {
-    return '$who invited you to a private message';
-  }
-
-  @override
-  String remoteForumNotificationTopicInvite(String who) {
-    return '$who invited you to a topic';
-  }
-
-  @override
-  String remoteForumNotificationNewReply(String who) {
-    return '$who posted a new reply';
-  }
-
-  @override
-  String remoteForumNotificationNewTopic(String who) {
-    return '$who posted a new topic';
-  }
-
-  @override
-  String remoteForumNotificationLink(String who) {
-    return '$who linked to your post';
-  }
-
-  @override
-  String remoteForumNotificationBadge(String badge) {
-    return 'Earned the “$badge” badge';
-  }
-
-  @override
-  String remoteForumNotificationMoved(String who) {
-    return '$who moved your post';
-  }
-
-  @override
-  String get remoteForumBookmarkReminder => 'Bookmark reminder';
-
-  @override
-  String get remoteForumTopicReminder => 'Topic reminder';
-
-  @override
-  String get remoteForumPostApproved => 'Your post was approved';
-
-  @override
-  String get remoteForumAdminProblems => 'Forum has issues to resolve';
-
-  @override
-  String get remoteForumNewNotification => 'New notification';
-
-  @override
-  String get remoteForumUnread => 'Unread';
-
-  @override
-  String get remoteForumErrShareCode => 'Couldn’t open share code';
-
-  @override
-  String get remoteForumPoll => 'Poll';
-
-  @override
-  String get remoteForumVideo => 'Video';
-
-  @override
-  String get remoteForumEmbed => 'Embedded content';
-
-  @override
-  String get remoteForumVoteOnWeb => 'Vote on Web';
-
-  @override
-  String get remoteForumErrSearch => 'Couldn’t search';
-
-  @override
-  String remoteForumNoSearchResults(String term) {
-    return 'No results for “$term”';
-  }
-
-  @override
-  String get remoteForumBookmarkRemoved => 'Bookmark removed';
-
-  @override
-  String get remoteForumBookmarkAdded => 'Bookmarked';
-
-  @override
   String get remoteLinkCopied => 'Link copied';
-
-  @override
-  String get remoteForumErrTopic => 'Couldn’t open this topic';
-
-  @override
-  String get remoteForumTopicClosed => 'Topic is closed';
-
-  @override
-  String get remoteForumReplyHint => 'Write a reply…';
-
-  @override
-  String get remoteForumSignInToReply => 'Sign in to reply';
-
-  @override
-  String remoteForumReplyTo(String username) {
-    return 'Reply to @$username';
-  }
-
-  @override
-  String get remoteForumPostDeleted => 'Post deleted';
-
-  @override
-  String get remoteForumPostHidden => 'Post hidden';
-
-  @override
-  String get remoteForumUnlike => 'Unlike';
-
-  @override
-  String get remoteForumLike => 'Like';
-
-  @override
-  String get remoteForumRemoveBookmark => 'Remove bookmark';
-
-  @override
-  String get remoteForumBookmark => 'Bookmark';
-
-  @override
-  String get remoteForumActionPinned => 'Pinned the topic';
-
-  @override
-  String get remoteForumActionUnpinned => 'Unpinned the topic';
-
-  @override
-  String get remoteForumActionClosed => 'Closed the topic';
-
-  @override
-  String get remoteForumActionReopened => 'Reopened the topic';
-
-  @override
-  String get remoteForumActionAutoClosed => 'Topic closed automatically';
-
-  @override
-  String get remoteForumActionAutoOpened => 'Topic opened automatically';
-
-  @override
-  String get remoteForumActionArchived => 'Archived the topic';
-
-  @override
-  String get remoteForumActionUnarchived => 'Unarchived the topic';
-
-  @override
-  String get remoteForumActionListed => 'Made the topic public';
-
-  @override
-  String get remoteForumActionUnlisted => 'Unlisted the topic';
-
-  @override
-  String get remoteForumActionSplit => 'Split the topic';
-
-  @override
-  String get remoteForumActionBanner => 'Made the topic a banner';
-
-  @override
-  String get remoteForumActionRemoveBanner => 'Removed the banner';
-
-  @override
-  String get remoteForumActionUpdated => 'Updated the topic';
-
-  @override
-  String get remoteLoading => 'Loading';
-
-  @override
-  String get remoteForumJustNow => 'Just now';
-
-  @override
-  String remoteForumMinutesAgo(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count min ago', one: '1 min ago');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumHoursAgo(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count h ago', one: '1 h ago');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumDaysAgo(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days ago', one: '1 day ago');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumReplyCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count replies', one: '1 reply');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumNewReplyCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count new replies', one: '1 new reply');
-    return '$_temp0';
-  }
-
-  @override
-  String get remoteForumNew => 'New';
-
-  @override
-  String remoteForumErrorRetry(String error) {
-    return '$error · Retry';
-  }
-
-  @override
-  String get remoteForumNoMore => 'No more';
 
   @override
   String get remoteHostKeyTrustTitle => 'Trust this host?';
@@ -17103,28 +14998,10 @@ class L10nEn extends L10n {
   String get remoteSwitchHost => 'Switch host';
 
   @override
-  String get remoteThisPhoneDsh => 'DSH on this phone';
-
-  @override
-  String get remoteRemoteLabel => 'Remote';
-
-  @override
-  String remoteRemotePlatform(String platform) {
-    return 'Remote · $platform';
-  }
-
-  @override
-  String get remoteRelaySwitchWarning =>
-      'DSH Remote connects to one host at a time. Switching disconnects the previous host.';
-
-  @override
   String get remoteConnectComputer => 'Connect a computer or server';
 
   @override
   String get remoteManageHosts => 'Manage remote hosts';
-
-  @override
-  String get remoteConnectionMethods => 'Via SSH or DSH Remote';
 
   @override
   String get remoteRelayLoginRequired => 'Enter the server address, email and password';
@@ -17173,21 +15050,9 @@ class L10nEn extends L10n {
   String get remoteSshDirect => 'No third-party server';
 
   @override
-  String get remoteOtherMethods => 'Other methods';
-
-  @override
-  String get remoteWebConsole => 'Web remote console';
-
-  @override
-  String get remoteWebConsoleProvider => 'dsh.r2049.cn · Third-party page';
-
-  @override
   String remoteActiveHost(String name) {
     return 'Using “$name”';
   }
-
-  @override
-  String get remoteSwitchToPhone => 'Use this phone';
 
   @override
   String get remoteSignInAgain => 'Sign in again';
@@ -17227,60 +15092,6 @@ class L10nEn extends L10n {
   String remoteConnectedSsh(String address) {
     return 'Connected · SSH $address';
   }
-
-  @override
-  String get remoteErrRefreshHosts => 'Couldn’t refresh host list';
-
-  @override
-  String get remoteSwitchWarning => 'Connects to one host at a time. Switching disconnects the previous host.';
-
-  @override
-  String get remoteRefreshHosts => 'Refresh hosts';
-
-  @override
-  String get remoteSignOut => 'Sign out';
-
-  @override
-  String get remoteErrHostsRetry => 'Couldn’t load hosts · Tap to retry';
-
-  @override
-  String get remoteNoHosts => 'No hosts yet';
-
-  @override
-  String get remoteRelaySetupHelp => 'Install the remote plugin in the host’s DSH and sign in';
-
-  @override
-  String get remoteRelaySignOutTitle => 'Sign out of DSH Remote?';
-
-  @override
-  String get remoteRelaySignOutBody =>
-      'This phone will be removed from your account. DSH and chats on the host stay. You can sign in again anytime.';
-
-  @override
-  String get remoteRelaySignInTitle => 'Sign in to DSH Remote';
-
-  @override
-  String get remoteRelaySignInHelp => 'No network setup. End-to-end encrypted connection.';
-
-  @override
-  String get remoteBrowserSignIn => 'Sign in in browser';
-
-  @override
-  String remoteSignInWithProvider(String provider) {
-    return 'Continue with $provider';
-  }
-
-  @override
-  String get remoteComingSoon => 'Coming soon';
-
-  @override
-  String get remoteSelfHostedEmailSignIn => 'Self-hosted server · Email sign-in';
-
-  @override
-  String get remoteBrowserSignInPending => 'Finish signing in in your browser…';
-
-  @override
-  String get remoteCopySignInLink => 'Copy sign-in link';
 
   @override
   String get remoteSshAddressRequired => 'Enter a host address (IP or domain)';
@@ -17472,21 +15283,6 @@ class L10nEn extends L10n {
   String get remoteDirectoryHome => 'Home';
 
   @override
-  String get remoteDirectoryPhoneStorage => 'Phone storage';
-
-  @override
-  String get remoteDirectoryDownloads => 'Downloads';
-
-  @override
-  String get remoteDirectoryDownloadsPath => 'Phone storage/Download';
-
-  @override
-  String get remoteDirectoryDocuments => 'Documents';
-
-  @override
-  String get remoteDirectoryDocumentsPath => 'Phone storage/Documents';
-
-  @override
   String get remoteDirectoryLocations => 'Locations';
 
   @override
@@ -17614,11 +15410,6 @@ class L10nEn extends L10n {
   String get remoteWorkspaceGroupName => 'Group name';
 
   @override
-  String remoteDirectoryPhonePath(String path) {
-    return 'Phone storage/$path';
-  }
-
-  @override
   String get remoteDirectoryInvalidName => 'Name can’t contain “/”';
 
   @override
@@ -17679,38 +15470,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String remoteForumCompactReplies(int count, String label) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$label replies', one: '$label reply');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumCompactViews(int count, String label) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$label views', one: '$label view');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumYearDate(int year, String month, int day) {
-    String _temp0 = intl.Intl.selectLogic(month, {
-      '1': 'Jan',
-      '2': 'Feb',
-      '3': 'Mar',
-      '4': 'Apr',
-      '5': 'May',
-      '6': 'Jun',
-      '7': 'Jul',
-      '8': 'Aug',
-      '9': 'Sep',
-      '10': 'Oct',
-      '11': 'Nov',
-      '12': 'Dec',
-      'other': '$month',
-    });
-    return '$_temp0 $day, $year';
-  }
-
-  @override
   String remoteHostedMonthDate(String month, int day) {
     String _temp0 = intl.Intl.selectLogic(month, {
       '1': 'Jan',
@@ -17749,14 +15508,6 @@ class L10nEn extends L10n {
     });
     return '$_temp0 $day, $year';
   }
-
-  @override
-  String remoteForumTenThousands(String value) {
-    return '$value × 10,000';
-  }
-
-  @override
-  String get remoteForumSemanticsSeparator => ', ';
 
   @override
   String remoteHostKeyVerifyCommand(String command) {
@@ -17921,16 +15672,6 @@ class L10nEn extends L10n {
   String get searchKwRemoteCompactHistory => 'compact slim lite history tools transfer bandwidth remote';
 
   @override
-  String get remotePairEntry => 'Pair a computer by scanning';
-
-  @override
-  String get remotePairEntryHint =>
-      'Scan the code the Remote plugin shows on your computer. No Remote account needed; sign in to DeepSeek first.';
-
-  @override
-  String get remotePairAddComputer => 'Add a computer by scanning';
-
-  @override
   String get remotePairTitle => 'Pair a computer';
 
   @override
@@ -17943,111 +15684,6 @@ class L10nEn extends L10n {
   @override
   String get remotePairNeedsDeepSeekBody =>
       'Pairing needs the DeepSeek account signed in on DSH Pocket. Only its account ID goes along, to label this phone; no password, cookie or token.';
-
-  @override
-  String get remotePairScanHint => 'Point the camera at the pairing code the Remote plugin shows on your computer';
-
-  @override
-  String get remotePairPasteLink => 'Paste pairing link';
-
-  @override
-  String get remotePairPasteEmpty => 'No pairing link on the clipboard';
-
-  @override
-  String get remotePairScannerFailed => 'The QR reader is unavailable. Paste the pairing link to continue pairing.';
-
-  @override
-  String get remotePairFromImage => 'From photos';
-
-  @override
-  String get remotePairImageNoCode => 'No QR code found in that image';
-
-  @override
-  String get remotePairCameraDenied =>
-      'No camera access. Turn it on in system settings, or use From photos or Paste pairing link.';
-
-  @override
-  String get remotePairCameraFailed => 'The camera didn’t open. Use From photos or Paste pairing link.';
-
-  @override
-  String get remotePairSystemScan => 'Scan';
-
-  @override
-  String get remotePairSystemScanHint => 'Opens the system scanner; it can also read a screenshot from your photos';
-
-  @override
-  String get remotePairReading => 'Reading the pairing code…';
-
-  @override
-  String get remotePairConfirmTitle => 'Connect to this computer?';
-
-  @override
-  String get remotePairComputer => 'Computer';
-
-  @override
-  String get remotePairServer => 'Server';
-
-  @override
-  String get remotePairFingerprint => 'Computer fingerprint';
-
-  @override
-  String get remotePairFingerprintHint =>
-      'Check that it matches the fingerprint in the Remote plugin on your computer before you continue.';
-
-  @override
-  String get remotePairConfirm => 'It’s this computer, pair';
-
-  @override
-  String get remotePairNotThis => 'Not this one, scan again';
-
-  @override
-  String get remotePairClaiming => 'Getting a verification code…';
-
-  @override
-  String get remotePairCodeTitle => 'Enter this 8-digit code on the computer';
-
-  @override
-  String remotePairCodeSemantics(String digits) {
-    return 'Verification code $digits';
-  }
-
-  @override
-  String get remotePairCodeHint =>
-      'Type it into the Remote plugin on your computer, then click Confirm binding. Nothing more to do on the phone.';
-
-  @override
-  String get remotePairOneAttempt =>
-      'One attempt only: a wrong code ends this pairing, and you’ll need a new code on the computer.';
-
-  @override
-  String remotePairWaiting(String countdown) {
-    return 'Waiting for the computer · $countdown left';
-  }
-
-  @override
-  String get remotePairApproved => 'The computer confirmed. Finishing…';
-
-  @override
-  String get remotePairCodeExpired => 'The code expired. Show a new pairing code on the computer.';
-
-  @override
-  String remotePairConnecting(String name) {
-    return 'Paired. Connecting to $name…';
-  }
-
-  @override
-  String get remotePairFailedTitle => 'Couldn’t pair';
-
-  @override
-  String remotePairOtherServerBody(String server) {
-    return 'This code is from $server, not the Remote server DSH Pocket uses now. Switch to it and continue? Each server keeps its own sign-in.';
-  }
-
-  @override
-  String get remotePairSwitchServer => 'Switch server and continue';
-
-  @override
-  String get remotePairScanAgain => 'Scan again';
 
   @override
   String get remotePairErrInvalidCode => 'That isn’t a DSH Pocket pairing code';
@@ -18084,17 +15720,6 @@ class L10nEn extends L10n {
 
   @override
   String get remotePairErrFailed => 'Pairing didn’t finish. Scan again.';
-
-  @override
-  String remotePairSwitchFailedTitle(String name) {
-    return 'Paired with $name';
-  }
-
-  @override
-  String get remotePairSwitchFailedBody => 'But switching to it didn’t work. Try again, or pick it under Remote hosts.';
-
-  @override
-  String get remotePairDone => 'Done';
 
   @override
   String get remotePairErrPinSave =>
@@ -18210,9 +15835,6 @@ class L10nEn extends L10n {
   String get askAiHelpTitle => 'Help';
 
   @override
-  String get askAiHelpSubtitle => 'Ask AI about anything here';
-
-  @override
   String askAiAboutApp(String question) {
     return 'About the DSH Pocket app: $question';
   }
@@ -18255,26 +15877,6 @@ class L10nEn extends L10n {
   @override
   String get askAiQuestionRemote =>
       'How do I connect my own computer or server, and how is that different from this phone?';
-
-  @override
-  String get phoneRuntimeUpgradeBase =>
-      'The new engine cannot be confirmed compatible with your Linux environment, so the update stopped. Your environment and installed tools were not deleted. Make a full backup and contact the maintainer for migration; do not reset or uninstall the app.';
-
-  @override
-  String get phoneRuntimeUpgradeManifest =>
-      'The runtime update manifest could not be safely identified. The update stopped and your environment was kept. Check the APK and contact the maintainer; do not reset the environment.';
-
-  @override
-  String get phoneRuntimeUpgradeInterrupted =>
-      'The runtime upgrade is incomplete. Your data and recovery state were kept. Retry installation. If it still fails, export diagnostics and contact the maintainer; do not reset or delete recovery directories.';
-
-  @override
-  String get phoneRuntimeUpgradeSymlink =>
-      'A system path was replaced by a custom link, so the environment cannot be updated safely. Your environment was kept. Back it up and contact the maintainer.';
-
-  @override
-  String get phoneRuntimeUpgradeRunning =>
-      'The engine or a leftover process has not been confirmed stopped. The update has not started. Stop the local engine and wait for cleanup before retrying; do not reset the environment.';
 
   @override
   String get schemaDocumentationTitle => 'Field descriptions';
@@ -18338,12 +15940,6 @@ class L10nEn extends L10n {
   String get searchKwNotifications => 'alerts,push,banner,sound';
 
   @override
-  String get searchKwReplyPrefs => 'about me,style,tone,instructions,AGENTS.md';
-
-  @override
-  String get searchKwSharedLinks => 'links,share,shared,public link';
-
-  @override
   String get searchKwPhone => 'accessibility,automation,tap,control phone';
 
   @override
@@ -18351,9 +15947,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwDnd => 'dnd,shizuku,sui,root,adb,background';
-
-  @override
-  String get searchKwEngine => 'engine,runtime,start,stop,restart,DSH';
 
   @override
   String get searchKwBackground => 'keep alive,background activity,battery optimization,autostart,killed';
@@ -18396,9 +15989,6 @@ class L10nEn extends L10n {
   String get searchKwAllFeatures => 'features,catalog,everything';
 
   @override
-  String get searchKwAccount => 'account,balance,top up,sign in,sign out,api key,usage,DeepSeek';
-
-  @override
   String get searchKwRemote => 'remote,ssh,computer,server,DSH Remote,connect';
 
   @override
@@ -18412,9 +16002,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwLanguage => 'chinese,english,locale';
-
-  @override
-  String get searchKwAutoCommands => 'don\'t ask,auto approve,full access,no confirmation';
 
   @override
   String get searchKwPhoneFiles => 'storage,files,downloads,photos';
@@ -18439,9 +16026,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwOpenWeb => 'web,browser,web ui';
-
-  @override
-  String get searchKwSafeMode => 'safe mode,leave safe mode,troubleshoot';
 
   @override
   String get searchKwVersion => 'version,about,build';
@@ -18541,21 +16125,6 @@ class L10nEn extends L10n {
   String get searchKwPhoneBackgroundGuide => 'background confirmation,return';
 
   @override
-  String get searchKwAutoStart => 'auto start,launch';
-
-  @override
-  String get searchKwAutoSafe => 'safe mode,automatic safe mode';
-
-  @override
-  String get searchKwEngineReset => 'reset,wipe,restore';
-
-  @override
-  String get searchKwEngineUninstall => 'uninstall,remove,free space';
-
-  @override
-  String get searchKwWorkspaceRecovery => 'workspace,index,recovery,rescue,missing chats,chats won\'t open';
-
-  @override
   String get searchKwAddProvider => 'add model,new provider,custom model,base url';
 
   @override
@@ -18644,9 +16213,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwPluginsMarket => 'plugin market,install plugins,marketplace';
-
-  @override
-  String get searchKwUsageStats => 'statistics,stats,usage data,analytics,telemetry,anonymous,privacy,data';
 
   @override
   String get searchKwQuickPanel => 'swipe,left swipe,shortcuts,gesture,quick panel,quick access';
@@ -18956,43 +16522,6 @@ class L10nEn extends L10n {
   String get shellDeleteFailed => 'The host could not confirm deletion. Refresh before retrying.';
 
   @override
-  String get setupAppearanceTitle => 'Choose a look';
-
-  @override
-  String get setupAppearanceMessage => 'You can change this anytime in Settings';
-
-  @override
-  String get setupLightMode => 'Lightweight mode';
-
-  @override
-  String get setupCapsulePreparing => 'Preparing runtime';
-
-  @override
-  String setupCapsuleProgress(int percent) {
-    return 'Runtime $percent%';
-  }
-
-  @override
-  String setupCapsuleProgressSemantics(int percent) {
-    return 'Preparing the runtime, $percent% done';
-  }
-
-  @override
-  String get setupCapsuleReady => 'Runtime ready';
-
-  @override
-  String get setupCapsuleFailed => 'Install failed';
-
-  @override
-  String get setupWaitingBody => 'Continues on its own when ready';
-
-  @override
-  String get setupNotifyWhenDone => 'We’ll notify you when it’s done';
-
-  @override
-  String get setupAwaitSignIn => 'DeepSeek sign-in opens when it’s ready';
-
-  @override
   String get shellApiKeyPrefixWarning => 'DeepSeek keys usually start with sk-. Check you copied the right key.';
 
   @override
@@ -19020,12 +16549,6 @@ class L10nEn extends L10n {
   String get shellSaving => 'Saving';
 
   @override
-  String get shellSaveContinue => 'Save and continue';
-
-  @override
-  String get shellSetUpLater => 'Set up later';
-
-  @override
   String get shellClearField => 'Clear';
 
   @override
@@ -19038,97 +16561,9 @@ class L10nEn extends L10n {
   String get shellGetApiKey => 'Get API key';
 
   @override
-  String get shellConnectDeepSeek => 'Connect DeepSeek';
-
-  @override
-  String get shellConnectDeepSeekMessage => 'Sign in to DeepSeek to start. No API key needed.';
-
-  @override
-  String get shellAccountSignInUnsupported => 'This engine doesn’t support account sign-in';
-
-  @override
-  String get shellSignInDeepSeek => 'Sign in with DeepSeek';
-
-  @override
-  String get shellUseApiKey => 'Use API key';
-
-  @override
-  String get shellOtherProviders => 'Other providers';
-
-  @override
   String shellOnboardingStep(int step, int steps) {
     return 'Step $step of $steps';
   }
-
-  @override
-  String get shellRuntimeUpdating => 'Updating runtime';
-
-  @override
-  String get shellRuntimePreparing => 'Preparing runtime';
-
-  @override
-  String get shellRuntimeReady => 'Ready';
-
-  @override
-  String get shellRuntimeIncomplete => 'Installation incomplete';
-
-  @override
-  String get shellRuntimeFilesKept => 'Your chats and files stay';
-
-  @override
-  String get shellRuntimeFirstSetup => 'First setup takes a minute or two';
-
-  @override
-  String get shellRuntimeContinuing => 'Continuing shortly';
-
-  @override
-  String get shellRuntimeRestoreFailed => 'Couldn’t restore saved content';
-
-  @override
-  String get shellRuntimeExtractFailed => 'Couldn’t extract files';
-
-  @override
-  String get shellInstallLogs => 'Installation logs';
-
-  @override
-  String get shellRuntimeLocalOnly => 'Everything runs on this phone';
-
-  @override
-  String get shellRuntimeContinueWithoutKept => 'Continue without restoring';
-
-  @override
-  String get shellRuntimeAlmostDone => 'Almost done';
-
-  @override
-  String shellRuntimeSecondsRemaining(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'About $count seconds',
-      one: 'About 1 second',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String shellRuntimeMinutesRemaining(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'About $count minutes',
-      one: 'About 1 minute',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get shellEngineLogs => 'Engine logs';
-
-  @override
-  String get shellWelcomeMessage => 'The DeepSeek agent,\nin your pocket';
-
-  @override
-  String get shellGetStarted => 'Start';
 
   @override
   String get shellSearchChats => 'Search chats';
@@ -19331,9 +16766,6 @@ class L10nEn extends L10n {
   String get shellPinned => 'Pinned';
 
   @override
-  String get shellEngineNotRunning => 'Engine isn’t running';
-
-  @override
   String shellHostNotConnected(String name) {
     return 'Not connected to “$name” yet';
   }
@@ -19431,18 +16863,6 @@ class L10nEn extends L10n {
 
   @override
   String get shellNewChatsHint => 'New chats appear here';
-
-  @override
-  String get shellEngineStarting => 'Engine is starting';
-
-  @override
-  String get shellChatsAfterStarting => 'Your chats appear once it starts';
-
-  @override
-  String get shellStartEngine => 'Start engine';
-
-  @override
-  String get shellEngineStatusHint => 'View status in “Engine”';
 
   @override
   String shellHostUnreachable(String name) {
@@ -20201,10 +17621,6 @@ class L10nEn extends L10n {
   String get speechCallEndMicrophone => 'The microphone is busy or can\'t be opened';
 
   @override
-  String get speechCallEndNoRecognizerSignedIn =>
-      'A call needs a way to recognize speech. Your signed-in account can\'t pay for DeepSeek speech here (the DSH you\'re connected to is older, or you\'re going through DSH Remote): add a DeepSeek API key in Settings, or download the voice model in Settings › Voice';
-
-  @override
   String get speechCallEndNoRecognizer =>
       'A call needs a recognizer that takes recordings: sign in to DeepSeek, add an API key, or download the voice model';
 
@@ -20365,22 +17781,6 @@ class L10nEn extends L10n {
   String get searchKwChatSuggestions => 'start page,empty page,new chat,chat suggestions,suggestion cards';
 
   @override
-  String get phoneStartupFailureStopping => 'Startup failed; stopping';
-
-  @override
-  String phoneStartupFailureStoppingDetail(String reason) {
-    return 'Startup failed; stopping. $reason';
-  }
-
-  @override
-  String get phoneStartupTokenTimeout =>
-      'Startup timed out: no startup token arrived within 180 seconds. Check the logs.';
-
-  @override
-  String get phoneStartupPortNotReady =>
-      'The startup token arrived, but the local service port did not become ready. Check the logs.';
-
-  @override
   String get stateDiagnosticsSubject => 'DSH Pocket diagnostics bundle';
 
   @override
@@ -20393,49 +17793,7 @@ class L10nEn extends L10n {
   String get stateDiagnosticsExportFailed => 'Couldn’t export diagnostics bundle';
 
   @override
-  String get stateForumUnreachable => 'Can’t reach the forum';
-
-  @override
-  String get stateSignInExpired => 'Sign-in expired. Sign in again.';
-
-  @override
-  String get stateForbidden => 'Permission denied';
-
-  @override
-  String get stateForumContentMissing => 'Content not found or deleted';
-
-  @override
-  String get stateTooManyActions => 'Too many actions. Try again later.';
-
-  @override
-  String get stateForumSendFailed => 'Couldn’t send';
-
-  @override
-  String get stateForumServerError => 'The forum is having trouble';
-
-  @override
   String get stateBrowserOpenFailed => 'Couldn’t open the browser';
-
-  @override
-  String get stateSignInStartFailed => 'Couldn’t start sign-in';
-
-  @override
-  String get stateSignInIncompleteRetry => 'Sign-in didn’t finish. Try again.';
-
-  @override
-  String get statePluginLabel => 'Plugin';
-
-  @override
-  String get stateConfigLabel => 'Configuration';
-
-  @override
-  String get stateConfigShare => 'Shared configuration';
-
-  @override
-  String get stateShareCode => 'Share code';
-
-  @override
-  String get stateCopyShareCodeFirst => 'Copy a share code from Share first';
 
   @override
   String get stateFileOpenFailed => 'Can’t open this file';
@@ -20514,66 +17872,6 @@ class L10nEn extends L10n {
 
   @override
   String get statePhoneNotReady => 'Phone control isn’t ready';
-
-  @override
-  String get stateBackgroundRestricted => 'Background network access is restricted';
-
-  @override
-  String get stateBackgroundFinish => 'Let chats finish in the background';
-
-  @override
-  String get stateDeepSeekAccount => 'DeepSeek account';
-
-  @override
-  String get stateAccountUnreachable => 'Can’t reach DeepSeek';
-
-  @override
-  String get stateAccountUnavailable => 'DeepSeek sign-in is unavailable';
-
-  @override
-  String get stateSignInIncomplete => 'Sign-in didn’t finish';
-
-  @override
-  String get stateSignInTimeout => 'Sign-in timed out';
-
-  @override
-  String get stateSignInSaveFailed => 'Couldn’t save sign-in details';
-
-  @override
-  String get stateEngineNotReady => 'The engine isn’t ready';
-
-  @override
-  String get stateSignInInterrupted => 'Sign-in interrupted';
-
-  @override
-  String get stateAccountUnsupported => 'This engine doesn’t support account sign-in';
-
-  @override
-  String get stateCheckPhoneNetwork => 'Check your phone’s network and try again';
-
-  @override
-  String get stateServiceUnavailableRetry => 'Service unavailable. Try again later.';
-
-  @override
-  String get stateAuthorizationFailed => 'Authorization failed. Sign in again.';
-
-  @override
-  String get stateAuthorizationExpired => 'Authorization page expired. Sign in again.';
-
-  @override
-  String get stateRestartEngineRetry => 'Restart from Engine, then try again';
-
-  @override
-  String get stateEngineStartingRetry => 'The engine is starting. Try again later.';
-
-  @override
-  String get stateEngineDisconnectedSignIn => 'Engine disconnected. Sign in again.';
-
-  @override
-  String get stateUpdateRuntimeOrKey => 'Update the runtime or use an API key';
-
-  @override
-  String get stateEngineDisconnected => 'Engine disconnected';
 
   @override
   String get stateAgentError => 'Error';
@@ -21052,9 +18350,6 @@ class L10nEn extends L10n {
   String get statePluginPnpmMissing => 'pnpm missing';
 
   @override
-  String get statePluginPhonePnpmMissing => 'pnpm is missing on this phone';
-
-  @override
   String get statePluginHostPnpmMissing => 'pnpm is missing on this host';
 
   @override
@@ -21250,21 +18545,6 @@ class L10nEn extends L10n {
   String get stateProviderOffline => 'Can’t reach the engine';
 
   @override
-  String get stateSafeStartupFailed => 'Failed to start';
-
-  @override
-  String get stateSafeCrashedEarly => 'Crashed shortly after starting';
-
-  @override
-  String get stateSafeCrashedLate => 'Crashed while running';
-
-  @override
-  String get stateSafeKilled => 'Stopped by the system';
-
-  @override
-  String get stateSafeManualEntry => 'I entered Safe mode manually';
-
-  @override
   String get stateScheduleNotCreated => 'Chat ended without creating the automation';
 
   @override
@@ -21338,29 +18618,6 @@ class L10nEn extends L10n {
 
   @override
   String get stateDownloadsPrefix => 'Downloads/';
-
-  @override
-  String stateSharePluginCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count plugins', one: '1 plugin');
-    return '$_temp0';
-  }
-
-  @override
-  String stateShareSkillCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count skills', one: '1 skill');
-    return '$_temp0';
-  }
-
-  @override
-  String stateShareSettingCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count settings groups',
-      one: '1 settings group',
-    );
-    return '$_temp0';
-  }
 
   @override
   String stateAlertCompletedReply(String reply) {
@@ -21619,22 +18876,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String stateSafeSuspectPlugins(String what, String plugins) {
-    return '$what, suspected plugins: $plugins';
-  }
-
-  @override
-  String stateSafePreflightFailed(String what, String checks) {
-    return '$what, startup checks failed: $checks';
-  }
-
-  @override
   String get stateListSeparator => ', ';
-
-  @override
-  String stateSafeRepairPrompt(String what) {
-    return 'My DSH has a problem in normal mode ($what). Follow the Safe mode instructions to find the cause. Fix the web configuration using reversible changes, verify startup with dsh-app-plugins trial, then tell me what changed.';
-  }
 
   @override
   String stateScheduleCreatePrompt(String title, String rule, String args) {
@@ -21723,12 +18965,6 @@ class L10nEn extends L10n {
 
   @override
   String get systemActionsToggleFailed => 'Couldn\'t save. Try again';
-
-  @override
-  String get systemActionsRemoteTitle => 'You\'re connected to a remote host';
-
-  @override
-  String get systemActionsRemoteHint => 'System actions only work in the local engine\'s chats';
 
   @override
   String get systemActionsOnScreenTitle => 'Only works with DSH Pocket on screen';
@@ -22205,27 +19441,11 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get usageStatsTitle => 'Send anonymous usage stats';
-
-  @override
   String get usageStatsSection => 'Improve DSH Pocket';
 
   @override
   String get usageStatsFooter =>
       'This switch controls dsh-go’s own statistics: feature counts (companion room visits and voice calls included), the token counts model replies report, versions, phone maker and model, and system version. It includes no chats, files or accounts, and does not control Google ML Kit SDK statistics.';
-
-  @override
-  String get usageNoticeBody => 'No chats or personal info.\nTurn off anytime.';
-
-  @override
-  String get usageUpgradeNotice =>
-      'New: anonymous usage stats, to help improve DSH Pocket.\nNo chats or personal info.';
-
-  @override
-  String get usageUpgradeLearn => 'Learn more';
-
-  @override
-  String get usageUpgradeOff => 'Turn off';
 
   @override
   String viewArtifactSaved(String value) {
@@ -22313,86 +19533,6 @@ class L10nEn extends L10n {
   String viewArtifactPage(int value) {
     return 'Page $value';
   }
-
-  @override
-  String get viewBalanceInvalidKey => 'Invalid key. Can’t check balance.';
-
-  @override
-  String get viewBalancePrefix => 'Balance ';
-
-  @override
-  String get viewBalanceLowSuffix => ' · Low balance';
-
-  @override
-  String get viewBalanceUnavailableSuffix => ' · Calls unavailable';
-
-  @override
-  String get viewBalanceTopUp => 'Top up';
-
-  @override
-  String get viewBalanceTitle => 'DeepSeek balance';
-
-  @override
-  String get viewBalanceKeyRequired => 'Enter an API key to check your balance';
-
-  @override
-  String get viewBalanceKeyInvalid => 'Invalid API key. Can’t check balance.';
-
-  @override
-  String viewBalancePaid(String value) {
-    return 'Paid $value';
-  }
-
-  @override
-  String viewBalanceGranted(String value) {
-    return 'Bonus $value';
-  }
-
-  @override
-  String get viewBalanceLow => 'Low balance';
-
-  @override
-  String get viewBalanceUnavailable => 'Calls unavailable';
-
-  @override
-  String get viewBalanceChecking => 'Checking balance…';
-
-  @override
-  String get viewBalanceCheckFailed => 'Can’t check balance right now';
-
-  @override
-  String get viewBalanceNoAlert => 'Off';
-
-  @override
-  String get viewBalanceBannerHidden => 'Balance alert hidden until DSH Pocket restarts';
-
-  @override
-  String get viewBalanceTurnOff => 'Turn off';
-
-  @override
-  String viewBalanceBelow(String value) {
-    return 'Below $value';
-  }
-
-  @override
-  String get viewBalanceAlert => 'Low balance alert';
-
-  @override
-  String get viewBalanceThreshold => 'Alert threshold';
-
-  @override
-  String get viewBalanceGoTopUp => 'Top up';
-
-  @override
-  String viewBalanceRemaining(String value) {
-    return 'Only $value left';
-  }
-
-  @override
-  String get viewBalanceModelDisabled => 'Insufficient balance. Model disabled.';
-
-  @override
-  String get viewBalanceRestore => 'Top up to resume';
 
   @override
   String get viewUiIncomplete => 'View is still generating';
@@ -23886,9 +21026,6 @@ class L10nEn extends L10n {
   String get voiceModelAbsent => 'Not downloaded';
 
   @override
-  String get voiceModelDownloading => 'Downloading';
-
-  @override
   String get voiceModelPreparing => 'Checking and loading';
 
   @override
@@ -24165,36 +21302,6 @@ class L10nEn extends L10n {
   String get webSshHost => 'SSH host';
 
   @override
-  String get webLocalAppOnly => 'This phone’s link has a launch token and only opens in the app';
-
-  @override
-  String get webEngineStatus => 'Engine status';
-
-  @override
-  String get webEngineStarting => 'Starting engine';
-
-  @override
-  String get webEngineStartFailed => 'Couldn’t start the engine';
-
-  @override
-  String get webEngineNotRunning => 'Engine isn’t running';
-
-  @override
-  String get webEngineProblem => 'The engine ran into a problem';
-
-  @override
-  String get webStartingSoon => 'DSH Web will be ready in a moment';
-
-  @override
-  String get webStartToOpen => 'Start this phone’s engine to open DSH Web';
-
-  @override
-  String get webRestart => 'Restart';
-
-  @override
-  String get webStartEngine => 'Start engine';
-
-  @override
   String get webSwitchToWeb => 'Switch to Web';
 
   @override
@@ -24288,9 +21395,6 @@ class L10nEn extends L10n {
       'Enter the address, account and password you use in the browser; the password stays in this phone\'s secure storage.';
 
   @override
-  String get webLoginEmpty => 'No web sign-in host yet';
-
-  @override
   String get webLoginAdd => 'Add web sign-in';
 
   @override
@@ -24322,9 +21426,6 @@ class L10nEn extends L10n {
 
   @override
   String get webLoginTestOk => 'Signed in';
-
-  @override
-  String get webLoginSave => 'Save';
 
   @override
   String get webLoginSaved => 'Saved';
@@ -25410,54 +22511,4 @@ class L10nEn extends L10n {
 
   @override
   String get workshopPublishLetGoUnsupported => 'This version can\'t let go of the record here.';
-
-  @override
-  String get workspaceRecoveryTitle => 'Workspace index recovery';
-
-  @override
-  String get workspaceRecoveryEnable => 'Use a recovery workspace index';
-
-  @override
-  String get workspaceRecoveryDisable => 'Use the original index again';
-
-  @override
-  String get workspaceRecoveryHint =>
-      'This phone only: use a separate index to access readable conversations when the original workspace index fails.';
-
-  @override
-  String get workspaceRecoveryActive =>
-      'The separate recovery index is selected. Both the original and recovery indexes are retained.';
-
-  @override
-  String get workspaceRecoveryWorking => 'Working…';
-
-  @override
-  String get workspaceRecoveryEnableBody =>
-      'The local engine will stop, switch to a separate recovery index, and start again. The original workspace index stays untouched. Conversation files, plugins, and credentials are not deleted.\n\nOn first use, the new index is built from readable conversations whose folders still exist. Old workspace names, order, defaults, archived state, and pins are not inherited automatically. Empty workspaces and conversations with missing folders may not appear. Original local grouping and pin preferences are retained.\n\nThe recovery index is retained and reused the next time you enable it. This bypasses the original index failure; it does not repair the original index.';
-
-  @override
-  String get workspaceRecoveryDisableBody =>
-      'The local engine will stop, switch back to the original workspace index, and start again. The original failure may return.\n\nConversation files created during recovery and the recovery index are both retained. Workspace membership and order do not sync between the two indexes. Some conversations created during recovery may not appear with the original index. Enable the recovery index again to continue using it.';
-
-  @override
-  String get workspaceRecoveryEnableStart => 'Enable and restart';
-
-  @override
-  String get workspaceRecoveryDisableStart => 'Use original and restart';
-
-  @override
-  String get workspaceRecoveryUnavailable =>
-      'This version does not support workspace index recovery. Check the local engine status and update the app.';
-
-  @override
-  String get workspaceRecoveryRestartIncomplete =>
-      'The index mode changed, but the engine has not been confirmed stopped or restarted. Wait for it to stop before starting it again.';
-
-  @override
-  String get workspaceRecoverySaveFailed =>
-      'The index mode could not be saved. No new start was requested. Check the local engine status and logs.';
-
-  @override
-  String get workspaceRecoveryFailed =>
-      'The operation did not finish. Check the local engine status and logs. This page shows whether the index mode changed.';
 }

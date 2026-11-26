@@ -111,6 +111,12 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
   double _pinchFont = TerminalFontSize.fallback;
   String? _composing;
 
+  /// What the screen-reader channel has typed since the shell's last line
+  /// break: the field's own text, so an a11y service that rewrites the whole
+  /// field (ACTION_SET_TEXT) turns into the keystrokes that would have
+  /// produced it.
+  String _a11yText = '';
+
   TerminalTab get _tab => widget.tab;
   Terminal get _terminal => widget.tab.terminal;
   bool get _canType => _tab.phase == TerminalPhase.live && _tab.writable;
@@ -130,6 +136,7 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
       // Each tab gets its own view (and scroll position); the old controller
       // goes once the old view has let go of it.
       _composing = null;
+      _a11yText = '';
       _view = GlobalKey<TerminalViewState>();
       final old = _scroll;
       _scroll = ScrollController();
@@ -176,6 +183,43 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
     _keyboard.currentState?.flushComposing();
     final m = widget.modifiers.consume();
     key.send(_terminal, ctrl: m.ctrl, alt: m.alt);
+    _toBottom();
+  }
+
+  // ── Screen reader ──
+  //
+  // xterm's screen is drawn: it has no text field for an a11y service to focus,
+  // so TalkBack and the phone bridge's type action see nothing to write into.
+  // The screen area carries an editable semantics node instead, and its edits
+  // become the same key input the key row sends. Sticky modifiers don't apply:
+  // this channel is a whole string at a time, not one keypress.
+
+  /// TalkBack focused the terminal: open the IME bridge, so the keyboard it
+  /// brings up types into the terminal (the same path a tap takes).
+  void _onA11yFocus() => _keyboard.currentState?.show();
+
+  /// The field's new text. Deletions become Backspace, new text is typed, a
+  /// line break is Enter — then the field starts over from what is left.
+  void _onA11ySubmit(String next) {
+    if (!_canType) return;
+    _keyboard.currentState?.flushComposing();
+    final before = _a11yText;
+    var common = 0;
+    while (common < next.length && common < before.length && next.codeUnitAt(common) == before.codeUnitAt(common)) {
+      common++;
+    }
+    for (var i = common; i < before.length; i++) {
+      _terminal.keyInput(TerminalKey.backspace);
+    }
+    final lines = next.substring(common).replaceAll('\r\n', '\n').split(RegExp('[\r\n]'));
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].isNotEmpty) _terminal.textInput(lines[i]);
+      if (i < lines.length - 1) _terminal.keyInput(TerminalKey.enter);
+    }
+    // The shell's line is a new one after a submit; otherwise the field mirrors
+    // what has been typed since the last one.
+    final kept = lines.length > 1 ? '' : next;
+    if (kept != _a11yText && mounted) setState(() => _a11yText = kept);
     _toBottom();
   }
 
@@ -377,6 +421,21 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
       },
       child: screen,
     );
+    // An editable node over the screen: this is what an a11y service finds, and
+    // what [TerminalKeyboard] then gets the keyboard input from. Drawing only —
+    // touches still reach the terminal (the node adds no hit target).
+    if (canType) {
+      screen = Semantics(
+        container: true,
+        textField: true,
+        focusable: true,
+        label: appL10n.botsTerminalInput,
+        value: _a11yText,
+        onSetText: _onA11ySubmit,
+        onDidGainAccessibilityFocus: _onA11yFocus,
+        child: screen,
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

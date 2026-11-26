@@ -13,6 +13,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.File
+import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 
 /**
@@ -36,6 +37,12 @@ import kotlin.concurrent.thread
  * Arrivals before `ready` are held and delivered, in order, on `ready`. The launch intent
  * is taken once: it is marked as consumed (survives config-change reattach), and intents that
  * Android replays when the task is reopened from recents are ignored.
+ *
+ * A running app can also be handed an intent straight — [handOver] — by whoever holds it
+ * (MainActivity's own onNewIntent, the trampoline): the path through the activity's
+ * onNewIntent → Flutter's plugin forwarding is the one that can be skipped when the app is
+ * already on screen, and a link must arrive once either way. Deliveries are deduplicated by
+ * the Intent object, so a link that comes in through both paths still opens one page.
  */
 class LinksPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandler, PluginRegistry.NewIntentListener {
 
@@ -46,13 +53,18 @@ class LinksPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandle
     private val pending = ArrayList<Map<String, Any?>>()
     private val main = Handler(Looper.getMainLooper())
 
+    /** The intent last taken, so the same object handed in twice is delivered once. */
+    private var taken: Intent? = null
+
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
         methods = MethodChannel(binding.binaryMessenger, CHANNEL).also { it.setMethodCallHandler(this) }
+        instance = WeakReference(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         methods.setMethodCallHandler(null)
+        if (instance?.get() === this) instance = null
         ready = false
     }
 
@@ -93,6 +105,9 @@ class LinksPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandle
 
     /** Delivers what [intent] carries for us; false when it's not a link or a file. */
     private fun take(intent: Intent): Boolean {
+        // MainActivity, the trampoline and Flutter's own forwarding can all see the
+        // same arrival; the Intent object tells them apart from a second link.
+        if (taken === intent) return false
         when (intent.action) {
             Intent.ACTION_VIEW -> {
                 val data = intent.data ?: return false
@@ -101,6 +116,7 @@ class LinksPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandle
                     "content", "file" -> copyThenDeliver(data)
                     else -> return false
                 }
+                taken = intent
                 return true
             }
             else -> return false
@@ -173,6 +189,29 @@ class LinksPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandle
         const val SCHEME = "dshgo"
         private const val EXTRA_TAKEN = "top.frankfurtlin.dshfusion.links.TAKEN"
         private const val MAX_FILE_BYTES = 4L * 1024 * 1024
+
+        /** The plugin of the engine that is up, for an intent nobody forwarded to it. */
+        private var instance: WeakReference<LinksPlugin>? = null
+
+        /**
+         * Hands [intent] to the running engine now: Dart routes it exactly as if Flutter had
+         * forwarded it. False when no engine is up — a cold start, where the activity's launch
+         * intent is the path.
+         *
+         * This is for the arrivals nobody guarantees: an intent delivered while the app is
+         * already on screen can be coalesced by Android's task bookkeeping, and Flutter only
+         * forwards onNewIntent to plugins while the engine is attached to the activity (it
+         * detaches for a config change, and the app keeps one engine for the whole process).
+         */
+        fun handOver(intent: Intent): Boolean = instance?.get()?.take(intent) ?: false
+
+        /** Marks [intent] delivered, so a launch intent replayed on recreation is ignored. */
+        fun markTaken(intent: Intent) {
+            intent.putExtra(EXTRA_TAKEN, true)
+        }
+
+        /** Whether [intent] was already delivered ([handOver], or on attaching it). */
+        fun isTaken(intent: Intent): Boolean = intent.getBooleanExtra(EXTRA_TAKEN, false)
 
         /** At most 120 UTF-16 units / 255 UTF-8 bytes, keeping a fitting suffix and whole code points. */
         fun safeName(name: String): String {

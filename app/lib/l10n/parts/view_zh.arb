@@ -65,58 +65,6 @@
       }
     }
   },
-  "viewBalanceInvalidKey": "Key 无效，查不到余额",
-  "viewBalancePrefix": "余额 ",
-  "viewBalanceLowSuffix": " · 余额不足",
-  "viewBalanceUnavailableSuffix": " · 已不能调用",
-  "viewBalanceTopUp": "充值",
-  "viewBalanceTitle": "DeepSeek 余额",
-  "viewBalanceKeyRequired": "填写 API Key 后可查询余额",
-  "viewBalanceKeyInvalid": "API Key 无效，无法查询余额",
-  "viewBalancePaid": "充值 {value}",
-  "@viewBalancePaid": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "viewBalanceGranted": "赠送 {value}",
-  "@viewBalanceGranted": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "viewBalanceLow": "余额不足",
-  "viewBalanceUnavailable": "已无法调用",
-  "viewBalanceChecking": "正在查询余额…",
-  "viewBalanceCheckFailed": "暂时无法查询余额",
-  "viewBalanceNoAlert": "不提醒",
-  "viewBalanceBannerHidden": "本次运行不再显示余额提醒",
-  "viewBalanceTurnOff": "不再提醒",
-  "viewBalanceBelow": "低于 {value}",
-  "@viewBalanceBelow": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "viewBalanceAlert": "低余额提醒",
-  "viewBalanceThreshold": "提醒线",
-  "viewBalanceGoTopUp": "去充值",
-  "viewBalanceRemaining": "余额仅剩 {value}",
-  "@viewBalanceRemaining": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "viewBalanceModelDisabled": "余额不足，模型已停用",
-  "viewBalanceRestore": "充值后恢复",
   "viewUiIncomplete": "视图没有生成完",
   "viewUiInvalid": "这个视图格式有误",
   "viewUiResend": "让它重发",

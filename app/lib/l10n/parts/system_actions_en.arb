@@ -9,8 +9,6 @@
   "systemActionsUnavailable": "On, can't connect right now, retrying",
   "systemActionsUnsupported": "Not available in this version",
   "systemActionsToggleFailed": "Couldn't save. Try again",
-  "systemActionsRemoteTitle": "You're connected to a remote host",
-  "systemActionsRemoteHint": "System actions only work in the local engine's chats",
   "systemActionsOnScreenTitle": "Only works with DSH Pocket on screen",
   "systemActionsOnScreenBody": "The system doesn't let background apps do these. After the AI opens another app, it can't go on until you're back in DSH Pocket.",
   "systemActionsCanTitle": "What it can do",

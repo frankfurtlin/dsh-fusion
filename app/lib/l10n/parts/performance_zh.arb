@@ -15,7 +15,6 @@
   "performanceFluid": "灵动动效",
   "performanceFluidHint": "弹性回弹、按压光晕、卡片展开成页面。几乎不增加耗电",
   "performanceFollowMode": "效果跟随性能模式",
-  "performanceRemoteHint": "推荐连接电脑或服务器，减少本机负担",
   "performanceRefresh": "刷新率",
   "performanceRefreshMax": "最高",
   "performanceRefreshSystem": "系统",

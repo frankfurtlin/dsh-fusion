@@ -46,6 +46,5 @@
   "bridgeLoginPassword": "密码",
   "bridgeLoginButton": "登录并保存令牌",
   "bridgeLoginFailed": "登录失败",
-  "bridgeA11yAllow": "允许手机桥使用无障碍",
-  "bridgeA11yAllowHint": "和系统里的服务开关是两道门，两个都开，远程自动化才能执行。"
+  "bridgeA11yAllow": "允许手机桥使用无障碍"
 }

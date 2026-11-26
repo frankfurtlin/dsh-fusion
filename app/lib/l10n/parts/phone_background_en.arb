@@ -3,7 +3,6 @@
   "phoneTaskResultReady": "Task complete · View result",
   "phoneTaskEndedResult": "Task ended · View result",
   "phoneBackgroundGuideTitle": "Confirmations and return",
-  "phoneBackgroundGuideSubtitle": "See confirmations and task results in time",
   "phoneBackgroundGuideBody": "When a step needs your decision, a DSH Pocket card appears. If the card is unavailable, the app tries a notification or returns here. Allow phone-control notifications and pop-up alerts in system settings.",
   "phoneBackgroundOemHint": "In the system permissions for DSH Pocket, check “Display pop-up windows while running in the background”, if available. Allowing it can help the app return automatically. Menu names vary by system version.",
   "phoneBackgroundReturnHint": "If the app does not return when a task finishes, tap “Task complete · View result”. If system notifications or background windows are blocked, you may need to open DSH Pocket yourself.",
@@ -20,7 +19,6 @@
   "phonePrivilegedGrantRoot": "Grant with root",
   "phonePrivilegedGrantSui": "Grant with Sui",
   "phonePrivilegedGrantSuiPermission": "Authorize Sui, then grant",
-  "phonePrivilegedSuggested": "Suggested",
   "phonePrivilegedRootRiskTitle": "Give DSH Pocket root access?",
   "phonePrivilegedRootRiskBody": "Your root manager (Magisk, KernelSU or APatch) will ask you. If you allow it, DSH Pocket runs its own background service as root. It asks again on its own after a disconnect or restart only with “Keep root channel” on."
 }

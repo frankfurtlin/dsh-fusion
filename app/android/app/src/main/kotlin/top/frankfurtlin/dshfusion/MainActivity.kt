@@ -125,6 +125,19 @@ class MainActivity : FlutterActivity() {
         LaunchThemeSync.sync(this)
     }
 
+    /**
+     * A link that arrives while the app is already on screen (singleTop): Flutter forwards it to
+     * the plugins, and the links plugin takes it — but that forwarding is the only path, and it
+     * is skipped whenever the engine is not attached to the activity at that moment or Android
+     * coalesces the launch. So hand the same intent over directly as well; the plugin dedupes on
+     * the Intent object, so a link that arrives both ways still opens one page.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (LinksPlugin.isTaken(intent)) return
+        if (LinksPlugin.handOver(intent)) LinksPlugin.markTaken(intent)
+    }
+
     override fun onResume() {
         super.onResume()
         top.frankfurtlin.dshfusion.phone.background.BackgroundControl.get(applicationContext).restoreKeptChannel()

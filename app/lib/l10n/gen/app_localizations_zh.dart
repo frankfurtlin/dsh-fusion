@@ -272,9 +272,6 @@ class L10nZh extends L10n {
   String get accessSummaryMessage => '随时可在「设置 › 通用 › 系统权限」补开';
 
   @override
-  String get accessFinishFailed => '没能完成设置';
-
-  @override
   String accessVoiceDownload(int size) {
     return '语音模型（约 $size MB）会在引擎就绪后开始下载，进度在「设置 › 通用 › 语音输入」里查看';
   }
@@ -1273,16 +1270,10 @@ class L10nZh extends L10n {
   String get activitySummaryTodo => '更新了待办';
 
   @override
-  String get activityUsageBalance => 'DeepSeek 余额';
-
-  @override
   String get activityUsageContext => '上下文';
 
   @override
   String get activityUsageChat => '本对话';
-
-  @override
-  String get activityUsageAfterMessage => '发送消息后显示';
 
   @override
   String get activityUsageWaiting => '等待上下文用量数据';
@@ -1307,16 +1298,6 @@ class L10nZh extends L10n {
 
   @override
   String get activitySpanTiny => '<0.1 秒';
-
-  @override
-  String activityTokensTenThousands(String value) {
-    return '$value 万';
-  }
-
-  @override
-  String activityTokensHundredMillions(String value) {
-    return '$value 亿';
-  }
 
   @override
   String activityUsageContextSemantics(String percent) {
@@ -2482,26 +2463,7 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get botsUpdateRequired => 'DS Bot 需要更新';
-
-  @override
   String get botsInstall => '安装 DS Bot';
-
-  @override
-  String get botsUpdateForPhone => '新版才能在手机上用';
-
-  @override
-  String get botsInstallDescription => '一组长期在线的 Bot，各有记忆和分工';
-
-  @override
-  String botsInstallOnHost(String host) {
-    return '在$host上装好后就能用';
-  }
-
-  @override
-  String botsRunsOnHost(String host) {
-    return '在$host上运行';
-  }
 
   @override
   String get botsInstalling => '正在安装';
@@ -3362,6 +3324,9 @@ class L10nZh extends L10n {
   String get botsCreationConnectionChanged => '连接已变化，请重新打开创建页面后再操作。';
 
   @override
+  String get botsTerminalInput => '终端输入';
+
+  @override
   String get brandXiaomi => '小米 / Redmi';
 
   @override
@@ -3390,9 +3355,6 @@ class L10nZh extends L10n {
 
   @override
   String get brandSamsungOs => '三星（One UI）';
-
-  @override
-  String get brandZhihu => '知乎';
 
   @override
   String get bridgeA11yHint => '手机桥通过无障碍服务读屏和点按；系统开关打开后，远程自动化才能用。';
@@ -3539,9 +3501,6 @@ class L10nZh extends L10n {
   String get bridgeA11yAllow => '允许手机桥使用无障碍';
 
   @override
-  String get bridgeA11yAllowHint => '和系统里的服务开关是两道门，两个都开，远程自动化才能执行。';
-
-  @override
   String get catalogCurrentChat => '当前对话';
 
   @override
@@ -3614,19 +3573,10 @@ class L10nZh extends L10n {
   String get catalogSchedulesSummary => '定时与周期任务';
 
   @override
-  String get catalogAgentModelsSection => 'Agent 与模型';
-
-  @override
   String get catalogPermission => '权限';
 
   @override
   String get catalogPermissionSummary => '执行前是否确认';
-
-  @override
-  String get catalogAgentPresets => 'Agent 预设';
-
-  @override
-  String get catalogAgentPresetsSummary => '新对话的工作方式';
 
   @override
   String get catalogModels => '模型';
@@ -3635,40 +3585,10 @@ class L10nZh extends L10n {
   String get catalogModelsSummary => '订阅与自定义渠道';
 
   @override
-  String get catalogSubagentSettings => '子代理设置';
-
-  @override
-  String get catalogSubagentSettingsSummary => '层数、并行与模型';
-
-  @override
-  String get catalogAgentLoop => 'Agent 循环';
-
-  @override
-  String get catalogAgentLoopSummary => '工具并行上限';
-
-  @override
-  String get catalogShellSettings => '命令执行';
-
-  @override
-  String get catalogShellSettingsSummary => '超时与输出上限';
-
-  @override
-  String get catalogWebSearch => '联网搜索';
-
-  @override
-  String get catalogWebSearchSummary => '搜索服务与预算';
-
-  @override
   String get catalogPlugins => '插件';
 
   @override
   String get catalogPluginsSummary => '已安装与插件市场';
-
-  @override
-  String get catalogPluginInventory => '插件清单';
-
-  @override
-  String get catalogPluginInventorySummary => '已加载的全部插件';
 
   @override
   String get catalogCordisSummary => '插件创建的动态面板';
@@ -3695,18 +3615,6 @@ class L10nZh extends L10n {
   String get catalogCommunitySharingSection => '社区与分享';
 
   @override
-  String get catalogForum => '论坛';
-
-  @override
-  String get catalogForumSummary => '提问、分享、找同好';
-
-  @override
-  String get catalogCommunity => '社区';
-
-  @override
-  String get catalogCommunitySummary => '精选与交流群';
-
-  @override
   String get catalogBotSummary => 'Bot 团队与群聊';
 
   @override
@@ -3716,37 +3624,16 @@ class L10nZh extends L10n {
   String get catalogShareProfileSummary => '插件、设置与技能';
 
   @override
-  String get catalogHostsSettingsSection => '主机与设置';
-
-  @override
   String get catalogSearch => '搜索对话';
 
   @override
   String get catalogSearchSummary => '按标题和正文查找';
 
   @override
-  String get catalogNotifications => '通知';
-
-  @override
-  String get catalogNotificationsSummary => '完成与待确认提醒';
-
-  @override
   String get catalogWorkspaces => '工作区';
 
   @override
   String get catalogWorkspacesSummary => '添加与切换目录';
-
-  @override
-  String get catalogGeneral => '通用设置';
-
-  @override
-  String get catalogGeneralSummary => '显示、发送与日志上传';
-
-  @override
-  String get catalogAccount => '账号与余额';
-
-  @override
-  String get catalogAccountSummary => '登录、余额与充值';
 
   @override
   String get catalogRemoteSummary => '连接电脑或服务器';
@@ -3756,18 +3643,6 @@ class L10nZh extends L10n {
 
   @override
   String get catalogPhoneControlSummary => '看屏幕、帮你点按';
-
-  @override
-  String get catalogEngine => '本机引擎';
-
-  @override
-  String get catalogEngineSummary => '本机引擎状态与日志';
-
-  @override
-  String get catalogDiagnostics => '诊断';
-
-  @override
-  String get catalogDiagnosticsSummary => '导出诊断包';
 
   @override
   String get catalogWebSummary => 'DSH 官方界面';
@@ -3858,18 +3733,6 @@ class L10nZh extends L10n {
 
   @override
   String get catalogAllSettings => '全部设置';
-
-  @override
-  String get diagnosticsForAi => '让 AI 看诊断';
-
-  @override
-  String get diagnosticsForAiHint => '把环境快照写进引擎，AI 自己读';
-
-  @override
-  String get diagnosticsForAiDone => '已写入诊断，问 AI「看下诊断」就行';
-
-  @override
-  String get diagnosticsForAiFailed => '写不进去：本机运行时还没装好';
 
   @override
   String get chatBackgroundTaskNotice => '后台任务通知';
@@ -4298,28 +4161,10 @@ class L10nZh extends L10n {
   String get chatVoicePermissionNeeded => '需要麦克风权限才能语音输入';
 
   @override
-  String get chatVoiceUnavailable => '这台手机没有可用的语音识别';
-
-  @override
   String get chatVoiceNotHeard => '没有听清，再说一次';
 
   @override
   String get chatVoiceTranscriptionFailed => '没能转写这段语音';
-
-  @override
-  String get chatVoiceNetworkFailed => '网络不太好，没能识别';
-
-  @override
-  String get chatVoiceLanguageUnsupported => '暂不支持这种语言';
-
-  @override
-  String get chatVoiceMicrophoneBusy => '麦克风正被占用';
-
-  @override
-  String get chatVoiceBusy => '语音识别正忙，稍后再试';
-
-  @override
-  String get chatVoiceRecognitionFailed => '语音识别出错了';
 
   @override
   String get chatListening => '正在聆听';
@@ -4901,9 +4746,6 @@ class L10nZh extends L10n {
   String chatTurnThoughts(int count) {
     return '$count 段思考';
   }
-
-  @override
-  String get chatMe => '我';
 
   @override
   String chatGoalSemantics(String objective) {
@@ -5699,9 +5541,6 @@ class L10nZh extends L10n {
   String get companionMenuVoice => '她的声音';
 
   @override
-  String get companionMenuVoiceHint => '用手机自带的语音读出她说的话';
-
-  @override
   String get companionVoiceHello => '你好呀，这是我的声音。喜欢的话就留着吧。';
 
   @override
@@ -6014,67 +5853,6 @@ class L10nZh extends L10n {
   String get companionAdaptNetwork => '网络不通';
 
   @override
-  String get automaticDiagnosticsRecover => '恢复本地记录';
-
-  @override
-  String get automaticDiagnosticsRecoverHint => '仅在本机恢复分析记录，跳过已留存故障，不重新发送旧请求。';
-
-  @override
-  String get automaticDiagnosticsTitle => '自动故障分析';
-
-  @override
-  String get automaticDiagnosticsHint => '默认关闭 · 仅本机、前台且引擎可用时发送；同版本同类故障 24 小时内合并。关闭后停止新请求，已发送信息无法撤回。';
-
-  @override
-  String get automaticDiagnosticsConsentTitle => '开启自动故障分析？';
-
-  @override
-  String get automaticDiagnosticsConsent =>
-      '发生故障时，App 会将脱敏的版本、设备与系统信息、运行时状态、错误类别、语音阶段及自身进程退出原因，发送给当前本机引擎配置的模型服务商，可能产生模型费用。不含聊天正文、录音、凭据或原始日志。报告保存在独立的只读分析对话，不自动切换当前对话，不自动执行修复或向 GitHub 外发。关闭或切换主机后不再发起新分析，并尝试停止已有分析；已发送的信息无法撤回。';
-
-  @override
-  String get automaticDiagnosticsEnable => '同意并开启';
-
-  @override
-  String get automaticDiagnosticsOff => '已关闭';
-
-  @override
-  String get automaticDiagnosticsWaiting => '等待本机连接、前台与引擎可用';
-
-  @override
-  String get automaticDiagnosticsReady => '已开启 · 等待新故障';
-
-  @override
-  String get automaticDiagnosticsCollecting => '正在采集结构化故障信息';
-
-  @override
-  String get automaticDiagnosticsAnalyzing => '正在独立对话分析（最多 2 分钟）';
-
-  @override
-  String get automaticDiagnosticsComplete => '分析完成';
-
-  @override
-  String get automaticDiagnosticsCancelled => '分析已停止或中断；不会自动重试';
-
-  @override
-  String get automaticDiagnosticsFailed => '分析失败；本次故障不会自动重试';
-
-  @override
-  String get automaticDiagnosticsStoreFailed => '无法保存诊断设置或状态；自动分析已停止';
-
-  @override
-  String get automaticDiagnosticsCancelFailed => '停止请求失败；请在报告对话中检查并手动停止';
-
-  @override
-  String get automaticDiagnosticsViewReport => '查看最新分析对话';
-
-  @override
-  String get automaticDiagnosticsReportHint => '仅点击时打开，不打断当前对话；报告可能仍在生成或已中断。';
-
-  @override
-  String get automaticDiagnosticsReportTitle => '自动故障分析报告';
-
-  @override
   String get systemImeTitle => '系统输入法诊断';
 
   @override
@@ -6227,142 +6005,16 @@ class L10nZh extends L10n {
   String get engineModelDefaultSaveFailed => '当前对话的模型已切换，但新对话默认未保存。请到设置 › 模型检查并重试。';
 
   @override
-  String get engineAccountSignedIn => '已登录 DeepSeek 账号';
-
-  @override
-  String get engineAccountSignOutTitle => '退出 DeepSeek 账号？';
-
-  @override
-  String get engineAccountSignOutBusy => '有任务正在使用账号模型，退出会立即中断它们。对话和文件都会保留。';
-
-  @override
-  String get engineAccountSignOutBody => '账号模型将不可用。对话、文件和 API Key 都会保留，随时可以重新登录。';
-
-  @override
-  String get engineAccountSignOutUnknown => '无法确认是否有任务在使用账号模型；如果有，退出会中断它们。';
-
-  @override
-  String get engineAccountSignOutFailed => '没能退出，稍后再试';
-
-  @override
   String get engineAccountTitle => '账号';
-
-  @override
-  String get engineAccountRefresh => '刷新';
-
-  @override
-  String get engineAccountDeepSeek => 'DeepSeek 账号';
-
-  @override
-  String get engineAccountProfileUnavailable => '资料暂时读不到';
-
-  @override
-  String get engineAccountBalance => '余额';
-
-  @override
-  String get engineAccountBalanceHint => '账号模型的费用从余额中扣除';
-
-  @override
-  String get engineAccountBalanceEngineOff => '引擎未运行，启动后显示余额';
-
-  @override
-  String get engineAccountTopUp => '去充值';
-
-  @override
-  String get engineAccountUsageDetails => '用量明细';
-
-  @override
-  String get engineAccountToppedUpBalance => '充值余额';
-
-  @override
-  String get engineAccountGrantedBalance => '赠送余额';
-
-  @override
-  String get engineAccountBalanceUnavailable => '余额暂时读不到';
-
-  @override
-  String get engineAccountNoKeyNeeded => '登录后无需 API Key';
-
-  @override
-  String get engineAccountUnsupported => '当前引擎不支持账号登录';
-
-  @override
-  String get engineAccountSignInDeepSeek => '用 DeepSeek 账号登录';
-
-  @override
-  String get engineAccountAutoStart => '引擎未运行，登录时会自动启动';
-
-  @override
-  String get engineAccountReplaceKey => '更换 Key';
-
-  @override
-  String get engineAccountClearKeyTitle => '清除 API Key？';
-
-  @override
-  String get engineAccountClearKeyBody => '删除 App 里保存的 Key。本机引擎运行时，引擎里的 Key 也会一并删除。';
 
   @override
   String get engineAccountBrowserFailed => '没能打开浏览器';
 
   @override
-  String get engineAccountSignInSuccess => '登录成功';
-
-  @override
-  String get engineAccountAlmostReady => '马上就好';
-
-  @override
-  String get engineAccountStartingEngine => '正在启动引擎';
-
-  @override
-  String get engineAccountOpenSignInNext => '随后打开登录页';
-
-  @override
-  String get engineAccountPreparingSignIn => '正在准备登录';
-
-  @override
-  String get engineAccountOpenDeepSeekNext => '马上打开 DeepSeek 登录页';
-
-  @override
   String get engineAccountFinishInBrowser => '在浏览器中完成登录';
 
   @override
-  String get engineAccountReturnToDsh => '登录完成后回到 DSH Pocket';
-
-  @override
-  String get engineAccountFinishingSignIn => '正在完成登录';
-
-  @override
-  String get engineAccountSavingSignIn => '正在保存登录信息';
-
-  @override
-  String get engineAccountAwaitingResult => '还没收到登录结果';
-
-  @override
-  String get engineAccountCopySignInLink => '复制登录链接';
-
-  @override
-  String get engineAccountReopenSignIn => '重新打开登录页';
-
-  @override
-  String get engineAccountCancelSignIn => '取消登录';
-
-  @override
-  String get engineAccountSignInLinkCopied => '登录链接已复制';
-
-  @override
-  String get engineAccountSigningIn => '登录中';
-
-  @override
   String get engineAccountSignedOut => '未登录';
-
-  @override
-  String get engineAccountUsageFact => '用量从账号余额中扣除';
-
-  @override
-  String get engineAccountBrowserFact => '在浏览器中登录，密码不经过 DSH';
-
-  @override
-  String get engineAccountCredentialsFact => '登录凭据只保存在本机';
 
   @override
   String get engineSubagentTitle => '子代理';
@@ -7019,12 +6671,6 @@ class L10nZh extends L10n {
   String get engineProvidersNotConfiguredHere => '未在这台主机上配置';
 
   @override
-  String get engineProvidersSigningIn => '正在登录…';
-
-  @override
-  String get engineProvidersSignInOrKey => '登录账号或填写 API Key';
-
-  @override
   String get engineProvidersOfficial => '官方';
 
   @override
@@ -7089,11 +6735,6 @@ class L10nZh extends L10n {
 
   @override
   String get engineSubscriptionTryAgain => '再试一次';
-
-  @override
-  String engineAccountWelcome(String name) {
-    return '欢迎，$name';
-  }
 
   @override
   String engineLayerCount(int count) {
@@ -7253,11 +6894,6 @@ class L10nZh extends L10n {
   @override
   String engineProvidersSummary(int total, int ready) {
     return '$total 个渠道 · $ready 个可用';
-  }
-
-  @override
-  String engineProvidersAccount(String name) {
-    return '账号 · $name';
   }
 
   @override
@@ -8706,9 +8342,6 @@ class L10nZh extends L10n {
   String get harmonyBackgroundAway => '离开屏幕后';
 
   @override
-  String get harmonyBackgroundLocal => '正在跑的对话可能还能跑一小会儿，多久由系统决定。之后跟着应用暂停，回到应用后会尽量接着跑';
-
-  @override
   String get harmonyBackgroundRemoteTitle => '已连接的远程主机';
 
   @override
@@ -8724,13 +8357,7 @@ class L10nZh extends L10n {
   String get harmonyBackgroundUseRemote => '或者放到已连接的远程主机上跑';
 
   @override
-  String get harmonyEngineBackgroundHint => '离开屏幕后本机引擎很快会暂停';
-
-  @override
   String get harmonyKwBackground => '后台,保活,挂起,暂停,被杀,杀后台';
-
-  @override
-  String get harmonyPausedInBackground => '对话在后台可能暂停过';
 
   @override
   String get harmonyAlertsRequirement => '提醒要应用在运行才发得出：离开屏幕后系统很快会挂起应用，挂起期间没有提醒';
@@ -8777,78 +8404,6 @@ class L10nZh extends L10n {
 
   @override
   String get harmonyIconChangeFailed => '没能更换。使用自定义主题或应用分身时不能换桌面图标';
-
-  @override
-  String get harmonyEngineUnclean => '没有正常退出';
-
-  @override
-  String get harmonyFailureUnclean => '引擎没有正常退出';
-
-  @override
-  String get harmonyFailureUncleanHint => '原因不明：可能是系统回收了应用或应用被关掉，也可能是引擎出了错。';
-
-  @override
-  String get harmonyFailureHeld => '连续几次都这样，引擎不会自己启动了。可以再试一次，或换一种方式启动。';
-
-  @override
-  String get harmonyResetKept => '主机列表、App 设置和已保存的密钥不受影响。确认后 App 会重新打开，在打开时完成重置。';
-
-  @override
-  String get harmonyResetReopening => '重置已记下，App 正在重新打开';
-
-  @override
-  String get harmonyResetCommittedTitle => '还差重新打开 App';
-
-  @override
-  String get harmonyResetCommittedBody => '重置已经记下，下次打开 App 时完成。可以现在重新打开，也可以自己关掉再打开。';
-
-  @override
-  String get harmonyResetUnknownTitle => '不确定重置有没有记下';
-
-  @override
-  String get harmonyResetUnknownBody => '重新打开 App：记下了就会完成重置，没记下对话和文件都还在。';
-
-  @override
-  String get harmonyResetNotCommittedTitle => '没有重置';
-
-  @override
-  String get harmonyResetNotCommittedBody => '对话和文件都还在。引擎已经停了，重新打开 App 后恢复。';
-
-  @override
-  String get harmonyResetInstalling => '正在安装运行环境，装完再试';
-
-  @override
-  String get harmonyResetOlderPendingTitle => '已经有一次重置在等';
-
-  @override
-  String get harmonyResetOlderPendingBody => '重新打开 App 完成它。这次的选择没有生效。';
-
-  @override
-  String get harmonyReopenApp => '重新打开';
-
-  @override
-  String get harmonyResetPendingTitle => '重置还没完成';
-
-  @override
-  String get harmonyResetPendingBody => '重新打开 App 继续。在这之前本机引擎不会启动。';
-
-  @override
-  String get harmonyResetFinishing => '正在完成重置';
-
-  @override
-  String get harmonyResetDone => '运行环境已重置';
-
-  @override
-  String get harmonyResetMaybeDone => 'App 已重新打开。如果对话还在，说明这次重置没有生效，可以再试一次。';
-
-  @override
-  String get harmonyUninstallHint => '删除已解压的运行环境和本机数据';
-
-  @override
-  String get harmonyUninstallBody => '本机的对话、工作区、插件、设置、界面配置和技能会一并删除，App 会重新打开。安装包里自带的那份运行环境还在，只有卸载 App 才会释放。';
-
-  @override
-  String get harmonyKwEngineUninstall => '卸载,删除运行环境,清理本机数据';
 
   @override
   String get harmonyUpdateNoticeTitle => '到发布页看获取方式';
@@ -8935,15 +8490,6 @@ class L10nZh extends L10n {
   String get harmonyNetworkFallbackRelayOnly => '当前版本只走 Relay 中继';
 
   @override
-  String get harmonySetupStay => '安装时请留在这个页面';
-
-  @override
-  String get harmonyLaunchEmbedded => '应用内启动';
-
-  @override
-  String get harmonyLaunchNodeExited => '引擎已退出';
-
-  @override
   String get harmonyKwAccent => '颜色,主题色,强调色';
 
   @override
@@ -8951,18 +8497,6 @@ class L10nZh extends L10n {
 
   @override
   String get harmonyKwVoice => '语音识别,麦克风,听写,说话,语音';
-
-  @override
-  String get harmonyBackgroundSubtitleLong => '应用离开屏幕后，正在跑的对话会尽量继续';
-
-  @override
-  String get harmonyBackgroundLocalLong => '这个版本可以申请长时任务：对话留在后台继续跑，通知栏会有一条提示。系统不批准或中途收回时，对话跟着应用暂停，回到应用后会尽量接着跑';
-
-  @override
-  String get harmonyEngineBackgroundHintLong => '离开屏幕后，正在跑的对话会尽量继续';
-
-  @override
-  String get harmonyAlertsRequirementLong => '提醒要应用在运行才发得出：对话在后台继续时会提醒，应用被系统挂起后就没有了';
 
   @override
   String get harmonySaveToFile => '保存到文件';
@@ -8978,23 +8512,6 @@ class L10nZh extends L10n {
 
   @override
   String get harmonyCommandExportDescription => '把这个对话的完整记录打包成 ZIP，分享或保存到文件';
-
-  @override
-  String get harmonySafeEnterTitle => '以安全模式启动？';
-
-  @override
-  String get harmonySafeEnterBody => '用随包的默认配置启动，不加载你装的插件。对话都在，原来的配置不会改动。';
-
-  @override
-  String get harmonySafeReopenNote => '进行中的回复会中断，App 会重新打开。';
-
-  @override
-  String get harmonyRestoredReopening => '已恢复上次正常的配置，App 正在重新打开';
-
-  @override
-  String harmonySafeRepairPrompt(String what) {
-    return '我的 DSH 正常模式出了问题（$what）。现在是安全模式，用的是随包的默认配置，我原来的配置没有动。请帮我找原因，动手改之前先告诉我要改什么。';
-  }
 
   @override
   String get harmonyRemindersTitle => '闹钟和计时器';
@@ -9135,43 +8652,16 @@ class L10nZh extends L10n {
   String get hubSettingsStorageAllow => '允许读写';
 
   @override
-  String get hubSettingsStorageDenied => '没有拿到存储权限。到系统设置里给 DSH Pocket 开启「所有文件访问」后再试';
-
-  @override
-  String get hubSettingsRestartRequired => '重启引擎后生效';
-
-  @override
-  String get hubSettingsRestartNow => '立即重启';
-
-  @override
   String get hubSettingsInterface => '界面';
 
   @override
   String get hubSettingsChat => '对话';
 
   @override
-  String get hubSettingsAutoCommands => '自动执行命令';
-
-  @override
   String get hubSettingsPhoneFiles => '访问手机文件';
 
   @override
-  String get hubSettingsPhoneFilesHint => 'AI 可读写手机存储';
-
-  @override
   String get hubSettingsVisualReplies => '可视化回复';
-
-  @override
-  String get hubSettingsVisualRepliesHint => '图表、对比卡和可点的选项';
-
-  @override
-  String get hubSettingsPhoneControl => '手机操控';
-
-  @override
-  String get hubSettingsPhoneControlHint => '看屏幕、帮你点按';
-
-  @override
-  String get hubSettingsPreferences => '个人偏好';
 
   @override
   String get hubSettingsAppearance => '外观';
@@ -9183,25 +8673,10 @@ class L10nZh extends L10n {
   String get hubSettingsCollapseSteps => '完成后收起过程';
 
   @override
-  String get hubSettingsCollapseStepsHint => '思考与工具调用收成一行';
-
-  @override
-  String get hubSettingsWebPhoneLayout => '网页版手机布局';
-
-  @override
   String get hubSettingsWebPhoneLayoutHint => '为手机屏幕重排网页版';
 
   @override
-  String get hubSettingsEngineExtensions => '引擎与扩展';
-
-  @override
-  String get hubSettingsEngine => '本机引擎';
-
-  @override
   String get hubSettingsProviders => '模型';
-
-  @override
-  String get hubSettingsEngineSettings => '引擎参数';
 
   @override
   String get hubSettingsShareConfig => '分享配置';
@@ -9210,34 +8685,10 @@ class L10nZh extends L10n {
   String get hubSettingsAllFeatures => '全部功能';
 
   @override
-  String get hubSettingsAbout => '关于';
-
-  @override
   String get hubSettingsCommunity => '社区';
 
   @override
   String get hubSettingsLicenses => '开源许可';
-
-  @override
-  String get hubSettingsAccount => 'DeepSeek 账号';
-
-  @override
-  String get hubSettingsSigningIn => '正在登录…';
-
-  @override
-  String get hubSettingsInvalidKey => 'Key 无效，查不到余额';
-
-  @override
-  String get hubSettingsNoApiKey => '未设置 API Key';
-
-  @override
-  String get hubSettingsApiKeyHint => '填写 Key 后即可对话';
-
-  @override
-  String get hubSettingsSignInAccount => '登录 DeepSeek 账号';
-
-  @override
-  String get hubSettingsOrApiKey => '或填写 API Key';
 
   @override
   String get hubPluginShare => '分享插件';
@@ -9379,27 +8830,9 @@ class L10nZh extends L10n {
   String get hubSettingsStorageBody => 'AI 能读取和修改相册、下载、文档等手机文件，引擎会重启一次。';
 
   @override
-  String hubSettingsBalance(String amount) {
-    return '余额 $amount';
-  }
-
-  @override
-  String hubSettingsBalanceLow(String amount) {
-    return '余额 $amount · 余额不足';
-  }
-
-  @override
-  String hubSettingsAccountSemantics(String title, String subtitle) {
-    return '账号：$title，$subtitle';
-  }
-
-  @override
   String hubSettingsHostSemantics(String name, String status) {
     return '远程主机：$name，$status';
   }
-
-  @override
-  String get hubSettingsApiKey => 'DeepSeek API Key';
 
   @override
   String hubPluginBrowserFailed(String address) {
@@ -9448,12 +8881,6 @@ class L10nZh extends L10n {
   String get hubPersonalization => '个性化';
 
   @override
-  String get hubPersonalizationAboutYou => '关于你';
-
-  @override
-  String get hubPersonalizationReplies => '回答';
-
-  @override
   String get hubPersonalizationWorkStyle => '工作方式';
 
   @override
@@ -9499,22 +8926,7 @@ class L10nZh extends L10n {
   String get hubAbout => '关于 DSH Pocket';
 
   @override
-  String get hubAboutAuthor => 'DSH Pocket 原作者';
-
-  @override
-  String get hubAboutBilibili => 'B站主页';
-
-  @override
-  String get hubAboutX => 'X 主页';
-
-  @override
-  String get hubAboutGithub => 'GitHub 主页';
-
-  @override
   String get hubAboutNewVersion => '有新版本';
-
-  @override
-  String get hubValueSet => '已设置';
 
   @override
   String get hubValueOff => '未开启';
@@ -9534,15 +8946,9 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get hubValueNoHosts => '未添加';
-
-  @override
   String hubValuePlugins(int count) {
     return '$count 个';
   }
-
-  @override
-  String get hubEngineStartup => '启动';
 
   @override
   String get hubThemeLightDark => '明暗';
@@ -9611,91 +9017,7 @@ class L10nZh extends L10n {
   String get iosPhotosDenied => '没有相册权限，未能保存';
 
   @override
-  String get iosRelocationOriginUnavailable => '发现旧对话，但找不到它们原来的位置。原数据都还在，这些对话暂时不能继续。';
-
-  @override
-  String get iosRelocationSessionIsolated => '有些对话没能迁移，已经单独保留。原文件和原因都还在，可以在诊断里导出后反馈。';
-
-  @override
   String get iosAccessSubtitle => '各项功能用到的系统权限';
-
-  @override
-  String get iosLinuxTitle => 'Linux 环境';
-
-  @override
-  String get iosLinuxIntro => '装好并重启本机引擎后，普通命令会在 Linux 里运行。Python 等软件需用 apk 另装；修改 Linux 系统仍需本次审批。App 文件只开放工作区和临时目录。';
-
-  @override
-  String get iosLinuxInstall => '安装 Linux 环境';
-
-  @override
-  String get iosLinuxDownloadSize => '约 4 MB';
-
-  @override
-  String get iosLinuxDownloading => '正在下载';
-
-  @override
-  String get iosLinuxVerifying => '正在校验';
-
-  @override
-  String get iosLinuxExtracting => '正在解压';
-
-  @override
-  String get iosLinuxFinishing => '即将完成';
-
-  @override
-  String get iosLinuxSystem => '系统';
-
-  @override
-  String get iosLinuxStorage => '占用空间';
-
-  @override
-  String get iosLinuxUninstall => '卸载 Linux 环境';
-
-  @override
-  String get iosLinuxUninstallBody => '会删除 Linux 环境和在里面装的所有软件。工作区里的文件不受影响。';
-
-  @override
-  String get iosLinuxUninstallConfirm => '卸载';
-
-  @override
-  String get iosLinuxUninstalling => '正在卸载…';
-
-  @override
-  String get iosLinuxRestartEngine => '已装好。重启本机引擎后，命令才会用上它。';
-
-  @override
-  String get iosLinuxErrorNetwork => '下载没成功。检查网络后再试一次。';
-
-  @override
-  String get iosLinuxErrorDamaged => '下载的文件不完整，已经丢掉了，再试一次。';
-
-  @override
-  String get iosLinuxErrorNoSpace => '手机存储空间不够了。';
-
-  @override
-  String get iosLinuxErrorInUse => 'Linux 环境正在使用，重新打开 App 后才能卸载。';
-
-  @override
-  String get iosLinuxErrorOther => '没有完成，再试一次。';
-
-  @override
-  String get iosLinuxState => '状态';
-
-  @override
-  String get iosLinuxStatePaused => '已暂停';
-
-  @override
-  String get iosLinuxSuspendedBody => '上次 App 退出时，Linux 里还有命令没跑完，App 可能就是因为它闪退的。为免再闪退，Linux 环境先暂停，其他功能照常。想再用就重新启用。';
-
-  @override
-  String get iosLinuxResume => '重新启用 Linux 环境';
-
-  @override
-  String get iosLinuxResumed => '已重新启用。重启本机引擎后，命令才会用上它。';
-
-  @override
-  String get iosLinuxErrorBusy => 'Linux 环境还在使用。等命令停下再试，不行就重新打开 App。';
 
   @override
   String get iosPhoneLinkTitle => '本机连接';
@@ -9838,10 +9160,6 @@ class L10nZh extends L10n {
 
   @override
   String get iosSpeechCallEndNoRecognizer => '语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。';
-
-  @override
-  String get iosSpeechCallEndNoRecognizerSignedIn =>
-      '当前连接不能用已登录账号识别通话录音（例如经 DSH Remote 中继）；请填写 DeepSeek API Key 或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。';
 
   @override
   String get iosPhoneLinkErrorPairingRejected => '手机不认这份配对凭据。重新生成一份再导入。';
@@ -10063,145 +9381,6 @@ class L10nZh extends L10n {
   String get searchKwIconShortcut => '快捷方式,自定义图标,桌面图片,换图标';
 
   @override
-  String get linuxTitle => 'Linux 环境';
-
-  @override
-  String get linuxSubtitle => '在手机里运行 gh、Python、git 等命令行工具';
-
-  @override
-  String get linuxSwitch => '开启 Linux';
-
-  @override
-  String get linuxStatus => '状态';
-
-  @override
-  String get linuxFirstHint => '第一次开启会下载约 3.5 MB 的基础系统并安装，大约一两分钟；之后再开几秒就好。';
-
-  @override
-  String get linuxMemoryNote => '开着 Linux 时 App 大约多占 100 MB 以上内存；关掉开关会把这部分还给系统，之后要重新打开 App 才能再开启。';
-
-  @override
-  String get linuxStateOn => '已开启';
-
-  @override
-  String get linuxStateOff => '未开启';
-
-  @override
-  String get linuxStateInstalling => '正在准备';
-
-  @override
-  String get linuxStateStopping => '正在关闭';
-
-  @override
-  String get linuxStateFailed => '出错了';
-
-  @override
-  String get linuxStateUnavailable => '暂不可用';
-
-  @override
-  String get linuxStageDownload => '下载基础系统';
-
-  @override
-  String get linuxStageDisk => '准备磁盘';
-
-  @override
-  String get linuxStageBoot => '启动';
-
-  @override
-  String get linuxStageTools => '安装工具';
-
-  @override
-  String get linuxEngineOffline => '本机引擎没在运行，启动引擎后再来开启。';
-
-  @override
-  String get linuxRequestFailed => '没能和引擎通信，请稍后重试。';
-
-  @override
-  String get linuxRestartRequired => 'Linux 已经停止，重新打开 App 后才能再开启。';
-
-  @override
-  String get linuxReopenApp => '重新打开 App';
-
-  @override
-  String get linuxReopenFailed => '没能自动重新打开，请手动退出 App 再打开。';
-
-  @override
-  String linuxErrorWithCode(String code) {
-    return '没能开启：$code';
-  }
-
-  @override
-  String get linuxReinstall => '重新安装 Linux';
-
-  @override
-  String get linuxReinstallHint => '删除 Linux 里的全部内容，再开启时全新安装';
-
-  @override
-  String get linuxReinstallAfterRestart => '这次运行已经启动过 Linux：完全退出并重新打开 App 后才能重新安装';
-
-  @override
-  String get linuxReinstallTitle => '重新安装 Linux？';
-
-  @override
-  String get linuxReinstallBody =>
-      '会删除 Linux 里的全部内容：装过的软件和 Python 包、只存在 Linux 里的文件，以及在 Linux 里登录过的账号（比如 gh）。对话工作区里的文件不受影响。\n\n开关保持关闭；之后打开会重新下载并安装。';
-
-  @override
-  String linuxRetainedRefused(String code) {
-    return '原来的 Linux 数据没法继续用了（常见于 App 更新之后），App 不会自动覆盖它。点「重新安装 Linux」删除后再开启，即可全新安装。（$code）';
-  }
-
-  @override
-  String get linuxReinstallRestart => '这次运行已经启动过 Linux，数据可能仍被占用。完全退出并重新打开 App 后，再点「重新安装 Linux」。';
-
-  @override
-  String linuxReinstallFailed(String code) {
-    return '没能重新安装：$code';
-  }
-
-  @override
-  String get linuxProxyTitle => '网络代理';
-
-  @override
-  String get linuxProxyFooter => '只作用于 Linux 里的命令。gitee、华为云等国内源始终直连。';
-
-  @override
-  String get linuxProxyMode => '方式';
-
-  @override
-  String get linuxProxyInherit => '跟随 App';
-
-  @override
-  String get linuxProxyDirect => '不用代理';
-
-  @override
-  String get linuxProxyManual => '手动';
-
-  @override
-  String get linuxProxyHttp => 'HTTP 代理';
-
-  @override
-  String get linuxProxyHttps => 'HTTPS 代理';
-
-  @override
-  String get linuxProxyNoProxy => '不走代理的地址';
-
-  @override
-  String get linuxProxyUnset => '未设置';
-
-  @override
-  String get linuxProxySameAsHttp => '同 HTTP';
-
-  @override
-  String get linuxProxyLoopbackNote => '127.0.0.1 指的是这台手机，不是电脑。';
-
-  @override
-  String get linuxProxyUrlInvalid => '请填 http:// 或 https:// 开头的地址，例如 http://127.0.0.1:7890';
-
-  @override
-  String get searchKwLinux => 'Linux,终端,命令行,虚拟机,gh,GitHub CLI,python,pip,代理';
-
-  @override
   String get liveThinking => '正在思考';
 
   @override
@@ -10289,130 +9468,7 @@ class L10nZh extends L10n {
   String get localeEn => 'English';
 
   @override
-  String get localEnvChooseTitle => 'DSH 在哪里运行？';
-
-  @override
-  String get localEnvChooseMessage => '之后可以在设置里更改';
-
-  @override
-  String localEnvThisPhoneDetail(int storage, int memory) {
-    return '存储约 $storage MB · 内存约 $memory MB';
-  }
-
-  @override
-  String localEnvThisPhoneDetailShort(int memory) {
-    return '内存约 $memory MB';
-  }
-
-  @override
-  String localEnvLowStorage(int needed) {
-    return '存储空间不足，需要约 $needed MB';
-  }
-
-  @override
-  String get localEnvRemoteDetail => '连接电脑或服务器上的 DSH';
-
-  @override
-  String get localEnvUnavailable => '这台设备暂时不能在本机运行 DSH';
-
-  @override
-  String get localEnvUnsupported => '暂不支持';
-
-  @override
-  String get localEnvRecommended => '推荐';
-
-  @override
-  String get localEnvInstallTitle => '安装本机运行环境';
-
-  @override
-  String get localEnvInstallMessage => '在这台手机上运行 DSH';
-
-  @override
-  String localEnvFactStorage(int storage) {
-    return '约 $storage MB 存储空间';
-  }
-
-  @override
-  String localEnvFactMemory(int memory) {
-    return '运行时约 $memory MB 内存';
-  }
-
-  @override
-  String get localEnvUseRemote => '改用远程主机';
-
-  @override
-  String get localEnvNotInstalled => '本机未安装运行环境';
-
-  @override
-  String get localEnvUninstall => '卸载运行环境';
-
-  @override
-  String get localEnvUninstallHint => '释放存储空间';
-
-  @override
-  String get localEnvUninstallTitle => '卸载运行环境？';
-
-  @override
-  String get localEnvUninstallBody => '本机的对话、工作区、插件、设置、界面配置和技能会一并删除。';
-
-  @override
-  String get localEnvUninstallConfirm => '卸载';
-
-  @override
-  String get localEnvUninstallFailed => '没能卸载，再试一次';
-
-  @override
-  String get localEnvPhoneNeedsRuntime => '安装本机运行环境后可用';
-
-  @override
-  String get localEnvSignInNeedsRuntime => '需要本机运行环境';
-
-  @override
-  String get localEnvSignInInstallFirst => '安装后即可登录';
-
-  @override
-  String get engineStartReopensApp => '引擎每次打开 App 只能启动一次，再启动会重新打开 App。';
-
-  @override
-  String get engineReopenFailed => '引擎要重新打开 App 才能再启动，请手动重开一次。';
-
-  @override
-  String get engineCapShell => '命令行';
-
-  @override
-  String engineCapShellBuiltin(int count) {
-    return '内置 $count 个命令';
-  }
-
-  @override
-  String get engineCapShellSystem => '系统';
-
-  @override
-  String get engineCapNodeScripts => 'Node 脚本';
-
-  @override
-  String get engineCapMarket => '安装市场插件';
-
-  @override
-  String get engineCapBackground => '切到后台时';
-
-  @override
-  String get engineCapMayFreeze => '可能被系统暂停';
-
-  @override
-  String get engineCapKeepsRunning => '继续运行';
-
-  @override
-  String get engineCapYes => '可以';
-
-  @override
-  String get engineCapNone => '不可用';
-
-  @override
   String get marketInstallRefused => '这个引擎不能安装市场插件';
-
-  @override
-  String get localEnvChooseUseTitle => '想怎么用 dsh-Go？';
 
   @override
   String get marketSectionOfficial => '官方';
@@ -10622,11 +9678,6 @@ class L10nZh extends L10n {
 
   @override
   String get mediaGenerating => '生成中';
-
-  @override
-  String mediaGeneratingProgress(String progress) {
-    return '生成中 · $progress';
-  }
 
   @override
   String get mediaCancelled => '已取消';
@@ -10978,9 +10029,6 @@ class L10nZh extends L10n {
   String get mediaSettingsBaseUrl => 'API 根地址';
 
   @override
-  String get mediaSettingsBaseUrlInvalid => '地址要以 https:// 开头';
-
-  @override
   String get mediaSettingsProvider => '服务商标识';
 
   @override
@@ -11236,9 +10284,6 @@ class L10nZh extends L10n {
   String get performanceFollowMode => '效果跟随性能模式';
 
   @override
-  String get performanceRemoteHint => '推荐连接电脑或服务器，减少本机负担';
-
-  @override
   String get performanceRefresh => '刷新率';
 
   @override
@@ -11320,151 +10365,13 @@ class L10nZh extends L10n {
   String get phoneDiagnosticsExport => '导出诊断包';
 
   @override
-  String get phoneSafeMode => '安全模式';
-
-  @override
-  String get phoneEngineStartingSafeEllipsis => '正在以安全模式启动…';
-
-  @override
-  String get phoneEngineStartingEllipsis => '正在启动…';
-
-  @override
   String get phoneEngineTidyingFilesEllipsis => '正在整理插件文件…';
-
-  @override
-  String get phoneEngineStoppingEllipsis => '正在停止…';
-
-  @override
-  String get phoneEngineStoppedNextSafe => '已停止 · 下次以安全模式启动';
-
-  @override
-  String get phoneEngineInstallingRuntime => '正在安装运行环境…';
-
-  @override
-  String get phoneEngineRuntimeNotInstalled => '运行环境未安装';
-
-  @override
-  String get phoneEngineErrorSeeLogs => '引擎出错了，日志里有详情';
-
-  @override
-  String get phoneEngineTitle => '本机引擎';
-
-  @override
-  String get phoneEngineLocal => '本机引擎';
-
-  @override
-  String get phoneEngineLogs => '日志';
-
-  @override
-  String get phoneEngineAutoStart => '打开 App 时自动启动';
 
   @override
   String get phoneEngineKeepAlive => '后台运行';
 
   @override
-  String get phoneEngineKeepAliveHint => '防止引擎被系统结束';
-
-  @override
   String get phoneEngineDiagnostics => '诊断';
-
-  @override
-  String get phoneEngineDiagnosticsHint => '运行信息与问题反馈';
-
-  @override
-  String get phoneEngineRuntime => '运行环境';
-
-  @override
-  String get phoneEngineArchitecture => '架构';
-
-  @override
-  String get phoneEngineStopTitle => '停止引擎？';
-
-  @override
-  String get phoneEngineStopBody => '进行中的对话会中断，随时可以再启动。';
-
-  @override
-  String get phoneEngineInstallRuntime => '安装运行环境';
-
-  @override
-  String get phoneEngineStartAgain => '重新启动';
-
-  @override
-  String get phoneEngineStart => '启动';
-
-  @override
-  String get phoneEngineRestart => '重启';
-
-  @override
-  String get phoneEngineResetFailed => '没能重置';
-
-  @override
-  String get phoneEngineReset => '重置运行环境';
-
-  @override
-  String get phoneEngineResetHint => '删除对话和文件后重新解压';
-
-  @override
-  String get phoneEngineResetTitle => '重置运行环境？';
-
-  @override
-  String get phoneResetAlsoDeletes => '家目录（/root）里没有保留的内容也会一起删除，包括工作区里的文件、AGENTS.md，以及插件自己存的数据（比如记忆）。';
-
-  @override
-  String get phoneEngineKeepUiSkills => '保留界面配置和技能';
-
-  @override
-  String get phoneEngineKeepPluginsSettings => '保留已装插件和设置';
-
-  @override
-  String get phoneEngineDeleteReset => '删除并重置';
-
-  @override
-  String get phoneEngineNotInstalled => '未安装';
-
-  @override
-  String get phoneEngineInstalling => '正在安装';
-
-  @override
-  String get phoneEngineStoppedSafe => '已停止 · 安全模式';
-
-  @override
-  String get phoneEngineStartingSafe => '正在以安全模式启动';
-
-  @override
-  String get phoneEngineStarting => '正在启动';
-
-  @override
-  String get phoneEngineTidyingFiles => '正在整理插件文件';
-
-  @override
-  String get phoneEngineRunningProbation => '运行中 · 试用';
-
-  @override
-  String get phoneEngineStartupFailed => '启动失败';
-
-  @override
-  String get phoneEngineCrashed => '已崩溃';
-
-  @override
-  String get phoneEngineKilled => '被系统结束';
-
-  @override
-  String get phoneEngineError => '出错了';
-
-  @override
-  String get phoneEngineRuntimeCorrupt => 'App 内的运行环境包已损坏，请重新安装 App';
-
-  @override
-  String get phoneEngineExited => '引擎意外退出了';
-
-  @override
-  String get phoneEngineRuntimeMissing => '运行环境还没有安装';
-
-  @override
-  String get phoneEngineSafeUnsupported => '这个版本的运行环境不支持安全模式，请更新 App';
-
-  @override
-  String get phoneEngineRuntimeIncomplete => 'App 内的运行环境包不完整，请重新安装 App';
 
   @override
   String get phoneLogEmpty => '还没有日志';
@@ -11474,9 +10381,6 @@ class L10nZh extends L10n {
 
   @override
   String get phoneLogCopyAll => '复制全部';
-
-  @override
-  String get phoneBackgroundAllow => '去放行';
 
   @override
   String get phoneToolScreen => '看屏幕';
@@ -11700,9 +10604,6 @@ class L10nZh extends L10n {
   String get phoneDndDirectAdb => '自连 ADB';
 
   @override
-  String get phoneDndChannels => '连接方式';
-
-  @override
   String get phoneDndShizukuFor => '装了 Shizuku App 的手机';
 
   @override
@@ -11754,9 +10655,6 @@ class L10nZh extends L10n {
   String get phoneDndSuiMissing => '没有检测到 Sui。在 Magisk 或 KernelSU 里装好 Sui 模块并重启手机，再回到这里。';
 
   @override
-  String get phoneDndSuiRunning => 'Sui 接口可用';
-
-  @override
   String get phoneDndSuiStopped => 'Sui 接口当前不可用。确认 Sui 模块已启用，重启手机后再试。';
 
   @override
@@ -11796,19 +10694,7 @@ class L10nZh extends L10n {
   String get phoneDndShizukuAllSet => 'Shizuku 已启动并授权，接下来连接后台屏。';
 
   @override
-  String get phoneDndShizukuInstalled => '已安装 Shizuku';
-
-  @override
-  String get phoneDndShizukuRunning => 'Shizuku 正在运行';
-
-  @override
-  String get phoneDndShizukuGranted => '已授权给 DSH Pocket';
-
-  @override
   String get phoneDndShizukuCompatibility => '这版 Android 与官方版 Shizuku 存在兼容问题。';
-
-  @override
-  String get phoneDndWirelessDebuggingOn => '无线调试已打开';
 
   @override
   String get phoneDndPaired => '已配对';
@@ -11961,15 +10847,6 @@ class L10nZh extends L10n {
   String get phoneControlNotEnabled => '未开启';
 
   @override
-  String get phoneControlSafeModeNotLoaded => '安全模式下不加载';
-
-  @override
-  String get phoneControlLocalOnly => '只在本机引擎可用';
-
-  @override
-  String get phoneControlAfterEngineStarts => '引擎启动后生效';
-
-  @override
   String get phoneControlNeedsAccessibility => '还差一步：打开无障碍';
 
   @override
@@ -12046,15 +10923,6 @@ class L10nZh extends L10n {
 
   @override
   String get phoneControlModuleNotReady => '这个版本里，手机操控模块还没有就绪';
-
-  @override
-  String get phoneControlSafeModeUnavailable => '安全模式下不可用';
-
-  @override
-  String get phoneControlSafeModeHint => '安全模式不加载插件，恢复正常模式后可用';
-
-  @override
-  String get phoneControlRemoteHost => '当前连的是远程主机';
 
   @override
   String get phoneControlCapabilities => '开启后能做什么';
@@ -12258,174 +11126,6 @@ class L10nZh extends L10n {
   String get phoneScreenReadNote => '模型看到的就是这些文字，这次读取没有发给模型';
 
   @override
-  String get phoneFailureSafeStartup => '安全模式也没能启动';
-
-  @override
-  String get phoneFailureSafeStartupHint => '问题多半在全局配置或运行环境';
-
-  @override
-  String get phoneFailureKilled => '引擎被系统结束了';
-
-  @override
-  String get phoneFailureKilledHint => '多半是内存不足或系统省电';
-
-  @override
-  String get phoneFailureLaunch => '本机运行环境未能启动';
-
-  @override
-  String get phoneFailureLaunchHint => '查看日志了解原因，或连接远程主机继续使用';
-
-  @override
-  String get phoneFailureTawcHint => 'PRoot 无法执行本机引擎。可以尝试用 tawcroot 启动，继续使用已有的运行环境和数据。';
-
-  @override
-  String get phoneFailureRetryWithTawcroot => '用 tawcroot 启动';
-
-  @override
-  String get phoneFailureNoSpaceHint => '清理一些空间后重试';
-
-  @override
-  String get phoneFailureStartup => 'DSH 启动失败';
-
-  @override
-  String get phoneFailureCrashedEarly => 'DSH 启动后很快崩溃了';
-
-  @override
-  String get phoneFailureCrashedLate => 'DSH 运行中崩溃了';
-
-  @override
-  String get phoneFailureFatal => '引擎报告了致命错误';
-
-  @override
-  String get phoneFailureRestore => '恢复配置';
-
-  @override
-  String get phoneFailureEnterSafe => '进入安全模式';
-
-  @override
-  String get phoneFailureStartNormal => '正常启动';
-
-  @override
-  String get phoneFailureGlobalPatch => '全局补丁';
-
-  @override
-  String get phoneFailureEnvironment => '环境变量';
-
-  @override
-  String get phoneSafeMoveAsideTitle => '先移开这些文件？';
-
-  @override
-  String get phoneSafeMoveAsideIntro => '它们对所有配置都生效，安全模式也会受影响：';
-
-  @override
-  String get phoneSafeMoveAsideNote => '只是改名（加上 .off-时间），不会删除，修好后可以改回来。';
-
-  @override
-  String get phoneSafeStartDirectly => '直接启动';
-
-  @override
-  String get phoneSafeMoveAsideStart => '移开并启动';
-
-  @override
-  String get phoneSafeNoRestoreNeeded => '配置和上次正常时一样，无需恢复';
-
-  @override
-  String get phoneSafeNoRestoreRecord => '还没有正常运行过的配置记录';
-
-  @override
-  String get phoneSafeRestoreTitle => '恢复上次正常的配置？';
-
-  @override
-  String get phoneSafeRestoreStart => '恢复并启动';
-
-  @override
-  String get phoneSafeRestoredStarting => '已恢复上次正常的配置，正在启动…';
-
-  @override
-  String get phoneSafeRestoreFailed => '没能恢复';
-
-  @override
-  String get phoneSafeStopIncomplete => '还无法确认引擎已停止，未更改配置。请查看引擎日志后重试。';
-
-  @override
-  String get phoneSafeRestartIncomplete => '配置操作已完成，但引擎还未停止，暂未重启。请等待停止完成后再启动。';
-
-  @override
-  String get phoneSafeRestoreIntro => 'DSH 会回到上次正常运行时的配置：';
-
-  @override
-  String get phoneSafeRestoreSettings => '• 设置恢复到当时的版本（现在的另存为备份）';
-
-  @override
-  String get phoneSafeRestoreNote => '不会卸载任何插件，也不需要联网。停用的插件以后可以重新打开。';
-
-  @override
-  String get phoneSafeLeaveTitle => '恢复正常模式？';
-
-  @override
-  String get phoneSafeLeaveBody => '用原来的配置和插件启动。安全模式期间改的网页版设置不会保留。';
-
-  @override
-  String get phoneSafeLeave => '恢复正常模式';
-
-  @override
-  String get phoneSafeMovePatch => '移开补丁';
-
-  @override
-  String get phoneSafeMoveFiles => '移开文件';
-
-  @override
-  String get phoneSafeFailureLog => '失败前后的日志';
-
-  @override
-  String get phoneSafeFailureLogEmpty => '没有记录到失败时的输出';
-
-  @override
-  String get phoneSafeBannerTitle => '安全模式 · 插件没有加载';
-
-  @override
-  String get phoneSafeBannerProbation => '正在试用正常模式';
-
-  @override
-  String get phoneSafeBannerProbationHint => '2 分钟内不再出错就算恢复，否则自动回到安全模式';
-
-  @override
-  String get phoneSafeBannerRunningHint => '对话都在，修好配置后恢复正常模式';
-
-  @override
-  String get phoneSafeBannerFailedHint => '安全模式也没能启动，去引擎页查看';
-
-  @override
-  String get phoneSafeBannerStoppedHint => '引擎已停止，下次启动仍是安全模式';
-
-  @override
-  String get phoneSafeRepair => '帮我修复';
-
-  @override
-  String get phoneSafeReasonStartup => '连续两次启动失败';
-
-  @override
-  String get phoneSafeReasonProbation => '恢复正常后又崩溃了';
-
-  @override
-  String get phoneSafeReasonManual => '手动开启';
-
-  @override
-  String get phoneSafeNormalSettingsHint => '用原有配置和插件重启';
-
-  @override
-  String get phoneSafeStartSettings => '以安全模式启动';
-
-  @override
-  String get phoneSafeStartSettingsHint => '不加载插件，排查启动问题';
-
-  @override
-  String get phoneSafeAutoSettings => '自动进入安全模式';
-
-  @override
-  String get phoneSafeAutoSettingsHint => '连续启动失败时自动启用';
-
-  @override
   String get phoneAccentMist => '雾蓝';
 
   @override
@@ -12445,16 +11145,6 @@ class L10nZh extends L10n {
 
   @override
   String get phoneAccentCustom => '自定义';
-
-  @override
-  String phoneEngineInstallPercent(int percent) {
-    return '正在安装 · $percent%';
-  }
-
-  @override
-  String phoneEngineStatusSemantics(String prefix, String status) {
-    return '$prefix引擎：$status';
-  }
 
   @override
   String phoneLogLineCount(int count) {
@@ -12536,11 +11226,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String phoneControlRemoteHint(String host) {
-    return '「$host」上的 DSH 操作不了这台手机，切回「本机」后可用';
-  }
-
-  @override
   String phoneRestrictedSubtitle(String place) {
     return '侧载的 App 要先放行这一项，$place开关才点得动';
   }
@@ -12551,104 +11236,10 @@ class L10nZh extends L10n {
   }
 
   @override
-  String phoneFailurePlugins(String plugins) {
-    return '可能和插件「$plugins」有关';
-  }
-
-  @override
-  String phoneFailureRequired(String components) {
-    return '必需组件 $components 没通过启动检查';
-  }
-
-  @override
-  String phoneSafeRestoreAt(String when) {
-    return 'DSH 会回到 $when 正常运行时的配置：';
-  }
-
-  @override
-  String phoneSafeRestoreDisable(String plugins) {
-    return '• 停用：$plugins';
-  }
-
-  @override
-  String phoneSafeRestoreChanged(String plugins) {
-    return '  （$plugins 之后升级过，只能先停用）';
-  }
-
-  @override
-  String phoneSafeRestoreEnable(String plugins) {
-    return '• 重新启用：$plugins';
-  }
-
-  @override
-  String phoneSafeTodayTime(String time) {
-    return '今天 $time';
-  }
-
-  @override
-  String phoneSafeReasonPlugins(String plugins) {
-    return '连续两次启动失败，可疑插件：$plugins';
-  }
-
-  @override
-  String get phoneListSeparator => '、';
-
-  @override
-  String get phonePluginQuoteSeparator => '」「';
-
-  @override
-  String phoneEngineRunningAt(String address) {
-    return '运行中 · $address';
-  }
-
-  @override
-  String phoneEngineSafeAt(String address) {
-    return '安全模式 · $address';
-  }
-
-  @override
   String get phoneAppRulesLoosenBody => '银行、支付类 App 会检测自动操作，可能限制登录甚至冻结账号；DSH 默认不输密码、不付款。';
 
   @override
   String get phoneAppRulesSkipStepsBody => '微信这类 App 有风控，曾有手机助手操作后账号被强制下线。改成照常后，只有发消息这类操作还会先问你。';
-
-  @override
-  String get phoneResetDeletesChatsWorkspaces => '对话和工作区';
-
-  @override
-  String get phoneResetBodyChatsWorkspaces => '会删除对话和工作区，然后重新安装运行环境。';
-
-  @override
-  String get phoneResetDeletesWithPlugins => '对话、工作区、插件和设置';
-
-  @override
-  String get phoneResetBodyWithPlugins => '会删除对话、工作区、插件和设置，然后重新安装运行环境。';
-
-  @override
-  String get phoneResetDeletesWithUi => '对话、工作区、界面配置和技能';
-
-  @override
-  String get phoneResetBodyWithUi => '会删除对话、工作区、界面配置和技能，然后重新安装运行环境。';
-
-  @override
-  String get phoneResetDeletesEverything => '对话、工作区、插件、设置、界面配置和技能';
-
-  @override
-  String get phoneResetBodyEverything => '会删除对话、工作区、插件、设置、界面配置和技能，然后重新安装运行环境。';
-
-  @override
-  String phoneEngineStorageDetails(String needed, String free) {
-    return '存储空间不足：需要约 $needed MB，当前可用 $free MB';
-  }
-
-  @override
-  String get phoneControlEnabledRestarting => '已开启，引擎正在重启';
-
-  @override
-  String get phoneControlDisabledRestarting => '已关闭，引擎正在重启';
-
-  @override
-  String get phoneControlEnabledPending => '已开启，引擎启动后生效';
 
   @override
   String get phoneReturnAfterDone => '完成后返回 DSH Pocket';
@@ -12667,99 +11258,6 @@ class L10nZh extends L10n {
 
   @override
   String get phoneAutoCollapseHint => '收成小球，点按展开';
-
-  @override
-  String get phoneDeveloperOptions => '开发者选项';
-
-  @override
-  String get phoneDirectEngine => '直接启动本机引擎';
-
-  @override
-  String get phoneDirectHint => '实验功能，默认关闭，下次启动生效。部分手机（例如 Android 16）会拦截直接启动，届时自动改用兼容启动，数据不受影响。';
-
-  @override
-  String get phoneDirectFailedHint => '这台手机上直接启动没有成功，已改用兼容启动。停止引擎后打开可再试一次。';
-
-  @override
-  String get phoneDirectCompatibleHint => '这次用了兼容启动，原因见上方。已保留此选项，下次启动会再试。';
-
-  @override
-  String get phoneDirectStopFirst => '请先停止本机引擎，再切换启动方式。';
-
-  @override
-  String get phoneDirectSafeHint => '安全模式使用兼容启动；恢复正常模式后应用此选项。';
-
-  @override
-  String get phoneDirectNeedsRuntime => '此选项需要支持直接启动的运行环境。';
-
-  @override
-  String get phoneDirectChangeFailed => '未能切换启动方式，请停止本机引擎后重试。';
-
-  @override
-  String get phoneTawcEngine => 'tawcroot 加速启动';
-
-  @override
-  String get phoneTawcHint =>
-      '默认开启，改动下次启动生效，和「直接启动」二选一。用 tawcroot 代替兼容启动运行本机引擎：启动快约三倍，装包、apt 也更快。启动不成功会自动改回兼容启动。关掉后的第一次启动会先把它留下的硬链接整理成普通文件，可能要多等一会。';
-
-  @override
-  String get phoneTawcFailedHint => '这台手机上 tawcroot 没有启动成功，已改用兼容启动。停止引擎后打开可再试一次。';
-
-  @override
-  String get phoneTawcUnavailable => '这个安装包不含 tawcroot，或系统低于 Android 10。';
-
-  @override
-  String get phoneLaunchTawcroot => 'tawcroot';
-
-  @override
-  String get phoneTawcLaunchFailed => 'tawcroot 未启动成功';
-
-  @override
-  String get phoneTawcUnsupported => '这次的启动参数 tawcroot 还不支持，暂用兼容启动';
-
-  @override
-  String get phoneActualLaunchMode => '当前运行方式';
-
-  @override
-  String get phoneLaunchNotObserved => '未运行';
-
-  @override
-  String get phoneLastLaunchSelection => '上次启动方式';
-
-  @override
-  String get phoneDirectRejectedReason => '兼容启动原因';
-
-  @override
-  String get phoneLaunchFailureReason => '上次启动失败';
-
-  @override
-  String get phoneReturnCompatible => '切回兼容启动';
-
-  @override
-  String get phoneLaunchDirect => '直接启动';
-
-  @override
-  String get phoneLaunchCompatible => '兼容启动';
-
-  @override
-  String get phoneDirectIncompatibleFiles => '插件文件待整理，暂用兼容启动';
-
-  @override
-  String get phoneDirectNotEnoughSpace => '空间不足，暂用兼容启动';
-
-  @override
-  String get phoneDirectMigrationFailed => '文件整理未完成，暂用兼容启动';
-
-  @override
-  String get phoneDirectLaunchFailed => '直接启动未成功';
-
-  @override
-  String get phoneLaunchStartFailed => '未能完成启动';
-
-  @override
-  String phoneLaunchExited(String code) {
-    return '退出码 $code';
-  }
 
   @override
   String get phoneDndManualConnect => '按端口连接';
@@ -13162,9 +11660,6 @@ class L10nZh extends L10n {
   String get phoneBackgroundGuideTitle => '后台确认与返回';
 
   @override
-  String get phoneBackgroundGuideSubtitle => '让确认卡和任务结果及时出现';
-
-  @override
   String get phoneBackgroundGuideBody => '需要你确认时，会显示 DSH Pocket 卡片。卡片不可用时会尝试通知或回到 App。请在系统设置中允许手机操控通知和弹出提醒。';
 
   @override
@@ -13211,9 +11706,6 @@ class L10nZh extends L10n {
 
   @override
   String get phonePrivilegedGrantSuiPermission => '先授权 Sui，再授予权限';
-
-  @override
-  String get phonePrivilegedSuggested => '建议';
 
   @override
   String get phonePrivilegedRootRiskTitle => '给 DSH Pocket root 权限？';
@@ -13812,32 +12304,6 @@ class L10nZh extends L10n {
   String get pluginsOperationHostChanged => '主机已切换，未执行';
 
   @override
-  String get pluginsReloadLocal => '重启内核以重载';
-
-  @override
-  String get pluginsReloadInterrupts => '会中断正在运行的任务';
-
-  @override
-  String pluginsReloadConfirm(String name) {
-    return '重载「$name」？';
-  }
-
-  @override
-  String get pluginsReloadExplanation => '将重启本机内核，重新加载插件。正在运行的任务会中断。';
-
-  @override
-  String get pluginsReloadProceed => '重启并重载';
-
-  @override
-  String get pluginsReloadRequested => '已请求重启内核';
-
-  @override
-  String get pluginsReloadChanged => '主机或插件状态已变化，请重试';
-
-  @override
-  String get pluginsReloadFailed => '未能重启内核，请查看引擎日志';
-
-  @override
   String get pluginsFile => '文件';
 
   @override
@@ -13933,9 +12399,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get pluginsSecretsUnshareable => '含有密钥，无法分享';
-
-  @override
   String pluginsLineCount(int count) {
     return '$count 行';
   }
@@ -13987,15 +12450,6 @@ class L10nZh extends L10n {
   String get pluginsImportLocalOnly => '只能导入到本机';
 
   @override
-  String get pluginsReplaceSkill => '替换同名技能';
-
-  @override
-  String get pluginsReplaceContent => '替换现有内容';
-
-  @override
-  String get pluginsSafeModeInstallBlocked => '安全模式下不能安装插件';
-
-  @override
   String get pluginsHostInstallBlocked => '这台主机不能从这里安装插件';
 
   @override
@@ -14012,9 +12466,6 @@ class L10nZh extends L10n {
 
   @override
   String get pluginsHostUnreachable => '没能连上主机';
-
-  @override
-  String get pluginsFileWriteFailed => '没能写入文件';
 
   @override
   String get pluginsProfileTitle => 'DSH Pocket 配置';
@@ -14146,17 +12597,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get pluginsRestartRequired => '需要重启引擎';
-
-  @override
-  String pluginsRestartExplanation(String name) {
-    return '「$name」重启引擎后生效，进行中的回复会中断。';
-  }
-
-  @override
-  String get pluginsRestartEngine => '重启引擎';
-
-  @override
   String get pluginsAllowBuildScripts => '允许构建脚本？';
 
   @override
@@ -14198,9 +12638,6 @@ class L10nZh extends L10n {
   String pluginsUninstalledNamed(String title) {
     return '已卸载「$title」';
   }
-
-  @override
-  String get pluginsRestartNow => '立即重启';
 
   @override
   String get pluginsUninstallFailed => '没能卸载';
@@ -14366,9 +12803,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get pluginsInstallThisPhone => '安装到：本机';
-
-  @override
   String pluginsInstallHost(String host) {
     return '安装到：$host';
   }
@@ -14386,9 +12820,6 @@ class L10nZh extends L10n {
   String get pluginsTheme => '主题';
 
   @override
-  String get pluginsAppearance => '外观';
-
-  @override
   String get pluginsColors => '配色';
 
   @override
@@ -14396,9 +12827,6 @@ class L10nZh extends L10n {
 
   @override
   String get pluginsAppIcon => '桌面图标';
-
-  @override
-  String get pluginsPet => '宠物';
 
   @override
   String get pluginsCustomColor => '自定义';
@@ -14553,25 +12981,7 @@ class L10nZh extends L10n {
   String get pluginsDiagnosticsDescription => '反馈问题时附上，不含 Key 和令牌';
 
   @override
-  String get pluginsRuntime => '运行环境';
-
-  @override
-  String get pluginsArchitecture => '架构';
-
-  @override
-  String get pluginsBundledVersion => '内置版本';
-
-  @override
-  String get pluginsInstalledVersion => '已安装版本';
-
-  @override
-  String get pluginsErrorLabel => '错误';
-
-  @override
   String get pluginsConnection => '连接';
-
-  @override
-  String get pluginsAddress => '地址';
 
   @override
   String get pluginsClient => '客户端';
@@ -14676,15 +13086,6 @@ class L10nZh extends L10n {
   String get pluginsPersonalPreferences => '个人偏好';
 
   @override
-  String get pluginsPreferencesDescription => '新对话会照这里的要求回答';
-
-  @override
-  String get pluginsPreferencesHint => '比如：用中文回答，我主要写 Flutter';
-
-  @override
-  String get pluginsSaving => '正在保存';
-
-  @override
   String get pluginsShareLink => '分享链接';
 
   @override
@@ -14779,9 +13180,6 @@ class L10nZh extends L10n {
 
   @override
   String get pluginsCouldNotInstall => '没能安装';
-
-  @override
-  String get pluginsEngineRestartToApply => '重启引擎后生效';
 
   @override
   String pluginsRemoteRestartToApply(String host) {
@@ -14901,11 +13299,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String pluginsUninstalledRestartLocal(String title) {
-    return '已卸载「$title」，重启引擎后完全移除';
-  }
-
-  @override
   String pluginsUninstalledRestartRemote(String title, String host) {
     return '已卸载「$title」，重启$host上的 DSH 后完全移除';
   }
@@ -14917,15 +13310,9 @@ class L10nZh extends L10n {
   String get pluginsDisableFailed => '没能停用';
 
   @override
-  String get pluginsEnabledRestartLocal => '已启用，重启引擎后生效';
-
-  @override
   String pluginsEnabledRestartRemote(String host) {
     return '已启用，重启$host上的 DSH 后生效';
   }
-
-  @override
-  String get pluginsDisabledRestartLocal => '已停用，重启引擎后生效';
 
   @override
   String pluginsDisabledRestartRemote(String host) {
@@ -15107,25 +13494,12 @@ class L10nZh extends L10n {
   String get plugslotsPanelOffline => '连不上插件';
 
   @override
-  String plugslotsIssueTooMany(int max) {
-    return '最多 $max 个，其余不显示';
-  }
-
-  @override
   String plugslotsIssueTrimmed(int max) {
     return '超过 $max 字，已截断';
   }
 
   @override
-  String plugslotsIssueNeedsApp(String version) {
-    return '需要 DSH Pocket $version 或更新版本';
-  }
-
-  @override
   String get plugslotsIssueNewerProtocol => '需要更新 App';
-
-  @override
-  String get plugslotsIssueUnknownIcon => '不认识的图标，已换成默认图标';
 
   @override
   String plugslotsIssueUnknownEffect(String name) {
@@ -15147,23 +13521,10 @@ class L10nZh extends L10n {
   String get plugslotsIssueThrottled => '提示太频繁，已略过';
 
   @override
-  String plugslotsIssueInvoke(String message) {
-    return '调用失败：$message';
-  }
-
-  @override
-  String plugslotsIssueStream(String message) {
-    return '数据出错：$message';
-  }
-
-  @override
   String get plugslotsIssueMissing => '缺少必填项';
 
   @override
   String get plugslotsIssueDuplicate => 'id 重复，已略过';
-
-  @override
-  String get plugslotsIssueNoPlacement => '没有可放的位置';
 
   @override
   String plugslotsWantsMessage(String plugin) {
@@ -15834,395 +14195,7 @@ class L10nZh extends L10n {
   String get remoteHostedTtlForever => '永久';
 
   @override
-  String get remoteForumSignIn => '登录论坛';
-
-  @override
-  String get remoteForumSignInBenefits => '发帖、回复、点赞';
-
-  @override
-  String get remoteForumFinishSignIn => '在浏览器里完成登录';
-
-  @override
-  String get remoteReopenBrowser => '重新打开浏览器';
-
-  @override
-  String get remoteForumSettings => '论坛设置';
-
-  @override
-  String get remoteForumAccount => '论坛账号';
-
-  @override
-  String get remoteForumTopic => '话题';
-
-  @override
-  String get remoteForumLikesReceived => '获赞';
-
-  @override
-  String get remoteForumDaysVisited => '访问天数';
-
-  @override
-  String get remoteForumNotifications => '通知';
-
-  @override
-  String remoteForumUnreadCount(int count) {
-    return '$count 条未读';
-  }
-
-  @override
-  String get remoteForumErrAddress => '地址不对';
-
-  @override
-  String get remoteForumAddress => '论坛地址';
-
-  @override
-  String remoteForumDefaultAddress(String host) {
-    return '默认：$host';
-  }
-
-  @override
-  String get remoteRestoreDefault => '恢复默认';
-
-  @override
-  String get remoteForumUploadingImage => '正在上传图片…';
-
-  @override
-  String get remoteForumErrUploadImage => '图片没传上去';
-
-  @override
-  String get remoteForumTitleRequired => '先写标题';
-
-  @override
-  String get remoteForumCategoryRequired => '选一个分类';
-
-  @override
-  String get remoteForumBodyRequired => '写点内容再发';
-
-  @override
-  String remoteForumReplyCaption(String username, String title) {
-    return '回复 @$username · $title';
-  }
-
-  @override
-  String get remoteForumNewTopic => '新话题';
-
-  @override
-  String get remoteForumTitle => '标题';
-
-  @override
-  String get remoteForumComposerHint => '写点什么，支持 Markdown';
-
-  @override
-  String get remoteForumPublish => '发布';
-
-  @override
-  String get remoteForumImage => '图片';
-
-  @override
-  String get remoteForumAttachShareCode => '附上分享码';
-
-  @override
-  String get remoteForumPendingApproval => '已提交，审核后可见';
-
-  @override
-  String get remoteForumLatest => '最新';
-
-  @override
-  String get remoteForumTop => '热门';
-
-  @override
-  String get remoteForumErrOpen => '没能打开论坛';
-
-  @override
-  String get remoteForumNoTopics => '还没有话题';
-
-  @override
-  String get remoteForumPost => '发帖';
-
-  @override
-  String get remoteForum => '论坛';
-
-  @override
-  String remoteForumNotificationsUnread(int count) {
-    return '通知，$count 条未读';
-  }
-
-  @override
-  String get remoteForumSearch => '搜索';
-
-  @override
-  String get remoteForumSearchHint => '搜索话题和帖子';
-
-  @override
-  String get remoteForumSignedIn => '已登录论坛';
-
-  @override
-  String get remoteForumSignInForNotifications => '登录后查看通知';
-
-  @override
-  String get remoteForumErrNotifications => '没能读取通知';
-
-  @override
-  String get remoteForumNoNotifications => '还没有通知';
-
-  @override
-  String get remoteForumMarkAllRead => '全部已读';
-
-  @override
-  String get remoteForumSomeone => '有人';
-
-  @override
-  String remoteForumNotificationMention(String who) {
-    return '$who 提到了你';
-  }
-
-  @override
-  String remoteForumNotificationGroupMention(String who) {
-    return '$who 提到了你所在的群组';
-  }
-
-  @override
-  String remoteForumNotificationReply(String who) {
-    return '$who 回复了你';
-  }
-
-  @override
-  String remoteForumNotificationQuote(String who) {
-    return '$who 引用了你';
-  }
-
-  @override
-  String remoteForumNotificationEdit(String who) {
-    return '$who 编辑了你的帖子';
-  }
-
-  @override
-  String remoteForumNotificationLikes(String who, int count) {
-    return '$who 等 $count 人赞了你';
-  }
-
-  @override
-  String remoteForumNotificationLike(String who) {
-    return '$who 赞了你';
-  }
-
-  @override
-  String remoteForumNotificationLikedPosts(String who, int count) {
-    return '$who 赞了你的 $count 个帖子';
-  }
-
-  @override
-  String remoteForumNotificationReaction(String who) {
-    return '$who 回应了你';
-  }
-
-  @override
-  String remoteForumNotificationMessage(String who) {
-    return '$who 发来私信';
-  }
-
-  @override
-  String remoteForumNotificationMessageInvite(String who) {
-    return '$who 邀请你加入私信';
-  }
-
-  @override
-  String remoteForumNotificationTopicInvite(String who) {
-    return '$who 邀请你参与话题';
-  }
-
-  @override
-  String remoteForumNotificationNewReply(String who) {
-    return '$who 发了新回复';
-  }
-
-  @override
-  String remoteForumNotificationNewTopic(String who) {
-    return '$who 发了新话题';
-  }
-
-  @override
-  String remoteForumNotificationLink(String who) {
-    return '$who 链接了你的帖子';
-  }
-
-  @override
-  String remoteForumNotificationBadge(String badge) {
-    return '获得徽章「$badge」';
-  }
-
-  @override
-  String remoteForumNotificationMoved(String who) {
-    return '$who 移动了你的帖子';
-  }
-
-  @override
-  String get remoteForumBookmarkReminder => '书签提醒';
-
-  @override
-  String get remoteForumTopicReminder => '话题提醒';
-
-  @override
-  String get remoteForumPostApproved => '你的帖子已通过审核';
-
-  @override
-  String get remoteForumAdminProblems => '论坛有待处理的问题';
-
-  @override
-  String get remoteForumNewNotification => '新通知';
-
-  @override
-  String get remoteForumUnread => '未读';
-
-  @override
-  String get remoteForumErrShareCode => '没能打开分享码';
-
-  @override
-  String get remoteForumPoll => '投票';
-
-  @override
-  String get remoteForumVideo => '视频';
-
-  @override
-  String get remoteForumEmbed => '嵌入内容';
-
-  @override
-  String get remoteForumVoteOnWeb => '去网页版投票';
-
-  @override
-  String get remoteForumErrSearch => '没能搜索';
-
-  @override
-  String remoteForumNoSearchResults(String term) {
-    return '没有找到「$term」';
-  }
-
-  @override
-  String get remoteForumBookmarkRemoved => '已取消书签';
-
-  @override
-  String get remoteForumBookmarkAdded => '已加入书签';
-
-  @override
   String get remoteLinkCopied => '已复制链接';
-
-  @override
-  String get remoteForumErrTopic => '没能打开这个话题';
-
-  @override
-  String get remoteForumTopicClosed => '话题已关闭';
-
-  @override
-  String get remoteForumReplyHint => '写回复…';
-
-  @override
-  String get remoteForumSignInToReply => '登录后回复';
-
-  @override
-  String remoteForumReplyTo(String username) {
-    return '回复 @$username';
-  }
-
-  @override
-  String get remoteForumPostDeleted => '帖子已删除';
-
-  @override
-  String get remoteForumPostHidden => '帖子已被隐藏';
-
-  @override
-  String get remoteForumUnlike => '取消点赞';
-
-  @override
-  String get remoteForumLike => '点赞';
-
-  @override
-  String get remoteForumRemoveBookmark => '取消书签';
-
-  @override
-  String get remoteForumBookmark => '书签';
-
-  @override
-  String get remoteForumActionPinned => '置顶了话题';
-
-  @override
-  String get remoteForumActionUnpinned => '取消了置顶';
-
-  @override
-  String get remoteForumActionClosed => '关闭了话题';
-
-  @override
-  String get remoteForumActionReopened => '重新开放了话题';
-
-  @override
-  String get remoteForumActionAutoClosed => '话题已自动关闭';
-
-  @override
-  String get remoteForumActionAutoOpened => '话题已自动开放';
-
-  @override
-  String get remoteForumActionArchived => '归档了话题';
-
-  @override
-  String get remoteForumActionUnarchived => '取消了归档';
-
-  @override
-  String get remoteForumActionListed => '公开了话题';
-
-  @override
-  String get remoteForumActionUnlisted => '隐藏了话题';
-
-  @override
-  String get remoteForumActionSplit => '拆分了话题';
-
-  @override
-  String get remoteForumActionBanner => '设为横幅';
-
-  @override
-  String get remoteForumActionRemoveBanner => '取消了横幅';
-
-  @override
-  String get remoteForumActionUpdated => '更新了话题';
-
-  @override
-  String get remoteLoading => '正在加载';
-
-  @override
-  String get remoteForumJustNow => '刚刚';
-
-  @override
-  String remoteForumMinutesAgo(int count) {
-    return '$count 分钟前';
-  }
-
-  @override
-  String remoteForumHoursAgo(int count) {
-    return '$count 小时前';
-  }
-
-  @override
-  String remoteForumDaysAgo(int count) {
-    return '$count 天前';
-  }
-
-  @override
-  String remoteForumReplyCount(int count) {
-    return '$count 回复';
-  }
-
-  @override
-  String remoteForumNewReplyCount(int count) {
-    return '$count 条新回复';
-  }
-
-  @override
-  String get remoteForumNew => '新';
-
-  @override
-  String remoteForumErrorRetry(String error) {
-    return '$error · 重试';
-  }
-
-  @override
-  String get remoteForumNoMore => '没有更多了';
 
   @override
   String get remoteHostKeyTrustTitle => '信任这台主机？';
@@ -16266,27 +14239,10 @@ class L10nZh extends L10n {
   String get remoteSwitchHost => '切换主机';
 
   @override
-  String get remoteThisPhoneDsh => '这台手机上的 DSH';
-
-  @override
-  String get remoteRemoteLabel => '远程';
-
-  @override
-  String remoteRemotePlatform(String platform) {
-    return '远程 · $platform';
-  }
-
-  @override
-  String get remoteRelaySwitchWarning => 'DSH Remote 一次只连一台主机，切换会断开上一台';
-
-  @override
   String get remoteConnectComputer => '连接电脑或服务器';
 
   @override
   String get remoteManageHosts => '管理远程主机';
-
-  @override
-  String get remoteConnectionMethods => '通过 SSH 或 DSH Remote';
 
   @override
   String get remoteRelayLoginRequired => '填写服务器地址、邮箱和密码';
@@ -16334,21 +14290,9 @@ class L10nZh extends L10n {
   String get remoteSshDirect => '不经过第三方服务器';
 
   @override
-  String get remoteOtherMethods => '其他方式';
-
-  @override
-  String get remoteWebConsole => '网页版远程控制台';
-
-  @override
-  String get remoteWebConsoleProvider => 'dsh.r2049.cn · 第三方页面';
-
-  @override
   String remoteActiveHost(String name) {
     return '正在使用「$name」';
   }
-
-  @override
-  String get remoteSwitchToPhone => '切回本机';
 
   @override
   String get remoteSignInAgain => '重新登录';
@@ -16388,59 +14332,6 @@ class L10nZh extends L10n {
   String remoteConnectedSsh(String address) {
     return '已连接 · SSH $address';
   }
-
-  @override
-  String get remoteErrRefreshHosts => '没能刷新主机列表';
-
-  @override
-  String get remoteSwitchWarning => '一次只连一台主机，切换会断开上一台';
-
-  @override
-  String get remoteRefreshHosts => '刷新主机列表';
-
-  @override
-  String get remoteSignOut => '退出';
-
-  @override
-  String get remoteErrHostsRetry => '没能获取主机列表 · 轻点重试';
-
-  @override
-  String get remoteNoHosts => '还没有主机';
-
-  @override
-  String get remoteRelaySetupHelp => '在主机的 DSH 里装好远程插件并登录';
-
-  @override
-  String get remoteRelaySignOutTitle => '退出 DSH Remote？';
-
-  @override
-  String get remoteRelaySignOutBody => '这台手机会从账号中移除。主机上的 DSH 和对话不受影响，随时可以重新登录。';
-
-  @override
-  String get remoteRelaySignInTitle => '登录 DSH Remote';
-
-  @override
-  String get remoteRelaySignInHelp => '无需配置网络，连接端到端加密';
-
-  @override
-  String get remoteBrowserSignIn => '在浏览器中登录';
-
-  @override
-  String remoteSignInWithProvider(String provider) {
-    return '使用 $provider 登录';
-  }
-
-  @override
-  String get remoteComingSoon => '即将接入';
-
-  @override
-  String get remoteSelfHostedEmailSignIn => '自建服务器 · 邮箱登录';
-
-  @override
-  String get remoteBrowserSignInPending => '在浏览器里完成登录…';
-
-  @override
-  String get remoteCopySignInLink => '复制登录链接';
 
   @override
   String get remoteSshAddressRequired => '填写主机地址（IP 或域名）';
@@ -16628,21 +14519,6 @@ class L10nZh extends L10n {
   String get remoteDirectoryHome => '主目录';
 
   @override
-  String get remoteDirectoryPhoneStorage => '手机存储';
-
-  @override
-  String get remoteDirectoryDownloads => '下载';
-
-  @override
-  String get remoteDirectoryDownloadsPath => '手机存储/Download';
-
-  @override
-  String get remoteDirectoryDocuments => '文档';
-
-  @override
-  String get remoteDirectoryDocumentsPath => '手机存储/Documents';
-
-  @override
   String get remoteDirectoryLocations => '位置';
 
   @override
@@ -16763,11 +14639,6 @@ class L10nZh extends L10n {
   String get remoteWorkspaceGroupName => '分组名称';
 
   @override
-  String remoteDirectoryPhonePath(String path) {
-    return '手机存储/$path';
-  }
-
-  @override
   String get remoteDirectoryInvalidName => '名字里不能有「/」';
 
   @override
@@ -16827,23 +14698,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String remoteForumCompactReplies(int count, String label) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$label 回复');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumCompactViews(int count, String label) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$label 浏览');
-    return '$_temp0';
-  }
-
-  @override
-  String remoteForumYearDate(int year, String month, int day) {
-    return '$year年$month月$day日';
-  }
-
-  @override
   String remoteHostedMonthDate(String month, int day) {
     return '$month 月 $day 日';
   }
@@ -16852,14 +14706,6 @@ class L10nZh extends L10n {
   String remoteHostedYearDate(int year, String month, int day) {
     return '$year 年 $month 月 $day 日';
   }
-
-  @override
-  String remoteForumTenThousands(String value) {
-    return '$value万';
-  }
-
-  @override
-  String get remoteForumSemanticsSeparator => '，';
 
   @override
   String remoteHostKeyVerifyCommand(String command) {
@@ -17017,15 +14863,6 @@ class L10nZh extends L10n {
   String get searchKwRemoteCompactHistory => '精简 简洁 历史 工具 传输 流量 远程 compact slim lite';
 
   @override
-  String get remotePairEntry => '扫码配对电脑';
-
-  @override
-  String get remotePairEntryHint => '扫电脑上 Remote 插件显示的二维码，不用注册 Remote 账号（需要先登录 DeepSeek）';
-
-  @override
-  String get remotePairAddComputer => '扫码添加电脑';
-
-  @override
   String get remotePairTitle => '扫码配对电脑';
 
   @override
@@ -17037,107 +14874,6 @@ class L10nZh extends L10n {
   @override
   String get remotePairNeedsDeepSeekBody =>
       '扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。';
-
-  @override
-  String get remotePairScanHint => '对准电脑上 Remote 插件显示的配对二维码';
-
-  @override
-  String get remotePairPasteLink => '粘贴配对链接';
-
-  @override
-  String get remotePairPasteEmpty => '剪贴板里没有配对链接';
-
-  @override
-  String get remotePairScannerFailed => '二维码识别器不可用。可以粘贴配对链接继续配对。';
-
-  @override
-  String get remotePairFromImage => '从相册识别';
-
-  @override
-  String get remotePairImageNoCode => '这张图里没找到二维码';
-
-  @override
-  String get remotePairCameraDenied => '没有相机权限。可以在系统设置里打开，或者用「从相册识别」「粘贴配对链接」';
-
-  @override
-  String get remotePairCameraFailed => '相机打不开。可以用「从相册识别」或「粘贴配对链接」';
-
-  @override
-  String get remotePairSystemScan => '扫码';
-
-  @override
-  String get remotePairSystemScanHint => '打开系统扫码，里面也能从相册选截图';
-
-  @override
-  String get remotePairReading => '正在读取配对信息…';
-
-  @override
-  String get remotePairConfirmTitle => '要连接这台电脑吗？';
-
-  @override
-  String get remotePairComputer => '电脑';
-
-  @override
-  String get remotePairServer => '服务器';
-
-  @override
-  String get remotePairFingerprint => '电脑指纹';
-
-  @override
-  String get remotePairFingerprintHint => '和电脑 Remote 插件上显示的指纹核对一致再继续。';
-
-  @override
-  String get remotePairConfirm => '确认是这台电脑，开始配对';
-
-  @override
-  String get remotePairNotThis => '不是这台，重新扫';
-
-  @override
-  String get remotePairClaiming => '正在生成验证码…';
-
-  @override
-  String get remotePairCodeTitle => '在电脑上输入这 8 位验证码';
-
-  @override
-  String remotePairCodeSemantics(String digits) {
-    return '验证码 $digits';
-  }
-
-  @override
-  String get remotePairCodeHint => '在电脑的 Remote 插件里输入，点「确认绑定」。手机不用再操作。';
-
-  @override
-  String get remotePairOneAttempt => '只有一次机会：输错后这次配对作废，要在电脑上重新生成二维码再扫。';
-
-  @override
-  String remotePairWaiting(String countdown) {
-    return '等电脑确认 · 剩余 $countdown';
-  }
-
-  @override
-  String get remotePairApproved => '电脑已确认，正在完成绑定…';
-
-  @override
-  String get remotePairCodeExpired => '验证码已过期，请在电脑上重新生成二维码';
-
-  @override
-  String remotePairConnecting(String name) {
-    return '配对完成，正在连接 $name…';
-  }
-
-  @override
-  String get remotePairFailedTitle => '没能配对';
-
-  @override
-  String remotePairOtherServerBody(String server) {
-    return '这个二维码来自 $server，和 DSH Pocket 现在用的 Remote 服务器不同。切换过去继续吗？两个服务器的登录各自保留。';
-  }
-
-  @override
-  String get remotePairSwitchServer => '切换服务器并继续';
-
-  @override
-  String get remotePairScanAgain => '重新扫码';
 
   @override
   String get remotePairErrInvalidCode => '这不是 DSH Pocket 的配对二维码';
@@ -17171,17 +14907,6 @@ class L10nZh extends L10n {
 
   @override
   String get remotePairErrFailed => '配对没有完成，请重新扫码';
-
-  @override
-  String remotePairSwitchFailedTitle(String name) {
-    return '已和 $name 配对';
-  }
-
-  @override
-  String get remotePairSwitchFailedBody => '但没能切换到这台电脑。可以重试，或者回到「远程主机」里点这台电脑。';
-
-  @override
-  String get remotePairDone => '完成';
 
   @override
   String get remotePairErrPinSave => '已经配对，但没能在手机上保存这台电脑的指纹。请在电脑上重新生成二维码，再扫一次';
@@ -17289,9 +15014,6 @@ class L10nZh extends L10n {
   String get askAiHelpTitle => '使用帮助';
 
   @override
-  String get askAiHelpSubtitle => '不懂的地方，问 AI';
-
-  @override
   String askAiAboutApp(String question) {
     return '关于 DSH Pocket App：$question';
   }
@@ -17330,21 +15052,6 @@ class L10nZh extends L10n {
 
   @override
   String get askAiQuestionRemote => '怎么连接自己的电脑或服务器？和用本机有什么不同？';
-
-  @override
-  String get phoneRuntimeUpgradeBase => '新引擎与现有 Linux 环境不能确认兼容，更新已停止。原环境和已装工具没有删除。请先完整备份，再联系维护者迁移；不要直接重置或卸载 App。';
-
-  @override
-  String get phoneRuntimeUpgradeManifest => '无法安全识别运行时更新清单，更新已停止，原环境保留。请核对安装包并联系维护者，不要直接重置。';
-
-  @override
-  String get phoneRuntimeUpgradeInterrupted => '运行时升级尚未完成，数据与恢复现场已保留。请重试安装；仍失败时导出诊断并联系维护者，不要重置或删除恢复目录。';
-
-  @override
-  String get phoneRuntimeUpgradeSymlink => '现有环境的系统路径已被自定义链接替换，无法安全更新。原环境保留，请先备份并联系维护者处理。';
-
-  @override
-  String get phoneRuntimeUpgradeRunning => '引擎或遗留进程尚未确认停止，更新未开始。请先停止本机引擎，等待清理完成后重试；不要重置环境。';
 
   @override
   String get schemaDocumentationTitle => '字段说明';
@@ -17408,12 +15115,6 @@ class L10nZh extends L10n {
   String get searchKwNotifications => '提醒,推送,横幅,消息,铃声';
 
   @override
-  String get searchKwReplyPrefs => '偏好,关于我,自我介绍,回答风格,称呼,AGENTS.md';
-
-  @override
-  String get searchKwSharedLinks => '分享链接,链接,公开链接,分享';
-
-  @override
   String get searchKwPhone => '无障碍,操作手机,自动点击,代操作,点按';
 
   @override
@@ -17421,9 +15122,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwDnd => '免打扰,Shizuku,Sui,root,ADB,后台操作';
-
-  @override
-  String get searchKwEngine => '引擎,运行环境,启动,停止,重启,DSH';
 
   @override
   String get searchKwBackground => '后台保活,保活,后台,电池优化,自启动,被杀,杀后台,省电';
@@ -17465,9 +15163,6 @@ class L10nZh extends L10n {
   String get searchKwAllFeatures => '功能,目录,所有功能';
 
   @override
-  String get searchKwAccount => '账号,余额,充值,登录,退出登录,API Key,用量,DeepSeek';
-
-  @override
   String get searchKwRemote => '远程,SSH,电脑,服务器,DSH Remote,连接电脑';
 
   @override
@@ -17481,9 +15176,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwLanguage => '中文,英文,简体,English';
-
-  @override
-  String get searchKwAutoCommands => '别问我,不要确认,自动允许,完全权限,免确认';
 
   @override
   String get searchKwPhoneFiles => '存储,文件,相册,下载,手机存储';
@@ -17508,9 +15200,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwOpenWeb => '网页版,网页,浏览器,官方网页版';
-
-  @override
-  String get searchKwSafeMode => '安全模式,恢复正常模式,排障,插件崩溃';
 
   @override
   String get searchKwVersion => '版本号,关于';
@@ -17609,21 +15298,6 @@ class L10nZh extends L10n {
   String get searchKwPhoneBackgroundGuide => '后台确认,返回 App';
 
   @override
-  String get searchKwAutoStart => '自动启动,开机启动,自启';
-
-  @override
-  String get searchKwAutoSafe => '安全模式,自动安全模式';
-
-  @override
-  String get searchKwEngineReset => '重置,清空,恢复';
-
-  @override
-  String get searchKwEngineUninstall => '卸载,删除运行环境,释放空间';
-
-  @override
-  String get searchKwWorkspaceRecovery => '工作区,索引,救援,对话打不开,对话不见了,恢复对话';
-
-  @override
   String get searchKwAddProvider => '添加模型,新渠道,自定义模型,Base URL';
 
   @override
@@ -17711,9 +15385,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwPluginsMarket => '插件市场,安装插件,市场,获取插件';
-
-  @override
-  String get searchKwUsageStats => '统计,使用统计,匿名,隐私,数据,改进,遥测,分析';
 
   @override
   String get searchKwQuickPanel => '左滑,快捷入口,手势,滑动,目录,自定义目录,快捷,常用入口';
@@ -17984,43 +15655,6 @@ class L10nZh extends L10n {
   String get shellDeleteFailed => '主机无法确认删除结果，请刷新后再决定是否重试。';
 
   @override
-  String get setupAppearanceTitle => '选择外观';
-
-  @override
-  String get setupAppearanceMessage => '随时可以在设置里更改';
-
-  @override
-  String get setupLightMode => '轻量模式';
-
-  @override
-  String get setupCapsulePreparing => '准备运行环境';
-
-  @override
-  String setupCapsuleProgress(int percent) {
-    return '运行环境 $percent%';
-  }
-
-  @override
-  String setupCapsuleProgressSemantics(int percent) {
-    return '正在准备运行环境，已完成 $percent%';
-  }
-
-  @override
-  String get setupCapsuleReady => '运行环境已就绪';
-
-  @override
-  String get setupCapsuleFailed => '安装未完成';
-
-  @override
-  String get setupWaitingBody => '完成后自动进入';
-
-  @override
-  String get setupNotifyWhenDone => '完成时会通知你';
-
-  @override
-  String get setupAwaitSignIn => '就绪后自动打开 DeepSeek 登录';
-
-  @override
   String get shellApiKeyPrefixWarning => 'DeepSeek 的 Key 通常以 sk- 开头，确认没有复制错';
 
   @override
@@ -18048,12 +15682,6 @@ class L10nZh extends L10n {
   String get shellSaving => '正在保存';
 
   @override
-  String get shellSaveContinue => '保存并继续';
-
-  @override
-  String get shellSetUpLater => '稍后设置';
-
-  @override
   String get shellClearField => '清空';
 
   @override
@@ -18066,85 +15694,9 @@ class L10nZh extends L10n {
   String get shellGetApiKey => '获取 API Key';
 
   @override
-  String get shellConnectDeepSeek => '连接 DeepSeek';
-
-  @override
-  String get shellConnectDeepSeekMessage => '登录 DeepSeek 账号即可开始，无需 API Key';
-
-  @override
-  String get shellAccountSignInUnsupported => '当前引擎不支持账号登录';
-
-  @override
-  String get shellSignInDeepSeek => '用 DeepSeek 账号登录';
-
-  @override
-  String get shellUseApiKey => '使用 API Key';
-
-  @override
-  String get shellOtherProviders => '其他模型渠道';
-
-  @override
   String shellOnboardingStep(int step, int steps) {
     return '第 $step 步，共 $steps 步';
   }
-
-  @override
-  String get shellRuntimeUpdating => '正在更新运行环境';
-
-  @override
-  String get shellRuntimePreparing => '正在准备运行环境';
-
-  @override
-  String get shellRuntimeReady => '准备就绪';
-
-  @override
-  String get shellRuntimeIncomplete => '安装未完成';
-
-  @override
-  String get shellRuntimeFilesKept => '对话和文件都会保留';
-
-  @override
-  String get shellRuntimeFirstSetup => '首次准备约需一两分钟';
-
-  @override
-  String get shellRuntimeContinuing => '即将继续';
-
-  @override
-  String get shellRuntimeRestoreFailed => '没能放回保留的内容';
-
-  @override
-  String get shellRuntimeExtractFailed => '解压时出错';
-
-  @override
-  String get shellInstallLogs => '安装日志';
-
-  @override
-  String get shellRuntimeLocalOnly => '全程在本机完成';
-
-  @override
-  String get shellRuntimeContinueWithoutKept => '不保留，继续安装';
-
-  @override
-  String get shellRuntimeAlmostDone => '马上就好';
-
-  @override
-  String shellRuntimeSecondsRemaining(int count) {
-    return '约 $count 秒';
-  }
-
-  @override
-  String shellRuntimeMinutesRemaining(int count) {
-    return '约 $count 分钟';
-  }
-
-  @override
-  String get shellEngineLogs => '引擎日志';
-
-  @override
-  String get shellWelcomeMessage => '把 DeepSeek 智能体\n装进口袋';
-
-  @override
-  String get shellGetStarted => '开始';
 
   @override
   String get shellSearchChats => '搜索对话';
@@ -18316,9 +15868,6 @@ class L10nZh extends L10n {
   String get shellPinned => '已置顶';
 
   @override
-  String get shellEngineNotRunning => '引擎未运行';
-
-  @override
   String shellHostNotConnected(String name) {
     return '还没连上「$name」';
   }
@@ -18414,18 +15963,6 @@ class L10nZh extends L10n {
 
   @override
   String get shellNewChatsHint => '新对话会出现在这里';
-
-  @override
-  String get shellEngineStarting => '引擎正在启动';
-
-  @override
-  String get shellChatsAfterStarting => '启动后显示你的对话';
-
-  @override
-  String get shellStartEngine => '启动引擎';
-
-  @override
-  String get shellEngineStatusHint => '在「引擎」中查看状态';
 
   @override
   String shellHostUnreachable(String name) {
@@ -19129,10 +16666,6 @@ class L10nZh extends L10n {
   String get speechCallEndMicrophone => '麦克风被占用或打不开';
 
   @override
-  String get speechCallEndNoRecognizerSignedIn =>
-      '通话要能识别录音。已登录的账号在这里付不了 DeepSeek 语音（当前连接的 DSH 版本较旧，或经 DSH Remote 中继）：在设置里填 DeepSeek API Key，或在设置 › 语音里下载语音模型';
-
-  @override
   String get speechCallEndNoRecognizer => '通话需要能识别录音的方式：登录 DeepSeek 账号、填 API Key，或下载语音模型';
 
   @override
@@ -19289,20 +16822,6 @@ class L10nZh extends L10n {
   String get searchKwChatSuggestions => '起始页,空白页,新对话,聊天建议,建议卡片';
 
   @override
-  String get phoneStartupFailureStopping => '启动失败，正在停止';
-
-  @override
-  String phoneStartupFailureStoppingDetail(String reason) {
-    return '启动失败，正在停止。$reason';
-  }
-
-  @override
-  String get phoneStartupTokenTimeout => '启动等待已超时（180 秒内未收到启动标记），请查看日志';
-
-  @override
-  String get phoneStartupPortNotReady => '已收到启动标记，但本机服务端口尚未就绪，请查看日志';
-
-  @override
   String get stateDiagnosticsSubject => 'DSH Pocket 诊断包';
 
   @override
@@ -19315,49 +16834,7 @@ class L10nZh extends L10n {
   String get stateDiagnosticsExportFailed => '没能导出诊断包';
 
   @override
-  String get stateForumUnreachable => '没能连上论坛';
-
-  @override
-  String get stateSignInExpired => '登录已失效，请重新登录';
-
-  @override
-  String get stateForbidden => '没有权限';
-
-  @override
-  String get stateForumContentMissing => '内容不存在或已删除';
-
-  @override
-  String get stateTooManyActions => '操作太频繁，稍后再试';
-
-  @override
-  String get stateForumSendFailed => '没能发出去';
-
-  @override
-  String get stateForumServerError => '论坛暂时出了问题';
-
-  @override
   String get stateBrowserOpenFailed => '没能打开浏览器';
-
-  @override
-  String get stateSignInStartFailed => '没能开始登录';
-
-  @override
-  String get stateSignInIncompleteRetry => '登录没有完成，请重试';
-
-  @override
-  String get statePluginLabel => '插件';
-
-  @override
-  String get stateConfigLabel => '配置';
-
-  @override
-  String get stateConfigShare => '配置分享';
-
-  @override
-  String get stateShareCode => '分享码';
-
-  @override
-  String get stateCopyShareCodeFirst => '先在分享里复制分享码';
 
   @override
   String get stateFileOpenFailed => '无法打开这个文件';
@@ -19436,66 +16913,6 @@ class L10nZh extends L10n {
 
   @override
   String get statePhoneNotReady => '手机操控模块未就绪';
-
-  @override
-  String get stateBackgroundRestricted => '后台联网被系统限制';
-
-  @override
-  String get stateBackgroundFinish => '让对话在后台也能跑完';
-
-  @override
-  String get stateDeepSeekAccount => 'DeepSeek 账号';
-
-  @override
-  String get stateAccountUnreachable => '连不上 DeepSeek';
-
-  @override
-  String get stateAccountUnavailable => 'DeepSeek 暂时无法登录';
-
-  @override
-  String get stateSignInIncomplete => '登录没有完成';
-
-  @override
-  String get stateSignInTimeout => '登录超时';
-
-  @override
-  String get stateSignInSaveFailed => '登录信息没能保存';
-
-  @override
-  String get stateEngineNotReady => '引擎还没准备好';
-
-  @override
-  String get stateSignInInterrupted => '登录被中断';
-
-  @override
-  String get stateAccountUnsupported => '当前引擎不支持账号登录';
-
-  @override
-  String get stateCheckPhoneNetwork => '检查手机网络后重试';
-
-  @override
-  String get stateServiceUnavailableRetry => '服务暂时不可用，稍后重试';
-
-  @override
-  String get stateAuthorizationFailed => '授权没有成功，重新登录';
-
-  @override
-  String get stateAuthorizationExpired => '授权页面已失效，重新登录';
-
-  @override
-  String get stateRestartEngineRetry => '在「引擎」页重启后重试';
-
-  @override
-  String get stateEngineStartingRetry => '引擎正在启动，稍后再试';
-
-  @override
-  String get stateEngineDisconnectedSignIn => '引擎连接已断开，重新登录';
-
-  @override
-  String get stateUpdateRuntimeOrKey => '更新运行环境，或改用 API Key';
-
-  @override
-  String get stateEngineDisconnected => '引擎未连接';
 
   @override
   String get stateAgentError => '出错';
@@ -19969,9 +17386,6 @@ class L10nZh extends L10n {
   String get statePluginPnpmMissing => '缺少 pnpm';
 
   @override
-  String get statePluginPhonePnpmMissing => '这台手机缺少 pnpm';
-
-  @override
   String get statePluginHostPnpmMissing => '这台主机缺少 pnpm';
 
   @override
@@ -20167,21 +17581,6 @@ class L10nZh extends L10n {
   String get stateProviderOffline => '没有连上引擎';
 
   @override
-  String get stateSafeStartupFailed => '启动失败';
-
-  @override
-  String get stateSafeCrashedEarly => '启动后很快崩溃';
-
-  @override
-  String get stateSafeCrashedLate => '运行中崩溃';
-
-  @override
-  String get stateSafeKilled => '被系统结束';
-
-  @override
-  String get stateSafeManualEntry => '我手动进入了安全模式';
-
-  @override
   String get stateScheduleNotCreated => '对话结束了，但没有建成任务';
 
   @override
@@ -20254,21 +17653,6 @@ class L10nZh extends L10n {
 
   @override
   String get stateDownloadsPrefix => '下载/';
-
-  @override
-  String stateSharePluginCount(int count) {
-    return '$count 个插件';
-  }
-
-  @override
-  String stateShareSkillCount(int count) {
-    return '$count 个技能';
-  }
-
-  @override
-  String stateShareSettingCount(int count) {
-    return '$count 组设置';
-  }
 
   @override
   String stateAlertCompletedReply(String reply) {
@@ -20473,22 +17857,7 @@ class L10nZh extends L10n {
   }
 
   @override
-  String stateSafeSuspectPlugins(String what, String plugins) {
-    return '$what，可疑插件：$plugins';
-  }
-
-  @override
-  String stateSafePreflightFailed(String what, String checks) {
-    return '$what，启动检查没通过：$checks';
-  }
-
-  @override
   String get stateListSeparator => '、';
-
-  @override
-  String stateSafeRepairPrompt(String what) {
-    return '我的 DSH 正常模式出了问题（$what）。请按「安全模式」说明排查原因，先用可逆的办法修好 web 配置，修完用 dsh-app-plugins trial 试启动验证，再告诉我改了什么。';
-  }
 
   @override
   String stateScheduleCreatePrompt(String title, String rule, String args) {
@@ -20577,12 +17946,6 @@ class L10nZh extends L10n {
 
   @override
   String get systemActionsToggleFailed => '没能保存，再试一次';
-
-  @override
-  String get systemActionsRemoteTitle => '当前连的是远程主机';
-
-  @override
-  String get systemActionsRemoteHint => '系统操作只在本机引擎的对话里有效';
 
   @override
   String get systemActionsOnScreenTitle => '只在 DSH Pocket 在屏幕上时有效';
@@ -21040,26 +18403,11 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get usageStatsTitle => '发送匿名使用统计';
-
-  @override
   String get usageStatsSection => '改进 DSH Pocket';
 
   @override
   String get usageStatsFooter =>
       '这个开关只控制 dsh-go 自身的统计：各功能使用次数（含伙伴小屋、语音通话）、模型回复报告的 token 数、版本、手机品牌和型号、系统版本，不含对话、文件和账号；它不控制 Google ML Kit SDK 的统计。';
-
-  @override
-  String get usageNoticeBody => '不含对话和个人信息，可随时关闭';
-
-  @override
-  String get usageUpgradeNotice => '新增匿名使用统计，帮助改进 DSH Pocket。\n不含对话和个人信息';
-
-  @override
-  String get usageUpgradeLearn => '了解';
-
-  @override
-  String get usageUpgradeOff => '关闭';
 
   @override
   String viewArtifactSaved(String value) {
@@ -21144,86 +18492,6 @@ class L10nZh extends L10n {
   String viewArtifactPage(int value) {
     return '第 $value 页';
   }
-
-  @override
-  String get viewBalanceInvalidKey => 'Key 无效，查不到余额';
-
-  @override
-  String get viewBalancePrefix => '余额 ';
-
-  @override
-  String get viewBalanceLowSuffix => ' · 余额不足';
-
-  @override
-  String get viewBalanceUnavailableSuffix => ' · 已不能调用';
-
-  @override
-  String get viewBalanceTopUp => '充值';
-
-  @override
-  String get viewBalanceTitle => 'DeepSeek 余额';
-
-  @override
-  String get viewBalanceKeyRequired => '填写 API Key 后可查询余额';
-
-  @override
-  String get viewBalanceKeyInvalid => 'API Key 无效，无法查询余额';
-
-  @override
-  String viewBalancePaid(String value) {
-    return '充值 $value';
-  }
-
-  @override
-  String viewBalanceGranted(String value) {
-    return '赠送 $value';
-  }
-
-  @override
-  String get viewBalanceLow => '余额不足';
-
-  @override
-  String get viewBalanceUnavailable => '已无法调用';
-
-  @override
-  String get viewBalanceChecking => '正在查询余额…';
-
-  @override
-  String get viewBalanceCheckFailed => '暂时无法查询余额';
-
-  @override
-  String get viewBalanceNoAlert => '不提醒';
-
-  @override
-  String get viewBalanceBannerHidden => '本次运行不再显示余额提醒';
-
-  @override
-  String get viewBalanceTurnOff => '不再提醒';
-
-  @override
-  String viewBalanceBelow(String value) {
-    return '低于 $value';
-  }
-
-  @override
-  String get viewBalanceAlert => '低余额提醒';
-
-  @override
-  String get viewBalanceThreshold => '提醒线';
-
-  @override
-  String get viewBalanceGoTopUp => '去充值';
-
-  @override
-  String viewBalanceRemaining(String value) {
-    return '余额仅剩 $value';
-  }
-
-  @override
-  String get viewBalanceModelDisabled => '余额不足，模型已停用';
-
-  @override
-  String get viewBalanceRestore => '充值后恢复';
 
   @override
   String get viewUiIncomplete => '视图没有生成完';
@@ -22606,9 +19874,6 @@ class L10nZh extends L10n {
   String get voiceModelAbsent => '未下载';
 
   @override
-  String get voiceModelDownloading => '下载中';
-
-  @override
   String get voiceModelPreparing => '正在校验和加载';
 
   @override
@@ -22881,36 +20146,6 @@ class L10nZh extends L10n {
   String get webSshHost => 'SSH 主机';
 
   @override
-  String get webLocalAppOnly => '本机地址带启动令牌，只能在 App 内打开';
-
-  @override
-  String get webEngineStatus => '引擎状态';
-
-  @override
-  String get webEngineStarting => '正在启动引擎';
-
-  @override
-  String get webEngineStartFailed => '引擎没能启动';
-
-  @override
-  String get webEngineNotRunning => '引擎没有运行';
-
-  @override
-  String get webEngineProblem => '引擎遇到了问题';
-
-  @override
-  String get webStartingSoon => '稍等片刻，网页版马上就好';
-
-  @override
-  String get webStartToOpen => '网页版由本机引擎提供，启动后就能打开';
-
-  @override
-  String get webRestart => '重新启动';
-
-  @override
-  String get webStartEngine => '启动引擎';
-
-  @override
   String get webSwitchToWeb => '切换到网页界面';
 
   @override
@@ -23003,9 +20238,6 @@ class L10nZh extends L10n {
   String get webLoginIntro => '填网址、账号、密码，和浏览器里登录一样；密码只存在这台手机的安全存储里。';
 
   @override
-  String get webLoginEmpty => '还没有网页登录主机';
-
-  @override
   String get webLoginAdd => '添加网页登录';
 
   @override
@@ -23037,9 +20269,6 @@ class L10nZh extends L10n {
 
   @override
   String get webLoginTestOk => '登录成功';
-
-  @override
-  String get webLoginSave => '保存';
 
   @override
   String get webLoginSaved => '已保存';
@@ -24080,48 +21309,4 @@ class L10nZh extends L10n {
 
   @override
   String get workshopPublishLetGoUnsupported => '这个版本没法在这里放下记录。';
-
-  @override
-  String get workspaceRecoveryTitle => '工作区索引救援';
-
-  @override
-  String get workspaceRecoveryEnable => '启用工作区索引救援';
-
-  @override
-  String get workspaceRecoveryDisable => '恢复使用原索引';
-
-  @override
-  String get workspaceRecoveryHint => '仅本机：原工作区索引异常时，使用另一份索引访问可读取的对话。';
-
-  @override
-  String get workspaceRecoveryActive => '已选择独立救援索引；原索引和救援索引都会保留。';
-
-  @override
-  String get workspaceRecoveryWorking => '处理中…';
-
-  @override
-  String get workspaceRecoveryEnableBody =>
-      '将停止本机引擎，改用独立救援索引后重新启动。原工作区索引保持不动，对话文件、插件和凭据不删除。\n\n首次启用时，新索引从可读取的会话及其仍存在的目录建立。旧工作区名称、顺序、默认、归档和置顶等设置不会自动继承；空工作区或目录已失效的会话不保证出现在新列表中。本机原有分组和置顶偏好保留。\n\n救援索引会保留，下次启用继续使用。这是绕过原索引故障，未修复原索引。';
-
-  @override
-  String get workspaceRecoveryDisableBody =>
-      '将停止本机引擎，恢复使用原工作区索引后重新启动。原故障可能再次出现。\n\n救援期间产生的对话文件和救援索引都会保留；两个索引的工作区关系和排序不会自动同步。原索引可能不显示救援期间新增的会话，再次启用可继续使用救援索引。';
-
-  @override
-  String get workspaceRecoveryEnableStart => '启用并重启';
-
-  @override
-  String get workspaceRecoveryDisableStart => '使用原索引并重启';
-
-  @override
-  String get workspaceRecoveryUnavailable => '当前版本尚不支持工作区索引救援，请检查本机引擎状态并更新应用。';
-
-  @override
-  String get workspaceRecoveryRestartIncomplete => '索引模式已切换，但还无法确认引擎已停止，未重新启动。请等停止完成后再启动。';
-
-  @override
-  String get workspaceRecoverySaveFailed => '索引模式保存失败，未请求重新启动。请查看本机引擎状态和日志。';
-
-  @override
-  String get workspaceRecoveryFailed => '操作未完成，请查看本机引擎状态和日志。已切换的模式可在本页确认。';
 }
