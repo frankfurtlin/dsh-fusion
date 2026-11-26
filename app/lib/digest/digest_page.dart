@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/l10n.dart';
 import '../ui/common/empty_view.dart';
+import '../ui/theme/app_icons.dart';
 import 'digest_api.dart';
+import 'digest_history_page.dart';
+import 'digest_tile.dart';
 
 /// 「发现」：按你的兴趣方向挑出来的内容。
 ///
@@ -86,6 +88,12 @@ class _DigestPageState extends State<DigestPage> {
         title: Text(l10n.digestTitle),
         actions: [
           IconButton(
+            tooltip: l10n.digestHistory,
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute<void>(builder: (_) => const DigestHistoryPage())),
+            icon: const Icon(AppIcons.time),
+          ),
+          IconButton(
             tooltip: l10n.digestRefresh,
             onPressed: _refreshing ? null : _refresh,
             icon: _refreshing
@@ -126,80 +134,10 @@ class _DigestPageState extends State<DigestPage> {
                       ),
                     )
                   else
-                    for (final item in _snapshot.items) _DigestTile(item: item),
+                    for (final item in _snapshot.items) DigestTile(item: item),
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _DigestTile extends StatelessWidget {
-  const _DigestTile({required this.item});
-
-  final DigestItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: item.url.isEmpty
-            ? null
-            : () => launchUrl(Uri.parse(item.url), mode: LaunchMode.externalApplication),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(item.title, style: theme.textTheme.titleSmall),
-              if (item.summary.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(
-                  item.summary,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  if (item.source.isNotEmpty) _Chip(label: item.source),
-                  for (final tag in item.tags.take(2)) _Chip(label: tag),
-                  if (item.publishedAt.length >= 10)
-                    _Chip(label: item.publishedAt.substring(0, 10)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        child: Text(label, style: theme.textTheme.labelSmall),
-      ),
     );
   }
 }

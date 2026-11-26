@@ -6544,6 +6544,23 @@ class L10nEn extends L10n {
   String get digestEmptyDetail => 'The server builds this every 6 hours. Pull down to refresh now.';
 
   @override
+  String get digestHistory => 'Push history';
+
+  @override
+  String digestHistoryCount(int count) {
+    return '$count items';
+  }
+
+  @override
+  String get digestHistoryEmpty => 'No history yet';
+
+  @override
+  String get digestHistoryEmptyDetail => 'The server keeps one batch every 6 hours for the last 30 days';
+
+  @override
+  String get digestHistoryError => 'Couldn\'t load the history — check the network and retry';
+
+  @override
   String get engineNewChatDefaultsLast => 'New chat defaults (last choice)';
 
   @override

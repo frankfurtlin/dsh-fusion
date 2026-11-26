@@ -6,8 +6,10 @@
     /root/scripts/pocket/digest.py
 
 产出（原子写）：
-    /srv/hermes/pocket/<secret>/digest.json     公网可读，路径不可枚举
-    /srv/hermes/pocket/<secret>/index.html      ?（不做页面，只给 App 用）
+    /srv/hermes/pocket/<secret>/digest.json              公网可读，路径不可枚举
+    /srv/hermes/pocket/<secret>/history/<id>.json        每一轮的存档（App 的「推送历史」）
+    /srv/hermes/pocket/<secret>/history/index.json       批次清单（最新在前，含标题摘要）
+    /srv/hermes/pocket/<secret>/index.html               ?（不做页面，只给 App 用）
 
 设计约束（来自用户画像与项目约定）：
 - 行情/投资类内容**不在这里现算**，只把既有日报管线的产物指过去；不猜、不补数据。
@@ -35,6 +37,11 @@ PUBLISH_ROOT = os.environ.get('POCKET_PUBLISH_ROOT', '/srv/hermes/pocket')
 CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'interests.json')
 UA = 'dsh-pocket-digest/1.0 (+https://github.com/frankfurtlin/dsh-pocket)'
 TZ = timezone(timedelta(hours=8))
+
+#: 历史留档：每天 4 轮 × 30 天 = 120 批，索引里最多留这么多条。
+HISTORY_DIR = 'history'
+HISTORY_KEEP_DAYS = 30
+HISTORY_MAX_BATCHES = 240
 
 # 兴趣权重：来自画像（DSH 插件与前端 / agent 基建 / A 股资源板块 / AI 工程）
 DEFAULT_INTERESTS = {
@@ -234,6 +241,78 @@ def _glob_reports():
         yield from glob.glob(pattern, recursive=True)
 
 
+
+def write_history(base: str, payload: dict) -> str:
+    """把这一轮存进 history/，并维护 index.json；返回 index 路径。
+
+    为什么要有：digest.json 每 6 小时被覆盖，App 端也只留最新一份，翻不到几天前
+    推过什么。这里每轮另存一份，App 的历史页按 index 列出批次、需要时再取详情。
+
+    - 文件名就是批次 id：`YYYYMMDD-HHMM`（用 generatedAt，同一分钟重跑覆盖同一批）
+    - index.json：`{schema, generatedAt, batches:[{id, at, count, titles}]}`，最新在前
+    - 只留 HISTORY_KEEP_DAYS 天、最多 HISTORY_MAX_BATCHES 条；旧文件一起删
+    """
+    hist_dir = os.path.join(base, HISTORY_DIR)
+    os.makedirs(hist_dir, exist_ok=True)
+    os.chmod(hist_dir, 0o755)
+    at = payload.get('generatedAt') or now().isoformat()
+    batch_id = at[:16].replace('-', '').replace('T', '-').replace(':', '')
+    items = payload.get('items') or []
+    batch = {
+        'schema': payload.get('schema', 1),
+        'generatedAt': at,
+        'topics': payload.get('topics') or [],
+        'items': items,
+    }
+    batch_path = os.path.join(hist_dir, f'{batch_id}.json')
+    tmp = batch_path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(batch, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, batch_path)
+    os.chmod(batch_path, 0o644)
+
+    index_path = os.path.join(hist_dir, 'index.json')
+    batches = []
+    try:
+        with open(index_path, encoding='utf-8') as f:
+            old = json.load(f)
+        if isinstance(old, dict) and isinstance(old.get('batches'), list):
+            batches = [b for b in old['batches'] if isinstance(b, dict) and isinstance(b.get('id'), str)]
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        batches = []
+    entry = {
+        'id': batch_id,
+        'at': at,
+        'count': len(items),
+        'titles': [str(it.get('title') or '')[:120] for it in items if it.get('title')],
+    }
+    batches = [b for b in batches if b.get('id') != batch_id]
+    batches.append(entry)
+    batches.sort(key=lambda b: str(b.get('id') or ''), reverse=True)
+
+    cutoff = (now() - timedelta(days=HISTORY_KEEP_DAYS)).strftime('%Y%m%d')
+    kept = [b for b in batches if str(b.get('id') or '')[:8] >= cutoff][:HISTORY_MAX_BATCHES]
+    for stale in batches:
+        if stale in kept:
+            continue
+        try:
+            os.remove(os.path.join(hist_dir, f"{stale.get('id')}.json"))
+        except OSError:
+            pass
+
+    index = {
+        'schema': 1,
+        'generatedAt': now().isoformat(),
+        'batches': kept,
+    }
+    tmp = index_path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(index, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, index_path)
+    os.chmod(index_path, 0o644)
+    return index_path
+
+
 def main() -> int:
     cfg = load_config()
     items: list[dict] = []
@@ -274,6 +353,8 @@ def main() -> int:
     os.replace(tmp, target)
     os.chmod(target, 0o644)
     print(f'{len(unique)} 条 → {target}')
+    index_path = write_history(os.path.dirname(target), payload)
+    print(f'历史 {HISTORY_DIR}/ ← {index_path}')
     return 0
 
 
