@@ -9,8 +9,6 @@
   "systemActionsUnavailable": "已开启，暂时连不上，正在重试",
   "systemActionsUnsupported": "这个版本用不了",
   "systemActionsToggleFailed": "没能保存，再试一次",
-  "systemActionsRemoteTitle": "当前连的是远程主机",
-  "systemActionsRemoteHint": "系统操作只在本机引擎的对话里有效",
   "systemActionsOnScreenTitle": "只在 DSH Pocket 在屏幕上时有效",
   "systemActionsOnScreenBody": "系统不让后台应用做这些。AI 打开别的应用后，要等你回到 DSH Pocket 才能接着做。",
   "systemActionsCanTitle": "能做的",

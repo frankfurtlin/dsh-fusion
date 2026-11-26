@@ -96,7 +96,6 @@
   "speechCallEnded": "Call ended",
   "speechCallEndPermission": "No microphone permission",
   "speechCallEndMicrophone": "The microphone is busy or can't be opened",
-  "speechCallEndNoRecognizerSignedIn": "A call needs a way to recognize speech. Your signed-in account can't pay for DeepSeek speech here (the DSH you're connected to is older, or you're going through DSH Remote): add a DeepSeek API key in Settings, or download the voice model in Settings › Voice",
   "speechCallEndNoRecognizer": "A call needs a recognizer that takes recordings: sign in to DeepSeek, add an API key, or download the voice model",
   "speechCallEndBackground": "Calls end when the app goes to the background",
   "speechCallEndFailed": "Recording failed; the call has ended",

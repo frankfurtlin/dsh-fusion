@@ -3,21 +3,7 @@
   "stateStoragePermission": "没有存储权限，存不进「下载」",
   "stateDiagnosticsStorageFull": "存储空间不足，没能生成诊断包",
   "stateDiagnosticsExportFailed": "没能导出诊断包",
-  "stateForumUnreachable": "没能连上论坛",
-  "stateSignInExpired": "登录已失效，请重新登录",
-  "stateForbidden": "没有权限",
-  "stateForumContentMissing": "内容不存在或已删除",
-  "stateTooManyActions": "操作太频繁，稍后再试",
-  "stateForumSendFailed": "没能发出去",
-  "stateForumServerError": "论坛暂时出了问题",
   "stateBrowserOpenFailed": "没能打开浏览器",
-  "stateSignInStartFailed": "没能开始登录",
-  "stateSignInIncompleteRetry": "登录没有完成，请重试",
-  "statePluginLabel": "插件",
-  "stateConfigLabel": "配置",
-  "stateConfigShare": "配置分享",
-  "stateShareCode": "分享码",
-  "stateCopyShareCodeFirst": "先在分享里复制分享码",
   "stateFileOpenFailed": "无法打开这个文件",
   "stateLinkOpenFailed": "无法打开这个链接",
   "stateAlertPublicDone": "有一轮完成了",
@@ -44,26 +30,6 @@
   "statePetDone": "做完了",
   "statePetFailed": "出错了",
   "statePhoneNotReady": "手机操控模块未就绪",
-  "stateBackgroundRestricted": "后台联网被系统限制",
-  "stateBackgroundFinish": "让对话在后台也能跑完",
-  "stateDeepSeekAccount": "DeepSeek 账号",
-  "stateAccountUnreachable": "连不上 DeepSeek",
-  "stateAccountUnavailable": "DeepSeek 暂时无法登录",
-  "stateSignInIncomplete": "登录没有完成",
-  "stateSignInTimeout": "登录超时",
-  "stateSignInSaveFailed": "登录信息没能保存",
-  "stateEngineNotReady": "引擎还没准备好",
-  "stateSignInInterrupted": "登录被中断",
-  "stateAccountUnsupported": "当前引擎不支持账号登录",
-  "stateCheckPhoneNetwork": "检查手机网络后重试",
-  "stateServiceUnavailableRetry": "服务暂时不可用，稍后重试",
-  "stateAuthorizationFailed": "授权没有成功，重新登录",
-  "stateAuthorizationExpired": "授权页面已失效，重新登录",
-  "stateRestartEngineRetry": "在「引擎」页重启后重试",
-  "stateEngineStartingRetry": "引擎正在启动，稍后再试",
-  "stateEngineDisconnectedSignIn": "引擎连接已断开，重新登录",
-  "stateUpdateRuntimeOrKey": "更新运行环境，或改用 API Key",
-  "stateEngineDisconnected": "引擎未连接",
   "stateAgentError": "出错",
   "stateNotRunning": "未运行",
   "stateAgentOneShot": "一次性",
@@ -221,7 +187,6 @@
   "statePluginDownloadTimeout": "下载超时",
   "statePluginRegistryUnavailable": "安装源暂时没有响应",
   "statePluginPnpmMissing": "缺少 pnpm",
-  "statePluginPhonePnpmMissing": "这台手机缺少 pnpm",
   "statePluginHostPnpmMissing": "这台主机缺少 pnpm",
   "statePluginNotFound": "找不到这个插件",
   "statePluginPackageMissing": "安装源里没有这个包",
@@ -287,11 +252,6 @@
   "stateProviderManualModels": "这个协议不能获取模型，请手动添加",
   "stateProviderConfigRejected": "引擎拒绝了这个配置，检查协议和模型",
   "stateProviderOffline": "没有连上引擎",
-  "stateSafeStartupFailed": "启动失败",
-  "stateSafeCrashedEarly": "启动后很快崩溃",
-  "stateSafeCrashedLate": "运行中崩溃",
-  "stateSafeKilled": "被系统结束",
-  "stateSafeManualEntry": "我手动进入了安全模式",
   "stateScheduleNotCreated": "对话结束了，但没有建成任务",
   "stateScheduleChatFailed": "对话出错了",
   "stateScheduleResultPending": "还没等到结果",
@@ -323,30 +283,6 @@
     }
   },
   "stateDownloadsPrefix": "下载/",
-  "stateSharePluginCount": "{count} 个插件",
-  "@stateSharePluginCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "stateShareSkillCount": "{count} 个技能",
-  "@stateShareSkillCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "stateShareSettingCount": "{count} 组设置",
-  "@stateShareSettingCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "stateAlertCompletedReply": "已完成 · {reply}",
   "@stateAlertCompletedReply": {
     "placeholders": {
@@ -676,37 +612,7 @@
       }
     }
   },
-  "stateSafeSuspectPlugins": "{what}，可疑插件：{plugins}",
-  "@stateSafeSuspectPlugins": {
-    "placeholders": {
-      "what": {
-        "type": "String"
-      },
-      "plugins": {
-        "type": "String"
-      }
-    }
-  },
-  "stateSafePreflightFailed": "{what}，启动检查没通过：{checks}",
-  "@stateSafePreflightFailed": {
-    "placeholders": {
-      "what": {
-        "type": "String"
-      },
-      "checks": {
-        "type": "String"
-      }
-    }
-  },
   "stateListSeparator": "、",
-  "stateSafeRepairPrompt": "我的 DSH 正常模式出了问题（{what}）。请按「安全模式」说明排查原因，先用可逆的办法修好 web 配置，修完用 dsh-app-plugins trial 试启动验证，再告诉我改了什么。",
-  "@stateSafeRepairPrompt": {
-    "placeholders": {
-      "what": {
-        "type": "String"
-      }
-    }
-  },
   "stateScheduleCreatePrompt": "新建自动化任务「{title}」：{rule}。\n只调用一次 schedule_create，参数原样使用；现在不要执行任务内容。\n\n```json\n{args}\n```",
   "@stateScheduleCreatePrompt": {
     "placeholders": {

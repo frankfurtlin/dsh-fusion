@@ -1,20 +1,5 @@
 {
   "pluginsOperationHostChanged": "主机已切换，未执行",
-  "pluginsReloadLocal": "重启内核以重载",
-  "pluginsReloadInterrupts": "会中断正在运行的任务",
-  "pluginsReloadConfirm": "重载「{name}」？",
-  "pluginsReloadExplanation": "将重启本机内核，重新加载插件。正在运行的任务会中断。",
-  "pluginsReloadProceed": "重启并重载",
-  "pluginsReloadRequested": "已请求重启内核",
-  "pluginsReloadChanged": "主机或插件状态已变化，请重试",
-  "pluginsReloadFailed": "未能重启内核，请查看引擎日志",
-  "@pluginsReloadConfirm": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "pluginsFile": "文件",
   "pluginsChat": "对话",
   "pluginsImage": "图片",
@@ -53,7 +38,6 @@
       }
     }
   },
-  "pluginsSecretsUnshareable": "含有密钥，无法分享",
   "pluginsLineCount": "{count} 行",
   "@pluginsLineCount": {
     "placeholders": {
@@ -90,16 +74,12 @@
   "pluginsSettingUnavailable": "这台主机没有这项设置",
   "pluginsSettingsReadOnly": "这台主机的设置是只读的",
   "pluginsImportLocalOnly": "只能导入到本机",
-  "pluginsReplaceSkill": "替换同名技能",
-  "pluginsReplaceContent": "替换现有内容",
-  "pluginsSafeModeInstallBlocked": "安全模式下不能安装插件",
   "pluginsHostInstallBlocked": "这台主机不能从这里安装插件",
   "pluginsInstallFailed": "安装失败",
   "pluginsAfterRestart": "重启后生效",
   "pluginsSettingsChanged": "设置刚被改过",
   "pluginsWriteFailed": "没能写入",
   "pluginsHostUnreachable": "没能连上主机",
-  "pluginsFileWriteFailed": "没能写入文件",
   "pluginsProfileTitle": "DSH Pocket 配置",
   "pluginsGistTokenInvalid": "GitHub 令牌无效或没有 Gist 权限",
   "pluginsGistCreateHttpFailed": "没能创建 Gist（HTTP {status}）",
@@ -206,16 +186,6 @@
       }
     }
   },
-  "pluginsRestartRequired": "需要重启引擎",
-  "pluginsRestartExplanation": "「{name}」重启引擎后生效，进行中的回复会中断。",
-  "@pluginsRestartExplanation": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "pluginsRestartEngine": "重启引擎",
   "pluginsAllowBuildScripts": "允许构建脚本？",
   "pluginsBuildScriptPackages": "下面这些包要在安装时运行脚本：",
   "pluginsBuildScriptWarning": "脚本会以 DSH 的权限在{host}上执行，能读写文件、联网。只在你信任这个插件时允许。",
@@ -262,7 +232,6 @@
       }
     }
   },
-  "pluginsRestartNow": "立即重启",
   "pluginsUninstallFailed": "没能卸载",
   "pluginsThatComputer": "那台电脑",
   "pluginsCommandAfterInstall": "装好后重启那台电脑上的 DSH，再回来刷新",
@@ -390,7 +359,6 @@
       }
     }
   },
-  "pluginsInstallThisPhone": "安装到：本机",
   "pluginsInstallHost": "安装到：{host}",
   "@pluginsInstallHost": {
     "placeholders": {
@@ -403,11 +371,9 @@
   "pluginsIconChanged": "桌面图标已选择，回到桌面后更新",
   "pluginsIconChangeFailed": "没能更换，稍后再试",
   "pluginsTheme": "主题",
-  "pluginsAppearance": "外观",
   "pluginsColors": "配色",
   "pluginsFeatureIcons": "功能图标",
   "pluginsAppIcon": "桌面图标",
-  "pluginsPet": "宠物",
   "pluginsCustomColor": "自定义",
   "pluginsColorLabel": "配色：{label}",
   "@pluginsColorLabel": {
@@ -522,13 +488,7 @@
   "pluginsDiagnosticsCopied": "已复制诊断信息",
   "pluginsDiagnostics": "诊断",
   "pluginsDiagnosticsDescription": "反馈问题时附上，不含 Key 和令牌",
-  "pluginsRuntime": "运行环境",
-  "pluginsArchitecture": "架构",
-  "pluginsBundledVersion": "内置版本",
-  "pluginsInstalledVersion": "已安装版本",
-  "pluginsErrorLabel": "错误",
   "pluginsConnection": "连接",
-  "pluginsAddress": "地址",
   "pluginsClient": "客户端",
   "pluginsConfigured": "已设置",
   "pluginsExport": "导出",
@@ -563,9 +523,6 @@
   "pluginsSoundBannerLockScreen": "声音、横幅与锁屏",
   "pluginsEnableFloatingNotifications": "横幅不弹时，开启「悬浮通知」",
   "pluginsPersonalPreferences": "个人偏好",
-  "pluginsPreferencesDescription": "新对话会照这里的要求回答",
-  "pluginsPreferencesHint": "比如：用中文回答，我主要写 Flutter",
-  "pluginsSaving": "正在保存",
   "pluginsShareLink": "分享链接",
   "pluginsInstallPlugin": "安装插件",
   "pluginsImportProfile": "导入配置",
@@ -617,7 +574,6 @@
     }
   },
   "pluginsCouldNotInstall": "没能安装",
-  "pluginsEngineRestartToApply": "重启引擎后生效",
   "pluginsRemoteRestartToApply": "重启{host}上的 DSH 后生效",
   "@pluginsRemoteRestartToApply": {
     "placeholders": {
@@ -717,14 +673,6 @@
       }
     }
   },
-  "pluginsUninstalledRestartLocal": "已卸载「{title}」，重启引擎后完全移除",
-  "@pluginsUninstalledRestartLocal": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
   "pluginsUninstalledRestartRemote": "已卸载「{title}」，重启{host}上的 DSH 后完全移除",
   "@pluginsUninstalledRestartRemote": {
     "placeholders": {
@@ -738,7 +686,6 @@
   },
   "pluginsEnableFailed": "没能启用",
   "pluginsDisableFailed": "没能停用",
-  "pluginsEnabledRestartLocal": "已启用，重启引擎后生效",
   "pluginsEnabledRestartRemote": "已启用，重启{host}上的 DSH 后生效",
   "@pluginsEnabledRestartRemote": {
     "placeholders": {
@@ -747,7 +694,6 @@
       }
     }
   },
-  "pluginsDisabledRestartLocal": "已停用，重启引擎后生效",
   "pluginsDisabledRestartRemote": "已停用，重启{host}上的 DSH 后生效",
   "@pluginsDisabledRestartRemote": {
     "placeholders": {

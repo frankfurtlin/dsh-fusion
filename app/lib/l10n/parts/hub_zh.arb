@@ -36,41 +36,19 @@
   "hubSettingsFullAccessBody": "AI 执行命令、改动文件前不再问你。",
   "hubSettingsStorageTitle": "让 AI 访问手机文件？",
   "hubSettingsStorageAllow": "允许读写",
-  "hubSettingsStorageDenied": "没有拿到存储权限。到系统设置里给 DSH Pocket 开启「所有文件访问」后再试",
-  "hubSettingsRestartRequired": "重启引擎后生效",
-  "hubSettingsRestartNow": "立即重启",
   "hubSettingsInterface": "界面",
   "hubSettingsChat": "对话",
-  "hubSettingsAutoCommands": "自动执行命令",
   "hubSettingsPhoneFiles": "访问手机文件",
-  "hubSettingsPhoneFilesHint": "AI 可读写手机存储",
   "hubSettingsVisualReplies": "可视化回复",
-  "hubSettingsVisualRepliesHint": "图表、对比卡和可点的选项",
-  "hubSettingsPhoneControl": "手机操控",
-  "hubSettingsPhoneControlHint": "看屏幕、帮你点按",
-  "hubSettingsPreferences": "个人偏好",
   "hubSettingsAppearance": "外观",
   "hubSettingsChatTextSize": "对话字号",
   "hubSettingsCollapseSteps": "完成后收起过程",
-  "hubSettingsCollapseStepsHint": "思考与工具调用收成一行",
-  "hubSettingsWebPhoneLayout": "网页版手机布局",
   "hubSettingsWebPhoneLayoutHint": "为手机屏幕重排网页版",
-  "hubSettingsEngineExtensions": "引擎与扩展",
-  "hubSettingsEngine": "本机引擎",
   "hubSettingsProviders": "模型",
-  "hubSettingsEngineSettings": "引擎参数",
   "hubSettingsShareConfig": "分享配置",
   "hubSettingsAllFeatures": "全部功能",
-  "hubSettingsAbout": "关于",
   "hubSettingsCommunity": "社区",
   "hubSettingsLicenses": "开源许可",
-  "hubSettingsAccount": "DeepSeek 账号",
-  "hubSettingsSigningIn": "正在登录…",
-  "hubSettingsInvalidKey": "Key 无效，查不到余额",
-  "hubSettingsNoApiKey": "未设置 API Key",
-  "hubSettingsApiKeyHint": "填写 Key 后即可对话",
-  "hubSettingsSignInAccount": "登录 DeepSeek 账号",
-  "hubSettingsOrApiKey": "或填写 API Key",
   "hubPluginShare": "分享插件",
   "hubPluginDetails": "插件详情",
   "hubPluginFeatured": "dshfind 推荐",
@@ -193,33 +171,6 @@
     }
   },
   "hubSettingsStorageBody": "AI 能读取和修改相册、下载、文档等手机文件，引擎会重启一次。",
-  "hubSettingsBalance": "余额 {amount}",
-  "@hubSettingsBalance": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "hubSettingsBalanceLow": "余额 {amount} · 余额不足",
-  "@hubSettingsBalanceLow": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "hubSettingsAccountSemantics": "账号：{title}，{subtitle}",
-  "@hubSettingsAccountSemantics": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      },
-      "subtitle": {
-        "type": "String"
-      }
-    }
-  },
   "hubSettingsHostSemantics": "远程主机：{name}，{status}",
   "@hubSettingsHostSemantics": {
     "placeholders": {
@@ -231,7 +182,6 @@
       }
     }
   },
-  "hubSettingsApiKey": "DeepSeek API Key",
   "hubPluginBrowserFailed": "没能打开浏览器，请手动访问 {address}",
   "@hubPluginBrowserFailed": {
     "placeholders": {
@@ -282,8 +232,6 @@
   "hubGroupHosts": "主机",
   "hubGroupHelp": "帮助与关于",
   "hubPersonalization": "个性化",
-  "hubPersonalizationAboutYou": "关于你",
-  "hubPersonalizationReplies": "回答",
   "hubPersonalizationWorkStyle": "工作方式",
   "hubPrivacy": "隐私与分享",
   "hubPrivacySharing": "分享",
@@ -299,12 +247,7 @@
   "hubTableTintFollowHint": "表头浅底，表身跟随正文",
   "hubTableTintNoneHint": "只剩网格线，最轻",
   "hubAbout": "关于 DSH Pocket",
-  "hubAboutAuthor": "DSH Pocket 原作者",
-  "hubAboutBilibili": "B站主页",
-  "hubAboutX": "X 主页",
-  "hubAboutGithub": "GitHub 主页",
   "hubAboutNewVersion": "有新版本",
-  "hubValueSet": "已设置",
   "hubValueOff": "未开启",
   "hubValueOneStep": "还差一步",
   "hubValueAllowed": "已允许",
@@ -317,7 +260,6 @@
       }
     }
   },
-  "hubValueNoHosts": "未添加",
   "hubValuePlugins": "{count} 个",
   "@hubValuePlugins": {
     "placeholders": {
@@ -326,7 +268,6 @@
       }
     }
   },
-  "hubEngineStartup": "启动",
   "hubThemeLightDark": "明暗",
   "hubPermissionPhone": "手机",
   "hubPermissionPhoneConfirm": "手机操控确认",

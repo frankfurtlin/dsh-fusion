@@ -11,52 +11,10 @@
   "engineNewChatDefaultsSaving": "正在保存并确认默认值…",
   "engineNewChatDefaultsUnconfirmed": "没能确认完整默认值，请刷新后检查模型和思考深度。主机基础配置或其他客户端可能已改变它们。",
   "engineModelDefaultSaveFailed": "当前对话的模型已切换，但新对话默认未保存。请到设置 › 模型检查并重试。",
-  "engineAccountSignedIn": "已登录 DeepSeek 账号",
-  "engineAccountSignOutTitle": "退出 DeepSeek 账号？",
-  "engineAccountSignOutBusy": "有任务正在使用账号模型，退出会立即中断它们。对话和文件都会保留。",
-  "engineAccountSignOutBody": "账号模型将不可用。对话、文件和 API Key 都会保留，随时可以重新登录。",
-  "engineAccountSignOutUnknown": "无法确认是否有任务在使用账号模型；如果有，退出会中断它们。",
-  "engineAccountSignOutFailed": "没能退出，稍后再试",
   "engineAccountTitle": "账号",
-  "engineAccountRefresh": "刷新",
-  "engineAccountDeepSeek": "DeepSeek 账号",
-  "engineAccountProfileUnavailable": "资料暂时读不到",
-  "engineAccountBalance": "余额",
-  "engineAccountBalanceHint": "账号模型的费用从余额中扣除",
-  "engineAccountBalanceEngineOff": "引擎未运行，启动后显示余额",
-  "engineAccountTopUp": "去充值",
-  "engineAccountUsageDetails": "用量明细",
-  "engineAccountToppedUpBalance": "充值余额",
-  "engineAccountGrantedBalance": "赠送余额",
-  "engineAccountBalanceUnavailable": "余额暂时读不到",
-  "engineAccountNoKeyNeeded": "登录后无需 API Key",
-  "engineAccountUnsupported": "当前引擎不支持账号登录",
-  "engineAccountSignInDeepSeek": "用 DeepSeek 账号登录",
-  "engineAccountAutoStart": "引擎未运行，登录时会自动启动",
-  "engineAccountReplaceKey": "更换 Key",
-  "engineAccountClearKeyTitle": "清除 API Key？",
-  "engineAccountClearKeyBody": "删除 App 里保存的 Key。本机引擎运行时，引擎里的 Key 也会一并删除。",
   "engineAccountBrowserFailed": "没能打开浏览器",
-  "engineAccountSignInSuccess": "登录成功",
-  "engineAccountAlmostReady": "马上就好",
-  "engineAccountStartingEngine": "正在启动引擎",
-  "engineAccountOpenSignInNext": "随后打开登录页",
-  "engineAccountPreparingSignIn": "正在准备登录",
-  "engineAccountOpenDeepSeekNext": "马上打开 DeepSeek 登录页",
   "engineAccountFinishInBrowser": "在浏览器中完成登录",
-  "engineAccountReturnToDsh": "登录完成后回到 DSH Pocket",
-  "engineAccountFinishingSignIn": "正在完成登录",
-  "engineAccountSavingSignIn": "正在保存登录信息",
-  "engineAccountAwaitingResult": "还没收到登录结果",
-  "engineAccountCopySignInLink": "复制登录链接",
-  "engineAccountReopenSignIn": "重新打开登录页",
-  "engineAccountCancelSignIn": "取消登录",
-  "engineAccountSignInLinkCopied": "登录链接已复制",
-  "engineAccountSigningIn": "登录中",
   "engineAccountSignedOut": "未登录",
-  "engineAccountUsageFact": "用量从账号余额中扣除",
-  "engineAccountBrowserFact": "在浏览器中登录，密码不经过 DSH",
-  "engineAccountCredentialsFact": "登录凭据只保存在本机",
   "engineSubagentTitle": "子代理",
   "engineAgentLoopTitle": "Agent 循环",
   "engineShellTitle": "命令执行",
@@ -275,8 +233,6 @@
   "engineProvidersStartEngine": "引擎运行后可添加渠道",
   "engineProvidersUnsupported": "这台主机不支持自定义渠道",
   "engineProvidersNotConfiguredHere": "未在这台主机上配置",
-  "engineProvidersSigningIn": "正在登录…",
-  "engineProvidersSignInOrKey": "登录账号或填写 API Key",
   "engineProvidersOfficial": "官方",
   "engineProvidersSubscription": "订阅",
   "engineProvidersCustom": "自定义",
@@ -299,14 +255,6 @@
   "engineSubscriptionPasteHere": "粘贴到这里",
   "engineSubscriptionConfirm": "确定",
   "engineSubscriptionTryAgain": "再试一次",
-  "engineAccountWelcome": "欢迎，{name}",
-  "@engineAccountWelcome": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "engineLayerCount": "{count} 层",
   "@engineLayerCount": {
     "placeholders": {
@@ -566,14 +514,6 @@
       },
       "ready": {
         "type": "int"
-      }
-    }
-  },
-  "engineProvidersAccount": "账号 · {name}",
-  "@engineProvidersAccount": {
-    "placeholders": {
-      "name": {
-        "type": "String"
       }
     }
   },

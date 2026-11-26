@@ -584,12 +584,6 @@ abstract class L10n {
   /// **'随时可在「设置 › 通用 › 系统权限」补开'**
   String get accessSummaryMessage;
 
-  /// No description provided for @accessFinishFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能完成设置'**
-  String get accessFinishFailed;
-
   /// No description provided for @accessVoiceDownload.
   ///
   /// In zh, this message translates to:
@@ -2582,12 +2576,6 @@ abstract class L10n {
   /// **'更新了待办'**
   String get activitySummaryTodo;
 
-  /// No description provided for @activityUsageBalance.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 余额'**
-  String get activityUsageBalance;
-
   /// No description provided for @activityUsageContext.
   ///
   /// In zh, this message translates to:
@@ -2599,12 +2587,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'本对话'**
   String get activityUsageChat;
-
-  /// No description provided for @activityUsageAfterMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'发送消息后显示'**
-  String get activityUsageAfterMessage;
 
   /// No description provided for @activityUsageWaiting.
   ///
@@ -2653,18 +2635,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'<0.1 秒'**
   String get activitySpanTiny;
-
-  /// No description provided for @activityTokensTenThousands.
-  ///
-  /// In zh, this message translates to:
-  /// **'{value} 万'**
-  String activityTokensTenThousands(String value);
-
-  /// No description provided for @activityTokensHundredMillions.
-  ///
-  /// In zh, this message translates to:
-  /// **'{value} 亿'**
-  String activityTokensHundredMillions(String value);
 
   /// No description provided for @activityUsageContextSemantics.
   ///
@@ -4610,41 +4580,11 @@ abstract class L10n {
   /// **'{count} 位成员'**
   String botsMemberCount(int count);
 
-  /// No description provided for @botsUpdateRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'DS Bot 需要更新'**
-  String get botsUpdateRequired;
-
   /// No description provided for @botsInstall.
   ///
   /// In zh, this message translates to:
   /// **'安装 DS Bot'**
   String get botsInstall;
-
-  /// No description provided for @botsUpdateForPhone.
-  ///
-  /// In zh, this message translates to:
-  /// **'新版才能在手机上用'**
-  String get botsUpdateForPhone;
-
-  /// No description provided for @botsInstallDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'一组长期在线的 Bot，各有记忆和分工'**
-  String get botsInstallDescription;
-
-  /// No description provided for @botsInstallOnHost.
-  ///
-  /// In zh, this message translates to:
-  /// **'在{host}上装好后就能用'**
-  String botsInstallOnHost(String host);
-
-  /// No description provided for @botsRunsOnHost.
-  ///
-  /// In zh, this message translates to:
-  /// **'在{host}上运行'**
-  String botsRunsOnHost(String host);
 
   /// No description provided for @botsInstalling.
   ///
@@ -6194,6 +6134,12 @@ abstract class L10n {
   /// **'连接已变化，请重新打开创建页面后再操作。'**
   String get botsCreationConnectionChanged;
 
+  /// No description provided for @botsTerminalInput.
+  ///
+  /// In zh, this message translates to:
+  /// **'终端输入'**
+  String get botsTerminalInput;
+
   /// No description provided for @brandXiaomi.
   ///
   /// In zh, this message translates to:
@@ -6253,12 +6199,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'三星（One UI）'**
   String get brandSamsungOs;
-
-  /// No description provided for @brandZhihu.
-  ///
-  /// In zh, this message translates to:
-  /// **'知乎'**
-  String get brandZhihu;
 
   /// No description provided for @bridgeA11yHint.
   ///
@@ -6548,12 +6488,6 @@ abstract class L10n {
   /// **'允许手机桥使用无障碍'**
   String get bridgeA11yAllow;
 
-  /// No description provided for @bridgeA11yAllowHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'和系统里的服务开关是两道门，两个都开，远程自动化才能执行。'**
-  String get bridgeA11yAllowHint;
-
   /// No description provided for @catalogCurrentChat.
   ///
   /// In zh, this message translates to:
@@ -6698,12 +6632,6 @@ abstract class L10n {
   /// **'定时与周期任务'**
   String get catalogSchedulesSummary;
 
-  /// No description provided for @catalogAgentModelsSection.
-  ///
-  /// In zh, this message translates to:
-  /// **'Agent 与模型'**
-  String get catalogAgentModelsSection;
-
   /// No description provided for @catalogPermission.
   ///
   /// In zh, this message translates to:
@@ -6715,18 +6643,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'执行前是否确认'**
   String get catalogPermissionSummary;
-
-  /// No description provided for @catalogAgentPresets.
-  ///
-  /// In zh, this message translates to:
-  /// **'Agent 预设'**
-  String get catalogAgentPresets;
-
-  /// No description provided for @catalogAgentPresetsSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'新对话的工作方式'**
-  String get catalogAgentPresetsSummary;
 
   /// No description provided for @catalogModels.
   ///
@@ -6740,54 +6656,6 @@ abstract class L10n {
   /// **'订阅与自定义渠道'**
   String get catalogModelsSummary;
 
-  /// No description provided for @catalogSubagentSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'子代理设置'**
-  String get catalogSubagentSettings;
-
-  /// No description provided for @catalogSubagentSettingsSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'层数、并行与模型'**
-  String get catalogSubagentSettingsSummary;
-
-  /// No description provided for @catalogAgentLoop.
-  ///
-  /// In zh, this message translates to:
-  /// **'Agent 循环'**
-  String get catalogAgentLoop;
-
-  /// No description provided for @catalogAgentLoopSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'工具并行上限'**
-  String get catalogAgentLoopSummary;
-
-  /// No description provided for @catalogShellSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'命令执行'**
-  String get catalogShellSettings;
-
-  /// No description provided for @catalogShellSettingsSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'超时与输出上限'**
-  String get catalogShellSettingsSummary;
-
-  /// No description provided for @catalogWebSearch.
-  ///
-  /// In zh, this message translates to:
-  /// **'联网搜索'**
-  String get catalogWebSearch;
-
-  /// No description provided for @catalogWebSearchSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'搜索服务与预算'**
-  String get catalogWebSearchSummary;
-
   /// No description provided for @catalogPlugins.
   ///
   /// In zh, this message translates to:
@@ -6799,18 +6667,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'已安装与插件市场'**
   String get catalogPluginsSummary;
-
-  /// No description provided for @catalogPluginInventory.
-  ///
-  /// In zh, this message translates to:
-  /// **'插件清单'**
-  String get catalogPluginInventory;
-
-  /// No description provided for @catalogPluginInventorySummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'已加载的全部插件'**
-  String get catalogPluginInventorySummary;
 
   /// No description provided for @catalogCordisSummary.
   ///
@@ -6860,30 +6716,6 @@ abstract class L10n {
   /// **'社区与分享'**
   String get catalogCommunitySharingSection;
 
-  /// No description provided for @catalogForum.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛'**
-  String get catalogForum;
-
-  /// No description provided for @catalogForumSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'提问、分享、找同好'**
-  String get catalogForumSummary;
-
-  /// No description provided for @catalogCommunity.
-  ///
-  /// In zh, this message translates to:
-  /// **'社区'**
-  String get catalogCommunity;
-
-  /// No description provided for @catalogCommunitySummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'精选与交流群'**
-  String get catalogCommunitySummary;
-
   /// No description provided for @catalogBotSummary.
   ///
   /// In zh, this message translates to:
@@ -6902,12 +6734,6 @@ abstract class L10n {
   /// **'插件、设置与技能'**
   String get catalogShareProfileSummary;
 
-  /// No description provided for @catalogHostsSettingsSection.
-  ///
-  /// In zh, this message translates to:
-  /// **'主机与设置'**
-  String get catalogHostsSettingsSection;
-
   /// No description provided for @catalogSearch.
   ///
   /// In zh, this message translates to:
@@ -6920,18 +6746,6 @@ abstract class L10n {
   /// **'按标题和正文查找'**
   String get catalogSearchSummary;
 
-  /// No description provided for @catalogNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'通知'**
-  String get catalogNotifications;
-
-  /// No description provided for @catalogNotificationsSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'完成与待确认提醒'**
-  String get catalogNotificationsSummary;
-
   /// No description provided for @catalogWorkspaces.
   ///
   /// In zh, this message translates to:
@@ -6943,30 +6757,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'添加与切换目录'**
   String get catalogWorkspacesSummary;
-
-  /// No description provided for @catalogGeneral.
-  ///
-  /// In zh, this message translates to:
-  /// **'通用设置'**
-  String get catalogGeneral;
-
-  /// No description provided for @catalogGeneralSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'显示、发送与日志上传'**
-  String get catalogGeneralSummary;
-
-  /// No description provided for @catalogAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号与余额'**
-  String get catalogAccount;
-
-  /// No description provided for @catalogAccountSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录、余额与充值'**
-  String get catalogAccountSummary;
 
   /// No description provided for @catalogRemoteSummary.
   ///
@@ -6985,30 +6775,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'看屏幕、帮你点按'**
   String get catalogPhoneControlSummary;
-
-  /// No description provided for @catalogEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎'**
-  String get catalogEngine;
-
-  /// No description provided for @catalogEngineSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎状态与日志'**
-  String get catalogEngineSummary;
-
-  /// No description provided for @catalogDiagnostics.
-  ///
-  /// In zh, this message translates to:
-  /// **'诊断'**
-  String get catalogDiagnostics;
-
-  /// No description provided for @catalogDiagnosticsSummary.
-  ///
-  /// In zh, this message translates to:
-  /// **'导出诊断包'**
-  String get catalogDiagnosticsSummary;
 
   /// No description provided for @catalogWebSummary.
   ///
@@ -7177,30 +6943,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'全部设置'**
   String get catalogAllSettings;
-
-  /// No description provided for @diagnosticsForAi.
-  ///
-  /// In zh, this message translates to:
-  /// **'让 AI 看诊断'**
-  String get diagnosticsForAi;
-
-  /// No description provided for @diagnosticsForAiHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'把环境快照写进引擎，AI 自己读'**
-  String get diagnosticsForAiHint;
-
-  /// No description provided for @diagnosticsForAiDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'已写入诊断，问 AI「看下诊断」就行'**
-  String get diagnosticsForAiDone;
-
-  /// No description provided for @diagnosticsForAiFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'写不进去：本机运行时还没装好'**
-  String get diagnosticsForAiFailed;
 
   /// No description provided for @chatBackgroundTaskNotice.
   ///
@@ -7994,12 +7736,6 @@ abstract class L10n {
   /// **'需要麦克风权限才能语音输入'**
   String get chatVoicePermissionNeeded;
 
-  /// No description provided for @chatVoiceUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机没有可用的语音识别'**
-  String get chatVoiceUnavailable;
-
   /// No description provided for @chatVoiceNotHeard.
   ///
   /// In zh, this message translates to:
@@ -8011,36 +7747,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能转写这段语音'**
   String get chatVoiceTranscriptionFailed;
-
-  /// No description provided for @chatVoiceNetworkFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'网络不太好，没能识别'**
-  String get chatVoiceNetworkFailed;
-
-  /// No description provided for @chatVoiceLanguageUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'暂不支持这种语言'**
-  String get chatVoiceLanguageUnsupported;
-
-  /// No description provided for @chatVoiceMicrophoneBusy.
-  ///
-  /// In zh, this message translates to:
-  /// **'麦克风正被占用'**
-  String get chatVoiceMicrophoneBusy;
-
-  /// No description provided for @chatVoiceBusy.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音识别正忙，稍后再试'**
-  String get chatVoiceBusy;
-
-  /// No description provided for @chatVoiceRecognitionFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'语音识别出错了'**
-  String get chatVoiceRecognitionFailed;
 
   /// No description provided for @chatListening.
   ///
@@ -9055,12 +8761,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'{count} 段思考'**
   String chatTurnThoughts(int count);
-
-  /// No description provided for @chatMe.
-  ///
-  /// In zh, this message translates to:
-  /// **'我'**
-  String get chatMe;
 
   /// No description provided for @chatGoalSemantics.
   ///
@@ -10598,12 +10298,6 @@ abstract class L10n {
   /// **'她的声音'**
   String get companionMenuVoice;
 
-  /// No description provided for @companionMenuVoiceHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'用手机自带的语音读出她说的话'**
-  String get companionMenuVoiceHint;
-
   /// No description provided for @companionVoiceHello.
   ///
   /// In zh, this message translates to:
@@ -11192,126 +10886,6 @@ abstract class L10n {
   /// **'网络不通'**
   String get companionAdaptNetwork;
 
-  /// No description provided for @automaticDiagnosticsRecover.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复本地记录'**
-  String get automaticDiagnosticsRecover;
-
-  /// No description provided for @automaticDiagnosticsRecoverHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'仅在本机恢复分析记录，跳过已留存故障，不重新发送旧请求。'**
-  String get automaticDiagnosticsRecoverHint;
-
-  /// No description provided for @automaticDiagnosticsTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'自动故障分析'**
-  String get automaticDiagnosticsTitle;
-
-  /// No description provided for @automaticDiagnosticsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'默认关闭 · 仅本机、前台且引擎可用时发送；同版本同类故障 24 小时内合并。关闭后停止新请求，已发送信息无法撤回。'**
-  String get automaticDiagnosticsHint;
-
-  /// No description provided for @automaticDiagnosticsConsentTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'开启自动故障分析？'**
-  String get automaticDiagnosticsConsentTitle;
-
-  /// No description provided for @automaticDiagnosticsConsent.
-  ///
-  /// In zh, this message translates to:
-  /// **'发生故障时，App 会将脱敏的版本、设备与系统信息、运行时状态、错误类别、语音阶段及自身进程退出原因，发送给当前本机引擎配置的模型服务商，可能产生模型费用。不含聊天正文、录音、凭据或原始日志。报告保存在独立的只读分析对话，不自动切换当前对话，不自动执行修复或向 GitHub 外发。关闭或切换主机后不再发起新分析，并尝试停止已有分析；已发送的信息无法撤回。'**
-  String get automaticDiagnosticsConsent;
-
-  /// No description provided for @automaticDiagnosticsEnable.
-  ///
-  /// In zh, this message translates to:
-  /// **'同意并开启'**
-  String get automaticDiagnosticsEnable;
-
-  /// No description provided for @automaticDiagnosticsOff.
-  ///
-  /// In zh, this message translates to:
-  /// **'已关闭'**
-  String get automaticDiagnosticsOff;
-
-  /// No description provided for @automaticDiagnosticsWaiting.
-  ///
-  /// In zh, this message translates to:
-  /// **'等待本机连接、前台与引擎可用'**
-  String get automaticDiagnosticsWaiting;
-
-  /// No description provided for @automaticDiagnosticsReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'已开启 · 等待新故障'**
-  String get automaticDiagnosticsReady;
-
-  /// No description provided for @automaticDiagnosticsCollecting.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在采集结构化故障信息'**
-  String get automaticDiagnosticsCollecting;
-
-  /// No description provided for @automaticDiagnosticsAnalyzing.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在独立对话分析（最多 2 分钟）'**
-  String get automaticDiagnosticsAnalyzing;
-
-  /// No description provided for @automaticDiagnosticsComplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'分析完成'**
-  String get automaticDiagnosticsComplete;
-
-  /// No description provided for @automaticDiagnosticsCancelled.
-  ///
-  /// In zh, this message translates to:
-  /// **'分析已停止或中断；不会自动重试'**
-  String get automaticDiagnosticsCancelled;
-
-  /// No description provided for @automaticDiagnosticsFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'分析失败；本次故障不会自动重试'**
-  String get automaticDiagnosticsFailed;
-
-  /// No description provided for @automaticDiagnosticsStoreFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'无法保存诊断设置或状态；自动分析已停止'**
-  String get automaticDiagnosticsStoreFailed;
-
-  /// No description provided for @automaticDiagnosticsCancelFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'停止请求失败；请在报告对话中检查并手动停止'**
-  String get automaticDiagnosticsCancelFailed;
-
-  /// No description provided for @automaticDiagnosticsViewReport.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看最新分析对话'**
-  String get automaticDiagnosticsViewReport;
-
-  /// No description provided for @automaticDiagnosticsReportHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'仅点击时打开，不打断当前对话；报告可能仍在生成或已中断。'**
-  String get automaticDiagnosticsReportHint;
-
-  /// No description provided for @automaticDiagnosticsReportTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'自动故障分析报告'**
-  String get automaticDiagnosticsReportTitle;
-
   /// No description provided for @systemImeTitle.
   ///
   /// In zh, this message translates to:
@@ -11612,155 +11186,11 @@ abstract class L10n {
   /// **'当前对话的模型已切换，但新对话默认未保存。请到设置 › 模型检查并重试。'**
   String get engineModelDefaultSaveFailed;
 
-  /// No description provided for @engineAccountSignedIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'已登录 DeepSeek 账号'**
-  String get engineAccountSignedIn;
-
-  /// No description provided for @engineAccountSignOutTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'退出 DeepSeek 账号？'**
-  String get engineAccountSignOutTitle;
-
-  /// No description provided for @engineAccountSignOutBusy.
-  ///
-  /// In zh, this message translates to:
-  /// **'有任务正在使用账号模型，退出会立即中断它们。对话和文件都会保留。'**
-  String get engineAccountSignOutBusy;
-
-  /// No description provided for @engineAccountSignOutBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号模型将不可用。对话、文件和 API Key 都会保留，随时可以重新登录。'**
-  String get engineAccountSignOutBody;
-
-  /// No description provided for @engineAccountSignOutUnknown.
-  ///
-  /// In zh, this message translates to:
-  /// **'无法确认是否有任务在使用账号模型；如果有，退出会中断它们。'**
-  String get engineAccountSignOutUnknown;
-
-  /// No description provided for @engineAccountSignOutFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能退出，稍后再试'**
-  String get engineAccountSignOutFailed;
-
   /// No description provided for @engineAccountTitle.
   ///
   /// In zh, this message translates to:
   /// **'账号'**
   String get engineAccountTitle;
-
-  /// No description provided for @engineAccountRefresh.
-  ///
-  /// In zh, this message translates to:
-  /// **'刷新'**
-  String get engineAccountRefresh;
-
-  /// No description provided for @engineAccountDeepSeek.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 账号'**
-  String get engineAccountDeepSeek;
-
-  /// No description provided for @engineAccountProfileUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'资料暂时读不到'**
-  String get engineAccountProfileUnavailable;
-
-  /// No description provided for @engineAccountBalance.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额'**
-  String get engineAccountBalance;
-
-  /// No description provided for @engineAccountBalanceHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号模型的费用从余额中扣除'**
-  String get engineAccountBalanceHint;
-
-  /// No description provided for @engineAccountBalanceEngineOff.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎未运行，启动后显示余额'**
-  String get engineAccountBalanceEngineOff;
-
-  /// No description provided for @engineAccountTopUp.
-  ///
-  /// In zh, this message translates to:
-  /// **'去充值'**
-  String get engineAccountTopUp;
-
-  /// No description provided for @engineAccountUsageDetails.
-  ///
-  /// In zh, this message translates to:
-  /// **'用量明细'**
-  String get engineAccountUsageDetails;
-
-  /// No description provided for @engineAccountToppedUpBalance.
-  ///
-  /// In zh, this message translates to:
-  /// **'充值余额'**
-  String get engineAccountToppedUpBalance;
-
-  /// No description provided for @engineAccountGrantedBalance.
-  ///
-  /// In zh, this message translates to:
-  /// **'赠送余额'**
-  String get engineAccountGrantedBalance;
-
-  /// No description provided for @engineAccountBalanceUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额暂时读不到'**
-  String get engineAccountBalanceUnavailable;
-
-  /// No description provided for @engineAccountNoKeyNeeded.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录后无需 API Key'**
-  String get engineAccountNoKeyNeeded;
-
-  /// No description provided for @engineAccountUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前引擎不支持账号登录'**
-  String get engineAccountUnsupported;
-
-  /// No description provided for @engineAccountSignInDeepSeek.
-  ///
-  /// In zh, this message translates to:
-  /// **'用 DeepSeek 账号登录'**
-  String get engineAccountSignInDeepSeek;
-
-  /// No description provided for @engineAccountAutoStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎未运行，登录时会自动启动'**
-  String get engineAccountAutoStart;
-
-  /// No description provided for @engineAccountReplaceKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'更换 Key'**
-  String get engineAccountReplaceKey;
-
-  /// No description provided for @engineAccountClearKeyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'清除 API Key？'**
-  String get engineAccountClearKeyTitle;
-
-  /// No description provided for @engineAccountClearKeyBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除 App 里保存的 Key。本机引擎运行时，引擎里的 Key 也会一并删除。'**
-  String get engineAccountClearKeyBody;
 
   /// No description provided for @engineAccountBrowserFailed.
   ///
@@ -11768,125 +11198,17 @@ abstract class L10n {
   /// **'没能打开浏览器'**
   String get engineAccountBrowserFailed;
 
-  /// No description provided for @engineAccountSignInSuccess.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录成功'**
-  String get engineAccountSignInSuccess;
-
-  /// No description provided for @engineAccountAlmostReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'马上就好'**
-  String get engineAccountAlmostReady;
-
-  /// No description provided for @engineAccountStartingEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在启动引擎'**
-  String get engineAccountStartingEngine;
-
-  /// No description provided for @engineAccountOpenSignInNext.
-  ///
-  /// In zh, this message translates to:
-  /// **'随后打开登录页'**
-  String get engineAccountOpenSignInNext;
-
-  /// No description provided for @engineAccountPreparingSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在准备登录'**
-  String get engineAccountPreparingSignIn;
-
-  /// No description provided for @engineAccountOpenDeepSeekNext.
-  ///
-  /// In zh, this message translates to:
-  /// **'马上打开 DeepSeek 登录页'**
-  String get engineAccountOpenDeepSeekNext;
-
   /// No description provided for @engineAccountFinishInBrowser.
   ///
   /// In zh, this message translates to:
   /// **'在浏览器中完成登录'**
   String get engineAccountFinishInBrowser;
 
-  /// No description provided for @engineAccountReturnToDsh.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录完成后回到 DSH Pocket'**
-  String get engineAccountReturnToDsh;
-
-  /// No description provided for @engineAccountFinishingSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在完成登录'**
-  String get engineAccountFinishingSignIn;
-
-  /// No description provided for @engineAccountSavingSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在保存登录信息'**
-  String get engineAccountSavingSignIn;
-
-  /// No description provided for @engineAccountAwaitingResult.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没收到登录结果'**
-  String get engineAccountAwaitingResult;
-
-  /// No description provided for @engineAccountCopySignInLink.
-  ///
-  /// In zh, this message translates to:
-  /// **'复制登录链接'**
-  String get engineAccountCopySignInLink;
-
-  /// No description provided for @engineAccountReopenSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开登录页'**
-  String get engineAccountReopenSignIn;
-
-  /// No description provided for @engineAccountCancelSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消登录'**
-  String get engineAccountCancelSignIn;
-
-  /// No description provided for @engineAccountSignInLinkCopied.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录链接已复制'**
-  String get engineAccountSignInLinkCopied;
-
-  /// No description provided for @engineAccountSigningIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录中'**
-  String get engineAccountSigningIn;
-
   /// No description provided for @engineAccountSignedOut.
   ///
   /// In zh, this message translates to:
   /// **'未登录'**
   String get engineAccountSignedOut;
-
-  /// No description provided for @engineAccountUsageFact.
-  ///
-  /// In zh, this message translates to:
-  /// **'用量从账号余额中扣除'**
-  String get engineAccountUsageFact;
-
-  /// No description provided for @engineAccountBrowserFact.
-  ///
-  /// In zh, this message translates to:
-  /// **'在浏览器中登录，密码不经过 DSH'**
-  String get engineAccountBrowserFact;
-
-  /// No description provided for @engineAccountCredentialsFact.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录凭据只保存在本机'**
-  String get engineAccountCredentialsFact;
 
   /// No description provided for @engineSubagentTitle.
   ///
@@ -13196,18 +12518,6 @@ abstract class L10n {
   /// **'未在这台主机上配置'**
   String get engineProvidersNotConfiguredHere;
 
-  /// No description provided for @engineProvidersSigningIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在登录…'**
-  String get engineProvidersSigningIn;
-
-  /// No description provided for @engineProvidersSignInOrKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录账号或填写 API Key'**
-  String get engineProvidersSignInOrKey;
-
   /// No description provided for @engineProvidersOfficial.
   ///
   /// In zh, this message translates to:
@@ -13339,12 +12649,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'再试一次'**
   String get engineSubscriptionTryAgain;
-
-  /// No description provided for @engineAccountWelcome.
-  ///
-  /// In zh, this message translates to:
-  /// **'欢迎，{name}'**
-  String engineAccountWelcome(String name);
 
   /// No description provided for @engineLayerCount.
   ///
@@ -13537,12 +12841,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'{total} 个渠道 · {ready} 个可用'**
   String engineProvidersSummary(int total, int ready);
-
-  /// No description provided for @engineProvidersAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号 · {name}'**
-  String engineProvidersAccount(String name);
 
   /// No description provided for @engineProvidersSignedInAccount.
   ///
@@ -16106,12 +15404,6 @@ abstract class L10n {
   /// **'离开屏幕后'**
   String get harmonyBackgroundAway;
 
-  /// No description provided for @harmonyBackgroundLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在跑的对话可能还能跑一小会儿，多久由系统决定。之后跟着应用暂停，回到应用后会尽量接着跑'**
-  String get harmonyBackgroundLocal;
-
   /// No description provided for @harmonyBackgroundRemoteTitle.
   ///
   /// In zh, this message translates to:
@@ -16142,23 +15434,11 @@ abstract class L10n {
   /// **'或者放到已连接的远程主机上跑'**
   String get harmonyBackgroundUseRemote;
 
-  /// No description provided for @harmonyEngineBackgroundHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'离开屏幕后本机引擎很快会暂停'**
-  String get harmonyEngineBackgroundHint;
-
   /// No description provided for @harmonyKwBackground.
   ///
   /// In zh, this message translates to:
   /// **'后台,保活,挂起,暂停,被杀,杀后台'**
   String get harmonyKwBackground;
-
-  /// No description provided for @harmonyPausedInBackground.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话在后台可能暂停过'**
-  String get harmonyPausedInBackground;
 
   /// No description provided for @harmonyAlertsRequirement.
   ///
@@ -16249,150 +15529,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能更换。使用自定义主题或应用分身时不能换桌面图标'**
   String get harmonyIconChangeFailed;
-
-  /// No description provided for @harmonyEngineUnclean.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有正常退出'**
-  String get harmonyEngineUnclean;
-
-  /// No description provided for @harmonyFailureUnclean.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎没有正常退出'**
-  String get harmonyFailureUnclean;
-
-  /// No description provided for @harmonyFailureUncleanHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'原因不明：可能是系统回收了应用或应用被关掉，也可能是引擎出了错。'**
-  String get harmonyFailureUncleanHint;
-
-  /// No description provided for @harmonyFailureHeld.
-  ///
-  /// In zh, this message translates to:
-  /// **'连续几次都这样，引擎不会自己启动了。可以再试一次，或换一种方式启动。'**
-  String get harmonyFailureHeld;
-
-  /// No description provided for @harmonyResetKept.
-  ///
-  /// In zh, this message translates to:
-  /// **'主机列表、App 设置和已保存的密钥不受影响。确认后 App 会重新打开，在打开时完成重置。'**
-  String get harmonyResetKept;
-
-  /// No description provided for @harmonyResetReopening.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置已记下，App 正在重新打开'**
-  String get harmonyResetReopening;
-
-  /// No description provided for @harmonyResetCommittedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'还差重新打开 App'**
-  String get harmonyResetCommittedTitle;
-
-  /// No description provided for @harmonyResetCommittedBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置已经记下，下次打开 App 时完成。可以现在重新打开，也可以自己关掉再打开。'**
-  String get harmonyResetCommittedBody;
-
-  /// No description provided for @harmonyResetUnknownTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'不确定重置有没有记下'**
-  String get harmonyResetUnknownTitle;
-
-  /// No description provided for @harmonyResetUnknownBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开 App：记下了就会完成重置，没记下对话和文件都还在。'**
-  String get harmonyResetUnknownBody;
-
-  /// No description provided for @harmonyResetNotCommittedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有重置'**
-  String get harmonyResetNotCommittedTitle;
-
-  /// No description provided for @harmonyResetNotCommittedBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话和文件都还在。引擎已经停了，重新打开 App 后恢复。'**
-  String get harmonyResetNotCommittedBody;
-
-  /// No description provided for @harmonyResetInstalling.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在安装运行环境，装完再试'**
-  String get harmonyResetInstalling;
-
-  /// No description provided for @harmonyResetOlderPendingTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'已经有一次重置在等'**
-  String get harmonyResetOlderPendingTitle;
-
-  /// No description provided for @harmonyResetOlderPendingBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开 App 完成它。这次的选择没有生效。'**
-  String get harmonyResetOlderPendingBody;
-
-  /// No description provided for @harmonyReopenApp.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开'**
-  String get harmonyReopenApp;
-
-  /// No description provided for @harmonyResetPendingTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置还没完成'**
-  String get harmonyResetPendingTitle;
-
-  /// No description provided for @harmonyResetPendingBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开 App 继续。在这之前本机引擎不会启动。'**
-  String get harmonyResetPendingBody;
-
-  /// No description provided for @harmonyResetFinishing.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在完成重置'**
-  String get harmonyResetFinishing;
-
-  /// No description provided for @harmonyResetDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境已重置'**
-  String get harmonyResetDone;
-
-  /// No description provided for @harmonyResetMaybeDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'App 已重新打开。如果对话还在，说明这次重置没有生效，可以再试一次。'**
-  String get harmonyResetMaybeDone;
-
-  /// No description provided for @harmonyUninstallHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除已解压的运行环境和本机数据'**
-  String get harmonyUninstallHint;
-
-  /// No description provided for @harmonyUninstallBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机的对话、工作区、插件、设置、界面配置和技能会一并删除，App 会重新打开。安装包里自带的那份运行环境还在，只有卸载 App 才会释放。'**
-  String get harmonyUninstallBody;
-
-  /// No description provided for @harmonyKwEngineUninstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载,删除运行环境,清理本机数据'**
-  String get harmonyKwEngineUninstall;
 
   /// No description provided for @harmonyUpdateNoticeTitle.
   ///
@@ -16562,24 +15698,6 @@ abstract class L10n {
   /// **'当前版本只走 Relay 中继'**
   String get harmonyNetworkFallbackRelayOnly;
 
-  /// No description provided for @harmonySetupStay.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装时请留在这个页面'**
-  String get harmonySetupStay;
-
-  /// No description provided for @harmonyLaunchEmbedded.
-  ///
-  /// In zh, this message translates to:
-  /// **'应用内启动'**
-  String get harmonyLaunchEmbedded;
-
-  /// No description provided for @harmonyLaunchNodeExited.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎已退出'**
-  String get harmonyLaunchNodeExited;
-
   /// No description provided for @harmonyKwAccent.
   ///
   /// In zh, this message translates to:
@@ -16597,30 +15715,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'语音识别,麦克风,听写,说话,语音'**
   String get harmonyKwVoice;
-
-  /// No description provided for @harmonyBackgroundSubtitleLong.
-  ///
-  /// In zh, this message translates to:
-  /// **'应用离开屏幕后，正在跑的对话会尽量继续'**
-  String get harmonyBackgroundSubtitleLong;
-
-  /// No description provided for @harmonyBackgroundLocalLong.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个版本可以申请长时任务：对话留在后台继续跑，通知栏会有一条提示。系统不批准或中途收回时，对话跟着应用暂停，回到应用后会尽量接着跑'**
-  String get harmonyBackgroundLocalLong;
-
-  /// No description provided for @harmonyEngineBackgroundHintLong.
-  ///
-  /// In zh, this message translates to:
-  /// **'离开屏幕后，正在跑的对话会尽量继续'**
-  String get harmonyEngineBackgroundHintLong;
-
-  /// No description provided for @harmonyAlertsRequirementLong.
-  ///
-  /// In zh, this message translates to:
-  /// **'提醒要应用在运行才发得出：对话在后台继续时会提醒，应用被系统挂起后就没有了'**
-  String get harmonyAlertsRequirementLong;
 
   /// No description provided for @harmonySaveToFile.
   ///
@@ -16651,36 +15745,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'把这个对话的完整记录打包成 ZIP，分享或保存到文件'**
   String get harmonyCommandExportDescription;
-
-  /// No description provided for @harmonySafeEnterTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'以安全模式启动？'**
-  String get harmonySafeEnterTitle;
-
-  /// No description provided for @harmonySafeEnterBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'用随包的默认配置启动，不加载你装的插件。对话都在，原来的配置不会改动。'**
-  String get harmonySafeEnterBody;
-
-  /// No description provided for @harmonySafeReopenNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'进行中的回复会中断，App 会重新打开。'**
-  String get harmonySafeReopenNote;
-
-  /// No description provided for @harmonyRestoredReopening.
-  ///
-  /// In zh, this message translates to:
-  /// **'已恢复上次正常的配置，App 正在重新打开'**
-  String get harmonyRestoredReopening;
-
-  /// No description provided for @harmonySafeRepairPrompt.
-  ///
-  /// In zh, this message translates to:
-  /// **'我的 DSH 正常模式出了问题（{what}）。现在是安全模式，用的是随包的默认配置，我原来的配置没有动。请帮我找原因，动手改之前先告诉我要改什么。'**
-  String harmonySafeRepairPrompt(String what);
 
   /// No description provided for @harmonyRemindersTitle.
   ///
@@ -16958,24 +16022,6 @@ abstract class L10n {
   /// **'允许读写'**
   String get hubSettingsStorageAllow;
 
-  /// No description provided for @hubSettingsStorageDenied.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有拿到存储权限。到系统设置里给 DSH Pocket 开启「所有文件访问」后再试'**
-  String get hubSettingsStorageDenied;
-
-  /// No description provided for @hubSettingsRestartRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启引擎后生效'**
-  String get hubSettingsRestartRequired;
-
-  /// No description provided for @hubSettingsRestartNow.
-  ///
-  /// In zh, this message translates to:
-  /// **'立即重启'**
-  String get hubSettingsRestartNow;
-
   /// No description provided for @hubSettingsInterface.
   ///
   /// In zh, this message translates to:
@@ -16988,53 +16034,17 @@ abstract class L10n {
   /// **'对话'**
   String get hubSettingsChat;
 
-  /// No description provided for @hubSettingsAutoCommands.
-  ///
-  /// In zh, this message translates to:
-  /// **'自动执行命令'**
-  String get hubSettingsAutoCommands;
-
   /// No description provided for @hubSettingsPhoneFiles.
   ///
   /// In zh, this message translates to:
   /// **'访问手机文件'**
   String get hubSettingsPhoneFiles;
 
-  /// No description provided for @hubSettingsPhoneFilesHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'AI 可读写手机存储'**
-  String get hubSettingsPhoneFilesHint;
-
   /// No description provided for @hubSettingsVisualReplies.
   ///
   /// In zh, this message translates to:
   /// **'可视化回复'**
   String get hubSettingsVisualReplies;
-
-  /// No description provided for @hubSettingsVisualRepliesHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'图表、对比卡和可点的选项'**
-  String get hubSettingsVisualRepliesHint;
-
-  /// No description provided for @hubSettingsPhoneControl.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机操控'**
-  String get hubSettingsPhoneControl;
-
-  /// No description provided for @hubSettingsPhoneControlHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'看屏幕、帮你点按'**
-  String get hubSettingsPhoneControlHint;
-
-  /// No description provided for @hubSettingsPreferences.
-  ///
-  /// In zh, this message translates to:
-  /// **'个人偏好'**
-  String get hubSettingsPreferences;
 
   /// No description provided for @hubSettingsAppearance.
   ///
@@ -17054,47 +16064,17 @@ abstract class L10n {
   /// **'完成后收起过程'**
   String get hubSettingsCollapseSteps;
 
-  /// No description provided for @hubSettingsCollapseStepsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'思考与工具调用收成一行'**
-  String get hubSettingsCollapseStepsHint;
-
-  /// No description provided for @hubSettingsWebPhoneLayout.
-  ///
-  /// In zh, this message translates to:
-  /// **'网页版手机布局'**
-  String get hubSettingsWebPhoneLayout;
-
   /// No description provided for @hubSettingsWebPhoneLayoutHint.
   ///
   /// In zh, this message translates to:
   /// **'为手机屏幕重排网页版'**
   String get hubSettingsWebPhoneLayoutHint;
 
-  /// No description provided for @hubSettingsEngineExtensions.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎与扩展'**
-  String get hubSettingsEngineExtensions;
-
-  /// No description provided for @hubSettingsEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎'**
-  String get hubSettingsEngine;
-
   /// No description provided for @hubSettingsProviders.
   ///
   /// In zh, this message translates to:
   /// **'模型'**
   String get hubSettingsProviders;
-
-  /// No description provided for @hubSettingsEngineSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎参数'**
-  String get hubSettingsEngineSettings;
 
   /// No description provided for @hubSettingsShareConfig.
   ///
@@ -17108,12 +16088,6 @@ abstract class L10n {
   /// **'全部功能'**
   String get hubSettingsAllFeatures;
 
-  /// No description provided for @hubSettingsAbout.
-  ///
-  /// In zh, this message translates to:
-  /// **'关于'**
-  String get hubSettingsAbout;
-
   /// No description provided for @hubSettingsCommunity.
   ///
   /// In zh, this message translates to:
@@ -17125,48 +16099,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'开源许可'**
   String get hubSettingsLicenses;
-
-  /// No description provided for @hubSettingsAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 账号'**
-  String get hubSettingsAccount;
-
-  /// No description provided for @hubSettingsSigningIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在登录…'**
-  String get hubSettingsSigningIn;
-
-  /// No description provided for @hubSettingsInvalidKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'Key 无效，查不到余额'**
-  String get hubSettingsInvalidKey;
-
-  /// No description provided for @hubSettingsNoApiKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'未设置 API Key'**
-  String get hubSettingsNoApiKey;
-
-  /// No description provided for @hubSettingsApiKeyHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'填写 Key 后即可对话'**
-  String get hubSettingsApiKeyHint;
-
-  /// No description provided for @hubSettingsSignInAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录 DeepSeek 账号'**
-  String get hubSettingsSignInAccount;
-
-  /// No description provided for @hubSettingsOrApiKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'或填写 API Key'**
-  String get hubSettingsOrApiKey;
 
   /// No description provided for @hubPluginShare.
   ///
@@ -17402,35 +16334,11 @@ abstract class L10n {
   /// **'AI 能读取和修改相册、下载、文档等手机文件，引擎会重启一次。'**
   String get hubSettingsStorageBody;
 
-  /// No description provided for @hubSettingsBalance.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额 {amount}'**
-  String hubSettingsBalance(String amount);
-
-  /// No description provided for @hubSettingsBalanceLow.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额 {amount} · 余额不足'**
-  String hubSettingsBalanceLow(String amount);
-
-  /// No description provided for @hubSettingsAccountSemantics.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号：{title}，{subtitle}'**
-  String hubSettingsAccountSemantics(String title, String subtitle);
-
   /// No description provided for @hubSettingsHostSemantics.
   ///
   /// In zh, this message translates to:
   /// **'远程主机：{name}，{status}'**
   String hubSettingsHostSemantics(String name, String status);
-
-  /// No description provided for @hubSettingsApiKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek API Key'**
-  String get hubSettingsApiKey;
 
   /// No description provided for @hubPluginBrowserFailed.
   ///
@@ -17503,18 +16411,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'个性化'**
   String get hubPersonalization;
-
-  /// No description provided for @hubPersonalizationAboutYou.
-  ///
-  /// In zh, this message translates to:
-  /// **'关于你'**
-  String get hubPersonalizationAboutYou;
-
-  /// No description provided for @hubPersonalizationReplies.
-  ///
-  /// In zh, this message translates to:
-  /// **'回答'**
-  String get hubPersonalizationReplies;
 
   /// No description provided for @hubPersonalizationWorkStyle.
   ///
@@ -17606,41 +16502,11 @@ abstract class L10n {
   /// **'关于 DSH Pocket'**
   String get hubAbout;
 
-  /// No description provided for @hubAboutAuthor.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH Pocket 原作者'**
-  String get hubAboutAuthor;
-
-  /// No description provided for @hubAboutBilibili.
-  ///
-  /// In zh, this message translates to:
-  /// **'B站主页'**
-  String get hubAboutBilibili;
-
-  /// No description provided for @hubAboutX.
-  ///
-  /// In zh, this message translates to:
-  /// **'X 主页'**
-  String get hubAboutX;
-
-  /// No description provided for @hubAboutGithub.
-  ///
-  /// In zh, this message translates to:
-  /// **'GitHub 主页'**
-  String get hubAboutGithub;
-
   /// No description provided for @hubAboutNewVersion.
   ///
   /// In zh, this message translates to:
   /// **'有新版本'**
   String get hubAboutNewVersion;
-
-  /// No description provided for @hubValueSet.
-  ///
-  /// In zh, this message translates to:
-  /// **'已设置'**
-  String get hubValueSet;
 
   /// No description provided for @hubValueOff.
   ///
@@ -17672,23 +16538,11 @@ abstract class L10n {
   /// **'{count} 台'**
   String hubValueHosts(int count);
 
-  /// No description provided for @hubValueNoHosts.
-  ///
-  /// In zh, this message translates to:
-  /// **'未添加'**
-  String get hubValueNoHosts;
-
   /// No description provided for @hubValuePlugins.
   ///
   /// In zh, this message translates to:
   /// **'{count} 个'**
   String hubValuePlugins(int count);
-
-  /// No description provided for @hubEngineStartup.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动'**
-  String get hubEngineStartup;
 
   /// No description provided for @hubThemeLightDark.
   ///
@@ -17822,179 +16676,11 @@ abstract class L10n {
   /// **'没有相册权限，未能保存'**
   String get iosPhotosDenied;
 
-  /// No description provided for @iosRelocationOriginUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'发现旧对话，但找不到它们原来的位置。原数据都还在，这些对话暂时不能继续。'**
-  String get iosRelocationOriginUnavailable;
-
-  /// No description provided for @iosRelocationSessionIsolated.
-  ///
-  /// In zh, this message translates to:
-  /// **'有些对话没能迁移，已经单独保留。原文件和原因都还在，可以在诊断里导出后反馈。'**
-  String get iosRelocationSessionIsolated;
-
   /// No description provided for @iosAccessSubtitle.
   ///
   /// In zh, this message translates to:
   /// **'各项功能用到的系统权限'**
   String get iosAccessSubtitle;
-
-  /// No description provided for @iosLinuxTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux 环境'**
-  String get iosLinuxTitle;
-
-  /// No description provided for @iosLinuxIntro.
-  ///
-  /// In zh, this message translates to:
-  /// **'装好并重启本机引擎后，普通命令会在 Linux 里运行。Python 等软件需用 apk 另装；修改 Linux 系统仍需本次审批。App 文件只开放工作区和临时目录。'**
-  String get iosLinuxIntro;
-
-  /// No description provided for @iosLinuxInstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装 Linux 环境'**
-  String get iosLinuxInstall;
-
-  /// No description provided for @iosLinuxDownloadSize.
-  ///
-  /// In zh, this message translates to:
-  /// **'约 4 MB'**
-  String get iosLinuxDownloadSize;
-
-  /// No description provided for @iosLinuxDownloading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在下载'**
-  String get iosLinuxDownloading;
-
-  /// No description provided for @iosLinuxVerifying.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在校验'**
-  String get iosLinuxVerifying;
-
-  /// No description provided for @iosLinuxExtracting.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在解压'**
-  String get iosLinuxExtracting;
-
-  /// No description provided for @iosLinuxFinishing.
-  ///
-  /// In zh, this message translates to:
-  /// **'即将完成'**
-  String get iosLinuxFinishing;
-
-  /// No description provided for @iosLinuxSystem.
-  ///
-  /// In zh, this message translates to:
-  /// **'系统'**
-  String get iosLinuxSystem;
-
-  /// No description provided for @iosLinuxStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'占用空间'**
-  String get iosLinuxStorage;
-
-  /// No description provided for @iosLinuxUninstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载 Linux 环境'**
-  String get iosLinuxUninstall;
-
-  /// No description provided for @iosLinuxUninstallBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除 Linux 环境和在里面装的所有软件。工作区里的文件不受影响。'**
-  String get iosLinuxUninstallBody;
-
-  /// No description provided for @iosLinuxUninstallConfirm.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载'**
-  String get iosLinuxUninstallConfirm;
-
-  /// No description provided for @iosLinuxUninstalling.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在卸载…'**
-  String get iosLinuxUninstalling;
-
-  /// No description provided for @iosLinuxRestartEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'已装好。重启本机引擎后，命令才会用上它。'**
-  String get iosLinuxRestartEngine;
-
-  /// No description provided for @iosLinuxErrorNetwork.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载没成功。检查网络后再试一次。'**
-  String get iosLinuxErrorNetwork;
-
-  /// No description provided for @iosLinuxErrorDamaged.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载的文件不完整，已经丢掉了，再试一次。'**
-  String get iosLinuxErrorDamaged;
-
-  /// No description provided for @iosLinuxErrorNoSpace.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机存储空间不够了。'**
-  String get iosLinuxErrorNoSpace;
-
-  /// No description provided for @iosLinuxErrorInUse.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux 环境正在使用，重新打开 App 后才能卸载。'**
-  String get iosLinuxErrorInUse;
-
-  /// No description provided for @iosLinuxErrorOther.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有完成，再试一次。'**
-  String get iosLinuxErrorOther;
-
-  /// No description provided for @iosLinuxState.
-  ///
-  /// In zh, this message translates to:
-  /// **'状态'**
-  String get iosLinuxState;
-
-  /// No description provided for @iosLinuxStatePaused.
-  ///
-  /// In zh, this message translates to:
-  /// **'已暂停'**
-  String get iosLinuxStatePaused;
-
-  /// No description provided for @iosLinuxSuspendedBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'上次 App 退出时，Linux 里还有命令没跑完，App 可能就是因为它闪退的。为免再闪退，Linux 环境先暂停，其他功能照常。想再用就重新启用。'**
-  String get iosLinuxSuspendedBody;
-
-  /// No description provided for @iosLinuxResume.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新启用 Linux 环境'**
-  String get iosLinuxResume;
-
-  /// No description provided for @iosLinuxResumed.
-  ///
-  /// In zh, this message translates to:
-  /// **'已重新启用。重启本机引擎后，命令才会用上它。'**
-  String get iosLinuxResumed;
-
-  /// No description provided for @iosLinuxErrorBusy.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux 环境还在使用。等命令停下再试，不行就重新打开 App。'**
-  String get iosLinuxErrorBusy;
 
   /// No description provided for @iosPhoneLinkTitle.
   ///
@@ -18271,12 +16957,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。'**
   String get iosSpeechCallEndNoRecognizer;
-
-  /// No description provided for @iosSpeechCallEndNoRecognizerSignedIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前连接不能用已登录账号识别通话录音（例如经 DSH Remote 中继）；请填写 DeepSeek API Key 或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。'**
-  String get iosSpeechCallEndNoRecognizerSignedIn;
 
   /// No description provided for @iosPhoneLinkErrorPairingRejected.
   ///
@@ -18704,270 +17384,6 @@ abstract class L10n {
   /// **'快捷方式,自定义图标,桌面图片,换图标'**
   String get searchKwIconShortcut;
 
-  /// No description provided for @linuxTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux 环境'**
-  String get linuxTitle;
-
-  /// No description provided for @linuxSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'在手机里运行 gh、Python、git 等命令行工具'**
-  String get linuxSubtitle;
-
-  /// No description provided for @linuxSwitch.
-  ///
-  /// In zh, this message translates to:
-  /// **'开启 Linux'**
-  String get linuxSwitch;
-
-  /// No description provided for @linuxStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'状态'**
-  String get linuxStatus;
-
-  /// No description provided for @linuxFirstHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'第一次开启会下载约 3.5 MB 的基础系统并安装，大约一两分钟；之后再开几秒就好。'**
-  String get linuxFirstHint;
-
-  /// No description provided for @linuxMemoryNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'开着 Linux 时 App 大约多占 100 MB 以上内存；关掉开关会把这部分还给系统，之后要重新打开 App 才能再开启。'**
-  String get linuxMemoryNote;
-
-  /// No description provided for @linuxStateOn.
-  ///
-  /// In zh, this message translates to:
-  /// **'已开启'**
-  String get linuxStateOn;
-
-  /// No description provided for @linuxStateOff.
-  ///
-  /// In zh, this message translates to:
-  /// **'未开启'**
-  String get linuxStateOff;
-
-  /// No description provided for @linuxStateInstalling.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在准备'**
-  String get linuxStateInstalling;
-
-  /// No description provided for @linuxStateStopping.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在关闭'**
-  String get linuxStateStopping;
-
-  /// No description provided for @linuxStateFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'出错了'**
-  String get linuxStateFailed;
-
-  /// No description provided for @linuxStateUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'暂不可用'**
-  String get linuxStateUnavailable;
-
-  /// No description provided for @linuxStageDownload.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载基础系统'**
-  String get linuxStageDownload;
-
-  /// No description provided for @linuxStageDisk.
-  ///
-  /// In zh, this message translates to:
-  /// **'准备磁盘'**
-  String get linuxStageDisk;
-
-  /// No description provided for @linuxStageBoot.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动'**
-  String get linuxStageBoot;
-
-  /// No description provided for @linuxStageTools.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装工具'**
-  String get linuxStageTools;
-
-  /// No description provided for @linuxEngineOffline.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎没在运行，启动引擎后再来开启。'**
-  String get linuxEngineOffline;
-
-  /// No description provided for @linuxRequestFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能和引擎通信，请稍后重试。'**
-  String get linuxRequestFailed;
-
-  /// No description provided for @linuxRestartRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux 已经停止，重新打开 App 后才能再开启。'**
-  String get linuxRestartRequired;
-
-  /// No description provided for @linuxReopenApp.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开 App'**
-  String get linuxReopenApp;
-
-  /// No description provided for @linuxReopenFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能自动重新打开，请手动退出 App 再打开。'**
-  String get linuxReopenFailed;
-
-  /// No description provided for @linuxErrorWithCode.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能开启：{code}'**
-  String linuxErrorWithCode(String code);
-
-  /// No description provided for @linuxReinstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新安装 Linux'**
-  String get linuxReinstall;
-
-  /// No description provided for @linuxReinstallHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除 Linux 里的全部内容，再开启时全新安装'**
-  String get linuxReinstallHint;
-
-  /// No description provided for @linuxReinstallAfterRestart.
-  ///
-  /// In zh, this message translates to:
-  /// **'这次运行已经启动过 Linux：完全退出并重新打开 App 后才能重新安装'**
-  String get linuxReinstallAfterRestart;
-
-  /// No description provided for @linuxReinstallTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新安装 Linux？'**
-  String get linuxReinstallTitle;
-
-  /// No description provided for @linuxReinstallBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除 Linux 里的全部内容：装过的软件和 Python 包、只存在 Linux 里的文件，以及在 Linux 里登录过的账号（比如 gh）。对话工作区里的文件不受影响。\n\n开关保持关闭；之后打开会重新下载并安装。'**
-  String get linuxReinstallBody;
-
-  /// No description provided for @linuxRetainedRefused.
-  ///
-  /// In zh, this message translates to:
-  /// **'原来的 Linux 数据没法继续用了（常见于 App 更新之后），App 不会自动覆盖它。点「重新安装 Linux」删除后再开启，即可全新安装。（{code}）'**
-  String linuxRetainedRefused(String code);
-
-  /// No description provided for @linuxReinstallRestart.
-  ///
-  /// In zh, this message translates to:
-  /// **'这次运行已经启动过 Linux，数据可能仍被占用。完全退出并重新打开 App 后，再点「重新安装 Linux」。'**
-  String get linuxReinstallRestart;
-
-  /// No description provided for @linuxReinstallFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能重新安装：{code}'**
-  String linuxReinstallFailed(String code);
-
-  /// No description provided for @linuxProxyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'网络代理'**
-  String get linuxProxyTitle;
-
-  /// No description provided for @linuxProxyFooter.
-  ///
-  /// In zh, this message translates to:
-  /// **'只作用于 Linux 里的命令。gitee、华为云等国内源始终直连。'**
-  String get linuxProxyFooter;
-
-  /// No description provided for @linuxProxyMode.
-  ///
-  /// In zh, this message translates to:
-  /// **'方式'**
-  String get linuxProxyMode;
-
-  /// No description provided for @linuxProxyInherit.
-  ///
-  /// In zh, this message translates to:
-  /// **'跟随 App'**
-  String get linuxProxyInherit;
-
-  /// No description provided for @linuxProxyDirect.
-  ///
-  /// In zh, this message translates to:
-  /// **'不用代理'**
-  String get linuxProxyDirect;
-
-  /// No description provided for @linuxProxyManual.
-  ///
-  /// In zh, this message translates to:
-  /// **'手动'**
-  String get linuxProxyManual;
-
-  /// No description provided for @linuxProxyHttp.
-  ///
-  /// In zh, this message translates to:
-  /// **'HTTP 代理'**
-  String get linuxProxyHttp;
-
-  /// No description provided for @linuxProxyHttps.
-  ///
-  /// In zh, this message translates to:
-  /// **'HTTPS 代理'**
-  String get linuxProxyHttps;
-
-  /// No description provided for @linuxProxyNoProxy.
-  ///
-  /// In zh, this message translates to:
-  /// **'不走代理的地址'**
-  String get linuxProxyNoProxy;
-
-  /// No description provided for @linuxProxyUnset.
-  ///
-  /// In zh, this message translates to:
-  /// **'未设置'**
-  String get linuxProxyUnset;
-
-  /// No description provided for @linuxProxySameAsHttp.
-  ///
-  /// In zh, this message translates to:
-  /// **'同 HTTP'**
-  String get linuxProxySameAsHttp;
-
-  /// No description provided for @linuxProxyLoopbackNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'127.0.0.1 指的是这台手机，不是电脑。'**
-  String get linuxProxyLoopbackNote;
-
-  /// No description provided for @linuxProxyUrlInvalid.
-  ///
-  /// In zh, this message translates to:
-  /// **'请填 http:// 或 https:// 开头的地址，例如 http://127.0.0.1:7890'**
-  String get linuxProxyUrlInvalid;
-
-  /// No description provided for @searchKwLinux.
-  ///
-  /// In zh, this message translates to:
-  /// **'Linux,终端,命令行,虚拟机,gh,GitHub CLI,python,pip,代理'**
-  String get searchKwLinux;
-
   /// No description provided for @liveThinking.
   ///
   /// In zh, this message translates to:
@@ -19136,233 +17552,11 @@ abstract class L10n {
   /// **'English'**
   String get localeEn;
 
-  /// No description provided for @localEnvChooseTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 在哪里运行？'**
-  String get localEnvChooseTitle;
-
-  /// No description provided for @localEnvChooseMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'之后可以在设置里更改'**
-  String get localEnvChooseMessage;
-
-  /// No description provided for @localEnvThisPhoneDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'存储约 {storage} MB · 内存约 {memory} MB'**
-  String localEnvThisPhoneDetail(int storage, int memory);
-
-  /// No description provided for @localEnvThisPhoneDetailShort.
-  ///
-  /// In zh, this message translates to:
-  /// **'内存约 {memory} MB'**
-  String localEnvThisPhoneDetailShort(int memory);
-
-  /// No description provided for @localEnvLowStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'存储空间不足，需要约 {needed} MB'**
-  String localEnvLowStorage(int needed);
-
-  /// No description provided for @localEnvRemoteDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'连接电脑或服务器上的 DSH'**
-  String get localEnvRemoteDetail;
-
-  /// No description provided for @localEnvUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台设备暂时不能在本机运行 DSH'**
-  String get localEnvUnavailable;
-
-  /// No description provided for @localEnvUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'暂不支持'**
-  String get localEnvUnsupported;
-
-  /// No description provided for @localEnvRecommended.
-  ///
-  /// In zh, this message translates to:
-  /// **'推荐'**
-  String get localEnvRecommended;
-
-  /// No description provided for @localEnvInstallTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装本机运行环境'**
-  String get localEnvInstallTitle;
-
-  /// No description provided for @localEnvInstallMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'在这台手机上运行 DSH'**
-  String get localEnvInstallMessage;
-
-  /// No description provided for @localEnvFactStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'约 {storage} MB 存储空间'**
-  String localEnvFactStorage(int storage);
-
-  /// No description provided for @localEnvFactMemory.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行时约 {memory} MB 内存'**
-  String localEnvFactMemory(int memory);
-
-  /// No description provided for @localEnvUseRemote.
-  ///
-  /// In zh, this message translates to:
-  /// **'改用远程主机'**
-  String get localEnvUseRemote;
-
-  /// No description provided for @localEnvNotInstalled.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机未安装运行环境'**
-  String get localEnvNotInstalled;
-
-  /// No description provided for @localEnvUninstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载运行环境'**
-  String get localEnvUninstall;
-
-  /// No description provided for @localEnvUninstallHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'释放存储空间'**
-  String get localEnvUninstallHint;
-
-  /// No description provided for @localEnvUninstallTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载运行环境？'**
-  String get localEnvUninstallTitle;
-
-  /// No description provided for @localEnvUninstallBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机的对话、工作区、插件、设置、界面配置和技能会一并删除。'**
-  String get localEnvUninstallBody;
-
-  /// No description provided for @localEnvUninstallConfirm.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载'**
-  String get localEnvUninstallConfirm;
-
-  /// No description provided for @localEnvUninstallFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能卸载，再试一次'**
-  String get localEnvUninstallFailed;
-
-  /// No description provided for @localEnvPhoneNeedsRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装本机运行环境后可用'**
-  String get localEnvPhoneNeedsRuntime;
-
-  /// No description provided for @localEnvSignInNeedsRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'需要本机运行环境'**
-  String get localEnvSignInNeedsRuntime;
-
-  /// No description provided for @localEnvSignInInstallFirst.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装后即可登录'**
-  String get localEnvSignInInstallFirst;
-
-  /// No description provided for @engineStartReopensApp.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎每次打开 App 只能启动一次，再启动会重新打开 App。'**
-  String get engineStartReopensApp;
-
-  /// No description provided for @engineReopenFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎要重新打开 App 才能再启动，请手动重开一次。'**
-  String get engineReopenFailed;
-
-  /// No description provided for @engineCapShell.
-  ///
-  /// In zh, this message translates to:
-  /// **'命令行'**
-  String get engineCapShell;
-
-  /// No description provided for @engineCapShellBuiltin.
-  ///
-  /// In zh, this message translates to:
-  /// **'内置 {count} 个命令'**
-  String engineCapShellBuiltin(int count);
-
-  /// No description provided for @engineCapShellSystem.
-  ///
-  /// In zh, this message translates to:
-  /// **'系统'**
-  String get engineCapShellSystem;
-
-  /// No description provided for @engineCapNodeScripts.
-  ///
-  /// In zh, this message translates to:
-  /// **'Node 脚本'**
-  String get engineCapNodeScripts;
-
-  /// No description provided for @engineCapMarket.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装市场插件'**
-  String get engineCapMarket;
-
-  /// No description provided for @engineCapBackground.
-  ///
-  /// In zh, this message translates to:
-  /// **'切到后台时'**
-  String get engineCapBackground;
-
-  /// No description provided for @engineCapMayFreeze.
-  ///
-  /// In zh, this message translates to:
-  /// **'可能被系统暂停'**
-  String get engineCapMayFreeze;
-
-  /// No description provided for @engineCapKeepsRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'继续运行'**
-  String get engineCapKeepsRunning;
-
-  /// No description provided for @engineCapYes.
-  ///
-  /// In zh, this message translates to:
-  /// **'可以'**
-  String get engineCapYes;
-
-  /// No description provided for @engineCapNone.
-  ///
-  /// In zh, this message translates to:
-  /// **'不可用'**
-  String get engineCapNone;
-
   /// No description provided for @marketInstallRefused.
   ///
   /// In zh, this message translates to:
   /// **'这个引擎不能安装市场插件'**
   String get marketInstallRefused;
-
-  /// No description provided for @localEnvChooseUseTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'想怎么用 dsh-Go？'**
-  String get localEnvChooseUseTitle;
 
   /// No description provided for @marketSectionOfficial.
   ///
@@ -19741,12 +17935,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'生成中'**
   String get mediaGenerating;
-
-  /// No description provided for @mediaGeneratingProgress.
-  ///
-  /// In zh, this message translates to:
-  /// **'生成中 · {progress}'**
-  String mediaGeneratingProgress(String progress);
 
   /// No description provided for @mediaCancelled.
   ///
@@ -20402,12 +18590,6 @@ abstract class L10n {
   /// **'API 根地址'**
   String get mediaSettingsBaseUrl;
 
-  /// No description provided for @mediaSettingsBaseUrlInvalid.
-  ///
-  /// In zh, this message translates to:
-  /// **'地址要以 https:// 开头'**
-  String get mediaSettingsBaseUrlInvalid;
-
   /// No description provided for @mediaSettingsProvider.
   ///
   /// In zh, this message translates to:
@@ -20894,12 +19076,6 @@ abstract class L10n {
   /// **'效果跟随性能模式'**
   String get performanceFollowMode;
 
-  /// No description provided for @performanceRemoteHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'推荐连接电脑或服务器，减少本机负担'**
-  String get performanceRemoteHint;
-
   /// No description provided for @performanceRefresh.
   ///
   /// In zh, this message translates to:
@@ -21062,83 +19238,11 @@ abstract class L10n {
   /// **'导出诊断包'**
   String get phoneDiagnosticsExport;
 
-  /// No description provided for @phoneSafeMode.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式'**
-  String get phoneSafeMode;
-
-  /// No description provided for @phoneEngineStartingSafeEllipsis.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在以安全模式启动…'**
-  String get phoneEngineStartingSafeEllipsis;
-
-  /// No description provided for @phoneEngineStartingEllipsis.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在启动…'**
-  String get phoneEngineStartingEllipsis;
-
   /// No description provided for @phoneEngineTidyingFilesEllipsis.
   ///
   /// In zh, this message translates to:
   /// **'正在整理插件文件…'**
   String get phoneEngineTidyingFilesEllipsis;
-
-  /// No description provided for @phoneEngineStoppingEllipsis.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在停止…'**
-  String get phoneEngineStoppingEllipsis;
-
-  /// No description provided for @phoneEngineStoppedNextSafe.
-  ///
-  /// In zh, this message translates to:
-  /// **'已停止 · 下次以安全模式启动'**
-  String get phoneEngineStoppedNextSafe;
-
-  /// No description provided for @phoneEngineInstallingRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在安装运行环境…'**
-  String get phoneEngineInstallingRuntime;
-
-  /// No description provided for @phoneEngineRuntimeNotInstalled.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境未安装'**
-  String get phoneEngineRuntimeNotInstalled;
-
-  /// No description provided for @phoneEngineErrorSeeLogs.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎出错了，日志里有详情'**
-  String get phoneEngineErrorSeeLogs;
-
-  /// No description provided for @phoneEngineTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎'**
-  String get phoneEngineTitle;
-
-  /// No description provided for @phoneEngineLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机引擎'**
-  String get phoneEngineLocal;
-
-  /// No description provided for @phoneEngineLogs.
-  ///
-  /// In zh, this message translates to:
-  /// **'日志'**
-  String get phoneEngineLogs;
-
-  /// No description provided for @phoneEngineAutoStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'打开 App 时自动启动'**
-  String get phoneEngineAutoStart;
 
   /// No description provided for @phoneEngineKeepAlive.
   ///
@@ -21146,215 +19250,11 @@ abstract class L10n {
   /// **'后台运行'**
   String get phoneEngineKeepAlive;
 
-  /// No description provided for @phoneEngineKeepAliveHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'防止引擎被系统结束'**
-  String get phoneEngineKeepAliveHint;
-
   /// No description provided for @phoneEngineDiagnostics.
   ///
   /// In zh, this message translates to:
   /// **'诊断'**
   String get phoneEngineDiagnostics;
-
-  /// No description provided for @phoneEngineDiagnosticsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行信息与问题反馈'**
-  String get phoneEngineDiagnosticsHint;
-
-  /// No description provided for @phoneEngineRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境'**
-  String get phoneEngineRuntime;
-
-  /// No description provided for @phoneEngineArchitecture.
-  ///
-  /// In zh, this message translates to:
-  /// **'架构'**
-  String get phoneEngineArchitecture;
-
-  /// No description provided for @phoneEngineStopTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'停止引擎？'**
-  String get phoneEngineStopTitle;
-
-  /// No description provided for @phoneEngineStopBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'进行中的对话会中断，随时可以再启动。'**
-  String get phoneEngineStopBody;
-
-  /// No description provided for @phoneEngineInstallRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装运行环境'**
-  String get phoneEngineInstallRuntime;
-
-  /// No description provided for @phoneEngineStartAgain.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新启动'**
-  String get phoneEngineStartAgain;
-
-  /// No description provided for @phoneEngineStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动'**
-  String get phoneEngineStart;
-
-  /// No description provided for @phoneEngineRestart.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启'**
-  String get phoneEngineRestart;
-
-  /// No description provided for @phoneEngineResetFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能重置'**
-  String get phoneEngineResetFailed;
-
-  /// No description provided for @phoneEngineReset.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置运行环境'**
-  String get phoneEngineReset;
-
-  /// No description provided for @phoneEngineResetHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除对话和文件后重新解压'**
-  String get phoneEngineResetHint;
-
-  /// No description provided for @phoneEngineResetTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置运行环境？'**
-  String get phoneEngineResetTitle;
-
-  /// No description provided for @phoneResetAlsoDeletes.
-  ///
-  /// In zh, this message translates to:
-  /// **'家目录（/root）里没有保留的内容也会一起删除，包括工作区里的文件、AGENTS.md，以及插件自己存的数据（比如记忆）。'**
-  String get phoneResetAlsoDeletes;
-
-  /// No description provided for @phoneEngineKeepUiSkills.
-  ///
-  /// In zh, this message translates to:
-  /// **'保留界面配置和技能'**
-  String get phoneEngineKeepUiSkills;
-
-  /// No description provided for @phoneEngineKeepPluginsSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'保留已装插件和设置'**
-  String get phoneEngineKeepPluginsSettings;
-
-  /// No description provided for @phoneEngineDeleteReset.
-  ///
-  /// In zh, this message translates to:
-  /// **'删除并重置'**
-  String get phoneEngineDeleteReset;
-
-  /// No description provided for @phoneEngineNotInstalled.
-  ///
-  /// In zh, this message translates to:
-  /// **'未安装'**
-  String get phoneEngineNotInstalled;
-
-  /// No description provided for @phoneEngineInstalling.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在安装'**
-  String get phoneEngineInstalling;
-
-  /// No description provided for @phoneEngineStoppedSafe.
-  ///
-  /// In zh, this message translates to:
-  /// **'已停止 · 安全模式'**
-  String get phoneEngineStoppedSafe;
-
-  /// No description provided for @phoneEngineStartingSafe.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在以安全模式启动'**
-  String get phoneEngineStartingSafe;
-
-  /// No description provided for @phoneEngineStarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在启动'**
-  String get phoneEngineStarting;
-
-  /// No description provided for @phoneEngineTidyingFiles.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在整理插件文件'**
-  String get phoneEngineTidyingFiles;
-
-  /// No description provided for @phoneEngineRunningProbation.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行中 · 试用'**
-  String get phoneEngineRunningProbation;
-
-  /// No description provided for @phoneEngineStartupFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动失败'**
-  String get phoneEngineStartupFailed;
-
-  /// No description provided for @phoneEngineCrashed.
-  ///
-  /// In zh, this message translates to:
-  /// **'已崩溃'**
-  String get phoneEngineCrashed;
-
-  /// No description provided for @phoneEngineKilled.
-  ///
-  /// In zh, this message translates to:
-  /// **'被系统结束'**
-  String get phoneEngineKilled;
-
-  /// No description provided for @phoneEngineError.
-  ///
-  /// In zh, this message translates to:
-  /// **'出错了'**
-  String get phoneEngineError;
-
-  /// No description provided for @phoneEngineRuntimeCorrupt.
-  ///
-  /// In zh, this message translates to:
-  /// **'App 内的运行环境包已损坏，请重新安装 App'**
-  String get phoneEngineRuntimeCorrupt;
-
-  /// No description provided for @phoneEngineExited.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎意外退出了'**
-  String get phoneEngineExited;
-
-  /// No description provided for @phoneEngineRuntimeMissing.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境还没有安装'**
-  String get phoneEngineRuntimeMissing;
-
-  /// No description provided for @phoneEngineSafeUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个版本的运行环境不支持安全模式，请更新 App'**
-  String get phoneEngineSafeUnsupported;
-
-  /// No description provided for @phoneEngineRuntimeIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'App 内的运行环境包不完整，请重新安装 App'**
-  String get phoneEngineRuntimeIncomplete;
 
   /// No description provided for @phoneLogEmpty.
   ///
@@ -21373,12 +19273,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'复制全部'**
   String get phoneLogCopyAll;
-
-  /// No description provided for @phoneBackgroundAllow.
-  ///
-  /// In zh, this message translates to:
-  /// **'去放行'**
-  String get phoneBackgroundAllow;
 
   /// No description provided for @phoneToolScreen.
   ///
@@ -21818,12 +19712,6 @@ abstract class L10n {
   /// **'自连 ADB'**
   String get phoneDndDirectAdb;
 
-  /// No description provided for @phoneDndChannels.
-  ///
-  /// In zh, this message translates to:
-  /// **'连接方式'**
-  String get phoneDndChannels;
-
   /// No description provided for @phoneDndShizukuFor.
   ///
   /// In zh, this message translates to:
@@ -21926,12 +19814,6 @@ abstract class L10n {
   /// **'没有检测到 Sui。在 Magisk 或 KernelSU 里装好 Sui 模块并重启手机，再回到这里。'**
   String get phoneDndSuiMissing;
 
-  /// No description provided for @phoneDndSuiRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'Sui 接口可用'**
-  String get phoneDndSuiRunning;
-
   /// No description provided for @phoneDndSuiStopped.
   ///
   /// In zh, this message translates to:
@@ -22010,35 +19892,11 @@ abstract class L10n {
   /// **'Shizuku 已启动并授权，接下来连接后台屏。'**
   String get phoneDndShizukuAllSet;
 
-  /// No description provided for @phoneDndShizukuInstalled.
-  ///
-  /// In zh, this message translates to:
-  /// **'已安装 Shizuku'**
-  String get phoneDndShizukuInstalled;
-
-  /// No description provided for @phoneDndShizukuRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'Shizuku 正在运行'**
-  String get phoneDndShizukuRunning;
-
-  /// No description provided for @phoneDndShizukuGranted.
-  ///
-  /// In zh, this message translates to:
-  /// **'已授权给 DSH Pocket'**
-  String get phoneDndShizukuGranted;
-
   /// No description provided for @phoneDndShizukuCompatibility.
   ///
   /// In zh, this message translates to:
   /// **'这版 Android 与官方版 Shizuku 存在兼容问题。'**
   String get phoneDndShizukuCompatibility;
-
-  /// No description provided for @phoneDndWirelessDebuggingOn.
-  ///
-  /// In zh, this message translates to:
-  /// **'无线调试已打开'**
-  String get phoneDndWirelessDebuggingOn;
 
   /// No description provided for @phoneDndPaired.
   ///
@@ -22340,24 +20198,6 @@ abstract class L10n {
   /// **'未开启'**
   String get phoneControlNotEnabled;
 
-  /// No description provided for @phoneControlSafeModeNotLoaded.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式下不加载'**
-  String get phoneControlSafeModeNotLoaded;
-
-  /// No description provided for @phoneControlLocalOnly.
-  ///
-  /// In zh, this message translates to:
-  /// **'只在本机引擎可用'**
-  String get phoneControlLocalOnly;
-
-  /// No description provided for @phoneControlAfterEngineStarts.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎启动后生效'**
-  String get phoneControlAfterEngineStarts;
-
   /// No description provided for @phoneControlNeedsAccessibility.
   ///
   /// In zh, this message translates to:
@@ -22513,24 +20353,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'这个版本里，手机操控模块还没有就绪'**
   String get phoneControlModuleNotReady;
-
-  /// No description provided for @phoneControlSafeModeUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式下不可用'**
-  String get phoneControlSafeModeUnavailable;
-
-  /// No description provided for @phoneControlSafeModeHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式不加载插件，恢复正常模式后可用'**
-  String get phoneControlSafeModeHint;
-
-  /// No description provided for @phoneControlRemoteHost.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前连的是远程主机'**
-  String get phoneControlRemoteHost;
 
   /// No description provided for @phoneControlCapabilities.
   ///
@@ -22934,342 +20756,6 @@ abstract class L10n {
   /// **'模型看到的就是这些文字，这次读取没有发给模型'**
   String get phoneScreenReadNote;
 
-  /// No description provided for @phoneFailureSafeStartup.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式也没能启动'**
-  String get phoneFailureSafeStartup;
-
-  /// No description provided for @phoneFailureSafeStartupHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'问题多半在全局配置或运行环境'**
-  String get phoneFailureSafeStartupHint;
-
-  /// No description provided for @phoneFailureKilled.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎被系统结束了'**
-  String get phoneFailureKilled;
-
-  /// No description provided for @phoneFailureKilledHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'多半是内存不足或系统省电'**
-  String get phoneFailureKilledHint;
-
-  /// No description provided for @phoneFailureLaunch.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机运行环境未能启动'**
-  String get phoneFailureLaunch;
-
-  /// No description provided for @phoneFailureLaunchHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看日志了解原因，或连接远程主机继续使用'**
-  String get phoneFailureLaunchHint;
-
-  /// No description provided for @phoneFailureTawcHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'PRoot 无法执行本机引擎。可以尝试用 tawcroot 启动，继续使用已有的运行环境和数据。'**
-  String get phoneFailureTawcHint;
-
-  /// No description provided for @phoneFailureRetryWithTawcroot.
-  ///
-  /// In zh, this message translates to:
-  /// **'用 tawcroot 启动'**
-  String get phoneFailureRetryWithTawcroot;
-
-  /// No description provided for @phoneFailureNoSpaceHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'清理一些空间后重试'**
-  String get phoneFailureNoSpaceHint;
-
-  /// No description provided for @phoneFailureStartup.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 启动失败'**
-  String get phoneFailureStartup;
-
-  /// No description provided for @phoneFailureCrashedEarly.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 启动后很快崩溃了'**
-  String get phoneFailureCrashedEarly;
-
-  /// No description provided for @phoneFailureCrashedLate.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 运行中崩溃了'**
-  String get phoneFailureCrashedLate;
-
-  /// No description provided for @phoneFailureFatal.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎报告了致命错误'**
-  String get phoneFailureFatal;
-
-  /// No description provided for @phoneFailureRestore.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复配置'**
-  String get phoneFailureRestore;
-
-  /// No description provided for @phoneFailureEnterSafe.
-  ///
-  /// In zh, this message translates to:
-  /// **'进入安全模式'**
-  String get phoneFailureEnterSafe;
-
-  /// No description provided for @phoneFailureStartNormal.
-  ///
-  /// In zh, this message translates to:
-  /// **'正常启动'**
-  String get phoneFailureStartNormal;
-
-  /// No description provided for @phoneFailureGlobalPatch.
-  ///
-  /// In zh, this message translates to:
-  /// **'全局补丁'**
-  String get phoneFailureGlobalPatch;
-
-  /// No description provided for @phoneFailureEnvironment.
-  ///
-  /// In zh, this message translates to:
-  /// **'环境变量'**
-  String get phoneFailureEnvironment;
-
-  /// No description provided for @phoneSafeMoveAsideTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'先移开这些文件？'**
-  String get phoneSafeMoveAsideTitle;
-
-  /// No description provided for @phoneSafeMoveAsideIntro.
-  ///
-  /// In zh, this message translates to:
-  /// **'它们对所有配置都生效，安全模式也会受影响：'**
-  String get phoneSafeMoveAsideIntro;
-
-  /// No description provided for @phoneSafeMoveAsideNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'只是改名（加上 .off-时间），不会删除，修好后可以改回来。'**
-  String get phoneSafeMoveAsideNote;
-
-  /// No description provided for @phoneSafeStartDirectly.
-  ///
-  /// In zh, this message translates to:
-  /// **'直接启动'**
-  String get phoneSafeStartDirectly;
-
-  /// No description provided for @phoneSafeMoveAsideStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'移开并启动'**
-  String get phoneSafeMoveAsideStart;
-
-  /// No description provided for @phoneSafeNoRestoreNeeded.
-  ///
-  /// In zh, this message translates to:
-  /// **'配置和上次正常时一样，无需恢复'**
-  String get phoneSafeNoRestoreNeeded;
-
-  /// No description provided for @phoneSafeNoRestoreRecord.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有正常运行过的配置记录'**
-  String get phoneSafeNoRestoreRecord;
-
-  /// No description provided for @phoneSafeRestoreTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复上次正常的配置？'**
-  String get phoneSafeRestoreTitle;
-
-  /// No description provided for @phoneSafeRestoreStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复并启动'**
-  String get phoneSafeRestoreStart;
-
-  /// No description provided for @phoneSafeRestoredStarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'已恢复上次正常的配置，正在启动…'**
-  String get phoneSafeRestoredStarting;
-
-  /// No description provided for @phoneSafeRestoreFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能恢复'**
-  String get phoneSafeRestoreFailed;
-
-  /// No description provided for @phoneSafeStopIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'还无法确认引擎已停止，未更改配置。请查看引擎日志后重试。'**
-  String get phoneSafeStopIncomplete;
-
-  /// No description provided for @phoneSafeRestartIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'配置操作已完成，但引擎还未停止，暂未重启。请等待停止完成后再启动。'**
-  String get phoneSafeRestartIncomplete;
-
-  /// No description provided for @phoneSafeRestoreIntro.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 会回到上次正常运行时的配置：'**
-  String get phoneSafeRestoreIntro;
-
-  /// No description provided for @phoneSafeRestoreSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'• 设置恢复到当时的版本（现在的另存为备份）'**
-  String get phoneSafeRestoreSettings;
-
-  /// No description provided for @phoneSafeRestoreNote.
-  ///
-  /// In zh, this message translates to:
-  /// **'不会卸载任何插件，也不需要联网。停用的插件以后可以重新打开。'**
-  String get phoneSafeRestoreNote;
-
-  /// No description provided for @phoneSafeLeaveTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复正常模式？'**
-  String get phoneSafeLeaveTitle;
-
-  /// No description provided for @phoneSafeLeaveBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'用原来的配置和插件启动。安全模式期间改的网页版设置不会保留。'**
-  String get phoneSafeLeaveBody;
-
-  /// No description provided for @phoneSafeLeave.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复正常模式'**
-  String get phoneSafeLeave;
-
-  /// No description provided for @phoneSafeMovePatch.
-  ///
-  /// In zh, this message translates to:
-  /// **'移开补丁'**
-  String get phoneSafeMovePatch;
-
-  /// No description provided for @phoneSafeMoveFiles.
-  ///
-  /// In zh, this message translates to:
-  /// **'移开文件'**
-  String get phoneSafeMoveFiles;
-
-  /// No description provided for @phoneSafeFailureLog.
-  ///
-  /// In zh, this message translates to:
-  /// **'失败前后的日志'**
-  String get phoneSafeFailureLog;
-
-  /// No description provided for @phoneSafeFailureLogEmpty.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有记录到失败时的输出'**
-  String get phoneSafeFailureLogEmpty;
-
-  /// No description provided for @phoneSafeBannerTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式 · 插件没有加载'**
-  String get phoneSafeBannerTitle;
-
-  /// No description provided for @phoneSafeBannerProbation.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在试用正常模式'**
-  String get phoneSafeBannerProbation;
-
-  /// No description provided for @phoneSafeBannerProbationHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'2 分钟内不再出错就算恢复，否则自动回到安全模式'**
-  String get phoneSafeBannerProbationHint;
-
-  /// No description provided for @phoneSafeBannerRunningHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话都在，修好配置后恢复正常模式'**
-  String get phoneSafeBannerRunningHint;
-
-  /// No description provided for @phoneSafeBannerFailedHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式也没能启动，去引擎页查看'**
-  String get phoneSafeBannerFailedHint;
-
-  /// No description provided for @phoneSafeBannerStoppedHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎已停止，下次启动仍是安全模式'**
-  String get phoneSafeBannerStoppedHint;
-
-  /// No description provided for @phoneSafeRepair.
-  ///
-  /// In zh, this message translates to:
-  /// **'帮我修复'**
-  String get phoneSafeRepair;
-
-  /// No description provided for @phoneSafeReasonStartup.
-  ///
-  /// In zh, this message translates to:
-  /// **'连续两次启动失败'**
-  String get phoneSafeReasonStartup;
-
-  /// No description provided for @phoneSafeReasonProbation.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复正常后又崩溃了'**
-  String get phoneSafeReasonProbation;
-
-  /// No description provided for @phoneSafeReasonManual.
-  ///
-  /// In zh, this message translates to:
-  /// **'手动开启'**
-  String get phoneSafeReasonManual;
-
-  /// No description provided for @phoneSafeNormalSettingsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'用原有配置和插件重启'**
-  String get phoneSafeNormalSettingsHint;
-
-  /// No description provided for @phoneSafeStartSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'以安全模式启动'**
-  String get phoneSafeStartSettings;
-
-  /// No description provided for @phoneSafeStartSettingsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'不加载插件，排查启动问题'**
-  String get phoneSafeStartSettingsHint;
-
-  /// No description provided for @phoneSafeAutoSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'自动进入安全模式'**
-  String get phoneSafeAutoSettings;
-
-  /// No description provided for @phoneSafeAutoSettingsHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'连续启动失败时自动启用'**
-  String get phoneSafeAutoSettingsHint;
-
   /// No description provided for @phoneAccentMist.
   ///
   /// In zh, this message translates to:
@@ -23311,18 +20797,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'自定义'**
   String get phoneAccentCustom;
-
-  /// No description provided for @phoneEngineInstallPercent.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在安装 · {percent}%'**
-  String phoneEngineInstallPercent(int percent);
-
-  /// No description provided for @phoneEngineStatusSemantics.
-  ///
-  /// In zh, this message translates to:
-  /// **'{prefix}引擎：{status}'**
-  String phoneEngineStatusSemantics(String prefix, String status);
 
   /// No description provided for @phoneLogLineCount.
   ///
@@ -23402,12 +20876,6 @@ abstract class L10n {
   /// **'{denied} 个不碰 · {confirmed} 个每步确认'**
   String phoneControlPolicySummary(int denied, int confirmed);
 
-  /// No description provided for @phoneControlRemoteHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'「{host}」上的 DSH 操作不了这台手机，切回「本机」后可用'**
-  String phoneControlRemoteHint(String host);
-
   /// No description provided for @phoneRestrictedSubtitle.
   ///
   /// In zh, this message translates to:
@@ -23420,78 +20888,6 @@ abstract class L10n {
   /// **'{place}已开好，可以返回了'**
   String phoneRestrictedDone(String place);
 
-  /// No description provided for @phoneFailurePlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'可能和插件「{plugins}」有关'**
-  String phoneFailurePlugins(String plugins);
-
-  /// No description provided for @phoneFailureRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'必需组件 {components} 没通过启动检查'**
-  String phoneFailureRequired(String components);
-
-  /// No description provided for @phoneSafeRestoreAt.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH 会回到 {when} 正常运行时的配置：'**
-  String phoneSafeRestoreAt(String when);
-
-  /// No description provided for @phoneSafeRestoreDisable.
-  ///
-  /// In zh, this message translates to:
-  /// **'• 停用：{plugins}'**
-  String phoneSafeRestoreDisable(String plugins);
-
-  /// No description provided for @phoneSafeRestoreChanged.
-  ///
-  /// In zh, this message translates to:
-  /// **'  （{plugins} 之后升级过，只能先停用）'**
-  String phoneSafeRestoreChanged(String plugins);
-
-  /// No description provided for @phoneSafeRestoreEnable.
-  ///
-  /// In zh, this message translates to:
-  /// **'• 重新启用：{plugins}'**
-  String phoneSafeRestoreEnable(String plugins);
-
-  /// No description provided for @phoneSafeTodayTime.
-  ///
-  /// In zh, this message translates to:
-  /// **'今天 {time}'**
-  String phoneSafeTodayTime(String time);
-
-  /// No description provided for @phoneSafeReasonPlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'连续两次启动失败，可疑插件：{plugins}'**
-  String phoneSafeReasonPlugins(String plugins);
-
-  /// No description provided for @phoneListSeparator.
-  ///
-  /// In zh, this message translates to:
-  /// **'、'**
-  String get phoneListSeparator;
-
-  /// No description provided for @phonePluginQuoteSeparator.
-  ///
-  /// In zh, this message translates to:
-  /// **'」「'**
-  String get phonePluginQuoteSeparator;
-
-  /// No description provided for @phoneEngineRunningAt.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行中 · {address}'**
-  String phoneEngineRunningAt(String address);
-
-  /// No description provided for @phoneEngineSafeAt.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式 · {address}'**
-  String phoneEngineSafeAt(String address);
-
   /// No description provided for @phoneAppRulesLoosenBody.
   ///
   /// In zh, this message translates to:
@@ -23503,78 +20899,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'微信这类 App 有风控，曾有手机助手操作后账号被强制下线。改成照常后，只有发消息这类操作还会先问你。'**
   String get phoneAppRulesSkipStepsBody;
-
-  /// No description provided for @phoneResetDeletesChatsWorkspaces.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话和工作区'**
-  String get phoneResetDeletesChatsWorkspaces;
-
-  /// No description provided for @phoneResetBodyChatsWorkspaces.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除对话和工作区，然后重新安装运行环境。'**
-  String get phoneResetBodyChatsWorkspaces;
-
-  /// No description provided for @phoneResetDeletesWithPlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话、工作区、插件和设置'**
-  String get phoneResetDeletesWithPlugins;
-
-  /// No description provided for @phoneResetBodyWithPlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除对话、工作区、插件和设置，然后重新安装运行环境。'**
-  String get phoneResetBodyWithPlugins;
-
-  /// No description provided for @phoneResetDeletesWithUi.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话、工作区、界面配置和技能'**
-  String get phoneResetDeletesWithUi;
-
-  /// No description provided for @phoneResetBodyWithUi.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除对话、工作区、界面配置和技能，然后重新安装运行环境。'**
-  String get phoneResetBodyWithUi;
-
-  /// No description provided for @phoneResetDeletesEverything.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话、工作区、插件、设置、界面配置和技能'**
-  String get phoneResetDeletesEverything;
-
-  /// No description provided for @phoneResetBodyEverything.
-  ///
-  /// In zh, this message translates to:
-  /// **'会删除对话、工作区、插件、设置、界面配置和技能，然后重新安装运行环境。'**
-  String get phoneResetBodyEverything;
-
-  /// No description provided for @phoneEngineStorageDetails.
-  ///
-  /// In zh, this message translates to:
-  /// **'存储空间不足：需要约 {needed} MB，当前可用 {free} MB'**
-  String phoneEngineStorageDetails(String needed, String free);
-
-  /// No description provided for @phoneControlEnabledRestarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'已开启，引擎正在重启'**
-  String get phoneControlEnabledRestarting;
-
-  /// No description provided for @phoneControlDisabledRestarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'已关闭，引擎正在重启'**
-  String get phoneControlDisabledRestarting;
-
-  /// No description provided for @phoneControlEnabledPending.
-  ///
-  /// In zh, this message translates to:
-  /// **'已开启，引擎启动后生效'**
-  String get phoneControlEnabledPending;
 
   /// No description provided for @phoneReturnAfterDone.
   ///
@@ -23611,186 +20935,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'收成小球，点按展开'**
   String get phoneAutoCollapseHint;
-
-  /// No description provided for @phoneDeveloperOptions.
-  ///
-  /// In zh, this message translates to:
-  /// **'开发者选项'**
-  String get phoneDeveloperOptions;
-
-  /// No description provided for @phoneDirectEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'直接启动本机引擎'**
-  String get phoneDirectEngine;
-
-  /// No description provided for @phoneDirectHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'实验功能，默认关闭，下次启动生效。部分手机（例如 Android 16）会拦截直接启动，届时自动改用兼容启动，数据不受影响。'**
-  String get phoneDirectHint;
-
-  /// No description provided for @phoneDirectFailedHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机上直接启动没有成功，已改用兼容启动。停止引擎后打开可再试一次。'**
-  String get phoneDirectFailedHint;
-
-  /// No description provided for @phoneDirectCompatibleHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'这次用了兼容启动，原因见上方。已保留此选项，下次启动会再试。'**
-  String get phoneDirectCompatibleHint;
-
-  /// No description provided for @phoneDirectStopFirst.
-  ///
-  /// In zh, this message translates to:
-  /// **'请先停止本机引擎，再切换启动方式。'**
-  String get phoneDirectStopFirst;
-
-  /// No description provided for @phoneDirectSafeHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式使用兼容启动；恢复正常模式后应用此选项。'**
-  String get phoneDirectSafeHint;
-
-  /// No description provided for @phoneDirectNeedsRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'此选项需要支持直接启动的运行环境。'**
-  String get phoneDirectNeedsRuntime;
-
-  /// No description provided for @phoneDirectChangeFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'未能切换启动方式，请停止本机引擎后重试。'**
-  String get phoneDirectChangeFailed;
-
-  /// No description provided for @phoneTawcEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'tawcroot 加速启动'**
-  String get phoneTawcEngine;
-
-  /// No description provided for @phoneTawcHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'默认开启，改动下次启动生效，和「直接启动」二选一。用 tawcroot 代替兼容启动运行本机引擎：启动快约三倍，装包、apt 也更快。启动不成功会自动改回兼容启动。关掉后的第一次启动会先把它留下的硬链接整理成普通文件，可能要多等一会。'**
-  String get phoneTawcHint;
-
-  /// No description provided for @phoneTawcFailedHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机上 tawcroot 没有启动成功，已改用兼容启动。停止引擎后打开可再试一次。'**
-  String get phoneTawcFailedHint;
-
-  /// No description provided for @phoneTawcUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个安装包不含 tawcroot，或系统低于 Android 10。'**
-  String get phoneTawcUnavailable;
-
-  /// No description provided for @phoneLaunchTawcroot.
-  ///
-  /// In zh, this message translates to:
-  /// **'tawcroot'**
-  String get phoneLaunchTawcroot;
-
-  /// No description provided for @phoneTawcLaunchFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'tawcroot 未启动成功'**
-  String get phoneTawcLaunchFailed;
-
-  /// No description provided for @phoneTawcUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'这次的启动参数 tawcroot 还不支持，暂用兼容启动'**
-  String get phoneTawcUnsupported;
-
-  /// No description provided for @phoneActualLaunchMode.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前运行方式'**
-  String get phoneActualLaunchMode;
-
-  /// No description provided for @phoneLaunchNotObserved.
-  ///
-  /// In zh, this message translates to:
-  /// **'未运行'**
-  String get phoneLaunchNotObserved;
-
-  /// No description provided for @phoneLastLaunchSelection.
-  ///
-  /// In zh, this message translates to:
-  /// **'上次启动方式'**
-  String get phoneLastLaunchSelection;
-
-  /// No description provided for @phoneDirectRejectedReason.
-  ///
-  /// In zh, this message translates to:
-  /// **'兼容启动原因'**
-  String get phoneDirectRejectedReason;
-
-  /// No description provided for @phoneLaunchFailureReason.
-  ///
-  /// In zh, this message translates to:
-  /// **'上次启动失败'**
-  String get phoneLaunchFailureReason;
-
-  /// No description provided for @phoneReturnCompatible.
-  ///
-  /// In zh, this message translates to:
-  /// **'切回兼容启动'**
-  String get phoneReturnCompatible;
-
-  /// No description provided for @phoneLaunchDirect.
-  ///
-  /// In zh, this message translates to:
-  /// **'直接启动'**
-  String get phoneLaunchDirect;
-
-  /// No description provided for @phoneLaunchCompatible.
-  ///
-  /// In zh, this message translates to:
-  /// **'兼容启动'**
-  String get phoneLaunchCompatible;
-
-  /// No description provided for @phoneDirectIncompatibleFiles.
-  ///
-  /// In zh, this message translates to:
-  /// **'插件文件待整理，暂用兼容启动'**
-  String get phoneDirectIncompatibleFiles;
-
-  /// No description provided for @phoneDirectNotEnoughSpace.
-  ///
-  /// In zh, this message translates to:
-  /// **'空间不足，暂用兼容启动'**
-  String get phoneDirectNotEnoughSpace;
-
-  /// No description provided for @phoneDirectMigrationFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'文件整理未完成，暂用兼容启动'**
-  String get phoneDirectMigrationFailed;
-
-  /// No description provided for @phoneDirectLaunchFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'直接启动未成功'**
-  String get phoneDirectLaunchFailed;
-
-  /// No description provided for @phoneLaunchStartFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'未能完成启动'**
-  String get phoneLaunchStartFailed;
-
-  /// No description provided for @phoneLaunchExited.
-  ///
-  /// In zh, this message translates to:
-  /// **'退出码 {code}'**
-  String phoneLaunchExited(String code);
 
   /// No description provided for @phoneDndManualConnect.
   ///
@@ -24356,12 +21500,6 @@ abstract class L10n {
   /// **'后台确认与返回'**
   String get phoneBackgroundGuideTitle;
 
-  /// No description provided for @phoneBackgroundGuideSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'让确认卡和任务结果及时出现'**
-  String get phoneBackgroundGuideSubtitle;
-
   /// No description provided for @phoneBackgroundGuideBody.
   ///
   /// In zh, this message translates to:
@@ -24457,12 +21595,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'先授权 Sui，再授予权限'**
   String get phonePrivilegedGrantSuiPermission;
-
-  /// No description provided for @phonePrivilegedSuggested.
-  ///
-  /// In zh, this message translates to:
-  /// **'建议'**
-  String get phonePrivilegedSuggested;
 
   /// No description provided for @phonePrivilegedRootRiskTitle.
   ///
@@ -25586,54 +22718,6 @@ abstract class L10n {
   /// **'主机已切换，未执行'**
   String get pluginsOperationHostChanged;
 
-  /// No description provided for @pluginsReloadLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启内核以重载'**
-  String get pluginsReloadLocal;
-
-  /// No description provided for @pluginsReloadInterrupts.
-  ///
-  /// In zh, this message translates to:
-  /// **'会中断正在运行的任务'**
-  String get pluginsReloadInterrupts;
-
-  /// No description provided for @pluginsReloadConfirm.
-  ///
-  /// In zh, this message translates to:
-  /// **'重载「{name}」？'**
-  String pluginsReloadConfirm(String name);
-
-  /// No description provided for @pluginsReloadExplanation.
-  ///
-  /// In zh, this message translates to:
-  /// **'将重启本机内核，重新加载插件。正在运行的任务会中断。'**
-  String get pluginsReloadExplanation;
-
-  /// No description provided for @pluginsReloadProceed.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启并重载'**
-  String get pluginsReloadProceed;
-
-  /// No description provided for @pluginsReloadRequested.
-  ///
-  /// In zh, this message translates to:
-  /// **'已请求重启内核'**
-  String get pluginsReloadRequested;
-
-  /// No description provided for @pluginsReloadChanged.
-  ///
-  /// In zh, this message translates to:
-  /// **'主机或插件状态已变化，请重试'**
-  String get pluginsReloadChanged;
-
-  /// No description provided for @pluginsReloadFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'未能重启内核，请查看引擎日志'**
-  String get pluginsReloadFailed;
-
   /// No description provided for @pluginsFile.
   ///
   /// In zh, this message translates to:
@@ -25820,12 +22904,6 @@ abstract class L10n {
   /// **'含预设「{names}」'**
   String pluginsIncludesPresets(String names);
 
-  /// No description provided for @pluginsSecretsUnshareable.
-  ///
-  /// In zh, this message translates to:
-  /// **'含有密钥，无法分享'**
-  String get pluginsSecretsUnshareable;
-
   /// No description provided for @pluginsLineCount.
   ///
   /// In zh, this message translates to:
@@ -25916,24 +22994,6 @@ abstract class L10n {
   /// **'只能导入到本机'**
   String get pluginsImportLocalOnly;
 
-  /// No description provided for @pluginsReplaceSkill.
-  ///
-  /// In zh, this message translates to:
-  /// **'替换同名技能'**
-  String get pluginsReplaceSkill;
-
-  /// No description provided for @pluginsReplaceContent.
-  ///
-  /// In zh, this message translates to:
-  /// **'替换现有内容'**
-  String get pluginsReplaceContent;
-
-  /// No description provided for @pluginsSafeModeInstallBlocked.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式下不能安装插件'**
-  String get pluginsSafeModeInstallBlocked;
-
   /// No description provided for @pluginsHostInstallBlocked.
   ///
   /// In zh, this message translates to:
@@ -25969,12 +23029,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能连上主机'**
   String get pluginsHostUnreachable;
-
-  /// No description provided for @pluginsFileWriteFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能写入文件'**
-  String get pluginsFileWriteFailed;
 
   /// No description provided for @pluginsProfileTitle.
   ///
@@ -26198,24 +23252,6 @@ abstract class L10n {
   /// **'「{name}」{reason}'**
   String pluginsInstallFailureNamed(String name, String reason);
 
-  /// No description provided for @pluginsRestartRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'需要重启引擎'**
-  String get pluginsRestartRequired;
-
-  /// No description provided for @pluginsRestartExplanation.
-  ///
-  /// In zh, this message translates to:
-  /// **'「{name}」重启引擎后生效，进行中的回复会中断。'**
-  String pluginsRestartExplanation(String name);
-
-  /// No description provided for @pluginsRestartEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启引擎'**
-  String get pluginsRestartEngine;
-
   /// No description provided for @pluginsAllowBuildScripts.
   ///
   /// In zh, this message translates to:
@@ -26281,12 +23317,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'已卸载「{title}」'**
   String pluginsUninstalledNamed(String title);
-
-  /// No description provided for @pluginsRestartNow.
-  ///
-  /// In zh, this message translates to:
-  /// **'立即重启'**
-  String get pluginsRestartNow;
 
   /// No description provided for @pluginsUninstallFailed.
   ///
@@ -26570,12 +23600,6 @@ abstract class L10n {
   /// **'{host} · 经中转只能开关，安装请在那台电脑上进行'**
   String pluginsRelayToggleOnly(String host);
 
-  /// No description provided for @pluginsInstallThisPhone.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装到：本机'**
-  String get pluginsInstallThisPhone;
-
   /// No description provided for @pluginsInstallHost.
   ///
   /// In zh, this message translates to:
@@ -26606,12 +23630,6 @@ abstract class L10n {
   /// **'主题'**
   String get pluginsTheme;
 
-  /// No description provided for @pluginsAppearance.
-  ///
-  /// In zh, this message translates to:
-  /// **'外观'**
-  String get pluginsAppearance;
-
   /// No description provided for @pluginsColors.
   ///
   /// In zh, this message translates to:
@@ -26629,12 +23647,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'桌面图标'**
   String get pluginsAppIcon;
-
-  /// No description provided for @pluginsPet.
-  ///
-  /// In zh, this message translates to:
-  /// **'宠物'**
-  String get pluginsPet;
 
   /// No description provided for @pluginsCustomColor.
   ///
@@ -26900,47 +23912,11 @@ abstract class L10n {
   /// **'反馈问题时附上，不含 Key 和令牌'**
   String get pluginsDiagnosticsDescription;
 
-  /// No description provided for @pluginsRuntime.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境'**
-  String get pluginsRuntime;
-
-  /// No description provided for @pluginsArchitecture.
-  ///
-  /// In zh, this message translates to:
-  /// **'架构'**
-  String get pluginsArchitecture;
-
-  /// No description provided for @pluginsBundledVersion.
-  ///
-  /// In zh, this message translates to:
-  /// **'内置版本'**
-  String get pluginsBundledVersion;
-
-  /// No description provided for @pluginsInstalledVersion.
-  ///
-  /// In zh, this message translates to:
-  /// **'已安装版本'**
-  String get pluginsInstalledVersion;
-
-  /// No description provided for @pluginsErrorLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'错误'**
-  String get pluginsErrorLabel;
-
   /// No description provided for @pluginsConnection.
   ///
   /// In zh, this message translates to:
   /// **'连接'**
   String get pluginsConnection;
-
-  /// No description provided for @pluginsAddress.
-  ///
-  /// In zh, this message translates to:
-  /// **'地址'**
-  String get pluginsAddress;
 
   /// No description provided for @pluginsClient.
   ///
@@ -27146,24 +24122,6 @@ abstract class L10n {
   /// **'个人偏好'**
   String get pluginsPersonalPreferences;
 
-  /// No description provided for @pluginsPreferencesDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'新对话会照这里的要求回答'**
-  String get pluginsPreferencesDescription;
-
-  /// No description provided for @pluginsPreferencesHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'比如：用中文回答，我主要写 Flutter'**
-  String get pluginsPreferencesHint;
-
-  /// No description provided for @pluginsSaving.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在保存'**
-  String get pluginsSaving;
-
   /// No description provided for @pluginsShareLink.
   ///
   /// In zh, this message translates to:
@@ -27343,12 +24301,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能安装'**
   String get pluginsCouldNotInstall;
-
-  /// No description provided for @pluginsEngineRestartToApply.
-  ///
-  /// In zh, this message translates to:
-  /// **'重启引擎后生效'**
-  String get pluginsEngineRestartToApply;
 
   /// No description provided for @pluginsRemoteRestartToApply.
   ///
@@ -27548,12 +24500,6 @@ abstract class L10n {
   /// **'会先卸载 {from}，再安装 {to}。如果新版本没装上，插件会处于未安装状态，需要重新安装。'**
   String pluginsUpdateVersionWarning(String from, String to);
 
-  /// No description provided for @pluginsUninstalledRestartLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'已卸载「{title}」，重启引擎后完全移除'**
-  String pluginsUninstalledRestartLocal(String title);
-
   /// No description provided for @pluginsUninstalledRestartRemote.
   ///
   /// In zh, this message translates to:
@@ -27572,23 +24518,11 @@ abstract class L10n {
   /// **'没能停用'**
   String get pluginsDisableFailed;
 
-  /// No description provided for @pluginsEnabledRestartLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'已启用，重启引擎后生效'**
-  String get pluginsEnabledRestartLocal;
-
   /// No description provided for @pluginsEnabledRestartRemote.
   ///
   /// In zh, this message translates to:
   /// **'已启用，重启{host}上的 DSH 后生效'**
   String pluginsEnabledRestartRemote(String host);
-
-  /// No description provided for @pluginsDisabledRestartLocal.
-  ///
-  /// In zh, this message translates to:
-  /// **'已停用，重启引擎后生效'**
-  String get pluginsDisabledRestartLocal;
 
   /// No description provided for @pluginsDisabledRestartRemote.
   ///
@@ -27878,35 +24812,17 @@ abstract class L10n {
   /// **'连不上插件'**
   String get plugslotsPanelOffline;
 
-  /// No description provided for @plugslotsIssueTooMany.
-  ///
-  /// In zh, this message translates to:
-  /// **'最多 {max} 个，其余不显示'**
-  String plugslotsIssueTooMany(int max);
-
   /// No description provided for @plugslotsIssueTrimmed.
   ///
   /// In zh, this message translates to:
   /// **'超过 {max} 字，已截断'**
   String plugslotsIssueTrimmed(int max);
 
-  /// No description provided for @plugslotsIssueNeedsApp.
-  ///
-  /// In zh, this message translates to:
-  /// **'需要 DSH Pocket {version} 或更新版本'**
-  String plugslotsIssueNeedsApp(String version);
-
   /// No description provided for @plugslotsIssueNewerProtocol.
   ///
   /// In zh, this message translates to:
   /// **'需要更新 App'**
   String get plugslotsIssueNewerProtocol;
-
-  /// No description provided for @plugslotsIssueUnknownIcon.
-  ///
-  /// In zh, this message translates to:
-  /// **'不认识的图标，已换成默认图标'**
-  String get plugslotsIssueUnknownIcon;
 
   /// No description provided for @plugslotsIssueUnknownEffect.
   ///
@@ -27938,18 +24854,6 @@ abstract class L10n {
   /// **'提示太频繁，已略过'**
   String get plugslotsIssueThrottled;
 
-  /// No description provided for @plugslotsIssueInvoke.
-  ///
-  /// In zh, this message translates to:
-  /// **'调用失败：{message}'**
-  String plugslotsIssueInvoke(String message);
-
-  /// No description provided for @plugslotsIssueStream.
-  ///
-  /// In zh, this message translates to:
-  /// **'数据出错：{message}'**
-  String plugslotsIssueStream(String message);
-
   /// No description provided for @plugslotsIssueMissing.
   ///
   /// In zh, this message translates to:
@@ -27961,12 +24865,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'id 重复，已略过'**
   String get plugslotsIssueDuplicate;
-
-  /// No description provided for @plugslotsIssueNoPlacement.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有可放的位置'**
-  String get plugslotsIssueNoPlacement;
 
   /// No description provided for @plugslotsWantsMessage.
   ///
@@ -29162,671 +26060,11 @@ abstract class L10n {
   /// **'永久'**
   String get remoteHostedTtlForever;
 
-  /// No description provided for @remoteForumSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录论坛'**
-  String get remoteForumSignIn;
-
-  /// No description provided for @remoteForumSignInBenefits.
-  ///
-  /// In zh, this message translates to:
-  /// **'发帖、回复、点赞'**
-  String get remoteForumSignInBenefits;
-
-  /// No description provided for @remoteForumFinishSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'在浏览器里完成登录'**
-  String get remoteForumFinishSignIn;
-
-  /// No description provided for @remoteReopenBrowser.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新打开浏览器'**
-  String get remoteReopenBrowser;
-
-  /// No description provided for @remoteForumSettings.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛设置'**
-  String get remoteForumSettings;
-
-  /// No description provided for @remoteForumAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛账号'**
-  String get remoteForumAccount;
-
-  /// No description provided for @remoteForumTopic.
-  ///
-  /// In zh, this message translates to:
-  /// **'话题'**
-  String get remoteForumTopic;
-
-  /// No description provided for @remoteForumLikesReceived.
-  ///
-  /// In zh, this message translates to:
-  /// **'获赞'**
-  String get remoteForumLikesReceived;
-
-  /// No description provided for @remoteForumDaysVisited.
-  ///
-  /// In zh, this message translates to:
-  /// **'访问天数'**
-  String get remoteForumDaysVisited;
-
-  /// No description provided for @remoteForumNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'通知'**
-  String get remoteForumNotifications;
-
-  /// No description provided for @remoteForumUnreadCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 条未读'**
-  String remoteForumUnreadCount(int count);
-
-  /// No description provided for @remoteForumErrAddress.
-  ///
-  /// In zh, this message translates to:
-  /// **'地址不对'**
-  String get remoteForumErrAddress;
-
-  /// No description provided for @remoteForumAddress.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛地址'**
-  String get remoteForumAddress;
-
-  /// No description provided for @remoteForumDefaultAddress.
-  ///
-  /// In zh, this message translates to:
-  /// **'默认：{host}'**
-  String remoteForumDefaultAddress(String host);
-
-  /// No description provided for @remoteRestoreDefault.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复默认'**
-  String get remoteRestoreDefault;
-
-  /// No description provided for @remoteForumUploadingImage.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在上传图片…'**
-  String get remoteForumUploadingImage;
-
-  /// No description provided for @remoteForumErrUploadImage.
-  ///
-  /// In zh, this message translates to:
-  /// **'图片没传上去'**
-  String get remoteForumErrUploadImage;
-
-  /// No description provided for @remoteForumTitleRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'先写标题'**
-  String get remoteForumTitleRequired;
-
-  /// No description provided for @remoteForumCategoryRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'选一个分类'**
-  String get remoteForumCategoryRequired;
-
-  /// No description provided for @remoteForumBodyRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'写点内容再发'**
-  String get remoteForumBodyRequired;
-
-  /// No description provided for @remoteForumReplyCaption.
-  ///
-  /// In zh, this message translates to:
-  /// **'回复 @{username} · {title}'**
-  String remoteForumReplyCaption(String username, String title);
-
-  /// No description provided for @remoteForumNewTopic.
-  ///
-  /// In zh, this message translates to:
-  /// **'新话题'**
-  String get remoteForumNewTopic;
-
-  /// No description provided for @remoteForumTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'标题'**
-  String get remoteForumTitle;
-
-  /// No description provided for @remoteForumComposerHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'写点什么，支持 Markdown'**
-  String get remoteForumComposerHint;
-
-  /// No description provided for @remoteForumPublish.
-  ///
-  /// In zh, this message translates to:
-  /// **'发布'**
-  String get remoteForumPublish;
-
-  /// No description provided for @remoteForumImage.
-  ///
-  /// In zh, this message translates to:
-  /// **'图片'**
-  String get remoteForumImage;
-
-  /// No description provided for @remoteForumAttachShareCode.
-  ///
-  /// In zh, this message translates to:
-  /// **'附上分享码'**
-  String get remoteForumAttachShareCode;
-
-  /// No description provided for @remoteForumPendingApproval.
-  ///
-  /// In zh, this message translates to:
-  /// **'已提交，审核后可见'**
-  String get remoteForumPendingApproval;
-
-  /// No description provided for @remoteForumLatest.
-  ///
-  /// In zh, this message translates to:
-  /// **'最新'**
-  String get remoteForumLatest;
-
-  /// No description provided for @remoteForumTop.
-  ///
-  /// In zh, this message translates to:
-  /// **'热门'**
-  String get remoteForumTop;
-
-  /// No description provided for @remoteForumErrOpen.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能打开论坛'**
-  String get remoteForumErrOpen;
-
-  /// No description provided for @remoteForumNoTopics.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有话题'**
-  String get remoteForumNoTopics;
-
-  /// No description provided for @remoteForumPost.
-  ///
-  /// In zh, this message translates to:
-  /// **'发帖'**
-  String get remoteForumPost;
-
-  /// No description provided for @remoteForum.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛'**
-  String get remoteForum;
-
-  /// No description provided for @remoteForumNotificationsUnread.
-  ///
-  /// In zh, this message translates to:
-  /// **'通知，{count} 条未读'**
-  String remoteForumNotificationsUnread(int count);
-
-  /// No description provided for @remoteForumSearch.
-  ///
-  /// In zh, this message translates to:
-  /// **'搜索'**
-  String get remoteForumSearch;
-
-  /// No description provided for @remoteForumSearchHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'搜索话题和帖子'**
-  String get remoteForumSearchHint;
-
-  /// No description provided for @remoteForumSignedIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'已登录论坛'**
-  String get remoteForumSignedIn;
-
-  /// No description provided for @remoteForumSignInForNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录后查看通知'**
-  String get remoteForumSignInForNotifications;
-
-  /// No description provided for @remoteForumErrNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能读取通知'**
-  String get remoteForumErrNotifications;
-
-  /// No description provided for @remoteForumNoNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有通知'**
-  String get remoteForumNoNotifications;
-
-  /// No description provided for @remoteForumMarkAllRead.
-  ///
-  /// In zh, this message translates to:
-  /// **'全部已读'**
-  String get remoteForumMarkAllRead;
-
-  /// No description provided for @remoteForumSomeone.
-  ///
-  /// In zh, this message translates to:
-  /// **'有人'**
-  String get remoteForumSomeone;
-
-  /// No description provided for @remoteForumNotificationMention.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 提到了你'**
-  String remoteForumNotificationMention(String who);
-
-  /// No description provided for @remoteForumNotificationGroupMention.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 提到了你所在的群组'**
-  String remoteForumNotificationGroupMention(String who);
-
-  /// No description provided for @remoteForumNotificationReply.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 回复了你'**
-  String remoteForumNotificationReply(String who);
-
-  /// No description provided for @remoteForumNotificationQuote.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 引用了你'**
-  String remoteForumNotificationQuote(String who);
-
-  /// No description provided for @remoteForumNotificationEdit.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 编辑了你的帖子'**
-  String remoteForumNotificationEdit(String who);
-
-  /// No description provided for @remoteForumNotificationLikes.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 等 {count} 人赞了你'**
-  String remoteForumNotificationLikes(String who, int count);
-
-  /// No description provided for @remoteForumNotificationLike.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 赞了你'**
-  String remoteForumNotificationLike(String who);
-
-  /// No description provided for @remoteForumNotificationLikedPosts.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 赞了你的 {count} 个帖子'**
-  String remoteForumNotificationLikedPosts(String who, int count);
-
-  /// No description provided for @remoteForumNotificationReaction.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 回应了你'**
-  String remoteForumNotificationReaction(String who);
-
-  /// No description provided for @remoteForumNotificationMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 发来私信'**
-  String remoteForumNotificationMessage(String who);
-
-  /// No description provided for @remoteForumNotificationMessageInvite.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 邀请你加入私信'**
-  String remoteForumNotificationMessageInvite(String who);
-
-  /// No description provided for @remoteForumNotificationTopicInvite.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 邀请你参与话题'**
-  String remoteForumNotificationTopicInvite(String who);
-
-  /// No description provided for @remoteForumNotificationNewReply.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 发了新回复'**
-  String remoteForumNotificationNewReply(String who);
-
-  /// No description provided for @remoteForumNotificationNewTopic.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 发了新话题'**
-  String remoteForumNotificationNewTopic(String who);
-
-  /// No description provided for @remoteForumNotificationLink.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 链接了你的帖子'**
-  String remoteForumNotificationLink(String who);
-
-  /// No description provided for @remoteForumNotificationBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'获得徽章「{badge}」'**
-  String remoteForumNotificationBadge(String badge);
-
-  /// No description provided for @remoteForumNotificationMoved.
-  ///
-  /// In zh, this message translates to:
-  /// **'{who} 移动了你的帖子'**
-  String remoteForumNotificationMoved(String who);
-
-  /// No description provided for @remoteForumBookmarkReminder.
-  ///
-  /// In zh, this message translates to:
-  /// **'书签提醒'**
-  String get remoteForumBookmarkReminder;
-
-  /// No description provided for @remoteForumTopicReminder.
-  ///
-  /// In zh, this message translates to:
-  /// **'话题提醒'**
-  String get remoteForumTopicReminder;
-
-  /// No description provided for @remoteForumPostApproved.
-  ///
-  /// In zh, this message translates to:
-  /// **'你的帖子已通过审核'**
-  String get remoteForumPostApproved;
-
-  /// No description provided for @remoteForumAdminProblems.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛有待处理的问题'**
-  String get remoteForumAdminProblems;
-
-  /// No description provided for @remoteForumNewNotification.
-  ///
-  /// In zh, this message translates to:
-  /// **'新通知'**
-  String get remoteForumNewNotification;
-
-  /// No description provided for @remoteForumUnread.
-  ///
-  /// In zh, this message translates to:
-  /// **'未读'**
-  String get remoteForumUnread;
-
-  /// No description provided for @remoteForumErrShareCode.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能打开分享码'**
-  String get remoteForumErrShareCode;
-
-  /// No description provided for @remoteForumPoll.
-  ///
-  /// In zh, this message translates to:
-  /// **'投票'**
-  String get remoteForumPoll;
-
-  /// No description provided for @remoteForumVideo.
-  ///
-  /// In zh, this message translates to:
-  /// **'视频'**
-  String get remoteForumVideo;
-
-  /// No description provided for @remoteForumEmbed.
-  ///
-  /// In zh, this message translates to:
-  /// **'嵌入内容'**
-  String get remoteForumEmbed;
-
-  /// No description provided for @remoteForumVoteOnWeb.
-  ///
-  /// In zh, this message translates to:
-  /// **'去网页版投票'**
-  String get remoteForumVoteOnWeb;
-
-  /// No description provided for @remoteForumErrSearch.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能搜索'**
-  String get remoteForumErrSearch;
-
-  /// No description provided for @remoteForumNoSearchResults.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有找到「{term}」'**
-  String remoteForumNoSearchResults(String term);
-
-  /// No description provided for @remoteForumBookmarkRemoved.
-  ///
-  /// In zh, this message translates to:
-  /// **'已取消书签'**
-  String get remoteForumBookmarkRemoved;
-
-  /// No description provided for @remoteForumBookmarkAdded.
-  ///
-  /// In zh, this message translates to:
-  /// **'已加入书签'**
-  String get remoteForumBookmarkAdded;
-
   /// No description provided for @remoteLinkCopied.
   ///
   /// In zh, this message translates to:
   /// **'已复制链接'**
   String get remoteLinkCopied;
-
-  /// No description provided for @remoteForumErrTopic.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能打开这个话题'**
-  String get remoteForumErrTopic;
-
-  /// No description provided for @remoteForumTopicClosed.
-  ///
-  /// In zh, this message translates to:
-  /// **'话题已关闭'**
-  String get remoteForumTopicClosed;
-
-  /// No description provided for @remoteForumReplyHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'写回复…'**
-  String get remoteForumReplyHint;
-
-  /// No description provided for @remoteForumSignInToReply.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录后回复'**
-  String get remoteForumSignInToReply;
-
-  /// No description provided for @remoteForumReplyTo.
-  ///
-  /// In zh, this message translates to:
-  /// **'回复 @{username}'**
-  String remoteForumReplyTo(String username);
-
-  /// No description provided for @remoteForumPostDeleted.
-  ///
-  /// In zh, this message translates to:
-  /// **'帖子已删除'**
-  String get remoteForumPostDeleted;
-
-  /// No description provided for @remoteForumPostHidden.
-  ///
-  /// In zh, this message translates to:
-  /// **'帖子已被隐藏'**
-  String get remoteForumPostHidden;
-
-  /// No description provided for @remoteForumUnlike.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消点赞'**
-  String get remoteForumUnlike;
-
-  /// No description provided for @remoteForumLike.
-  ///
-  /// In zh, this message translates to:
-  /// **'点赞'**
-  String get remoteForumLike;
-
-  /// No description provided for @remoteForumRemoveBookmark.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消书签'**
-  String get remoteForumRemoveBookmark;
-
-  /// No description provided for @remoteForumBookmark.
-  ///
-  /// In zh, this message translates to:
-  /// **'书签'**
-  String get remoteForumBookmark;
-
-  /// No description provided for @remoteForumActionPinned.
-  ///
-  /// In zh, this message translates to:
-  /// **'置顶了话题'**
-  String get remoteForumActionPinned;
-
-  /// No description provided for @remoteForumActionUnpinned.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消了置顶'**
-  String get remoteForumActionUnpinned;
-
-  /// No description provided for @remoteForumActionClosed.
-  ///
-  /// In zh, this message translates to:
-  /// **'关闭了话题'**
-  String get remoteForumActionClosed;
-
-  /// No description provided for @remoteForumActionReopened.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新开放了话题'**
-  String get remoteForumActionReopened;
-
-  /// No description provided for @remoteForumActionAutoClosed.
-  ///
-  /// In zh, this message translates to:
-  /// **'话题已自动关闭'**
-  String get remoteForumActionAutoClosed;
-
-  /// No description provided for @remoteForumActionAutoOpened.
-  ///
-  /// In zh, this message translates to:
-  /// **'话题已自动开放'**
-  String get remoteForumActionAutoOpened;
-
-  /// No description provided for @remoteForumActionArchived.
-  ///
-  /// In zh, this message translates to:
-  /// **'归档了话题'**
-  String get remoteForumActionArchived;
-
-  /// No description provided for @remoteForumActionUnarchived.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消了归档'**
-  String get remoteForumActionUnarchived;
-
-  /// No description provided for @remoteForumActionListed.
-  ///
-  /// In zh, this message translates to:
-  /// **'公开了话题'**
-  String get remoteForumActionListed;
-
-  /// No description provided for @remoteForumActionUnlisted.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐藏了话题'**
-  String get remoteForumActionUnlisted;
-
-  /// No description provided for @remoteForumActionSplit.
-  ///
-  /// In zh, this message translates to:
-  /// **'拆分了话题'**
-  String get remoteForumActionSplit;
-
-  /// No description provided for @remoteForumActionBanner.
-  ///
-  /// In zh, this message translates to:
-  /// **'设为横幅'**
-  String get remoteForumActionBanner;
-
-  /// No description provided for @remoteForumActionRemoveBanner.
-  ///
-  /// In zh, this message translates to:
-  /// **'取消了横幅'**
-  String get remoteForumActionRemoveBanner;
-
-  /// No description provided for @remoteForumActionUpdated.
-  ///
-  /// In zh, this message translates to:
-  /// **'更新了话题'**
-  String get remoteForumActionUpdated;
-
-  /// No description provided for @remoteLoading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在加载'**
-  String get remoteLoading;
-
-  /// No description provided for @remoteForumJustNow.
-  ///
-  /// In zh, this message translates to:
-  /// **'刚刚'**
-  String get remoteForumJustNow;
-
-  /// No description provided for @remoteForumMinutesAgo.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 分钟前'**
-  String remoteForumMinutesAgo(int count);
-
-  /// No description provided for @remoteForumHoursAgo.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 小时前'**
-  String remoteForumHoursAgo(int count);
-
-  /// No description provided for @remoteForumDaysAgo.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 天前'**
-  String remoteForumDaysAgo(int count);
-
-  /// No description provided for @remoteForumReplyCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 回复'**
-  String remoteForumReplyCount(int count);
-
-  /// No description provided for @remoteForumNewReplyCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 条新回复'**
-  String remoteForumNewReplyCount(int count);
-
-  /// No description provided for @remoteForumNew.
-  ///
-  /// In zh, this message translates to:
-  /// **'新'**
-  String get remoteForumNew;
-
-  /// No description provided for @remoteForumErrorRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'{error} · 重试'**
-  String remoteForumErrorRetry(String error);
-
-  /// No description provided for @remoteForumNoMore.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有更多了'**
-  String get remoteForumNoMore;
 
   /// No description provided for @remoteHostKeyTrustTitle.
   ///
@@ -29894,30 +26132,6 @@ abstract class L10n {
   /// **'切换主机'**
   String get remoteSwitchHost;
 
-  /// No description provided for @remoteThisPhoneDsh.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机上的 DSH'**
-  String get remoteThisPhoneDsh;
-
-  /// No description provided for @remoteRemoteLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'远程'**
-  String get remoteRemoteLabel;
-
-  /// No description provided for @remoteRemotePlatform.
-  ///
-  /// In zh, this message translates to:
-  /// **'远程 · {platform}'**
-  String remoteRemotePlatform(String platform);
-
-  /// No description provided for @remoteRelaySwitchWarning.
-  ///
-  /// In zh, this message translates to:
-  /// **'DSH Remote 一次只连一台主机，切换会断开上一台'**
-  String get remoteRelaySwitchWarning;
-
   /// No description provided for @remoteConnectComputer.
   ///
   /// In zh, this message translates to:
@@ -29929,12 +26143,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'管理远程主机'**
   String get remoteManageHosts;
-
-  /// No description provided for @remoteConnectionMethods.
-  ///
-  /// In zh, this message translates to:
-  /// **'通过 SSH 或 DSH Remote'**
-  String get remoteConnectionMethods;
 
   /// No description provided for @remoteRelayLoginRequired.
   ///
@@ -30026,35 +26234,11 @@ abstract class L10n {
   /// **'不经过第三方服务器'**
   String get remoteSshDirect;
 
-  /// No description provided for @remoteOtherMethods.
-  ///
-  /// In zh, this message translates to:
-  /// **'其他方式'**
-  String get remoteOtherMethods;
-
-  /// No description provided for @remoteWebConsole.
-  ///
-  /// In zh, this message translates to:
-  /// **'网页版远程控制台'**
-  String get remoteWebConsole;
-
-  /// No description provided for @remoteWebConsoleProvider.
-  ///
-  /// In zh, this message translates to:
-  /// **'dsh.r2049.cn · 第三方页面'**
-  String get remoteWebConsoleProvider;
-
   /// No description provided for @remoteActiveHost.
   ///
   /// In zh, this message translates to:
   /// **'正在使用「{name}」'**
   String remoteActiveHost(String name);
-
-  /// No description provided for @remoteSwitchToPhone.
-  ///
-  /// In zh, this message translates to:
-  /// **'切回本机'**
-  String get remoteSwitchToPhone;
 
   /// No description provided for @remoteSignInAgain.
   ///
@@ -30121,108 +26305,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'已连接 · SSH {address}'**
   String remoteConnectedSsh(String address);
-
-  /// No description provided for @remoteErrRefreshHosts.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能刷新主机列表'**
-  String get remoteErrRefreshHosts;
-
-  /// No description provided for @remoteSwitchWarning.
-  ///
-  /// In zh, this message translates to:
-  /// **'一次只连一台主机，切换会断开上一台'**
-  String get remoteSwitchWarning;
-
-  /// No description provided for @remoteRefreshHosts.
-  ///
-  /// In zh, this message translates to:
-  /// **'刷新主机列表'**
-  String get remoteRefreshHosts;
-
-  /// No description provided for @remoteSignOut.
-  ///
-  /// In zh, this message translates to:
-  /// **'退出'**
-  String get remoteSignOut;
-
-  /// No description provided for @remoteErrHostsRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能获取主机列表 · 轻点重试'**
-  String get remoteErrHostsRetry;
-
-  /// No description provided for @remoteNoHosts.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有主机'**
-  String get remoteNoHosts;
-
-  /// No description provided for @remoteRelaySetupHelp.
-  ///
-  /// In zh, this message translates to:
-  /// **'在主机的 DSH 里装好远程插件并登录'**
-  String get remoteRelaySetupHelp;
-
-  /// No description provided for @remoteRelaySignOutTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'退出 DSH Remote？'**
-  String get remoteRelaySignOutTitle;
-
-  /// No description provided for @remoteRelaySignOutBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机会从账号中移除。主机上的 DSH 和对话不受影响，随时可以重新登录。'**
-  String get remoteRelaySignOutBody;
-
-  /// No description provided for @remoteRelaySignInTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录 DSH Remote'**
-  String get remoteRelaySignInTitle;
-
-  /// No description provided for @remoteRelaySignInHelp.
-  ///
-  /// In zh, this message translates to:
-  /// **'无需配置网络，连接端到端加密'**
-  String get remoteRelaySignInHelp;
-
-  /// No description provided for @remoteBrowserSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'在浏览器中登录'**
-  String get remoteBrowserSignIn;
-
-  /// No description provided for @remoteSignInWithProvider.
-  ///
-  /// In zh, this message translates to:
-  /// **'使用 {provider} 登录'**
-  String remoteSignInWithProvider(String provider);
-
-  /// No description provided for @remoteComingSoon.
-  ///
-  /// In zh, this message translates to:
-  /// **'即将接入'**
-  String get remoteComingSoon;
-
-  /// No description provided for @remoteSelfHostedEmailSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'自建服务器 · 邮箱登录'**
-  String get remoteSelfHostedEmailSignIn;
-
-  /// No description provided for @remoteBrowserSignInPending.
-  ///
-  /// In zh, this message translates to:
-  /// **'在浏览器里完成登录…'**
-  String get remoteBrowserSignInPending;
-
-  /// No description provided for @remoteCopySignInLink.
-  ///
-  /// In zh, this message translates to:
-  /// **'复制登录链接'**
-  String get remoteCopySignInLink;
 
   /// No description provided for @remoteSshAddressRequired.
   ///
@@ -30578,36 +26660,6 @@ abstract class L10n {
   /// **'主目录'**
   String get remoteDirectoryHome;
 
-  /// No description provided for @remoteDirectoryPhoneStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机存储'**
-  String get remoteDirectoryPhoneStorage;
-
-  /// No description provided for @remoteDirectoryDownloads.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载'**
-  String get remoteDirectoryDownloads;
-
-  /// No description provided for @remoteDirectoryDownloadsPath.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机存储/Download'**
-  String get remoteDirectoryDownloadsPath;
-
-  /// No description provided for @remoteDirectoryDocuments.
-  ///
-  /// In zh, this message translates to:
-  /// **'文档'**
-  String get remoteDirectoryDocuments;
-
-  /// No description provided for @remoteDirectoryDocumentsPath.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机存储/Documents'**
-  String get remoteDirectoryDocumentsPath;
-
   /// No description provided for @remoteDirectoryLocations.
   ///
   /// In zh, this message translates to:
@@ -30824,12 +26876,6 @@ abstract class L10n {
   /// **'分组名称'**
   String get remoteWorkspaceGroupName;
 
-  /// No description provided for @remoteDirectoryPhonePath.
-  ///
-  /// In zh, this message translates to:
-  /// **'手机存储/{path}'**
-  String remoteDirectoryPhonePath(String path);
-
   /// No description provided for @remoteDirectoryInvalidName.
   ///
   /// In zh, this message translates to:
@@ -30932,24 +26978,6 @@ abstract class L10n {
   /// **'确认主机重装或更换后，可在主机设置中重置指纹。\n已记住：{saved}\n这次收到：{received}（{type}）'**
   String remoteHostKeyMismatchDetail(String saved, String received, String type);
 
-  /// No description provided for @remoteForumCompactReplies.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count, plural, other{{label} 回复}}'**
-  String remoteForumCompactReplies(int count, String label);
-
-  /// No description provided for @remoteForumCompactViews.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count, plural, other{{label} 浏览}}'**
-  String remoteForumCompactViews(int count, String label);
-
-  /// No description provided for @remoteForumYearDate.
-  ///
-  /// In zh, this message translates to:
-  /// **'{year}年{month}月{day}日'**
-  String remoteForumYearDate(int year, String month, int day);
-
   /// No description provided for @remoteHostedMonthDate.
   ///
   /// In zh, this message translates to:
@@ -30961,18 +26989,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'{year} 年 {month} 月 {day} 日'**
   String remoteHostedYearDate(int year, String month, int day);
-
-  /// No description provided for @remoteForumTenThousands.
-  ///
-  /// In zh, this message translates to:
-  /// **'{value}万'**
-  String remoteForumTenThousands(String value);
-
-  /// No description provided for @remoteForumSemanticsSeparator.
-  ///
-  /// In zh, this message translates to:
-  /// **'，'**
-  String get remoteForumSemanticsSeparator;
 
   /// No description provided for @remoteHostKeyVerifyCommand.
   ///
@@ -31256,24 +27272,6 @@ abstract class L10n {
   /// **'精简 简洁 历史 工具 传输 流量 远程 compact slim lite'**
   String get searchKwRemoteCompactHistory;
 
-  /// No description provided for @remotePairEntry.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码配对电脑'**
-  String get remotePairEntry;
-
-  /// No description provided for @remotePairEntryHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫电脑上 Remote 插件显示的二维码，不用注册 Remote 账号（需要先登录 DeepSeek）'**
-  String get remotePairEntryHint;
-
-  /// No description provided for @remotePairAddComputer.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码添加电脑'**
-  String get remotePairAddComputer;
-
   /// No description provided for @remotePairTitle.
   ///
   /// In zh, this message translates to:
@@ -31297,192 +27295,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。'**
   String get remotePairNeedsDeepSeekBody;
-
-  /// No description provided for @remotePairScanHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'对准电脑上 Remote 插件显示的配对二维码'**
-  String get remotePairScanHint;
-
-  /// No description provided for @remotePairPasteLink.
-  ///
-  /// In zh, this message translates to:
-  /// **'粘贴配对链接'**
-  String get remotePairPasteLink;
-
-  /// No description provided for @remotePairPasteEmpty.
-  ///
-  /// In zh, this message translates to:
-  /// **'剪贴板里没有配对链接'**
-  String get remotePairPasteEmpty;
-
-  /// No description provided for @remotePairScannerFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'二维码识别器不可用。可以粘贴配对链接继续配对。'**
-  String get remotePairScannerFailed;
-
-  /// No description provided for @remotePairFromImage.
-  ///
-  /// In zh, this message translates to:
-  /// **'从相册识别'**
-  String get remotePairFromImage;
-
-  /// No description provided for @remotePairImageNoCode.
-  ///
-  /// In zh, this message translates to:
-  /// **'这张图里没找到二维码'**
-  String get remotePairImageNoCode;
-
-  /// No description provided for @remotePairCameraDenied.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有相机权限。可以在系统设置里打开，或者用「从相册识别」「粘贴配对链接」'**
-  String get remotePairCameraDenied;
-
-  /// No description provided for @remotePairCameraFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'相机打不开。可以用「从相册识别」或「粘贴配对链接」'**
-  String get remotePairCameraFailed;
-
-  /// No description provided for @remotePairSystemScan.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码'**
-  String get remotePairSystemScan;
-
-  /// No description provided for @remotePairSystemScanHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'打开系统扫码，里面也能从相册选截图'**
-  String get remotePairSystemScanHint;
-
-  /// No description provided for @remotePairReading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在读取配对信息…'**
-  String get remotePairReading;
-
-  /// No description provided for @remotePairConfirmTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'要连接这台电脑吗？'**
-  String get remotePairConfirmTitle;
-
-  /// No description provided for @remotePairComputer.
-  ///
-  /// In zh, this message translates to:
-  /// **'电脑'**
-  String get remotePairComputer;
-
-  /// No description provided for @remotePairServer.
-  ///
-  /// In zh, this message translates to:
-  /// **'服务器'**
-  String get remotePairServer;
-
-  /// No description provided for @remotePairFingerprint.
-  ///
-  /// In zh, this message translates to:
-  /// **'电脑指纹'**
-  String get remotePairFingerprint;
-
-  /// No description provided for @remotePairFingerprintHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'和电脑 Remote 插件上显示的指纹核对一致再继续。'**
-  String get remotePairFingerprintHint;
-
-  /// No description provided for @remotePairConfirm.
-  ///
-  /// In zh, this message translates to:
-  /// **'确认是这台电脑，开始配对'**
-  String get remotePairConfirm;
-
-  /// No description provided for @remotePairNotThis.
-  ///
-  /// In zh, this message translates to:
-  /// **'不是这台，重新扫'**
-  String get remotePairNotThis;
-
-  /// No description provided for @remotePairClaiming.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在生成验证码…'**
-  String get remotePairClaiming;
-
-  /// No description provided for @remotePairCodeTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'在电脑上输入这 8 位验证码'**
-  String get remotePairCodeTitle;
-
-  /// No description provided for @remotePairCodeSemantics.
-  ///
-  /// In zh, this message translates to:
-  /// **'验证码 {digits}'**
-  String remotePairCodeSemantics(String digits);
-
-  /// No description provided for @remotePairCodeHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'在电脑的 Remote 插件里输入，点「确认绑定」。手机不用再操作。'**
-  String get remotePairCodeHint;
-
-  /// No description provided for @remotePairOneAttempt.
-  ///
-  /// In zh, this message translates to:
-  /// **'只有一次机会：输错后这次配对作废，要在电脑上重新生成二维码再扫。'**
-  String get remotePairOneAttempt;
-
-  /// No description provided for @remotePairWaiting.
-  ///
-  /// In zh, this message translates to:
-  /// **'等电脑确认 · 剩余 {countdown}'**
-  String remotePairWaiting(String countdown);
-
-  /// No description provided for @remotePairApproved.
-  ///
-  /// In zh, this message translates to:
-  /// **'电脑已确认，正在完成绑定…'**
-  String get remotePairApproved;
-
-  /// No description provided for @remotePairCodeExpired.
-  ///
-  /// In zh, this message translates to:
-  /// **'验证码已过期，请在电脑上重新生成二维码'**
-  String get remotePairCodeExpired;
-
-  /// No description provided for @remotePairConnecting.
-  ///
-  /// In zh, this message translates to:
-  /// **'配对完成，正在连接 {name}…'**
-  String remotePairConnecting(String name);
-
-  /// No description provided for @remotePairFailedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能配对'**
-  String get remotePairFailedTitle;
-
-  /// No description provided for @remotePairOtherServerBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个二维码来自 {server}，和 DSH Pocket 现在用的 Remote 服务器不同。切换过去继续吗？两个服务器的登录各自保留。'**
-  String remotePairOtherServerBody(String server);
-
-  /// No description provided for @remotePairSwitchServer.
-  ///
-  /// In zh, this message translates to:
-  /// **'切换服务器并继续'**
-  String get remotePairSwitchServer;
-
-  /// No description provided for @remotePairScanAgain.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新扫码'**
-  String get remotePairScanAgain;
 
   /// No description provided for @remotePairErrInvalidCode.
   ///
@@ -31549,24 +27361,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'配对没有完成，请重新扫码'**
   String get remotePairErrFailed;
-
-  /// No description provided for @remotePairSwitchFailedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'已和 {name} 配对'**
-  String remotePairSwitchFailedTitle(String name);
-
-  /// No description provided for @remotePairSwitchFailedBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'但没能切换到这台电脑。可以重试，或者回到「远程主机」里点这台电脑。'**
-  String get remotePairSwitchFailedBody;
-
-  /// No description provided for @remotePairDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'完成'**
-  String get remotePairDone;
 
   /// No description provided for @remotePairErrPinSave.
   ///
@@ -31778,12 +27572,6 @@ abstract class L10n {
   /// **'使用帮助'**
   String get askAiHelpTitle;
 
-  /// No description provided for @askAiHelpSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'不懂的地方，问 AI'**
-  String get askAiHelpSubtitle;
-
   /// No description provided for @askAiAboutApp.
   ///
   /// In zh, this message translates to:
@@ -31855,36 +27643,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'怎么连接自己的电脑或服务器？和用本机有什么不同？'**
   String get askAiQuestionRemote;
-
-  /// No description provided for @phoneRuntimeUpgradeBase.
-  ///
-  /// In zh, this message translates to:
-  /// **'新引擎与现有 Linux 环境不能确认兼容，更新已停止。原环境和已装工具没有删除。请先完整备份，再联系维护者迁移；不要直接重置或卸载 App。'**
-  String get phoneRuntimeUpgradeBase;
-
-  /// No description provided for @phoneRuntimeUpgradeManifest.
-  ///
-  /// In zh, this message translates to:
-  /// **'无法安全识别运行时更新清单，更新已停止，原环境保留。请核对安装包并联系维护者，不要直接重置。'**
-  String get phoneRuntimeUpgradeManifest;
-
-  /// No description provided for @phoneRuntimeUpgradeInterrupted.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行时升级尚未完成，数据与恢复现场已保留。请重试安装；仍失败时导出诊断并联系维护者，不要重置或删除恢复目录。'**
-  String get phoneRuntimeUpgradeInterrupted;
-
-  /// No description provided for @phoneRuntimeUpgradeSymlink.
-  ///
-  /// In zh, this message translates to:
-  /// **'现有环境的系统路径已被自定义链接替换，无法安全更新。原环境保留，请先备份并联系维护者处理。'**
-  String get phoneRuntimeUpgradeSymlink;
-
-  /// No description provided for @phoneRuntimeUpgradeRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎或遗留进程尚未确认停止，更新未开始。请先停止本机引擎，等待清理完成后重试；不要重置环境。'**
-  String get phoneRuntimeUpgradeRunning;
 
   /// No description provided for @schemaDocumentationTitle.
   ///
@@ -32000,18 +27758,6 @@ abstract class L10n {
   /// **'提醒,推送,横幅,消息,铃声'**
   String get searchKwNotifications;
 
-  /// No description provided for @searchKwReplyPrefs.
-  ///
-  /// In zh, this message translates to:
-  /// **'偏好,关于我,自我介绍,回答风格,称呼,AGENTS.md'**
-  String get searchKwReplyPrefs;
-
-  /// No description provided for @searchKwSharedLinks.
-  ///
-  /// In zh, this message translates to:
-  /// **'分享链接,链接,公开链接,分享'**
-  String get searchKwSharedLinks;
-
   /// No description provided for @searchKwPhone.
   ///
   /// In zh, this message translates to:
@@ -32029,12 +27775,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'免打扰,Shizuku,Sui,root,ADB,后台操作'**
   String get searchKwDnd;
-
-  /// No description provided for @searchKwEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎,运行环境,启动,停止,重启,DSH'**
-  String get searchKwEngine;
 
   /// No description provided for @searchKwBackground.
   ///
@@ -32114,12 +27854,6 @@ abstract class L10n {
   /// **'功能,目录,所有功能'**
   String get searchKwAllFeatures;
 
-  /// No description provided for @searchKwAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'账号,余额,充值,登录,退出登录,API Key,用量,DeepSeek'**
-  String get searchKwAccount;
-
   /// No description provided for @searchKwRemote.
   ///
   /// In zh, this message translates to:
@@ -32149,12 +27883,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'中文,英文,简体,English'**
   String get searchKwLanguage;
-
-  /// No description provided for @searchKwAutoCommands.
-  ///
-  /// In zh, this message translates to:
-  /// **'别问我,不要确认,自动允许,完全权限,免确认'**
-  String get searchKwAutoCommands;
 
   /// No description provided for @searchKwPhoneFiles.
   ///
@@ -32203,12 +27931,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'网页版,网页,浏览器,官方网页版'**
   String get searchKwOpenWeb;
-
-  /// No description provided for @searchKwSafeMode.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式,恢复正常模式,排障,插件崩溃'**
-  String get searchKwSafeMode;
 
   /// No description provided for @searchKwVersion.
   ///
@@ -32402,36 +28124,6 @@ abstract class L10n {
   /// **'后台确认,返回 App'**
   String get searchKwPhoneBackgroundGuide;
 
-  /// No description provided for @searchKwAutoStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'自动启动,开机启动,自启'**
-  String get searchKwAutoStart;
-
-  /// No description provided for @searchKwAutoSafe.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全模式,自动安全模式'**
-  String get searchKwAutoSafe;
-
-  /// No description provided for @searchKwEngineReset.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置,清空,恢复'**
-  String get searchKwEngineReset;
-
-  /// No description provided for @searchKwEngineUninstall.
-  ///
-  /// In zh, this message translates to:
-  /// **'卸载,删除运行环境,释放空间'**
-  String get searchKwEngineUninstall;
-
-  /// No description provided for @searchKwWorkspaceRecovery.
-  ///
-  /// In zh, this message translates to:
-  /// **'工作区,索引,救援,对话打不开,对话不见了,恢复对话'**
-  String get searchKwWorkspaceRecovery;
-
   /// No description provided for @searchKwAddProvider.
   ///
   /// In zh, this message translates to:
@@ -32605,12 +28297,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'插件市场,安装插件,市场,获取插件'**
   String get searchKwPluginsMarket;
-
-  /// No description provided for @searchKwUsageStats.
-  ///
-  /// In zh, this message translates to:
-  /// **'统计,使用统计,匿名,隐私,数据,改进,遥测,分析'**
-  String get searchKwUsageStats;
 
   /// No description provided for @searchKwQuickPanel.
   ///
@@ -33092,72 +28778,6 @@ abstract class L10n {
   /// **'主机无法确认删除结果，请刷新后再决定是否重试。'**
   String get shellDeleteFailed;
 
-  /// No description provided for @setupAppearanceTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'选择外观'**
-  String get setupAppearanceTitle;
-
-  /// No description provided for @setupAppearanceMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'随时可以在设置里更改'**
-  String get setupAppearanceMessage;
-
-  /// No description provided for @setupLightMode.
-  ///
-  /// In zh, this message translates to:
-  /// **'轻量模式'**
-  String get setupLightMode;
-
-  /// No description provided for @setupCapsulePreparing.
-  ///
-  /// In zh, this message translates to:
-  /// **'准备运行环境'**
-  String get setupCapsulePreparing;
-
-  /// No description provided for @setupCapsuleProgress.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境 {percent}%'**
-  String setupCapsuleProgress(int percent);
-
-  /// No description provided for @setupCapsuleProgressSemantics.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在准备运行环境，已完成 {percent}%'**
-  String setupCapsuleProgressSemantics(int percent);
-
-  /// No description provided for @setupCapsuleReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行环境已就绪'**
-  String get setupCapsuleReady;
-
-  /// No description provided for @setupCapsuleFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装未完成'**
-  String get setupCapsuleFailed;
-
-  /// No description provided for @setupWaitingBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'完成后自动进入'**
-  String get setupWaitingBody;
-
-  /// No description provided for @setupNotifyWhenDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'完成时会通知你'**
-  String get setupNotifyWhenDone;
-
-  /// No description provided for @setupAwaitSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'就绪后自动打开 DeepSeek 登录'**
-  String get setupAwaitSignIn;
-
   /// No description provided for @shellApiKeyPrefixWarning.
   ///
   /// In zh, this message translates to:
@@ -33212,18 +28832,6 @@ abstract class L10n {
   /// **'正在保存'**
   String get shellSaving;
 
-  /// No description provided for @shellSaveContinue.
-  ///
-  /// In zh, this message translates to:
-  /// **'保存并继续'**
-  String get shellSaveContinue;
-
-  /// No description provided for @shellSetUpLater.
-  ///
-  /// In zh, this message translates to:
-  /// **'稍后设置'**
-  String get shellSetUpLater;
-
   /// No description provided for @shellClearField.
   ///
   /// In zh, this message translates to:
@@ -33248,155 +28856,11 @@ abstract class L10n {
   /// **'获取 API Key'**
   String get shellGetApiKey;
 
-  /// No description provided for @shellConnectDeepSeek.
-  ///
-  /// In zh, this message translates to:
-  /// **'连接 DeepSeek'**
-  String get shellConnectDeepSeek;
-
-  /// No description provided for @shellConnectDeepSeekMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录 DeepSeek 账号即可开始，无需 API Key'**
-  String get shellConnectDeepSeekMessage;
-
-  /// No description provided for @shellAccountSignInUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前引擎不支持账号登录'**
-  String get shellAccountSignInUnsupported;
-
-  /// No description provided for @shellSignInDeepSeek.
-  ///
-  /// In zh, this message translates to:
-  /// **'用 DeepSeek 账号登录'**
-  String get shellSignInDeepSeek;
-
-  /// No description provided for @shellUseApiKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'使用 API Key'**
-  String get shellUseApiKey;
-
-  /// No description provided for @shellOtherProviders.
-  ///
-  /// In zh, this message translates to:
-  /// **'其他模型渠道'**
-  String get shellOtherProviders;
-
   /// No description provided for @shellOnboardingStep.
   ///
   /// In zh, this message translates to:
   /// **'第 {step} 步，共 {steps} 步'**
   String shellOnboardingStep(int step, int steps);
-
-  /// No description provided for @shellRuntimeUpdating.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在更新运行环境'**
-  String get shellRuntimeUpdating;
-
-  /// No description provided for @shellRuntimePreparing.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在准备运行环境'**
-  String get shellRuntimePreparing;
-
-  /// No description provided for @shellRuntimeReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'准备就绪'**
-  String get shellRuntimeReady;
-
-  /// No description provided for @shellRuntimeIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装未完成'**
-  String get shellRuntimeIncomplete;
-
-  /// No description provided for @shellRuntimeFilesKept.
-  ///
-  /// In zh, this message translates to:
-  /// **'对话和文件都会保留'**
-  String get shellRuntimeFilesKept;
-
-  /// No description provided for @shellRuntimeFirstSetup.
-  ///
-  /// In zh, this message translates to:
-  /// **'首次准备约需一两分钟'**
-  String get shellRuntimeFirstSetup;
-
-  /// No description provided for @shellRuntimeContinuing.
-  ///
-  /// In zh, this message translates to:
-  /// **'即将继续'**
-  String get shellRuntimeContinuing;
-
-  /// No description provided for @shellRuntimeRestoreFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能放回保留的内容'**
-  String get shellRuntimeRestoreFailed;
-
-  /// No description provided for @shellRuntimeExtractFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'解压时出错'**
-  String get shellRuntimeExtractFailed;
-
-  /// No description provided for @shellInstallLogs.
-  ///
-  /// In zh, this message translates to:
-  /// **'安装日志'**
-  String get shellInstallLogs;
-
-  /// No description provided for @shellRuntimeLocalOnly.
-  ///
-  /// In zh, this message translates to:
-  /// **'全程在本机完成'**
-  String get shellRuntimeLocalOnly;
-
-  /// No description provided for @shellRuntimeContinueWithoutKept.
-  ///
-  /// In zh, this message translates to:
-  /// **'不保留，继续安装'**
-  String get shellRuntimeContinueWithoutKept;
-
-  /// No description provided for @shellRuntimeAlmostDone.
-  ///
-  /// In zh, this message translates to:
-  /// **'马上就好'**
-  String get shellRuntimeAlmostDone;
-
-  /// No description provided for @shellRuntimeSecondsRemaining.
-  ///
-  /// In zh, this message translates to:
-  /// **'约 {count} 秒'**
-  String shellRuntimeSecondsRemaining(int count);
-
-  /// No description provided for @shellRuntimeMinutesRemaining.
-  ///
-  /// In zh, this message translates to:
-  /// **'约 {count} 分钟'**
-  String shellRuntimeMinutesRemaining(int count);
-
-  /// No description provided for @shellEngineLogs.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎日志'**
-  String get shellEngineLogs;
-
-  /// No description provided for @shellWelcomeMessage.
-  ///
-  /// In zh, this message translates to:
-  /// **'把 DeepSeek 智能体\n装进口袋'**
-  String get shellWelcomeMessage;
-
-  /// No description provided for @shellGetStarted.
-  ///
-  /// In zh, this message translates to:
-  /// **'开始'**
-  String get shellGetStarted;
 
   /// No description provided for @shellSearchChats.
   ///
@@ -33692,12 +29156,6 @@ abstract class L10n {
   /// **'已置顶'**
   String get shellPinned;
 
-  /// No description provided for @shellEngineNotRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎未运行'**
-  String get shellEngineNotRunning;
-
   /// No description provided for @shellHostNotConnected.
   ///
   /// In zh, this message translates to:
@@ -33871,30 +29329,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'新对话会出现在这里'**
   String get shellNewChatsHint;
-
-  /// No description provided for @shellEngineStarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎正在启动'**
-  String get shellEngineStarting;
-
-  /// No description provided for @shellChatsAfterStarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动后显示你的对话'**
-  String get shellChatsAfterStarting;
-
-  /// No description provided for @shellStartEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动引擎'**
-  String get shellStartEngine;
-
-  /// No description provided for @shellEngineStatusHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'在「引擎」中查看状态'**
-  String get shellEngineStatusHint;
 
   /// No description provided for @shellHostUnreachable.
   ///
@@ -35180,12 +30614,6 @@ abstract class L10n {
   /// **'麦克风被占用或打不开'**
   String get speechCallEndMicrophone;
 
-  /// No description provided for @speechCallEndNoRecognizerSignedIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'通话要能识别录音。已登录的账号在这里付不了 DeepSeek 语音（当前连接的 DSH 版本较旧，或经 DSH Remote 中继）：在设置里填 DeepSeek API Key，或在设置 › 语音里下载语音模型'**
-  String get speechCallEndNoRecognizerSignedIn;
-
   /// No description provided for @speechCallEndNoRecognizer.
   ///
   /// In zh, this message translates to:
@@ -35480,30 +30908,6 @@ abstract class L10n {
   /// **'起始页,空白页,新对话,聊天建议,建议卡片'**
   String get searchKwChatSuggestions;
 
-  /// No description provided for @phoneStartupFailureStopping.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动失败，正在停止'**
-  String get phoneStartupFailureStopping;
-
-  /// No description provided for @phoneStartupFailureStoppingDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动失败，正在停止。{reason}'**
-  String phoneStartupFailureStoppingDetail(String reason);
-
-  /// No description provided for @phoneStartupTokenTimeout.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动等待已超时（180 秒内未收到启动标记），请查看日志'**
-  String get phoneStartupTokenTimeout;
-
-  /// No description provided for @phoneStartupPortNotReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'已收到启动标记，但本机服务端口尚未就绪，请查看日志'**
-  String get phoneStartupPortNotReady;
-
   /// No description provided for @stateDiagnosticsSubject.
   ///
   /// In zh, this message translates to:
@@ -35528,95 +30932,11 @@ abstract class L10n {
   /// **'没能导出诊断包'**
   String get stateDiagnosticsExportFailed;
 
-  /// No description provided for @stateForumUnreachable.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能连上论坛'**
-  String get stateForumUnreachable;
-
-  /// No description provided for @stateSignInExpired.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录已失效，请重新登录'**
-  String get stateSignInExpired;
-
-  /// No description provided for @stateForbidden.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有权限'**
-  String get stateForbidden;
-
-  /// No description provided for @stateForumContentMissing.
-  ///
-  /// In zh, this message translates to:
-  /// **'内容不存在或已删除'**
-  String get stateForumContentMissing;
-
-  /// No description provided for @stateTooManyActions.
-  ///
-  /// In zh, this message translates to:
-  /// **'操作太频繁，稍后再试'**
-  String get stateTooManyActions;
-
-  /// No description provided for @stateForumSendFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能发出去'**
-  String get stateForumSendFailed;
-
-  /// No description provided for @stateForumServerError.
-  ///
-  /// In zh, this message translates to:
-  /// **'论坛暂时出了问题'**
-  String get stateForumServerError;
-
   /// No description provided for @stateBrowserOpenFailed.
   ///
   /// In zh, this message translates to:
   /// **'没能打开浏览器'**
   String get stateBrowserOpenFailed;
-
-  /// No description provided for @stateSignInStartFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能开始登录'**
-  String get stateSignInStartFailed;
-
-  /// No description provided for @stateSignInIncompleteRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录没有完成，请重试'**
-  String get stateSignInIncompleteRetry;
-
-  /// No description provided for @statePluginLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'插件'**
-  String get statePluginLabel;
-
-  /// No description provided for @stateConfigLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'配置'**
-  String get stateConfigLabel;
-
-  /// No description provided for @stateConfigShare.
-  ///
-  /// In zh, this message translates to:
-  /// **'配置分享'**
-  String get stateConfigShare;
-
-  /// No description provided for @stateShareCode.
-  ///
-  /// In zh, this message translates to:
-  /// **'分享码'**
-  String get stateShareCode;
-
-  /// No description provided for @stateCopyShareCodeFirst.
-  ///
-  /// In zh, this message translates to:
-  /// **'先在分享里复制分享码'**
-  String get stateCopyShareCodeFirst;
 
   /// No description provided for @stateFileOpenFailed.
   ///
@@ -35773,126 +31093,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'手机操控模块未就绪'**
   String get statePhoneNotReady;
-
-  /// No description provided for @stateBackgroundRestricted.
-  ///
-  /// In zh, this message translates to:
-  /// **'后台联网被系统限制'**
-  String get stateBackgroundRestricted;
-
-  /// No description provided for @stateBackgroundFinish.
-  ///
-  /// In zh, this message translates to:
-  /// **'让对话在后台也能跑完'**
-  String get stateBackgroundFinish;
-
-  /// No description provided for @stateDeepSeekAccount.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 账号'**
-  String get stateDeepSeekAccount;
-
-  /// No description provided for @stateAccountUnreachable.
-  ///
-  /// In zh, this message translates to:
-  /// **'连不上 DeepSeek'**
-  String get stateAccountUnreachable;
-
-  /// No description provided for @stateAccountUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 暂时无法登录'**
-  String get stateAccountUnavailable;
-
-  /// No description provided for @stateSignInIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录没有完成'**
-  String get stateSignInIncomplete;
-
-  /// No description provided for @stateSignInTimeout.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录超时'**
-  String get stateSignInTimeout;
-
-  /// No description provided for @stateSignInSaveFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录信息没能保存'**
-  String get stateSignInSaveFailed;
-
-  /// No description provided for @stateEngineNotReady.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎还没准备好'**
-  String get stateEngineNotReady;
-
-  /// No description provided for @stateSignInInterrupted.
-  ///
-  /// In zh, this message translates to:
-  /// **'登录被中断'**
-  String get stateSignInInterrupted;
-
-  /// No description provided for @stateAccountUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前引擎不支持账号登录'**
-  String get stateAccountUnsupported;
-
-  /// No description provided for @stateCheckPhoneNetwork.
-  ///
-  /// In zh, this message translates to:
-  /// **'检查手机网络后重试'**
-  String get stateCheckPhoneNetwork;
-
-  /// No description provided for @stateServiceUnavailableRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'服务暂时不可用，稍后重试'**
-  String get stateServiceUnavailableRetry;
-
-  /// No description provided for @stateAuthorizationFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'授权没有成功，重新登录'**
-  String get stateAuthorizationFailed;
-
-  /// No description provided for @stateAuthorizationExpired.
-  ///
-  /// In zh, this message translates to:
-  /// **'授权页面已失效，重新登录'**
-  String get stateAuthorizationExpired;
-
-  /// No description provided for @stateRestartEngineRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'在「引擎」页重启后重试'**
-  String get stateRestartEngineRetry;
-
-  /// No description provided for @stateEngineStartingRetry.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎正在启动，稍后再试'**
-  String get stateEngineStartingRetry;
-
-  /// No description provided for @stateEngineDisconnectedSignIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎连接已断开，重新登录'**
-  String get stateEngineDisconnectedSignIn;
-
-  /// No description provided for @stateUpdateRuntimeOrKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'更新运行环境，或改用 API Key'**
-  String get stateUpdateRuntimeOrKey;
-
-  /// No description provided for @stateEngineDisconnected.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎未连接'**
-  String get stateEngineDisconnected;
 
   /// No description provided for @stateAgentError.
   ///
@@ -36836,12 +32036,6 @@ abstract class L10n {
   /// **'缺少 pnpm'**
   String get statePluginPnpmMissing;
 
-  /// No description provided for @statePluginPhonePnpmMissing.
-  ///
-  /// In zh, this message translates to:
-  /// **'这台手机缺少 pnpm'**
-  String get statePluginPhonePnpmMissing;
-
   /// No description provided for @statePluginHostPnpmMissing.
   ///
   /// In zh, this message translates to:
@@ -37232,36 +32426,6 @@ abstract class L10n {
   /// **'没有连上引擎'**
   String get stateProviderOffline;
 
-  /// No description provided for @stateSafeStartupFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动失败'**
-  String get stateSafeStartupFailed;
-
-  /// No description provided for @stateSafeCrashedEarly.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动后很快崩溃'**
-  String get stateSafeCrashedEarly;
-
-  /// No description provided for @stateSafeCrashedLate.
-  ///
-  /// In zh, this message translates to:
-  /// **'运行中崩溃'**
-  String get stateSafeCrashedLate;
-
-  /// No description provided for @stateSafeKilled.
-  ///
-  /// In zh, this message translates to:
-  /// **'被系统结束'**
-  String get stateSafeKilled;
-
-  /// No description provided for @stateSafeManualEntry.
-  ///
-  /// In zh, this message translates to:
-  /// **'我手动进入了安全模式'**
-  String get stateSafeManualEntry;
-
   /// No description provided for @stateScheduleNotCreated.
   ///
   /// In zh, this message translates to:
@@ -37405,24 +32569,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'下载/'**
   String get stateDownloadsPrefix;
-
-  /// No description provided for @stateSharePluginCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 个插件'**
-  String stateSharePluginCount(int count);
-
-  /// No description provided for @stateShareSkillCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 个技能'**
-  String stateShareSkillCount(int count);
-
-  /// No description provided for @stateShareSettingCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 组设置'**
-  String stateShareSettingCount(int count);
 
   /// No description provided for @stateAlertCompletedReply.
   ///
@@ -37676,29 +32822,11 @@ abstract class L10n {
   /// **'渠道已保存，Key 没有存上：{reason}'**
   String stateProviderKeySaveFailed(String reason);
 
-  /// No description provided for @stateSafeSuspectPlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'{what}，可疑插件：{plugins}'**
-  String stateSafeSuspectPlugins(String what, String plugins);
-
-  /// No description provided for @stateSafePreflightFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'{what}，启动检查没通过：{checks}'**
-  String stateSafePreflightFailed(String what, String checks);
-
   /// No description provided for @stateListSeparator.
   ///
   /// In zh, this message translates to:
   /// **'、'**
   String get stateListSeparator;
-
-  /// No description provided for @stateSafeRepairPrompt.
-  ///
-  /// In zh, this message translates to:
-  /// **'我的 DSH 正常模式出了问题（{what}）。请按「安全模式」说明排查原因，先用可逆的办法修好 web 配置，修完用 dsh-app-plugins trial 试启动验证，再告诉我改了什么。'**
-  String stateSafeRepairPrompt(String what);
 
   /// No description provided for @stateScheduleCreatePrompt.
   ///
@@ -37843,18 +32971,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能保存，再试一次'**
   String get systemActionsToggleFailed;
-
-  /// No description provided for @systemActionsRemoteTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前连的是远程主机'**
-  String get systemActionsRemoteTitle;
-
-  /// No description provided for @systemActionsRemoteHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'系统操作只在本机引擎的对话里有效'**
-  String get systemActionsRemoteHint;
 
   /// No description provided for @systemActionsOnScreenTitle.
   ///
@@ -38720,12 +33836,6 @@ abstract class L10n {
   /// **'正在下载 {percent}%'**
   String updateDownloadingPercent(int percent);
 
-  /// No description provided for @usageStatsTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'发送匿名使用统计'**
-  String get usageStatsTitle;
-
   /// No description provided for @usageStatsSection.
   ///
   /// In zh, this message translates to:
@@ -38737,30 +33847,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'这个开关只控制 dsh-go 自身的统计：各功能使用次数（含伙伴小屋、语音通话）、模型回复报告的 token 数、版本、手机品牌和型号、系统版本，不含对话、文件和账号；它不控制 Google ML Kit SDK 的统计。'**
   String get usageStatsFooter;
-
-  /// No description provided for @usageNoticeBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'不含对话和个人信息，可随时关闭'**
-  String get usageNoticeBody;
-
-  /// No description provided for @usageUpgradeNotice.
-  ///
-  /// In zh, this message translates to:
-  /// **'新增匿名使用统计，帮助改进 DSH Pocket。\n不含对话和个人信息'**
-  String get usageUpgradeNotice;
-
-  /// No description provided for @usageUpgradeLearn.
-  ///
-  /// In zh, this message translates to:
-  /// **'了解'**
-  String get usageUpgradeLearn;
-
-  /// No description provided for @usageUpgradeOff.
-  ///
-  /// In zh, this message translates to:
-  /// **'关闭'**
-  String get usageUpgradeOff;
 
   /// No description provided for @viewArtifactSaved.
   ///
@@ -38905,150 +33991,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'第 {value} 页'**
   String viewArtifactPage(int value);
-
-  /// No description provided for @viewBalanceInvalidKey.
-  ///
-  /// In zh, this message translates to:
-  /// **'Key 无效，查不到余额'**
-  String get viewBalanceInvalidKey;
-
-  /// No description provided for @viewBalancePrefix.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额 '**
-  String get viewBalancePrefix;
-
-  /// No description provided for @viewBalanceLowSuffix.
-  ///
-  /// In zh, this message translates to:
-  /// **' · 余额不足'**
-  String get viewBalanceLowSuffix;
-
-  /// No description provided for @viewBalanceUnavailableSuffix.
-  ///
-  /// In zh, this message translates to:
-  /// **' · 已不能调用'**
-  String get viewBalanceUnavailableSuffix;
-
-  /// No description provided for @viewBalanceTopUp.
-  ///
-  /// In zh, this message translates to:
-  /// **'充值'**
-  String get viewBalanceTopUp;
-
-  /// No description provided for @viewBalanceTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'DeepSeek 余额'**
-  String get viewBalanceTitle;
-
-  /// No description provided for @viewBalanceKeyRequired.
-  ///
-  /// In zh, this message translates to:
-  /// **'填写 API Key 后可查询余额'**
-  String get viewBalanceKeyRequired;
-
-  /// No description provided for @viewBalanceKeyInvalid.
-  ///
-  /// In zh, this message translates to:
-  /// **'API Key 无效，无法查询余额'**
-  String get viewBalanceKeyInvalid;
-
-  /// No description provided for @viewBalancePaid.
-  ///
-  /// In zh, this message translates to:
-  /// **'充值 {value}'**
-  String viewBalancePaid(String value);
-
-  /// No description provided for @viewBalanceGranted.
-  ///
-  /// In zh, this message translates to:
-  /// **'赠送 {value}'**
-  String viewBalanceGranted(String value);
-
-  /// No description provided for @viewBalanceLow.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额不足'**
-  String get viewBalanceLow;
-
-  /// No description provided for @viewBalanceUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'已无法调用'**
-  String get viewBalanceUnavailable;
-
-  /// No description provided for @viewBalanceChecking.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在查询余额…'**
-  String get viewBalanceChecking;
-
-  /// No description provided for @viewBalanceCheckFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'暂时无法查询余额'**
-  String get viewBalanceCheckFailed;
-
-  /// No description provided for @viewBalanceNoAlert.
-  ///
-  /// In zh, this message translates to:
-  /// **'不提醒'**
-  String get viewBalanceNoAlert;
-
-  /// No description provided for @viewBalanceBannerHidden.
-  ///
-  /// In zh, this message translates to:
-  /// **'本次运行不再显示余额提醒'**
-  String get viewBalanceBannerHidden;
-
-  /// No description provided for @viewBalanceTurnOff.
-  ///
-  /// In zh, this message translates to:
-  /// **'不再提醒'**
-  String get viewBalanceTurnOff;
-
-  /// No description provided for @viewBalanceBelow.
-  ///
-  /// In zh, this message translates to:
-  /// **'低于 {value}'**
-  String viewBalanceBelow(String value);
-
-  /// No description provided for @viewBalanceAlert.
-  ///
-  /// In zh, this message translates to:
-  /// **'低余额提醒'**
-  String get viewBalanceAlert;
-
-  /// No description provided for @viewBalanceThreshold.
-  ///
-  /// In zh, this message translates to:
-  /// **'提醒线'**
-  String get viewBalanceThreshold;
-
-  /// No description provided for @viewBalanceGoTopUp.
-  ///
-  /// In zh, this message translates to:
-  /// **'去充值'**
-  String get viewBalanceGoTopUp;
-
-  /// No description provided for @viewBalanceRemaining.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额仅剩 {value}'**
-  String viewBalanceRemaining(String value);
-
-  /// No description provided for @viewBalanceModelDisabled.
-  ///
-  /// In zh, this message translates to:
-  /// **'余额不足，模型已停用'**
-  String get viewBalanceModelDisabled;
-
-  /// No description provided for @viewBalanceRestore.
-  ///
-  /// In zh, this message translates to:
-  /// **'充值后恢复'**
-  String get viewBalanceRestore;
 
   /// No description provided for @viewUiIncomplete.
   ///
@@ -41324,12 +36266,6 @@ abstract class L10n {
   /// **'未下载'**
   String get voiceModelAbsent;
 
-  /// No description provided for @voiceModelDownloading.
-  ///
-  /// In zh, this message translates to:
-  /// **'下载中'**
-  String get voiceModelDownloading;
-
   /// No description provided for @voiceModelPreparing.
   ///
   /// In zh, this message translates to:
@@ -41834,66 +36770,6 @@ abstract class L10n {
   /// **'SSH 主机'**
   String get webSshHost;
 
-  /// No description provided for @webLocalAppOnly.
-  ///
-  /// In zh, this message translates to:
-  /// **'本机地址带启动令牌，只能在 App 内打开'**
-  String get webLocalAppOnly;
-
-  /// No description provided for @webEngineStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎状态'**
-  String get webEngineStatus;
-
-  /// No description provided for @webEngineStarting.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在启动引擎'**
-  String get webEngineStarting;
-
-  /// No description provided for @webEngineStartFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎没能启动'**
-  String get webEngineStartFailed;
-
-  /// No description provided for @webEngineNotRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎没有运行'**
-  String get webEngineNotRunning;
-
-  /// No description provided for @webEngineProblem.
-  ///
-  /// In zh, this message translates to:
-  /// **'引擎遇到了问题'**
-  String get webEngineProblem;
-
-  /// No description provided for @webStartingSoon.
-  ///
-  /// In zh, this message translates to:
-  /// **'稍等片刻，网页版马上就好'**
-  String get webStartingSoon;
-
-  /// No description provided for @webStartToOpen.
-  ///
-  /// In zh, this message translates to:
-  /// **'网页版由本机引擎提供，启动后就能打开'**
-  String get webStartToOpen;
-
-  /// No description provided for @webRestart.
-  ///
-  /// In zh, this message translates to:
-  /// **'重新启动'**
-  String get webRestart;
-
-  /// No description provided for @webStartEngine.
-  ///
-  /// In zh, this message translates to:
-  /// **'启动引擎'**
-  String get webStartEngine;
-
   /// No description provided for @webSwitchToWeb.
   ///
   /// In zh, this message translates to:
@@ -42074,12 +36950,6 @@ abstract class L10n {
   /// **'填网址、账号、密码，和浏览器里登录一样；密码只存在这台手机的安全存储里。'**
   String get webLoginIntro;
 
-  /// No description provided for @webLoginEmpty.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有网页登录主机'**
-  String get webLoginEmpty;
-
   /// No description provided for @webLoginAdd.
   ///
   /// In zh, this message translates to:
@@ -42145,12 +37015,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'登录成功'**
   String get webLoginTestOk;
-
-  /// No description provided for @webLoginSave.
-  ///
-  /// In zh, this message translates to:
-  /// **'保存'**
-  String get webLoginSave;
 
   /// No description provided for @webLoginSaved.
   ///
@@ -44155,90 +39019,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'这个版本没法在这里放下记录。'**
   String get workshopPublishLetGoUnsupported;
-
-  /// No description provided for @workspaceRecoveryTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'工作区索引救援'**
-  String get workspaceRecoveryTitle;
-
-  /// No description provided for @workspaceRecoveryEnable.
-  ///
-  /// In zh, this message translates to:
-  /// **'启用工作区索引救援'**
-  String get workspaceRecoveryEnable;
-
-  /// No description provided for @workspaceRecoveryDisable.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复使用原索引'**
-  String get workspaceRecoveryDisable;
-
-  /// No description provided for @workspaceRecoveryHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'仅本机：原工作区索引异常时，使用另一份索引访问可读取的对话。'**
-  String get workspaceRecoveryHint;
-
-  /// No description provided for @workspaceRecoveryActive.
-  ///
-  /// In zh, this message translates to:
-  /// **'已选择独立救援索引；原索引和救援索引都会保留。'**
-  String get workspaceRecoveryActive;
-
-  /// No description provided for @workspaceRecoveryWorking.
-  ///
-  /// In zh, this message translates to:
-  /// **'处理中…'**
-  String get workspaceRecoveryWorking;
-
-  /// No description provided for @workspaceRecoveryEnableBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'将停止本机引擎，改用独立救援索引后重新启动。原工作区索引保持不动，对话文件、插件和凭据不删除。\n\n首次启用时，新索引从可读取的会话及其仍存在的目录建立。旧工作区名称、顺序、默认、归档和置顶等设置不会自动继承；空工作区或目录已失效的会话不保证出现在新列表中。本机原有分组和置顶偏好保留。\n\n救援索引会保留，下次启用继续使用。这是绕过原索引故障，未修复原索引。'**
-  String get workspaceRecoveryEnableBody;
-
-  /// No description provided for @workspaceRecoveryDisableBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'将停止本机引擎，恢复使用原工作区索引后重新启动。原故障可能再次出现。\n\n救援期间产生的对话文件和救援索引都会保留；两个索引的工作区关系和排序不会自动同步。原索引可能不显示救援期间新增的会话，再次启用可继续使用救援索引。'**
-  String get workspaceRecoveryDisableBody;
-
-  /// No description provided for @workspaceRecoveryEnableStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'启用并重启'**
-  String get workspaceRecoveryEnableStart;
-
-  /// No description provided for @workspaceRecoveryDisableStart.
-  ///
-  /// In zh, this message translates to:
-  /// **'使用原索引并重启'**
-  String get workspaceRecoveryDisableStart;
-
-  /// No description provided for @workspaceRecoveryUnavailable.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前版本尚不支持工作区索引救援，请检查本机引擎状态并更新应用。'**
-  String get workspaceRecoveryUnavailable;
-
-  /// No description provided for @workspaceRecoveryRestartIncomplete.
-  ///
-  /// In zh, this message translates to:
-  /// **'索引模式已切换，但还无法确认引擎已停止，未重新启动。请等停止完成后再启动。'**
-  String get workspaceRecoveryRestartIncomplete;
-
-  /// No description provided for @workspaceRecoverySaveFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'索引模式保存失败，未请求重新启动。请查看本机引擎状态和日志。'**
-  String get workspaceRecoverySaveFailed;
-
-  /// No description provided for @workspaceRecoveryFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'操作未完成，请查看本机引擎状态和日志。已切换的模式可在本页确认。'**
-  String get workspaceRecoveryFailed;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
