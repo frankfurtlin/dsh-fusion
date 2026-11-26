@@ -6153,7 +6153,7 @@ class L10nZh extends L10n {
   String get systemImeMemory => '证据仅存内存，重启清除；新采集会替换旧证据。仅手动“让 AI 看诊断”或导出 ZIP 时包含。清除不会撤回已写入的快照或导出文件。';
 
   @override
-  String get digestTitle => '发现';
+  String get digestTitle => '兴趣推送';
 
   @override
   String get digestRefresh => '刷新';

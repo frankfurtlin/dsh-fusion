@@ -3612,7 +3612,7 @@
   "systemImePermissionsHint": "可自行配置特权通道，无需为诊断强制开启。原有手机授权不代表同意本次采集。",
   "systemImeClear": "清除证据并取消采集",
   "systemImeMemory": "证据仅存内存，重启清除；新采集会替换旧证据。仅手动“让 AI 看诊断”或导出 ZIP 时包含。清除不会撤回已写入的快照或导出文件。",
-  "digestTitle": "发现",
+  "digestTitle": "兴趣推送",
   "digestRefresh": "刷新",
   "digestPushTitle": "兴趣推送",
   "digestPushSubtitle": "每 6 小时按你的兴趣方向挑几条，有新的才提醒",

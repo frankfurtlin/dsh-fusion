@@ -57,6 +57,7 @@ import 'appearance/appearance_page.dart';
 import 'background_guide_page.dart';
 import 'diagnostics_page.dart';
 import 'interface_page.dart';
+import '../../digest/digest_page.dart';
 import 'language_tile.dart';
 import 'linux_environment_page.dart';
 import 'notification_settings.dart';
@@ -148,6 +149,15 @@ class SettingsScreen extends ConsumerWidget {
         SettingsSection(
           title: l10n.hubGroupAi,
           children: [
+            // 兴趣推送（发现）：这一组的行是手写的，索引里有的页面必须在这里出现一行，
+            // 否则只能靠搜索或点通知才找得到 —— 2026-11-26 就是漏了它。
+            SettingsTile(
+              icon: AppIcons.readText,
+              tint: SettingsHues.ai,
+              spot: SettingsIndex.entry(SettingsPageId.digest),
+              subtitle: l10n.digestPushSubtitle,
+              onTap: () => _push(context, const DigestPage()),
+            ),
             SettingsTile(
               icon: AppIcons.providers,
               tint: SettingsHues.ai,
