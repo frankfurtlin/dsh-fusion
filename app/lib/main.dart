@@ -63,3 +63,6 @@ Future<String> _deviceId() async {
   await prefs.setString(key, created);
   return created;
 }
+
+// 构建触发标记（注释，2026-11-26）：上一次连续三个提交在 CNB 上没有产出 APK 附件，
+// Dart release 编译本地已通过，用一次 app/lib 内的注释改动重新触发流水线。
