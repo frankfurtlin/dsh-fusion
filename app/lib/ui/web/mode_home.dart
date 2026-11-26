@@ -59,7 +59,7 @@ class _ModeHomeState extends ConsumerState<ModeHome> {
             child: widget.web?.call(_handoff) ?? WebHome(initial: _handoff),
           )
         : KeyedSubtree(key: const ValueKey(UiMode.native), child: widget.native ?? const HomeShell());
-    // A launch into 伙伴 or 酒馆 opens that page over the home first.
+    // A launch into 伙伴 opens that page over the home first.
     return ModeLaunch(
       child: AnimatedSwitcher(
         duration: AppMotion.of(context, AppMotion.page),

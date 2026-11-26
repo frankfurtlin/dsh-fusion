@@ -2899,7 +2899,7 @@ class _CompanionPageState extends ConsumerState<CompanionPage> implements Compan
                     ),
                   ],
                 ),
-                // 模式: 工作 or 酒馆 from here, and which one a launch opens.
+                // 模式: 工作 from here, and which one a launch opens.
                 SheetGroup(
                   margin: const EdgeInsets.fromLTRB(SheetTitleBar.inset, 0, SheetTitleBar.inset, 12),
                   children: [

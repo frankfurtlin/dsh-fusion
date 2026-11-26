@@ -27,8 +27,9 @@ void registerThirdPartyLicenses({String? os}) {
     }
     final unicodeNotice = await rootBundle.loadString('assets/licenses/unicode-15.0.txt');
     yield LicenseEntryWithLineBreaks(<String>['Unicode Character Database (15.0.0)'], unicodeNotice);
-    // The libraries a card's scripts find on the tavern's canvas page, as 酒馆助手's pages
-    // give them; each package's own LICENSE file, verbatim.
+    // jQuery and Lodash, bundled for card scripts; each package's own LICENSE
+    // file, verbatim. The page that loaded them is gone, and their notices
+    // still ship (THIRD_PARTY_NOTICES.md lists them).
     yield LicenseEntryWithLineBreaks(<String>[
       'jQuery',
     ], await rootBundle.loadString('assets/licenses/jquery-3.7.1-LICENSE.txt'));

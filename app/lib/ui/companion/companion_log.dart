@@ -47,7 +47,7 @@ class CompanionLogEntry {
   final bool code;
 
   /// Who says a line of hers when it is someone other than [CompanionLog.name]
-  /// (the tavern: one of a group, the narrator), and their colour; null: her.
+  /// (the narrator), and their colour; null: her.
   final String? who;
   final Color? tone;
 
@@ -167,7 +167,7 @@ class CompanionLog extends StatefulWidget {
   final List<CompanionLogEntry> entries;
 
   /// The veil over the stage, top to bottom; null: 伙伴小屋's night blue.
-  /// A page with its own look (the tavern's 视觉小说) passes its colours.
+  /// A page with its own look passes its colours.
   final List<Color>? scrim;
 
   /// The speakers' name colours.

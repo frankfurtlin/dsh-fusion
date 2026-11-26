@@ -46,9 +46,9 @@ final Map<String, HtmlTag?> _htmlTags = {
 /// The HTML gpt_markdown parses with [_htmlTags]: where its blocks end.
 final _markdownHtml = GptMarkdownConfig(htmlTags: _htmlTags).markdownHtml;
 
-/// Inline patterns a part of the app lays over every [MarkdownBody] below it
-/// (the tavern colours its story's dialogue). Keep [patterns] one list per
-/// look: its identity is part of the parse cache's key.
+/// Inline patterns a part of the app lays over every [MarkdownBody] below it.
+/// Keep [patterns] one list per look: its identity is part of the parse
+/// cache's key.
 class MarkdownPatterns extends InheritedWidget {
   const MarkdownPatterns({super.key, required this.patterns, required super.child});
 
@@ -757,8 +757,8 @@ class _MarkdownBodyState extends State<MarkdownBody> {
 
     // 表格底色是用户设置，只有主题跟着它变；正文 widget 本身保持同一个实例，
     // 切设置时不让 gpt_markdown 重新解析一遍。
-    // A part of the app's own patterns (the tavern's) are matched over the
-    // whole text, so such a text stays one GptMarkdown.
+    // A part of the app's own patterns are matched over the whole text, so
+    // such a text stays one GptMarkdown.
     final Widget text = _blocked && extra == null
         ? _blocksFor(body)
         : _markdown(

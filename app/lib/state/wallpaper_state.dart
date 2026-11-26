@@ -120,7 +120,7 @@ final _sceneRendererProvider = Provider.autoDispose<WallpaperRenderer>((ref) {
   return renderer;
 });
 
-/// A page's own picture (a tavern chat's background, `WallpaperBackdrop.scene`) baked for its
+/// A page's own picture (a chat's background, `WallpaperBackdrop.scene`) baked for its
 /// frame the way the wallpaper is; null when it can't be read.
 final sceneImageProvider = FutureProvider.autoDispose.family<ui.Image?, (CustomWallpaper, WallpaperFrame)>((
   ref,

@@ -1,7 +1,5 @@
 // The first-run question 「DSH 在哪里运行？」 — on this phone (install the runtime) or
-// on a remote host — with what each costs. On first run a third way is offered
-// beside them, 和角色聊天: 酒馆 alone, which needs neither, and the question
-// becomes 「想怎么用 dsh-Go？」.
+// on a remote host — with what each costs.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +13,8 @@ import '../theme/app_icons.dart';
 import '../theme/theme.dart';
 import 'onboarding_scaffold.dart';
 
-/// Where DSH runs, or 酒馆 without it.
-enum RuntimeOption { local, remote, tavern }
+/// Where DSH runs.
+enum RuntimeOption { local, remote }
 
 /// Two option cards and one 「继续」:
 ///
@@ -41,14 +39,10 @@ enum RuntimeOption { local, remote, tavern }
 /// person picks one. A build without the native runtime
 /// ([LocalRuntimeState.available]) greys 本机 out and goes on with 远程主机.
 class RuntimeChoiceView extends ConsumerStatefulWidget {
-  const RuntimeChoiceView({super.key, required this.onLocal, required this.onRemote, this.onTavern, this.leading});
+  const RuntimeChoiceView({super.key, required this.onLocal, required this.onRemote, this.leading});
 
   final VoidCallback onLocal;
   final VoidCallback onRemote;
-
-  /// 和角色聊天 (first run only): 酒馆, with nothing installed. Null: no such
-  /// card, and the question stays where DSH runs.
-  final VoidCallback? onTavern;
 
   /// Top-left key, as [OnboardingScaffold.leading].
   final Widget? leading;
@@ -62,8 +56,8 @@ class _RuntimeChoiceViewState extends ConsumerState<RuntimeChoiceView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    // One way in: a remote host over SSH. `onTavern`/`onLocal` stay in the signature for the
-    // callers that still pass them, but nothing here leads to either any more.
+    // One way in: a remote host over SSH. `onLocal` stays in the signature for the
+    // callers that still pass it, but nothing here leads to it any more.
 
     return OnboardingScaffold(
       leading: widget.leading,
@@ -76,8 +70,8 @@ class _RuntimeChoiceViewState extends ConsumerState<RuntimeChoiceView> {
         ),
         const SizedBox(height: 28),
         // This build connects one way: a DSH already running on your own server, reached over
-        // SSH. The local-engine install and the 酒馆 entry were other products' answers to a
-        // question this app no longer asks.
+        // SSH. The local-engine install was another product's answer to a question this app
+        // no longer asks.
         RuntimeOptionCard(
           key: const ValueKey('runtime-option-remote'),
           icon: AppIcons.computer,

@@ -139,9 +139,8 @@ class Composer extends StatefulWidget {
   /// Opt-in physical Enter-to-send; never changes the software IME action.
   final bool hardwareEnterSends;
 
-  /// An empty box sends too (the tavern: the character speaks next). The key
-  /// is drawn quietly then, and labelled [emptySendLabel]; the mic, when
-  /// there is one, still comes first.
+  /// An empty box sends too. The key is drawn quietly then, and labelled
+  /// [emptySendLabel]; the mic, when there is one, still comes first.
   final bool sendWhenEmpty;
   final String? emptySendLabel;
 
