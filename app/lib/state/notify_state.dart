@@ -502,7 +502,7 @@ class ChatAlertsController extends Notifier<ChatAlert?> {
     if (connection.isLocal || id == null) return null;
     final active = ref.read(activeHostProvider);
     return switch (connection.kind) {
-      HostKind.local => null,
+      HostKind.local || HostKind.none => null,
       HostKind.web => HostRef.web(id),
       HostKind.ssh => HostRef.ssh(id),
       HostKind.relay => HostRef.relay(id, name: active.id == id ? active.name : null),

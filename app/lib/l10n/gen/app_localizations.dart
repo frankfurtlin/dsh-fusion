@@ -28631,7 +28631,7 @@ abstract class L10n {
   /// No description provided for @remoteAutoConnectOnStartupHint.
   ///
   /// In zh, this message translates to:
-  /// **'关闭后从本机开始'**
+  /// **'关闭后从「远程主机」页开始'**
   String get remoteAutoConnectOnStartupHint;
 
   /// No description provided for @remoteStepConnect.

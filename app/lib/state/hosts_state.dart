@@ -27,7 +27,10 @@ export '../remote/ssh/ssh_host_config.dart';
 
 /// The kinds of DSH host the app can talk to: 本机引擎、网页登录（HTTPS + 网关
 /// 账号密码）、SSH 电脑、DSH Remote 中继。
-enum HostKind { local, web, ssh, relay }
+///
+/// [none] 不是主机：本机引擎已下线（2026-11-26），没有已保存的主机时当前主机
+/// 就是它，界面因此显示「连接电脑或服务器」，而不是回退到本机。
+enum HostKind { local, web, ssh, relay, none }
 
 /// Identifies a host: the on-device engine, a saved SSH host, or a relay
 /// (ds-harness-remote) device. Equality is by kind + id; [name] is only a
@@ -36,6 +39,9 @@ class HostRef {
   const HostRef._(this.kind, this.id, [this.name]);
 
   static const local = HostRef._(HostKind.local, 'local');
+
+  /// 没有主机（本机引擎已下线，没有已保存的远程主机时用它占位）。
+  static const none = HostRef._(HostKind.none, 'none');
 
   const HostRef.web(String id) : this._(HostKind.web, id);
 
@@ -49,24 +55,29 @@ class HostRef {
 
   bool get isLocal => kind == HostKind.local;
 
+  /// 没有主机：本机引擎已下线，App 因此显示「连接电脑或服务器」。
+  bool get isNone => kind == HostKind.none;
+
   String encode() => jsonEncode({'kind': kind.name, 'id': id, if (name != null) 'name': name});
 
+  /// Anything that isn't a saved remote host (an unreadable value, a legacy
+  /// 本机 entry) decodes to [none]: 本机引擎已下线，缺失的主机不再回退到它。
   static HostRef decode(String? raw) {
-    if (raw == null || raw.isEmpty) return local;
+    if (raw == null || raw.isEmpty) return none;
     try {
       final map = jsonDecode(raw);
-      if (map is! Map) return local;
+      if (map is! Map) return none;
       final id = map['id'];
       final name = map['name'];
-      if (id is! String || id.isEmpty) return local;
+      if (id is! String || id.isEmpty) return none;
       return switch (map['kind']) {
         'web' => HostRef.web(id),
         'ssh' => HostRef.ssh(id),
         'relay' => HostRef.relay(id, name: name is String ? name : null),
-        _ => local,
+        _ => none,
       };
     } catch (_) {
-      return local;
+      return none;
     }
   }
 
@@ -86,6 +97,8 @@ String hostLabel(HostKind kind, String? name) => switch (kind) {
   HostKind.web => '${_short(name ?? appL10n.webLoginTitle)} · ${appL10n.webLoginShort}',
   HostKind.ssh => '${_short(name ?? appL10n.stateSshHost)} · SSH',
   HostKind.relay => appL10n.stateHostRemoteLabel(_short(name ?? appL10n.commonRemoteHost)),
+  // 没有主机就没有连接，这个标签不会被显示。
+  HostKind.none => appL10n.commonNotConnected,
 };
 
 String _short(String name) {
@@ -397,10 +410,13 @@ final remoteCompactHistoryProvider = NotifierProvider<RemoteCompactHistoryContro
 );
 
 /// Which host the chat, session list and new chats use. Persisted.
+///
+/// 本机引擎已下线（2026-11-26）：没有已保存的远程主机时这里是 [HostRef.none]，
+/// 不再默认/回退到 [HostRef.local]；界面据此显示「连接电脑或服务器」。
 class ActiveHostController extends Notifier<HostRef> {
   static const prefsKey = 'active_host';
   bool _touched = false;
-  late Future<void> _loaded;
+  Future<void> _loaded = Future<void>.value();
 
   @override
   HostRef build() {
@@ -408,7 +424,7 @@ class ActiveHostController extends Notifier<HostRef> {
     // stored value from its first frame.
     ref.read(remoteAutoConnectProvider);
     _loaded = _restore();
-    return HostRef.local;
+    return HostRef.none;
   }
 
   /// The startup host choice has settled, including a disabled auto-connect
@@ -423,41 +439,61 @@ class ActiveHostController extends Notifier<HostRef> {
       final autoConnect = prefs.getBool(RemoteAutoConnectController.prefsKey) ?? true;
       if (!_touched && owner.mounted && autoConnect) state = restored;
     } catch (_) {
-      // No preferences backend (tests): stay on 本机.
+      // No preferences backend (tests): no host, so the connect page shows.
     }
   }
 
   /// Switches hosts. The open conversation belongs to the old host, so the
   /// chat goes back to "新对话".
+  ///
+  /// 本机引擎已下线（2026-11-26）：[HostRef.local] 不再是可选主机，旧入口把它
+  /// 传进来时落到「没有主机」，界面显示「连接电脑或服务器」。
   void select(HostRef host) {
+    final target = host.isLocal ? HostRef.none : host;
     _touched = true;
-    if (host == state && host.name == state.name) return;
-    final changed = host != state;
-    state = host;
+    if (target == state && target.name == state.name) return;
+    final changed = target != state;
+    state = target;
     if (changed) ref.read(currentSessionProvider.notifier).select(null);
-    unawaited(
-      SharedPreferences.getInstance()
-          .then((prefs) => prefs.setString(prefsKey, host.encode()))
-          .catchError((_) => false),
-    );
+    unawaited(_persist(target));
+  }
+
+  /// [HostRef.none] removes the stored host instead of saving it: the next
+  /// launch starts without one, never on 本机.
+  Future<void> _persist(HostRef host) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (host.isNone) {
+        await prefs.remove(prefsKey);
+      } else {
+        await prefs.setString(prefsKey, host.encode());
+      }
+    } catch (_) {}
   }
 
   /// Hosts matching [gone] no longer exist (a deleted SSH host, a signed-out
-  /// relay account): leave one in use for 本机, and drop one only saved for
-  /// the next launch (with 连接上次使用的主机 off, this launch never used it).
+  /// relay account): leave one in use for no host at all (本机引擎已下线),
+  /// and drop one only saved for the next launch (with 连接上次使用的主机 off,
+  /// this launch never used it).
   Future<void> forget(bool Function(HostRef host) gone) async {
     if (gone(state)) {
-      select(HostRef.local);
+      select(HostRef.none);
       return;
     }
     try {
       final prefs = await SharedPreferences.getInstance();
-      if (gone(HostRef.decode(prefs.getString(prefsKey)))) await prefs.setString(prefsKey, HostRef.local.encode());
+      if (gone(HostRef.decode(prefs.getString(prefsKey)))) await prefs.remove(prefsKey);
     } catch (_) {}
   }
 }
 
 final activeHostProvider = NotifierProvider<ActiveHostController, HostRef>(ActiveHostController.new);
+
+/// Whether the saved host has been restored: the first page waits for it, so a
+/// phone that saved a remote host never shows 连接电脑或服务器 for a frame.
+final activeHostRestoredProvider = FutureProvider<void>(
+  (ref) => ref.read(activeHostProvider.notifier).ready,
+);
 
 // ── DSH Remote (relay) account ───────────────────────────────────────────────
 

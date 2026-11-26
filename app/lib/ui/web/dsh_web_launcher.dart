@@ -60,6 +60,9 @@ final dshWebAccessProvider = Provider.autoDispose<DshWebAccess>((ref) {
         return NoDshWeb(appL10n.webConnectHostFirst(name));
       }
       return SshDshWeb(localWebUri('http://127.0.0.1:$port', token), name);
+    case HostKind.none:
+      // 没有主机：没有 DSH Web（本机引擎已下线，不拿它兜底）。
+      return NoDshWeb(appL10n.commonNotConnected);
   }
 });
 

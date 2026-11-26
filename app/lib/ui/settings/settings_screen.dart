@@ -94,8 +94,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final settings = ref.watch(settingsProvider);
-    final runtime = ref.watch(localRuntimeProvider);
-    final engine = EngineStatusView.of(runtime);
     final colors = DshColors.of(context);
     final notifier = ref.read(settingsProvider.notifier);
     final android = ref.watch(androidSystemFeaturesProvider);
@@ -301,13 +299,8 @@ class SettingsScreen extends ConsumerWidget {
         SettingsSection(
           title: l10n.hubGroupHosts,
           children: [
-            SettingsTile(
-              icon: AppIcons.engine,
-              tint: SettingsHues.hosts,
-              spot: SettingsIndex.entry(SettingsPageId.engine),
-              value: StatusChip(tone: engine.tone, label: engine.label),
-              onTap: () => _push(context, const EngineScreen()),
-            ),
+            // 本机引擎已下线：原来的「本机引擎」行（打开 EngineScreen）不再出现，
+            // 只留远程主机与当前主机的引擎参数。
             SettingsTile(
               icon: AppIcons.remoteHosts,
               tint: SettingsHues.hosts,

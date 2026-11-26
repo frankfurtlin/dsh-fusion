@@ -1029,8 +1029,11 @@ class CurrentSessionController extends Notifier<String?> {
       } else {
         // Old IDs have no host binding. Keep their existing compatibility
         // only when startup actually chose the saved host; a skipped remote
-        // must not turn its unbound ID into a local conversation.
-        if (HostRef.decode(prefs.getString(ActiveHostController.prefsKey)) == host) state = legacy;
+        // must not turn its unbound ID into a local conversation. 本机引擎已下线：
+        // 没有主机时也不恢复这些（本机的）旧 ID。
+        if (!host.isNone && HostRef.decode(prefs.getString(ActiveHostController.prefsKey)) == host) {
+          state = legacy;
+        }
       }
     } catch (_) {
       // No preferences backend (tests) or unreadable store: start with a new chat.

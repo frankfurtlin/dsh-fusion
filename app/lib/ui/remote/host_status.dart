@@ -47,6 +47,8 @@ IconData hostKindIcon(HostKind kind) => switch (kind) {
   HostKind.web => AppIcons.computer,
   HostKind.ssh => AppIcons.sshHost,
   HostKind.relay => AppIcons.computer,
+  // 没有主机：图标只说「去连一个」。
+  HostKind.none => AppIcons.computer,
 };
 
 /// Identity tint per kind (one of the 8 fixed pairs), so rows read as a set.
@@ -55,4 +57,5 @@ int hostKindTint(HostKind kind) => switch (kind) {
   HostKind.web => 2,
   HostKind.ssh => 6,
   HostKind.relay => 1,
+  HostKind.none => 2,
 };

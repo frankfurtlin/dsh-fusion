@@ -91,6 +91,9 @@ bool runtimeStepAsks(RuntimeStatus status) =>
 /// App root: waits for settings and the native runtime to report in, then shows
 /// onboarding or the home shell, and auto-starts the local engine once per launch
 /// (设置 › 引擎 › 打开 App 时自动启动).
+///
+/// 本机引擎已下线（2026-11-26）：没有主机时首屏是 [RemoteScreen]（「连接电脑或
+/// 服务器」），不走只为本机运行环境准备的引导，也不启动本机引擎。
 class RootGate extends ConsumerStatefulWidget {
   const RootGate({super.key, this.home});
 
@@ -227,7 +230,7 @@ class _RootGateState extends ConsumerState<RootGate> {
     } finally {
       _pickingRemote = false;
     }
-    if (!mounted || ref.read(activeHostProvider).isLocal) return;
+    if (!mounted || ref.read(activeHostProvider).isNone) return;
     if (_beside) _leaveBeside();
     await ref.read(onboardingPrefsProvider.notifier).setLocalDeclined(true);
     // What installing does on the other path: Android 13 asks about
@@ -262,6 +265,9 @@ class _RootGateState extends ConsumerState<RootGate> {
   void _maybeAutoStart() {
     if (_autoStartDone) return;
     _autoStartDone = true;
+    // 本机引擎已下线（2026-11-26）：只有当前主机就是本机时才在启动时拉起它，
+    // 用远程主机的人不再顺带跑一个用不到的本机引擎。
+    if (!ref.read(activeHostProvider).isLocal) return;
     final settings = ref.read(settingsProvider);
     if (!settings.autoStartLocal) return;
     final status = ref.read(localRuntimeProvider).status;
@@ -301,15 +307,18 @@ class _RootGateState extends ConsumerState<RootGate> {
     final settings = ref.watch(settingsProvider);
     final runtime = ref.watch(localRuntimeProvider.select((s) => (status: s.status, loaded: s.loaded)));
     final prefs = ref.watch(onboardingPrefsProvider);
-    // The last host comes back while the splash shows, so a phone without
-    // the runtime doesn't open on 本机 for a frame before its remote host.
-    ref.read(activeHostProvider);
+    // The active host rebuilds this gate: picking one on the connect page
+    // replaces it with home. The restore happens while the splash shows, so a
+    // phone that saved a remote host never opens on the connect page for a frame.
+    final host = ref.watch(activeHostProvider);
+    final hostRestored = ref.watch(activeHostRestoredProvider);
 
     // "重置运行环境" sends the user back through setup; 「卸载运行环境」
-    // (localDeclined) stays home.
+    // (localDeclined) stays home. 本机引擎已下线：没有主机时这条本机引导不再出现。
     ref.listen(localRuntimeProvider.select((s) => s.status.phase), (prev, next) {
       if (_decided &&
           _step == null &&
+          !host.isNone &&
           next == RuntimePhase.notInstalled &&
           prev != RuntimePhase.notInstalled &&
           !ref.read(onboardingPrefsProvider).localDeclined) {
@@ -345,24 +354,34 @@ class _RootGateState extends ConsumerState<RootGate> {
     if (runtime.status.phase == RuntimePhase.running) _publishDiagnostics();
 
     final Widget child;
-    if (!settings.loaded || !runtime.loaded || !prefs.loaded) {
+    if (!settings.loaded || !runtime.loaded || !prefs.loaded || hostRestored.isLoading) {
       StartupTrace.mark('waiting: settings ${settings.loaded}, engine ${runtime.loaded}, setup ${prefs.loaded}');
       child = const _Splash();
     } else {
       if (!_decided) {
         _decided = true;
-        _step = initialOnboardingStep(
-          status: runtime.status,
-          hasApiKey: settings.hasApiKey,
-          hasCustomProvider: settings.customProviderIds.isNotEmpty,
-          prefs: prefs,
-        );
-        _chooseRuntime = runtimeStepAsks(runtime.status);
-        // The choice shows what installing costs: read it before it opens.
-        if (_chooseRuntime && _step != null) ref.read(localFootprintProvider);
-        _resumeBeside(prefs.setupStep, runtime.status);
+        // 本机引擎已下线：没有主机时首屏就是「连接电脑或服务器」，不再走只为本机
+        // 运行环境准备的引导流程，也不续跑上次没装完的 runtime。
+        if (host.isNone) {
+          _step = null;
+        } else {
+          _step = initialOnboardingStep(
+            status: runtime.status,
+            hasApiKey: settings.hasApiKey,
+            hasCustomProvider: settings.customProviderIds.isNotEmpty,
+            prefs: prefs,
+          );
+          _chooseRuntime = runtimeStepAsks(runtime.status);
+          // The choice shows what installing costs: read it before it opens.
+          if (_chooseRuntime && _step != null) ref.read(localFootprintProvider);
+          _resumeBeside(prefs.setupStep, runtime.status);
+        }
       }
-      if (_step case final step?) {
+      if (host.isNone) {
+        // 没有主机：直接是远程主机页（标题/文案都是现成的），挑中一个主机后
+        // 上面的 host 变了，这一分支换成主界面。
+        child = const RemoteScreen();
+      } else if (_step case final step?) {
         child = OnboardingFlow(
           step: step,
           chooseRuntime: _chooseRuntime,
@@ -407,7 +426,13 @@ class _RootGateState extends ConsumerState<RootGate> {
       switchInCurve: AppMotion.enter,
       switchOutCurve: AppMotion.exit,
       child: KeyedSubtree(
-        key: ValueKey(child is _Splash ? 'splash' : (_step == null ? 'home' : 'onboarding')),
+        key: ValueKey(
+          child is _Splash
+              ? 'splash'
+              : host.isNone
+              ? 'connect'
+              : (_step == null ? 'home' : 'onboarding'),
+        ),
         child: child,
       ),
     );
