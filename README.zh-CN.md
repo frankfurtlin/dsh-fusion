@@ -9,7 +9,7 @@
 An Android client for DeepSeek Harness. Connect to your own host over SSH, chat in a native app, and let the agent drive the phone itself.
 
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.2-orange)](app/pubspec.yaml)
+[![Version](https://img.shields.io/badge/version-1.2.1-orange)](app/pubspec.yaml)
 [![Platform](https://img.shields.io/badge/platform-Android-3ddc84)](https://developer.android.com)
 [![Flutter](https://img.shields.io/badge/Flutter-3.50-02569b)](https://flutter.dev)
 [![Status](https://img.shields.io/badge/status-in%20development-yellow)](#状态)
@@ -48,7 +48,7 @@ DeepSeek Harness（下称 DSH）跑在你自己的服务器上，平时通过浏
 直接装 APK（自建分发，腾讯云 COS + EdgeOne）：
 
 ```
-https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.1.3-8-arm64.apk
+https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.2.1-19-arm64.apk
 ```
 
 - 平台：Android 8.0+（`minSdk 26`），arm64
