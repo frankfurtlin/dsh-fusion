@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +43,10 @@ public class A11yService extends AccessibilityService {
   private static final int DEFAULT_MAX_IMAGE_BYTES = 600_000;
   /** Most nodes walked when looking for a label the system search did not index. */
   private static final int FIND_SCAN_CAP = 2000;
+  /** Time the focused field gets to open its input connection before the one retry types. */
+  private static final long FOCUS_SETTLE_MS = 100;
+  /** Characters of each candidate's label quoted when several edit boxes compete for the focus. */
+  private static final int CANDIDATE_LABEL_CHARS = 20;
 
   static volatile A11yService instance;
 
@@ -227,24 +232,141 @@ public class A11yService extends AccessibilityService {
     nodes.put(entry);
   }
 
-  /** Types into the focused text field, the way a soft keyboard would. */
+  /**
+   * Types into the focused text field, the way a soft keyboard would.
+   *
+   * A drawn screen can keep input focus on a node that takes no text — the terminal's xterm
+   * canvas — while its real edit box (a Flutter EditText, hint 「终端输入」) sits unfocused
+   * somewhere else on screen. When that happens the screen's only editable node is focused and
+   * the text is retried once, after Flutter has had time to open the input connection.
+   */
   public JSONObject typeText(final String value) throws Exception {
-    return onMain(() -> {
-      AccessibilityNodeInfo root = getRootInActiveWindow();
-      if (root == null) throw new IllegalStateException("no active window");
-      AccessibilityNodeInfo target = root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
-      if (target == null) throw new IllegalStateException("no text field has input focus; tap the field first");
-      if (!target.isEditable()) throw new IllegalStateException("the focused node is not an editable text field; tap the field itself first");
-      Bundle arguments = new Bundle();
-      arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, value);
-      if (!target.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)) {
-        throw new IllegalStateException("the focused text field refused the text");
+    JSONObject done = onMain(() -> typeNow(value, true));
+    if (done != null) return done;
+    return typeAfterFocus(value);
+  }
+
+  /**
+   * One typing attempt, on the main thread.
+   *
+   * The focused input node is used first, exactly as before. When that node is missing or not
+   * editable, `mayFocus` decides what happens: with a single editable node on the screen it gets
+   * ACTION_FOCUS and this returns null, asking the caller for the one delayed retry. Zero or
+   * several candidates throw the error the agent sees.
+   */
+  private JSONObject typeNow(String value, boolean mayFocus) throws Exception {
+    AccessibilityNodeInfo root = getRootInActiveWindow();
+    if (root == null) throw new IllegalStateException("no active window");
+    AccessibilityNodeInfo target = root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
+    if (target != null && target.isEditable()) {
+      if (!setText(target, value)) throw new IllegalStateException("the focused text field refused the text");
+      return typed(value);
+    }
+    List<AccessibilityNodeInfo> candidates = editableNodes(root);
+    if (candidates.size() > 1) {
+      throw new IllegalStateException("the screen shows " + candidates.size()
+          + " editable text fields but none of them has input focus; tap the field itself first: " + describe(candidates));
+    }
+    if (candidates.isEmpty()) {
+      throw new IllegalStateException(target == null
+          ? "no text field has input focus; tap the field first"
+          : "the focused node is not an editable text field; tap the field itself first");
+    }
+    AccessibilityNodeInfo field = candidates.get(0);
+    if (!mayFocus) {
+      // Second pass: typing is all this call gets; the field was already focused on the first.
+      if (!setText(field, value)) throw new IllegalStateException("the editable text field refused the text after it was focused");
+      return typed(value);
+    }
+    field.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+    return null;
+  }
+
+  /**
+   * Types again after the focus request has had {@link #FOCUS_SETTLE_MS} to take effect.
+   *
+   * Not onMain(): its body runs *and is awaited* on the main thread, so a delay posted from there
+   * would never elapse. Post the retry, wait on the calling thread.
+   */
+  private JSONObject typeAfterFocus(final String value) throws Exception {
+    final JSONObject[] result = new JSONObject[1];
+    final Exception[] failure = new Exception[1];
+    final CountDownLatch done = new CountDownLatch(1);
+    main.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          result[0] = typeNow(value, false);
+        } catch (Exception e) {
+          failure[0] = e;
+        } finally {
+          done.countDown();
+        }
       }
-      JSONObject out = new JSONObject();
-      out.put("ok", true);
-      out.put("length", value.length());
-      return out;
-    });
+    }, FOCUS_SETTLE_MS);
+    if (!done.await(OP_TIMEOUT_MS, TimeUnit.MILLISECONDS)) throw new IllegalStateException("the typing retry timed out");
+    if (failure[0] != null) throw failure[0];
+    return result[0];
+  }
+
+  /** Editable nodes in the active window, in tree order. */
+  private static List<AccessibilityNodeInfo> editableNodes(AccessibilityNodeInfo root) {
+    List<AccessibilityNodeInfo> found = new ArrayList<>();
+    ArrayDeque<AccessibilityNodeInfo> queue = new ArrayDeque<>();
+    queue.add(root);
+    for (int visited = 0; visited < FIND_SCAN_CAP && !queue.isEmpty(); visited++) {
+      AccessibilityNodeInfo node = queue.poll();
+      if (node.isEditable()) found.add(node);
+      for (int i = 0; i < node.getChildCount(); i++) {
+        AccessibilityNodeInfo child = node.getChild(i);
+        if (child != null) queue.add(child);
+      }
+    }
+    return found;
+  }
+
+  /** "终端输入 / Search": one short label per candidate, for the several-edit-boxes error. */
+  private static String describe(List<AccessibilityNodeInfo> nodes) {
+    StringBuilder out = new StringBuilder();
+    for (AccessibilityNodeInfo node : nodes) {
+      if (out.length() > 0) out.append(" / ");
+      out.append(label(node));
+    }
+    return out.toString();
+  }
+
+  /**
+   * `终端输入` / `Search | dsh`: a node's hint and its text, each clipped to
+   * {@link #CANDIDATE_LABEL_CHARS} characters, so several look-alike fields stay distinguishable.
+   */
+  private static String label(AccessibilityNodeInfo node) {
+    String hint = clipped(node.getHintText());
+    String text = clipped(node.getText());
+    if (!hint.isEmpty() && !text.isEmpty() && !hint.equals(text)) return hint + " | " + text;
+    if (!hint.isEmpty()) return hint;
+    return text.isEmpty() ? "<no label>" : text;
+  }
+
+  /** Trimmed, single-spaced, at most {@link #CANDIDATE_LABEL_CHARS} characters. */
+  private static String clipped(CharSequence value) {
+    if (value == null) return "";
+    String text = value.toString().trim().replaceAll("\\s+", " ");
+    return text.length() > CANDIDATE_LABEL_CHARS ? text.substring(0, CANDIDATE_LABEL_CHARS) + "…" : text;
+  }
+
+  /** The one ACTION_SET_TEXT request both the focused field and the fallback field use. */
+  private static boolean setText(AccessibilityNodeInfo node, String value) {
+    Bundle arguments = new Bundle();
+    arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, value);
+    return node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+  }
+
+  /** The shape the bridge hands the agent: `{ok, length}`. */
+  private static JSONObject typed(String value) throws Exception {
+    JSONObject out = new JSONObject();
+    out.put("ok", true);
+    out.put("length", value.length());
+    return out;
   }
 
   /** Current screen as a base64 JPEG, shrunk until it fits `maxBytes`. */
