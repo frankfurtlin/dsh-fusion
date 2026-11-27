@@ -303,11 +303,15 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
   void _setA11yText(String text) {
     if (_a11yController.text == text) return;
     _a11ySyncing = true;
-    _a11yController.value = TextEditingValue(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
-    );
-    _a11ySyncing = false;
+    try {
+      _a11yController.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    } finally {
+      // A listener blowing up must not leave the field permanently muted.
+      _a11ySyncing = false;
+    }
   }
 
   /// Hardware keys: wait while the IME composes; sticky modifiers apply to
