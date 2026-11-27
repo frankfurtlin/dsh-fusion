@@ -106,12 +106,10 @@ class L10nZh extends L10n {
   String get accessFeatureAlertsNeeds => '需要通知权限';
 
   @override
-  String accessVoiceModel(int size) {
-    return '离线识别，需下载约 $size MB 语音模型';
-  }
+  String get accessVoiceModel => '用手机的系统识别；也可以用设置里的 API Key 走云端转写';
 
   @override
-  String get accessVoiceMetered => '当前是移动数据，下载会消耗流量';
+  String get accessVoiceMetered => '当前是移动数据，云端转写会消耗流量';
 
   @override
   String get accessFilesRiskBody => 'AI 能读取和修改相册、下载、文档等手机文件。';
@@ -272,9 +270,7 @@ class L10nZh extends L10n {
   String get accessSummaryMessage => '随时可在「设置 › 通用 › 系统权限」补开';
 
   @override
-  String accessVoiceDownload(int size) {
-    return '语音模型（约 $size MB）会在引擎就绪后开始下载，进度在「设置 › 通用 › 语音输入」里查看';
-  }
+  String get accessVoiceDownload => '语音输入用手机的系统识别，也可以在「设置 › 通用 › 语音」里改成云端转写（填服务地址和 Key）';
 
   @override
   String get accessPageTitle => '系统权限';
@@ -9147,7 +9143,7 @@ class L10nZh extends L10n {
   String get iosPhoneLinkErrorTunnel => '连不上本机服务。先确认用于本机连接的 LocalDevVPN 已接通、开发者模式已打开，再检查连接。';
 
   @override
-  String get iosSpeechCallEndNoRecognizer => '语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。';
+  String get iosSpeechCallEndNoRecognizer => '语音通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写。iOS 上的系统识别不能整段转写。';
 
   @override
   String get iosPhoneLinkErrorPairingRejected => '手机不认这份配对凭据。重新生成一份再导入。';
@@ -10279,7 +10275,7 @@ class L10nZh extends L10n {
   String get petActionBusy => '这个对话正在忙，请选择「新对话」';
 
   @override
-  String get petActionVoiceMissing => '先到 App 下载离线语音模型';
+  String get petActionVoiceMissing => '桌宠麦克风随手机本地引擎一起删除了；录音也不会自己送到云端';
 
   @override
   String get petActionVoiceTitle => '语音问一句';
@@ -16375,7 +16371,7 @@ class L10nZh extends L10n {
   String get speechNotSetUp => '朗读的声音还没设置好，去设置 › 语音看看';
 
   @override
-  String get speechNoCredential => '要先登录 DeepSeek 账号，或在设置里填 API Key';
+  String get speechNoCredential => '先在设置里填 DeepSeek API Key';
 
   @override
   String get speechAccountUnusable =>
@@ -16415,7 +16411,7 @@ class L10nZh extends L10n {
   String get speechListenFailed => '识别失败';
 
   @override
-  String get speechCloudNotice => '语音会发给 DeepSeek 识别。想在手机上识别，可以换成语音模型。';
+  String get speechCloudNotice => '语音会发给 DeepSeek 识别（用你的 API Key）。想在本机识别，可以在设置 › 语音里换成「系统」。';
 
   @override
   String get speechCloudNotSetUp => '还没设置云端识别服务';
@@ -16543,7 +16539,7 @@ class L10nZh extends L10n {
   String get speechCallEndMicrophone => '麦克风被占用或打不开';
 
   @override
-  String get speechCallEndNoRecognizer => '通话需要能识别录音的方式：登录 DeepSeek 账号、填 API Key，或下载语音模型';
+  String get speechCallEndNoRecognizer => '通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写';
 
   @override
   String get speechCallEndBackground => '切到后台时通话会结束';
@@ -19649,16 +19645,16 @@ class L10nZh extends L10n {
   String get voiceModeSystemHint => '使用手机设置中的识别服务';
 
   @override
-  String get voiceFallbackStarted => '已改用语音模型，请再说一次';
+  String get voiceFallbackStarted => '已改用连接主机的识别，请再说一次';
 
   @override
   String get voiceChooseSystem => '请在系统设置中选择语音识别服务';
 
   @override
-  String get voiceConfigureEngine => '请先在语音设置里下载语音模型';
+  String get voiceConfigureEngine => '请先在设置 › 语音里选择识别方式';
 
   @override
-  String get voiceConfigureEither => '系统识别用不了，可以在语音设置里下载语音模型';
+  String get voiceConfigureEither => '系统识别用不了，可以在设置 › 语音里选云端转写（填服务地址和 Key）';
 
   @override
   String get voiceErrorNetworkTimeout => '语音识别连接超时，请检查网络';

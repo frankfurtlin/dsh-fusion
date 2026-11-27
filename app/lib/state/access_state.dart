@@ -1,9 +1,10 @@
-// System permissions by what they are for: first run's 「想让 DSH Pocket 帮你做哪些
-// 事」 (lib/ui/onboarding/access_step.dart) and 设置 › 系统权限
-// (lib/ui/settings/system_access_page.dart) read and open the same items here.
+// System permissions by what they are for: 设置 › 系统权限
+// (lib/ui/settings/system_access_page.dart) reads and opens the same items here.
+// 首启的「想让 DSH Pocket 帮你做哪些事」页面在 1.2.0 删掉了，只剩这处入口；这里
+// 的选/走/收尾代码仍在（[AccessSetupController]），等同一套页面回来时用。
 //
 // Nothing here detects or opens anything on its own: the readings come from
-// the channels the rest of the app already uses (runtime bridge for storage,
+// the channels the rest of the app already uses (the device bridge for storage,
 // battery and the makers' pages; notify, phone and pet overlay channels; the
 // voice plugin), so a grant seen here is the grant the feature sees.
 //
@@ -31,19 +32,16 @@ import 'android_features.dart';
 import 'notify_state.dart';
 import 'phone_state.dart';
 import 'system_actions_state.dart';
-import 'voice_model_state.dart' show voiceModelDefaultBytes, voiceModelOnboardingKey;
+import 'voice_model_state.dart' show voiceModelOnboardingKey;
 import 'voice_state.dart';
 
-/// The offline voice model's size in MB as the voice settings show it, said
-/// before 语音输入 is chosen. The download it used to start (the on-device
-/// engine's model) was removed with 1.2.0; the size is still what first run
-/// and 系统权限 say.
-final voiceModelApproxMb = (voiceModelDefaultBytes / 1000000).round();
-
 /// First run's answer about voice input: true when 语音输入 was picked, false
-/// when the page was confirmed without it, absent when the page was skipped.
-/// (The old on-device model download that read it is gone; the answer stays
-/// on record.)
+/// when the page was confirmed without it.
+///
+/// 1.2.0: the offline voice model (and the download that read this) went with
+/// the on-device engine, so nothing writes or reads it any more; the name stays
+/// so a stale value from an older build is recognisable, and tests assert first
+/// run does not start that download again.
 const onboardingWantsVoiceKey = voiceModelOnboardingKey;
 
 /// What a person picks on first run: things DSH Pocket does, not permission names.
@@ -66,10 +64,6 @@ List<AccessFeature> accessFeaturesFor(String os) => switch (os) {
   ],
   _ => const [AccessFeature.alerts, AccessFeature.voice],
 };
-
-/// Whether 语音输入 on [os] means the offline model's download: HarmonyOS and
-/// iOS use the system's recogniser and have no model.
-bool accessVoiceDownloads(String os) => androidSystemFeaturesOn(os);
 
 /// One system permission or maker's switch, in the order first run walks
 /// them: the system's own dialogs first, then settings pages, the makers'
@@ -523,19 +517,15 @@ class AccessSetupController extends Notifier<AccessSetup> {
     } catch (_) {}
   }
 
-  /// 「开启所选」: the walk starts, and the voice answer is written for the
-  /// voice feature to pick up (never yes where there is no model to fetch,
-  /// [accessVoiceDownloads]). [phoneMode], picked with 手机操控, goes to the
+  /// 「开启所选」: the walk starts. 1.2.0: no download follows a pick any more
+  /// (the offline voice model went with the on-device engine), so nothing is
+  /// written to [onboardingWantsVoiceKey] here — the answer is only in
+  /// [AccessSetup.features]. [phoneMode], picked with 手机操控, goes to the
   /// phone's policies now, or as soon as they can be written
   /// ([PhoneController.chooseConfirmMode]).
   Future<void> choose(Set<AccessFeature> features, {PhoneConfirmMode? phoneMode}) async {
     state = AccessSetup(loaded: true, features: {...features});
     await _save();
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final os = ref.read(operatingSystemProvider);
-      await prefs.setBool(onboardingWantsVoiceKey, features.contains(AccessFeature.voice) && accessVoiceDownloads(os));
-    } catch (_) {}
     if (phoneMode != null && features.contains(AccessFeature.phone)) {
       try {
         await ref.read(phoneProvider.notifier).chooseConfirmMode(phoneMode);

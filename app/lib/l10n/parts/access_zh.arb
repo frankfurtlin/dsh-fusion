@@ -16,15 +16,8 @@
   "accessFeatureVoiceNeeds": "需要麦克风权限",
   "accessFeatureAlerts": "回复提醒",
   "accessFeatureAlertsNeeds": "需要通知权限",
-  "accessVoiceModel": "离线识别，需下载约 {size} MB 语音模型",
-  "@accessVoiceModel": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "accessVoiceMetered": "当前是移动数据，下载会消耗流量",
+  "accessVoiceModel": "用手机的系统识别；也可以用设置里的 API Key 走云端转写",
+  "accessVoiceMetered": "当前是移动数据，云端转写会消耗流量",
   "accessFilesRiskBody": "AI 能读取和修改相册、下载、文档等手机文件。",
   "accessStepCount": "{index} / {total}",
   "@accessStepCount": {
@@ -125,14 +118,7 @@
     }
   },
   "accessSummaryMessage": "随时可在「设置 › 通用 › 系统权限」补开",
-  "accessVoiceDownload": "语音模型（约 {size} MB）会在引擎就绪后开始下载，进度在「设置 › 通用 › 语音输入」里查看",
-  "@accessVoiceDownload": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
+  "accessVoiceDownload": "语音输入用手机的系统识别，也可以在「设置 › 通用 › 语音」里改成云端转写（填服务地址和 Key）",
   "accessPageTitle": "系统权限",
   "accessPageSubtitle": "各项功能用到的系统权限"
 }

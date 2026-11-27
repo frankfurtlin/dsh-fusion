@@ -1,33 +1,60 @@
 // The system-permission pages on HarmonyOS: notifications are asked for with
 // the system's dialog, and only what works there is read or offered. Android
 // beside it wherever the OS is a parameter.
+//
+// 1.2.0: 首启的「想让 DSH Pocket 帮你做哪些事」页面（选、走、收尾）删掉了，这个
+// 文件只剩和它一起活下来的部分：通知权限的对话框、按系统分项、一步的走法、
+// 设置 › 系统权限，以及搜索里的入口。首启那几组随页面一起删。
 
-import 'package:dsh_app/notify/notify_channel.dart';
 import 'package:dsh_app/l10n/l10n.dart';
-import 'package:dsh_app/runtime/runtime_bridge.dart';
-import 'package:dsh_app/runtime/runtime_state.dart';
+import 'package:dsh_app/notify/notify_channel.dart';
 import 'package:dsh_app/state/access_state.dart';
 import 'package:dsh_app/state/android_features.dart';
-import 'package:dsh_app/state/system_actions_state.dart';
-import 'package:dsh_app/state/voice_model_state.dart' show voiceModelWantedKey;
 import 'package:dsh_app/ui/access/access_walk.dart';
-import 'package:dsh_app/ui/access/phone_mode_sheet.dart';
-import 'package:dsh_app/ui/phone/phone_disclosure_sheet.dart';
 import 'package:dsh_app/ui/features/feature_catalog.dart';
-import 'package:dsh_app/ui/onboarding/access_step.dart';
 import 'package:dsh_app/ui/settings/index/spots.dart';
 import 'package:dsh_app/ui/settings/search/settings_search.dart';
 import 'package:dsh_app/ui/settings/system_access_page.dart';
+import 'package:dsh_app/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../shell/golden_harness.dart';
-import 'support.dart';
-
 const _primary = ValueKey('access-primary');
+
+final _zh = lookupL10n(AppLocale.zhCN);
+final _en = lookupL10n(AppLocale.en);
+
+/// 「一步」的一步：原样读手机，[open] 记下每一次打开，可以答「打开后是什么」。
+class FakeAccessDriver implements AccessDriver {
+  FakeAccessDriver(this.readings, {this.answer});
+
+  AccessReadings readings;
+  AccessReadings Function(AccessItem item, AccessReadings readings)? answer;
+
+  /// `notifications` / `notifications+`（[again]）。
+  final opened = <String>[];
+  var appInfoOpened = 0;
+
+  @override
+  Future<AccessReadings> read() async => readings;
+
+  @override
+  Future<bool> open(AccessItem item, {bool again = false}) async {
+    opened.add(again ? '${item.name}+' : item.name);
+    if (answer case final answer?) readings = answer(item, readings);
+    return true;
+  }
+
+  @override
+  Future<bool> openAppInfo() async {
+    appInfoOpened++;
+    return true;
+  }
+}
 
 Future<void> _frames(WidgetTester tester, [int n = 8]) async {
   for (var i = 0; i < n; i++) {
@@ -37,17 +64,43 @@ Future<void> _frames(WidgetTester tester, [int n = 8]) async {
 
 String _primaryLabel(WidgetTester tester) => (tester.widget<FilledButton>(find.byKey(_primary)).child! as Text).data!;
 
-/// The runtime's answers on HarmonyOS: no storage, and no battery exemption to ask about.
-class _HarmonyBridge extends RuntimeBridge {
-  @override
-  Future<StorageAccess> storageStatus() async => const StorageAccess(granted: false, permission: false, legacy: false);
-
-  @override
-  Future<bool?> batteryExempt() => Future.error(PlatformException(code: 'ohos_unsupported'));
+/// A phone-sized screen with the app's theme and localizations, no engine behind it.
+Future<void> _pump(
+  WidgetTester tester,
+  Widget home, {
+  List<Override> overrides = const [],
+  Locale locale = AppLocale.zhCN,
+  Size logicalSize = const Size(360, 780),
+}) async {
+  tester.view.physicalSize = logicalSize * 3;
+  tester.view.devicePixelRatio = 3;
+  addTearDown(tester.view.reset);
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: overrides,
+      child: MaterialApp(
+        theme: buildLightTheme(),
+        locale: locale,
+        supportedLocales: AppLocale.supported,
+        localizationsDelegates: L10n.localizationsDelegates,
+        home: home,
+      ),
+    ),
+  );
+  await _frames(tester);
 }
 
-final _zh = lookupL10n(AppLocale.zhCN);
-final _en = lookupL10n(AppLocale.en);
+/// 人去了系统设置又回来：挂起、恢复，页面重新读一遍。
+Future<void> _awayAndBack(WidgetTester tester) async {
+  for (final state in [AppLifecycleState.inactive, AppLifecycleState.hidden, AppLifecycleState.paused]) {
+    tester.binding.handleAppLifecycleStateChanged(state);
+  }
+  await tester.pump();
+  for (final state in [AppLifecycleState.hidden, AppLifecycleState.inactive, AppLifecycleState.resumed]) {
+    tester.binding.handleAppLifecycleStateChanged(state);
+  }
+  await _frames(tester);
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -129,27 +182,23 @@ void main() {
 
   group('the step', () {
     Future<FakeAccessDriver> pump(WidgetTester tester, String os) async {
-      final phone = FakeAccessDriver(readingsWith(offPhone, notifications: false));
-      usePhoneSurface(tester);
-      await tester.pumpWidget(
-        goldenApp(
-          home: AccessWalk(items: const [AccessItem.notifications], onDone: () {}),
-          brightness: Brightness.light,
-          overrides: [...accessOverrides(phone), operatingSystemProvider.overrideWithValue(os)],
-        ),
+      final phone = FakeAccessDriver(const AccessReadings(mic: true, notifications: false));
+      await _pump(
+        tester,
+        AccessWalk(items: const [AccessItem.notifications], onDone: () {}),
+        overrides: [accessDriverProvider.overrideWithValue(phone), operatingSystemProvider.overrideWithValue(os)],
       );
-      await _frames(tester);
       return phone;
     }
 
     testWidgets('on HarmonyOS the dialog answers at once; 重试 goes to settings', (tester) async {
       final phone = await pump(tester, 'ohos');
-      expect(_primaryLabel(tester), '去开启');
+      expect(_primaryLabel(tester), _zh.accessTurnOn);
       await tester.tap(find.byKey(_primary));
       await _frames(tester);
       expect(phone.opened, ['notifications']);
-      expect(find.text('还没开启'), findsOneWidget);
-      expect(_primaryLabel(tester), '重试');
+      expect(find.text(_zh.accessNotOnYet), findsOneWidget);
+      expect(_primaryLabel(tester), _zh.commonRetry);
 
       await tester.tap(find.byKey(_primary));
       await _frames(tester);
@@ -158,10 +207,10 @@ void main() {
 
     testWidgets('on HarmonyOS allowed in the dialog: its check, without leaving the app', (tester) async {
       final phone = await pump(tester, 'ohos');
-      phone.answer = (_, r) => readingsWith(r, notifications: true);
+      phone.answer = (_, r) => const AccessReadings(mic: true, notifications: true);
       await tester.tap(find.byKey(_primary));
       await _frames(tester);
-      expect(find.text('已开启'), findsOneWidget);
+      expect(find.text(_zh.accessIsOn), findsOneWidget);
     });
 
     testWidgets('on Android a settings page: nothing to say until the person is back', (tester) async {
@@ -169,9 +218,9 @@ void main() {
       await tester.tap(find.byKey(_primary));
       await _frames(tester);
       expect(phone.opened, ['notifications']);
-      expect(find.text('还没开启'), findsNothing);
-      await awayAndBack(tester);
-      expect(find.text('还没开启'), findsOneWidget);
+      expect(find.text(_zh.accessNotOnYet), findsNothing);
+      await _awayAndBack(tester);
+      expect(find.text(_zh.accessNotOnYet), findsOneWidget);
     });
 
     testWidgets('why it asks: on HarmonyOS only while the app runs', (tester) async {
@@ -207,43 +256,34 @@ void main() {
       // A maker's name changes nothing: none of its switches belong to these.
       expect(accessWalk(accessFeaturesFor('ohos'), 'huawei'), [AccessItem.mic, AccessItem.notifications]);
     });
-
-    test('only Android\'s voice input downloads a model', () {
-      expect(accessVoiceDownloads('android'), isTrue);
-      expect(accessVoiceDownloads('ohos'), isFalse);
-      expect(accessVoiceDownloads('ios'), isFalse);
-    });
   });
 
   group('picks kept across a kill', () {
-    Future<AccessSetup> reload(WidgetTester tester, String stored) async {
+    Future<AccessSetup> reload(String stored) async {
       SharedPreferences.setMockInitialValues({AccessSetupController.prefsKey: stored});
       final container = ProviderContainer();
       addTearDown(container.dispose);
       container.read(accessSetupProvider);
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 10)));
+      await Future<void>.delayed(Duration.zero);
       return container.read(accessSetupProvider);
     }
 
-    testWidgets('回复提醒 comes back', (tester) async {
-      final setup = await reload(tester, '{"features":["alerts","voice"],"skipped":[]}');
+    test('回复提醒 comes back', () async {
+      final setup = await reload('{"features":["alerts","voice"],"skipped":[]}');
       expect(setup.features, {AccessFeature.alerts, AccessFeature.voice});
     });
 
-    testWidgets('a name this build doesn\'t know is passed over', (tester) async {
-      final setup = await reload(tester, '{"features":["alerts","later"],"skipped":[]}');
+    test('a name this build doesn\'t know is passed over', () async {
+      final setup = await reload('{"features":["alerts","later"],"skipped":[]}');
       expect(setup.features, {AccessFeature.alerts});
     });
   });
 
   group('the readings on HarmonyOS', () {
-    test('only the two it offers: the runtime\'s no and its error are not asked for', () async {
+    test('only the two it offers: storage, battery and the rest are not asked for', () async {
       messenger.setMockMethodCallHandler(voice, (call) async => call.method == 'permission' ? 'denied' : null);
       answer = (call) async => {'enabled': false, 'done': false, 'attention': false};
-      final bridge = _HarmonyBridge();
-      final container = ProviderContainer(
-        overrides: [operatingSystemProvider.overrideWithValue('ohos'), runtimeBridgeProvider.overrideWithValue(bridge)],
-      );
+      final container = ProviderContainer(overrides: [operatingSystemProvider.overrideWithValue('ohos')]);
       addTearDown(container.dispose);
       final r = await container.read(accessDriverProvider).read();
       expect(r.mic, isFalse);
@@ -267,137 +307,19 @@ void main() {
     });
   });
 
-  group('first run\'s pick', () {
-    Future<FakeAccessDriver> pick(WidgetTester tester, String os, {bool metered = false}) async {
-      final phone = FakeAccessDriver(
-        const AccessReadings(mic: false, notifications: false).copyMetered(metered),
-        answer: (item, r) => item == AccessItem.mic
-            ? const AccessReadings(mic: true, notifications: false)
-            : const AccessReadings(mic: true, notifications: true),
-      );
-      usePhoneSurface(tester);
-      await tester.pumpWidget(
-        goldenApp(
-          home: AccessStepPage(onDone: () {}),
-          brightness: Brightness.light,
-          overrides: [...accessOverrides(phone), operatingSystemProvider.overrideWithValue(os)],
-        ),
-      );
-      await _frames(tester);
-      return phone;
-    }
-
-    testWidgets('on HarmonyOS: three rows, and no model promised', (tester) async {
-      await pick(tester, 'ohos', metered: true);
-      expect(find.text(_zh.accessFeatureAlerts), findsOneWidget);
-      expect(find.text(_zh.accessFeatureAlertsNeeds), findsOneWidget);
-      expect(find.text(_zh.systemActionsTitle), findsOneWidget);
-      expect(find.text(_zh.catalogSystemActionsSummary), findsOneWidget);
-      expect(find.text(_zh.accessFeatureVoice), findsOneWidget);
-      expect(find.text(_zh.accessFeatureVoiceNeeds), findsOneWidget);
-      for (final other in [
-        _zh.accessFeatureFiles,
-        _zh.accessFeaturePet,
-        _zh.accessFeaturePhone,
-        _zh.accessFeatureBackground,
-      ]) {
-        expect(find.text(other), findsNothing, reason: other);
-      }
-      expect(find.text(_zh.accessVoiceModel(voiceModelApproxMb)), findsNothing);
-      expect(find.text(_zh.accessVoiceMetered), findsNothing);
-    });
-
-    testWidgets('on HarmonyOS: 系统操作 shows its disclosure; turned down, the box stays empty', (tester) async {
-      await pick(tester, 'ohos');
-      await tester.tap(find.text(_zh.systemActionsTitle));
-      await _frames(tester);
-      expect(find.byType(PhoneDisclosureSheet), findsOneWidget);
-      expect(find.text(_zh.systemActionsDisclosureNeverBody), findsOneWidget);
-      await tester.tap(find.text(_zh.phoneDisclosureNotNow));
-      await _frames(tester);
-      expect(tester.widget<FilledButton>(find.byKey(_primary)).onPressed, isNull);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(SystemActionsController.enabledKey), isNull);
-    });
-
-    testWidgets('on HarmonyOS: 系统操作 alone asks the phone for nothing, and is on when the step ends', (tester) async {
-      final phone = await pick(tester, 'ohos');
-      await tester.tap(find.text(_zh.systemActionsTitle));
-      await _frames(tester);
-      await tester.tap(find.text(_zh.phoneDisclosureAgreeEnable));
-      await _frames(tester);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester, 12);
-      expect(phone.opened, isEmpty);
-      expect(find.byType(PhoneModeSheet), findsNothing);
-      expect(find.byKey(const ValueKey('access-summary-card')), findsNothing);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(SystemActionsController.enabledKey), isTrue);
-      expect(prefs.getBool(SystemActionsController.disclosureKey), isTrue);
-    });
-
-    testWidgets('on Android: voice still says its download, and never 回复提醒', (tester) async {
-      await pick(tester, 'android', metered: true);
-      expect(find.text(_zh.accessVoiceModel(voiceModelApproxMb)), findsOneWidget);
-      expect(find.text(_zh.accessVoiceMetered), findsOneWidget);
-      expect(find.text(_zh.accessFeatureAlerts), findsNothing);
-      expect(find.text(_zh.systemActionsTitle), findsNothing);
-      expect(find.text(_zh.accessFeatureFiles), findsOneWidget);
-    });
-
-    testWidgets('on HarmonyOS: picked, walked, summed up, and nothing set to download', (tester) async {
-      final phone = await pick(tester, 'ohos');
-      await tester.tap(find.text(_zh.accessFeatureVoice));
-      await _frames(tester);
-      await tester.tap(find.text(_zh.accessFeatureAlerts));
-      await _frames(tester);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester);
-
-      // Microphone, then notifications, each answered by its dialog.
-      expect(find.text(_zh.accessMicTitle), findsOneWidget);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester, 12);
-      expect(find.text(_zh.accessNotifyTitle), findsOneWidget);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester, 12);
-      expect(phone.opened, ['mic', 'notifications']);
-
-      expect(find.byKey(const ValueKey('access-summary-card')), findsOneWidget);
-      expect(find.byKey(const ValueKey('access-voice')), findsNothing);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(onboardingWantsVoiceKey), isFalse);
-      expect(prefs.getBool(voiceModelWantedKey), isNull);
-    });
-
-    testWidgets('on Android: the same pick writes the wish and says so', (tester) async {
-      await pick(tester, 'android');
-      await tester.tap(find.text(_zh.accessFeatureVoice));
-      await _frames(tester);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester);
-      await tester.tap(find.byKey(_primary));
-      await _frames(tester, 12);
-      expect(find.byKey(const ValueKey('access-voice')), findsOneWidget);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(onboardingWantsVoiceKey), isTrue);
-    });
-  });
-
   group('设置 › 系统权限', () {
-    Future<void> page(WidgetTester tester, String os) async {
-      usePhoneSurface(tester);
-      await tester.pumpWidget(
-        goldenApp(
-          home: const SystemAccessPage(),
-          brightness: Brightness.light,
-          overrides: [
-            ...accessOverrides(FakeAccessDriver(const AccessReadings(mic: true, notifications: false))),
-            operatingSystemProvider.overrideWithValue(os),
-          ],
-        ),
+    Future<void> page(WidgetTester tester, String os, {Locale locale = AppLocale.zhCN}) async {
+      await _pump(
+        tester,
+        const SystemAccessPage(),
+        locale: locale,
+        overrides: [
+          accessDriverProvider.overrideWithValue(
+            FakeAccessDriver(const AccessReadings(mic: true, notifications: false)),
+          ),
+          operatingSystemProvider.overrideWithValue(os),
+        ],
       );
-      await _frames(tester);
     }
 
     testWidgets('on HarmonyOS: 回复提醒 and 语音输入 with their states, nothing falsely off', (tester) async {
@@ -409,14 +331,14 @@ void main() {
         expect(find.byKey(ValueKey('access-section-$other')), findsNothing, reason: other);
       }
       expect(
-        find.descendant(of: find.byKey(const ValueKey('access-item-notifications')), matching: find.text('未开启')),
+        find.descendant(of: find.byKey(const ValueKey('access-item-notifications')), matching: find.text(_zh.accessStateOff)),
         findsOneWidget,
       );
       expect(
-        find.descendant(of: find.byKey(const ValueKey('access-item-mic')), matching: find.text('已开启')),
+        find.descendant(of: find.byKey(const ValueKey('access-item-mic')), matching: find.text(_zh.accessStateOn)),
         findsOneWidget,
       );
-      expect(find.text('未开启'), findsOneWidget);
+      expect(find.text(_zh.accessStateOff), findsOneWidget);
     });
 
     test('the subtitle names the right system', () {
@@ -426,8 +348,66 @@ void main() {
     });
 
     testWidgets('on HarmonyOS the subtitle is its own', (tester) async {
-      await page(tester, 'ohos');
-      expect(find.text(_zh.harmonyAccessSubtitle), findsOneWidget);
+      await page(tester, 'ohos', locale: AppLocale.en);
+      expect(find.text(_en.harmonyAccessSubtitle), findsOneWidget);
+      expect(find.text(_en.accessPageSubtitle), findsNothing);
+    });
+
+    testWidgets('on Android: every feature, each item with where it stands', (tester) async {
+      await _pump(
+        tester,
+        const SystemAccessPage(),
+        // Tall enough that the lazy list builds every section.
+        logicalSize: const Size(360, 2400),
+        overrides: [
+          accessDriverProvider.overrideWithValue(
+            FakeAccessDriver(
+              const AccessReadings(
+                vendor: 'vivo',
+                appLabel: 'DSH Pocket',
+                mic: true,
+                storage: false,
+                notifications: true,
+                battery: false,
+                accessibility: false,
+                overlay: true,
+                sdk: 34,
+              ),
+            ),
+          ),
+          operatingSystemProvider.overrideWithValue('android'),
+        ],
+      );
+      for (final feature in ['files', 'pet', 'phone', 'background', 'voice']) {
+        expect(find.byKey(ValueKey('access-section-$feature')), findsOneWidget, reason: feature);
+      }
+      expect(find.byKey(const ValueKey('access-section-alerts')), findsNothing);
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('access-item-storage')), matching: find.text(_zh.accessStateOff)),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('access-item-mic')), matching: find.text(_zh.accessStateOn)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a row that isn\'t on opens its step, which shows the same item', (tester) async {
+      await _pump(
+        tester,
+        const SystemAccessPage(),
+        overrides: [
+          accessDriverProvider.overrideWithValue(
+            FakeAccessDriver(const AccessReadings(storage: false, mic: true)),
+          ),
+          operatingSystemProvider.overrideWithValue('android'),
+        ],
+      );
+      await tester.tap(find.byKey(const ValueKey('access-item-storage')));
+      await _frames(tester, 12);
+      expect(find.byKey(const ValueKey('access-step-storage')), findsOneWidget);
+      expect(find.text(_zh.accessStorageTitle), findsOneWidget);
+      expect(_primaryLabel(tester), _zh.accessTurnOn);
     });
   });
 
@@ -457,8 +437,4 @@ void main() {
       }
     });
   });
-}
-
-extension on AccessReadings {
-  AccessReadings copyMetered(bool metered) => AccessReadings(mic: mic, notifications: notifications, metered: metered);
 }

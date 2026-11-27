@@ -108,12 +108,11 @@ class L10nEn extends L10n {
   String get accessFeatureAlertsNeeds => 'Needs notifications';
 
   @override
-  String accessVoiceModel(int size) {
-    return 'Works offline; downloads a voice model of about $size MB';
-  }
+  String get accessVoiceModel =>
+      'Uses the phone\'s own recognition; an API key in Settings also allows cloud transcription';
 
   @override
-  String get accessVoiceMetered => 'You\'re on mobile data; the download will use it';
+  String get accessVoiceMetered => 'You\'re on mobile data; cloud transcription will use it';
 
   @override
   String get accessFilesRiskBody => 'AI can read and change your photos, downloads and documents.';
@@ -278,9 +277,8 @@ class L10nEn extends L10n {
   String get accessSummaryMessage => 'Turn on the rest anytime in Settings › General › System permissions';
 
   @override
-  String accessVoiceDownload(int size) {
-    return 'The voice model (about $size MB) starts downloading once the engine is ready. Follow it in Settings › General › Voice input.';
-  }
+  String get accessVoiceDownload =>
+      'Voice input uses the phone\'s own recognition. To transcribe in the cloud instead, set it up in Settings › General › Voice (service address and key).';
 
   @override
   String get accessPageTitle => 'System permissions';
@@ -9676,7 +9674,7 @@ class L10nEn extends L10n {
 
   @override
   String get iosSpeechCallEndNoRecognizer =>
-      'Voice calls need a way to recognize recordings: sign in to DeepSeek, add an API key, or configure another available cloud recognizer. The local voice model is not available on iOS yet.';
+      'Voice calls need a recognizer that takes recordings: the DeepSeek API key in Settings, or cloud transcription set up in Settings › Voice. The system service on iOS can\'t transcribe a whole recording.';
 
   @override
   String get iosPhoneLinkErrorPairingRejected =>
@@ -10848,7 +10846,8 @@ class L10nEn extends L10n {
   String get petActionBusy => 'This chat is busy. Choose New chat.';
 
   @override
-  String get petActionVoiceMissing => 'Download the offline voice model in the app first.';
+  String get petActionVoiceMissing =>
+      'The pet\'s microphone went with the on-device engine; recordings never go to the cloud on their own';
 
   @override
   String get petActionVoiceTitle => 'Voice for Quick ask';
@@ -17313,7 +17312,7 @@ class L10nEn extends L10n {
   String get speechNotSetUp => 'The reading voice isn\'t set up yet. See Settings › Voice';
 
   @override
-  String get speechNoCredential => 'Sign in to DeepSeek or add an API key in Settings first';
+  String get speechNoCredential => 'Add a DeepSeek API key in Settings first';
 
   @override
   String get speechAccountUnusable =>
@@ -17355,7 +17354,7 @@ class L10nEn extends L10n {
 
   @override
   String get speechCloudNotice =>
-      'Your voice is sent to DeepSeek to be recognized. To recognize on the phone, switch to the voice model.';
+      'Your voice is sent to DeepSeek (paid by your API key). To recognize on the phone, choose the system service in Settings › Voice.';
 
   @override
   String get speechCloudNotSetUp => 'No cloud recognition service is set up';
@@ -17490,7 +17489,7 @@ class L10nEn extends L10n {
 
   @override
   String get speechCallEndNoRecognizer =>
-      'A call needs a recognizer that takes recordings: sign in to DeepSeek, add an API key, or download the voice model';
+      'A call needs a recognizer that takes recordings: the DeepSeek API key in Settings, or cloud transcription set up in Settings › Voice';
 
   @override
   String get speechCallEndBackground => 'Calls end when the app goes to the background';
@@ -20790,16 +20789,17 @@ class L10nEn extends L10n {
   String get voiceModeSystemHint => 'Use the recognition service selected on this phone';
 
   @override
-  String get voiceFallbackStarted => 'Switched to the voice model. Please speak again.';
+  String get voiceFallbackStarted => 'Switched to the connected host\'s recognition. Please speak again.';
 
   @override
   String get voiceChooseSystem => 'Select a speech recognition service in system settings';
 
   @override
-  String get voiceConfigureEngine => 'Download the voice model in voice settings first';
+  String get voiceConfigureEngine => 'Choose a recognition mode in Settings › Voice first';
 
   @override
-  String get voiceConfigureEither => 'The phone’s service isn’t available. Download the voice model in voice settings.';
+  String get voiceConfigureEither =>
+      'The phone\'s service isn\'t available. Choose cloud transcription in Settings › Voice (service address and key).';
 
   @override
   String get voiceErrorNetworkTimeout => 'Speech recognition timed out. Check your connection.';

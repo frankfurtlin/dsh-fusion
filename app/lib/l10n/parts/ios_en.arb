@@ -58,7 +58,7 @@
   "iosPhoneLinkErrorStorage": "Saving didn't work. \"Kept on this phone\" needs a device passcode.",
   "iosPhoneLinkErrorPairingRequired": "Import a pairing record first.",
   "iosPhoneLinkErrorTunnel": "Can't reach this phone's services. First check that LocalDevVPN is connected and Developer Mode is on, then check the connection again.",
-  "iosSpeechCallEndNoRecognizer": "Voice calls need a way to recognize recordings: sign in to DeepSeek, add an API key, or configure another available cloud recognizer. The local voice model is not available on iOS yet.",
+  "iosSpeechCallEndNoRecognizer": "Voice calls need a recognizer that takes recordings: the DeepSeek API key in Settings, or cloud transcription set up in Settings › Voice. The system service on iOS can't transcribe a whole recording.",
   "iosPhoneLinkErrorPairingRejected": "The phone didn't accept this pairing record. Make a new one and import it.",
   "iosPhoneLinkErrorDdiNeeded": "The developer disk image needs preparing first.",
   "iosPhoneLinkErrorDdiDownload": "The download didn't work. Check the network and try again.",

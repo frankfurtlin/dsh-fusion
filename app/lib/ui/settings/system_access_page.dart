@@ -1,5 +1,6 @@
-// 设置 › 系统权限: the list first run walks, all of it, by feature, with where
-// each item stands; a row that isn't on opens the same step first run shows.
+// 设置 › 系统权限: every permission the features use, by feature, with where each
+// item stands; a row that isn't on opens its step (the walk 首启 在 1.2.0 删掉了，
+// 这里是唯一的入口).
 
 import 'dart:async';
 

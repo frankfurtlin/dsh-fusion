@@ -1,13 +1,15 @@
 // What each feature needs on each maker's phone, the walk's order, the
 // states, the restricted-settings steps, and what first run keeps.
+//
+// 1.2.0: 首启的页面（选/走/收尾）与手机本地引擎一起删掉了，这里测的是留在
+// lib/state/access_state.dart 里的那套规则：设置 › 系统权限 用同一份。
 
 import 'package:dsh_app/phone/phone_channel.dart';
 import 'package:dsh_app/state/access_state.dart';
+import 'package:dsh_app/state/voice_model_state.dart' show voiceModelWantedKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'support.dart';
 
 const _i = AccessItem.values;
 
@@ -83,14 +85,14 @@ void main() {
 
   group('states', () {
     test('read from the phone; null when it can\'t tell', () {
-      expect(accessStateOf(AccessItem.mic, readingsWith(offPhone, mic: true), const {}), AccessState.on);
-      expect(accessStateOf(AccessItem.storage, offPhone, const {}), AccessState.off);
+      expect(accessStateOf(AccessItem.mic, const AccessReadings(mic: true), const {}), AccessState.on);
+      expect(accessStateOf(AccessItem.storage, const AccessReadings(storage: false), const {}), AccessState.off);
       expect(accessStateOf(AccessItem.notifications, const AccessReadings(), const {}), isNull);
     });
 
     test('a maker\'s switch is never on: visited once the person says so', () {
-      expect(accessStateOf(AccessItem.autostart, offPhone, const {}), AccessState.unknown);
-      expect(accessStateOf(AccessItem.autostart, offPhone, {AccessItem.autostart}), AccessState.visited);
+      expect(accessStateOf(AccessItem.autostart, const AccessReadings(), const {}), AccessState.unknown);
+      expect(accessStateOf(AccessItem.autostart, const AccessReadings(), {AccessItem.autostart}), AccessState.visited);
       // Even without the native side: what the person said is what there is.
       expect(accessStateOf(AccessItem.popup, const AccessReadings(), const {}), AccessState.unknown);
       expect(AccessState.visited.settled, isTrue);
@@ -140,7 +142,7 @@ void main() {
       return c;
     }
 
-    test('the picks and skips, and voice as true or false', () async {
+    test('the picks and skips; nothing about a voice model to download', () async {
       SharedPreferences.setMockInitialValues({});
       var c = await container();
       expect(c.read(accessSetupProvider).loaded, isTrue);
@@ -148,8 +150,11 @@ void main() {
 
       await c.read(accessSetupProvider.notifier).choose({AccessFeature.voice, AccessFeature.phone});
       await c.read(accessSetupProvider.notifier).skip(AccessItem.popup);
+      // 1.2.0: 离线语音模型随本地引擎删除，首启不再写「想要语音模型」的键
+      // （过去写 `onboarding_wants_voice`，没有任何代码读它）。
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(onboardingWantsVoiceKey), isTrue);
+      expect(prefs.containsKey(onboardingWantsVoiceKey), isFalse);
+      expect(prefs.containsKey(voiceModelWantedKey), isFalse);
 
       // A new launch finds the same walk.
       c = await container();
@@ -157,19 +162,10 @@ void main() {
       expect(c.read(accessSetupProvider).skipped, {AccessItem.popup});
 
       await c.read(accessSetupProvider.notifier).choose({AccessFeature.files});
-      expect(prefs.getBool(onboardingWantsVoiceKey), isFalse);
+      expect(prefs.containsKey(onboardingWantsVoiceKey), isFalse);
 
       await c.read(accessSetupProvider.notifier).clear();
       expect(prefs.getString(AccessSetupController.prefsKey), isNull);
-      // The answer about voice stays for the voice feature.
-      expect(prefs.getBool(onboardingWantsVoiceKey), isFalse);
-    });
-
-    test('nothing about voice while the page was never confirmed', () async {
-      SharedPreferences.setMockInitialValues({});
-      final c = await container();
-      await c.read(accessSetupProvider.notifier).clear();
-      final prefs = await SharedPreferences.getInstance();
       expect(prefs.containsKey(onboardingWantsVoiceKey), isFalse);
     });
 

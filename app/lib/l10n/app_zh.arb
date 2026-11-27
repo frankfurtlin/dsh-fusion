@@ -32,15 +32,8 @@
   "accessFeatureVoiceNeeds": "需要麦克风权限",
   "accessFeatureAlerts": "回复提醒",
   "accessFeatureAlertsNeeds": "需要通知权限",
-  "accessVoiceModel": "离线识别，需下载约 {size} MB 语音模型",
-  "@accessVoiceModel": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "accessVoiceMetered": "当前是移动数据，下载会消耗流量",
+  "accessVoiceModel": "用手机的系统识别；也可以用设置里的 API Key 走云端转写",
+  "accessVoiceMetered": "当前是移动数据，云端转写会消耗流量",
   "accessFilesRiskBody": "AI 能读取和修改相册、下载、文档等手机文件。",
   "accessStepCount": "{index} / {total}",
   "@accessStepCount": {
@@ -141,14 +134,7 @@
     }
   },
   "accessSummaryMessage": "随时可在「设置 › 通用 › 系统权限」补开",
-  "accessVoiceDownload": "语音模型（约 {size} MB）会在引擎就绪后开始下载，进度在「设置 › 通用 › 语音输入」里查看",
-  "@accessVoiceDownload": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
+  "accessVoiceDownload": "语音输入用手机的系统识别，也可以在「设置 › 通用 › 语音」里改成云端转写（填服务地址和 Key）",
   "accessPageTitle": "系统权限",
   "accessPageSubtitle": "各项功能用到的系统权限",
   "activityThinkingUntangle": "嗯…让我捋捋",
@@ -5547,7 +5533,7 @@
   "iosPhoneLinkErrorStorage": "保存没成功。「记住在这台手机上」需要手机设了解锁密码。",
   "iosPhoneLinkErrorPairingRequired": "先导入配对凭据。",
   "iosPhoneLinkErrorTunnel": "连不上本机服务。先确认用于本机连接的 LocalDevVPN 已接通、开发者模式已打开，再检查连接。",
-  "iosSpeechCallEndNoRecognizer": "语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。",
+  "iosSpeechCallEndNoRecognizer": "语音通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写。iOS 上的系统识别不能整段转写。",
   "iosPhoneLinkErrorPairingRejected": "手机不认这份配对凭据。重新生成一份再导入。",
   "iosPhoneLinkErrorDdiNeeded": "需要先准备开发者镜像。",
   "iosPhoneLinkErrorDdiDownload": "镜像下载没成功。检查网络后再试。",
@@ -6126,7 +6112,7 @@
   "petActionTargetChanged": "主机已变化，重新打开「问一句」；文字已保留",
   "petActionSendFailed": "没能发出，文字已保留，请重试",
   "petActionBusy": "这个对话正在忙，请选择「新对话」",
-  "petActionVoiceMissing": "先到 App 下载离线语音模型",
+  "petActionVoiceMissing": "桌宠麦克风随手机本地引擎一起删除了；录音也不会自己送到云端",
   "petActionVoiceTitle": "语音问一句",
   "petActionVoiceReturn": "返回桌宠",
   "petActionVoiceStop": "结束录音",
@@ -9792,7 +9778,7 @@
   "speechVoiceFollow": "跟朗读一样",
   "speechVoiceFollowHint": "用设置 › 语音里朗读的声音",
   "speechNotSetUp": "朗读的声音还没设置好，去设置 › 语音看看",
-  "speechNoCredential": "要先登录 DeepSeek 账号，或在设置里填 API Key",
+  "speechNoCredential": "先在设置里填 DeepSeek API Key",
   "speechAccountUnusable": "已登录的账号在这里付不了 DeepSeek 语音：当前连接的 DSH 版本较旧（更新后就行），或正经 DSH Remote 中继连接。在设置里填 DeepSeek API Key 就能用",
   "speechSignIn": "DeepSeek 账号用不了语音（可能登录过期，或语音只认 API Key）。重新登录，或在设置里填上 API Key",
   "speechUnauthorized": "DeepSeek API Key 无效，请在设置里检查",
@@ -9805,7 +9791,7 @@
   "speechNetwork": "连不上语音服务，请检查网络",
   "speechReadFailed": "朗读失败",
   "speechListenFailed": "识别失败",
-  "speechCloudNotice": "语音会发给 DeepSeek 识别。想在手机上识别，可以换成语音模型。",
+  "speechCloudNotice": "语音会发给 DeepSeek 识别（用你的 API Key）。想在本机识别，可以在设置 › 语音里换成「系统」。",
   "speechCloudNotSetUp": "还没设置云端识别服务",
   "speechCallTile": "语音通话",
   "speechCallSection": "语音通话",
@@ -9873,7 +9859,7 @@
   "speechCallEnded": "通话已结束",
   "speechCallEndPermission": "没有麦克风权限",
   "speechCallEndMicrophone": "麦克风被占用或打不开",
-  "speechCallEndNoRecognizer": "通话需要能识别录音的方式：登录 DeepSeek 账号、填 API Key，或下载语音模型",
+  "speechCallEndNoRecognizer": "通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写",
   "speechCallEndBackground": "切到后台时通话会结束",
   "speechCallEndFailed": "录音出错，通话已结束",
   "speechCallSendFailed": "没发出去，再说一次",
@@ -12200,10 +12186,10 @@
   "voiceModeSystem": "系统",
   "voiceModeAutoHint": "系统识别，或下面选的云端转写接口",
   "voiceModeSystemHint": "使用手机设置中的识别服务",
-  "voiceFallbackStarted": "已改用语音模型，请再说一次",
+  "voiceFallbackStarted": "已改用连接主机的识别，请再说一次",
   "voiceChooseSystem": "请在系统设置中选择语音识别服务",
-  "voiceConfigureEngine": "请先在语音设置里下载语音模型",
-  "voiceConfigureEither": "系统识别用不了，可以在语音设置里下载语音模型",
+  "voiceConfigureEngine": "请先在设置 › 语音里选择识别方式",
+  "voiceConfigureEither": "系统识别用不了，可以在设置 › 语音里选云端转写（填服务地址和 Key）",
   "voiceErrorNetworkTimeout": "语音识别连接超时，请检查网络",
   "voiceErrorNetwork": "语音识别网络连接失败",
   "voiceErrorAudio": "语音录音失败，请检查麦克风",

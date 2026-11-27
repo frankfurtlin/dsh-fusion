@@ -47,11 +47,12 @@ void main() {
     expect(rows.first.updatedAt.millisecondsSinceEpoch, 1795600000000);
 
     expect(await cold.rowsFor(const HostRef.ssh('ssh-2')), isEmpty);
-    expect(await cold.rowsFor(HostRef.local), isEmpty);
+    // 没有主机（手机本地引擎已删除）：同样没有行。
+    expect(await cold.rowsFor(HostRef.none), isEmpty);
   });
 
   test('subagent rows are not cached (the drawer never shows them)', () async {
-    const host = HostRef.local;
+    const host = HostRef.none;
     await SessionRowSnapshot(directory: () async => dir).save(host, [
       row('parent', title: '主线'),
       row('child', title: '子会话', origin: 'subagent'),
