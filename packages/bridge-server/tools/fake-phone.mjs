@@ -71,12 +71,17 @@ const labelOf = (node) => {
  * only editable node is the auto-focus case; zero or several editable nodes fail with the same
  * wording the app uses, candidates included.
  *
+ * Accepting ACTION_SET_TEXT is not success. A field that dropped the update (a Flutter edit box
+ * whose input connection never opened) is pasted into instead, and only the text read back
+ * decides. A node carries the two switches the app cannot see: `setTextWorks: false` drops the
+ * set-text update, `pasteWorks: false` drops the clipboard paste as well.
+ *
  * @param {{ nodes: Array<object>, focus: object | null, text: unknown }} screen fake screen state
- * @returns {{ ok: true, length: number, focused?: boolean } | { ok: false, error: string }} outcome
+ * @returns {{ ok: true, length: number, focused?: boolean, pasted?: boolean } | { ok: false, error: string, focused?: boolean }} outcome
  */
 export function typeOnScreen({ nodes, focus, text }) {
   const value = String(text ?? '')
-  if (focus?.editable) return { ok: true, length: value.length }
+  if (focus?.editable) return typeInto(focus, value, false)
   const editable = nodes.filter((node) => node.editable)
   if (editable.length > 1) {
     const labels = editable.map(labelOf).join(' / ')
@@ -93,7 +98,34 @@ export function typeOnScreen({ nodes, focus, text }) {
         : 'no text field has input focus; tap the field first',
     }
   }
-  return { ok: true, length: value.length, focused: true }
+  return typeInto(editable[0], value, true)
+}
+
+/**
+ * One write into `field`: set-text first, then the clipboard paste, each read back.
+ *
+ * `focused` says the field had to be focused first — the several-edit-boxes / canvas cases.
+ *
+ * @param {object} field the editable node being written
+ * @param {string} value text to write
+ * @param {boolean} focused whether the field had to be focused first
+ * @returns {{ ok: true, length: number, focused?: boolean, pasted?: boolean } | { ok: false, error: string, focused?: boolean }} outcome
+ */
+function typeInto(field, value, focused) {
+  if (field.setTextWorks !== false) {
+    field.text = value
+    return { ok: true, length: value.length, ...(focused ? { focused: true } : {}) }
+  }
+  // The node took ACTION_SET_TEXT and its text never showed up: clipboard + ACTION_PASTE.
+  if (field.pasteWorks !== false) {
+    field.text = value
+    return { ok: true, length: value.length, pasted: true, ...(focused ? { focused: true } : {}) }
+  }
+  return {
+    ok: false,
+    error: 'the field did not take the text (tried set-text and paste)',
+    ...(focused ? { focused: true } : {}),
+  }
 }
 
 /** One tree row: bounds plus the tap centre, as a11y.tree reports them. */
@@ -307,10 +339,9 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
         case 'a11y.text': {
           const value = String(msg.args?.text ?? '')
           const typed = typeOnScreen({ nodes: SCREEN_NODES, focus, text: value })
-          if (!typed.ok) return answer(false, { error: typed.error })
           // The app focuses the only edit box before retrying; from now on the focus is on it.
           if (typed.focused) focus = SCREEN_NODES.find((node) => node.editable)
-          if (focus) focus.text = value
+          if (!typed.ok) return answer(false, { error: typed.error })
           return answer(true, { data: { ok: true, length: typed.length } })
         }
         case 'device.status':
@@ -347,8 +378,9 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
  * Self-check for the typing simulation, no server needed:
  * node tools/fake-phone.mjs --selftest
  *
- * Covers the four shapes A11yService.typeText distinguishes: the focused field, exactly one
- * editable node (auto-focused, the terminal case), several edit boxes, and none.
+ * Covers the six shapes A11yService.typeText distinguishes: the focused field, exactly one
+ * editable node (auto-focused, the terminal case), several edit boxes, none, a field that took
+ * ACTION_SET_TEXT and dropped it (pasted into instead), and a field that dropped both.
  */
 if (process.argv[2] === '--selftest') {
   let failed = 0
@@ -366,7 +398,12 @@ if (process.argv[2] === '--selftest') {
   expect('no edit box keeps the original error', none.ok === false && none.error === 'the focused node is not an editable text field; tap the field itself first')
   const unfocused = typeOnScreen({ nodes: [SCREEN_NODES[0]], focus: null, text: 'ls' })
   expect('no input focus keeps the original error', unfocused.ok === false && unfocused.error === 'no text field has input focus; tap the field first')
-  console.log(`\n${5 - failed}/5 self-checks passed`)
+  const dropped = { hint: '终端输入', class: 'android.widget.EditText', editable: true, setTextWorks: false, bounds: [0, 2360, 1080, 2400] }
+  const pasted = typeOnScreen({ nodes: [dropped], focus: XTERM_CANVAS, text: 'ls' })
+  expect('a field that dropped set-text is pasted into', pasted.ok === true && pasted.pasted === true && pasted.length === 2 && dropped.text === 'ls')
+  const refused = typeOnScreen({ nodes: [{ ...dropped, text: '', pasteWorks: false }], focus: XTERM_CANVAS, text: 'ls' })
+  expect('a field that dropped both writes answers ok:false', refused.ok === false && refused.error === 'the field did not take the text (tried set-text and paste)')
+  console.log(`\n${7 - failed}/7 self-checks passed`)
   process.exit(failed === 0 ? 0 : 1)
 }
 

@@ -3317,6 +3317,9 @@ class L10nZh extends L10n {
   String get botsTerminalInput => '终端输入';
 
   @override
+  String get botsTerminalKeyboardInput => '键盘输入';
+
+  @override
   String get brandXiaomi => '小米 / Redmi';
 
   @override

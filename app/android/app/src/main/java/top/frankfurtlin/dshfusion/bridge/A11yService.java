@@ -2,6 +2,8 @@ package top.frankfurtlin.dshfusion.bridge;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Path;
@@ -45,6 +47,10 @@ public class A11yService extends AccessibilityService {
   private static final int FIND_SCAN_CAP = 2000;
   /** Time the focused field gets to open its input connection before the one retry types. */
   private static final long FOCUS_SETTLE_MS = 100;
+  /** Time a field gets to publish the text a set-text or a paste produced before it is read back. */
+  private static final long TEXT_SETTLE_MS = 200;
+  /** Clipboard label on the text the paste fallback parks there; never shown to a person. */
+  private static final String CLIP_LABEL = "dsh";
   /** Characters of each candidate's label quoted when several edit boxes compete for the focus. */
   private static final int CANDIDATE_LABEL_CHARS = 20;
 
@@ -100,6 +106,33 @@ public class A11yService extends AccessibilityService {
         done.countDown();
       }
     });
+    if (!done.await(OP_TIMEOUT_MS, TimeUnit.MILLISECONDS)) throw new IllegalStateException("accessibility call timed out");
+    if (failure[0] != null) throw failure[0];
+    @SuppressWarnings("unchecked")
+    T value = (T) result[0];
+    return value;
+  }
+
+  /**
+   * Runs `body` on the main thread after `delayMs` and waits for it off the main thread.
+   *
+   * The waiting thread is the caller's, never the main thread: the very work a delay waits
+   * for — Flutter opening its input connection, the clipboard paste being applied — is
+   * delivered on the main thread, so sleeping there would block the thing being waited for.
+   */
+  private <T> T after(final long delayMs, final Callable<T> body) throws Exception {
+    final Object[] result = new Object[1];
+    final Exception[] failure = new Exception[1];
+    final CountDownLatch done = new CountDownLatch(1);
+    main.postDelayed(() -> {
+      try {
+        result[0] = body.call();
+      } catch (Exception e) {
+        failure[0] = e;
+      } finally {
+        done.countDown();
+      }
+    }, delayMs);
     if (!done.await(OP_TIMEOUT_MS, TimeUnit.MILLISECONDS)) throw new IllegalStateException("accessibility call timed out");
     if (failure[0] != null) throw failure[0];
     @SuppressWarnings("unchecked")
@@ -239,74 +272,119 @@ public class A11yService extends AccessibilityService {
    * canvas — while its real edit box (a Flutter EditText, hint 「终端输入」) sits unfocused
    * somewhere else on screen. When that happens the screen's only editable node is focused and
    * the text is retried once, after Flutter has had time to open the input connection.
+   *
+   * A node accepting ACTION_SET_TEXT proves nothing: a Flutter edit box whose input connection
+   * was never opened takes the action and drops the text, which used to come back as `ok` on a
+   * screen that stayed empty. The field's own text is therefore read back after every write, and
+   * a write that did not land is retried once as clipboard + ACTION_PASTE — the path the IME's
+   * own paste takes. Only the text read back decides the answer.
    */
   public JSONObject typeText(final String value) throws Exception {
-    JSONObject done = onMain(() -> typeNow(value, true));
-    if (done != null) return done;
-    return typeAfterFocus(value);
+    final AccessibilityNodeInfo field = onMain(() -> acquireField(true));
+    final AccessibilityNodeInfo target = field != null ? field : after(FOCUS_SETTLE_MS, () -> acquireField(false));
+    onMain(() -> setText(target, value));
+    if (onMain(() -> holds(target, value)) || after(TEXT_SETTLE_MS, () -> holds(target, value))) return typed(value);
+    // The node took ACTION_SET_TEXT and its text never showed up: paste instead, then read back again.
+    final ClipData backup = readClipboard();
+    if (!writeClipboard(value)) throw new IllegalStateException("cannot put the text on the clipboard");
+    try {
+      onMain(() -> paste(target));
+      if (after(TEXT_SETTLE_MS, () -> holds(target, value))) return typed(value);
+      return refusal();
+    } finally {
+      restoreClipboard(backup);
+    }
   }
 
   /**
-   * One typing attempt, on the main thread.
+   * The field this call types into, located at this step.
    *
    * The focused input node is used first, exactly as before. When that node is missing or not
    * editable, `mayFocus` decides what happens: with a single editable node on the screen it gets
    * ACTION_FOCUS and this returns null, asking the caller for the one delayed retry. Zero or
    * several candidates throw the error the agent sees.
    */
-  private JSONObject typeNow(String value, boolean mayFocus) throws Exception {
+  private AccessibilityNodeInfo acquireField(boolean mayFocus) throws Exception {
     AccessibilityNodeInfo root = getRootInActiveWindow();
     if (root == null) throw new IllegalStateException("no active window");
-    AccessibilityNodeInfo target = root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
-    if (target != null && target.isEditable()) {
-      if (!setText(target, value)) throw new IllegalStateException("the focused text field refused the text");
-      return typed(value);
-    }
+    AccessibilityNodeInfo focused = root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
+    if (focused != null && focused.isEditable()) return focused;
     List<AccessibilityNodeInfo> candidates = editableNodes(root);
     if (candidates.size() > 1) {
       throw new IllegalStateException("the screen shows " + candidates.size()
           + " editable text fields but none of them has input focus; tap the field itself first: " + describe(candidates));
     }
     if (candidates.isEmpty()) {
-      throw new IllegalStateException(target == null
+      throw new IllegalStateException(focused == null
           ? "no text field has input focus; tap the field first"
           : "the focused node is not an editable text field; tap the field itself first");
     }
     AccessibilityNodeInfo field = candidates.get(0);
     if (!mayFocus) {
       // Second pass: typing is all this call gets; the field was already focused on the first.
-      if (!setText(field, value)) throw new IllegalStateException("the editable text field refused the text after it was focused");
-      return typed(value);
+      return field;
     }
     field.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
     return null;
   }
 
   /**
-   * Types again after the focus request has had {@link #FOCUS_SETTLE_MS} to take effect.
+   * True when the field's own text now carries `value`.
    *
-   * Not onMain(): its body runs *and is awaited* on the main thread, so a delay posted from there
-   * would never elapse. Post the retry, wait on the calling thread.
+   * This is the only trustworthy success signal: ACTION_SET_TEXT returns true for a node that
+   * accepted the action, not for a field that kept the text. `refresh()` is what makes the
+   * read current — an unrefreshed node keeps the text it was snapshotted with.
    */
-  private JSONObject typeAfterFocus(final String value) throws Exception {
-    final JSONObject[] result = new JSONObject[1];
-    final Exception[] failure = new Exception[1];
-    final CountDownLatch done = new CountDownLatch(1);
-    main.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          result[0] = typeNow(value, false);
-        } catch (Exception e) {
-          failure[0] = e;
-        } finally {
-          done.countDown();
-        }
-      }
-    }, FOCUS_SETTLE_MS);
-    if (!done.await(OP_TIMEOUT_MS, TimeUnit.MILLISECONDS)) throw new IllegalStateException("the typing retry timed out");
-    if (failure[0] != null) throw failure[0];
-    return result[0];
+  private static boolean holds(AccessibilityNodeInfo node, String value) {
+    node.refresh();
+    CharSequence text = node.getText();
+    return text == null ? value.isEmpty() : text.toString().contains(value);
+  }
+
+  /** Focuses the field and asks the app to paste the clipboard into it. */
+  private static boolean paste(AccessibilityNodeInfo node) {
+    node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+    return node.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+  }
+
+  /**
+   * The clipboard as it stands, so the paste fallback can put it back.
+   *
+   * Null when this app may not read the clipboard (Android 10+ keeps it from apps without
+   * focus) — the fallback then overwrites it and there is nothing to restore from.
+   */
+  private ClipData readClipboard() {
+    try {
+      ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+      return manager == null ? null : manager.getPrimaryClip();
+    } catch (Exception e) {
+      Log.w(TAG, "cannot read the clipboard", e);
+      return null;
+    }
+  }
+
+  /** Puts `value` on the clipboard, the text ACTION_PASTE then delivers. */
+  private boolean writeClipboard(String value) {
+    try {
+      ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+      if (manager == null) return false;
+      manager.setPrimaryClip(ClipData.newPlainText(CLIP_LABEL, value));
+      return true;
+    } catch (Exception e) {
+      Log.w(TAG, "cannot write the clipboard", e);
+      return false;
+    }
+  }
+
+  /** Puts the user's clipboard back. Nothing to restore when it could not be read; failing here is not worth failing the call. */
+  private void restoreClipboard(ClipData backup) {
+    if (backup == null) return;
+    try {
+      ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+      if (manager != null) manager.setPrimaryClip(backup);
+    } catch (Exception e) {
+      Log.w(TAG, "cannot restore the clipboard", e);
+    }
   }
 
   /** Editable nodes in the active window, in tree order. */
@@ -366,6 +444,14 @@ public class A11yService extends AccessibilityService {
     JSONObject out = new JSONObject();
     out.put("ok", true);
     out.put("length", value.length());
+    return out;
+  }
+
+  /** The shape a field that dropped both writes answers with. */
+  private static JSONObject refusal() throws Exception {
+    JSONObject out = new JSONObject();
+    out.put("ok", false);
+    out.put("error", "the field did not take the text (tried set-text and paste)");
     return out;
   }
 

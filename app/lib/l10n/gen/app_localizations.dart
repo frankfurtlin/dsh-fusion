@@ -6128,6 +6128,12 @@ abstract class L10n {
   /// **'终端输入'**
   String get botsTerminalInput;
 
+  /// No description provided for @botsTerminalKeyboardInput.
+  ///
+  /// In zh, this message translates to:
+  /// **'键盘输入'**
+  String get botsTerminalKeyboardInput;
+
   /// No description provided for @brandXiaomi.
   ///
   /// In zh, this message translates to:

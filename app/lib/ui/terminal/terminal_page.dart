@@ -56,6 +56,10 @@ class TerminalPage extends ConsumerStatefulWidget {
 class _TerminalPageState extends ConsumerState<TerminalPage> {
   final _focus = FocusNode(debugLabel: 'terminal');
   final _modifiers = TerminalModifiers();
+
+  /// The selected tab's screen, for the 「键盘输入」 key of the tab row: the
+  /// field it has to focus lives inside it.
+  final _screen = GlobalKey<TerminalScreenState>();
   late final AppLifecycleListener _lifecycle;
 
   NotifierProvider<TerminalWorkspace, TerminalWorkspaceState> get _provider =>
@@ -153,6 +157,9 @@ class _TerminalPageState extends ConsumerState<TerminalPage> {
     final selected = state.selected;
     final padding = MediaQuery.paddingOf(context);
     final cwd = selected?.info?.cwd ?? state.environment?.cwd ?? '';
+    // The same test TerminalScreen uses for its own input; the 「键盘输入」 key
+    // is only offered while the shell takes input.
+    final canType = selected != null && selected.phase == TerminalPhase.live && selected.writable;
     // HarmonyOS's own engine has no PTY and says so; asked before the first attach fails.
     final ohos = ref.watch(operatingSystemProvider) == 'ohos';
     final capabilities = ohos ? ref.watch(runtimeCapabilitiesProvider) : null;
@@ -197,7 +204,13 @@ class _TerminalPageState extends ConsumerState<TerminalPage> {
       );
     } else {
       body = TerminalCardFrame(
-        child: TerminalScreen(sessionId: widget.sessionId, tab: selected, focusNode: _focus, modifiers: _modifiers),
+        child: TerminalScreen(
+          key: _screen,
+          sessionId: widget.sessionId,
+          tab: selected,
+          focusNode: _focus,
+          modifiers: _modifiers,
+        ),
       );
     }
 
@@ -224,6 +237,7 @@ class _TerminalPageState extends ConsumerState<TerminalPage> {
                       onSelect: workspace.select,
                       onActions: (tab) => unawaited(_showActions(tab)),
                       onNew: () => unawaited(workspace.newTerminal()),
+                      onKeyboardInput: canType ? () => _screen.currentState?.focusKeyboardInput() : null,
                     ),
                   Expanded(
                     child: Padding(
@@ -316,7 +330,10 @@ class _TopBar extends StatelessWidget {
 
 /// The terminals as capsules (ink when selected, like the filter capsules),
 /// then a round 「+」 of the same height. Long press a capsule for its
-/// actions.
+/// actions. A round 「键盘输入」 key is pinned to the right, outside the
+/// scrolling list: it is the one tap target that opens the IME without tapping
+/// the drawn screen, so a screen reader (and the bridge's a11y service) has a
+/// fixed way in.
 class _TabsRow extends StatelessWidget {
   const _TabsRow({
     required this.tabs,
@@ -324,6 +341,7 @@ class _TabsRow extends StatelessWidget {
     required this.onSelect,
     required this.onActions,
     required this.onNew,
+    required this.onKeyboardInput,
   });
 
   final List<TerminalTab> tabs;
@@ -331,6 +349,10 @@ class _TabsRow extends StatelessWidget {
   final ValueChanged<String> onSelect;
   final ValueChanged<TerminalTab> onActions;
   final VoidCallback onNew;
+
+  /// Null while the selected tab takes no input: the key is left out entirely
+  /// rather than shown dead (there is nothing for it to open).
+  final VoidCallback? onKeyboardInput;
 
   static const capsuleHeight = 32.0;
 
@@ -342,60 +364,88 @@ class _TabsRow extends StatelessWidget {
     final dark = theme.brightness == Brightness.dark;
     final idle = dark ? Colors.white.withValues(alpha: 0.07) : scheme.onSurface.withValues(alpha: 0.05);
     final label = theme.textTheme.labelLarge?.copyWith(fontSize: 13);
+    // The round keys of this row: 「+」 closes the capsule list, 「键盘输入」 sits
+    // at the fixed right edge.
+    Widget roundKey({
+      required Key id,
+      required IconData icon,
+      required String semanticLabel,
+      required VoidCallback onTap,
+    }) => Pressable(
+      key: id,
+      onTap: onTap,
+      semanticLabel: semanticLabel,
+      child: Container(
+        width: capsuleHeight,
+        height: capsuleHeight,
+        decoration: ShapeDecoration(color: idle, shape: const CircleBorder()),
+        child: Icon(icon, size: 20, color: scheme.onSurfaceVariant),
+      ),
+    );
     return SizedBox(
       height: TerminalPage.tabsHeight,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: TerminalPage.gutter),
+      child: Row(
         children: [
-          for (final (i, tab) in tabs.indexed) ...[
-            if (i > 0) const SizedBox(width: 8),
-            Center(
-              child: Semantics(
-                key: ValueKey('terminal-tab-${tab.id}'),
-                selected: tab.id == selectedId,
-                inMutuallyExclusiveGroup: true,
-                child: Pressable(
-                  onTap: () => onSelect(tab.id),
-                  onLongPress: () => onActions(tab),
-                  semanticLabel: tab.title.isEmpty ? l10n.botsTerminal : tab.title,
-                  child: AnimatedContainer(
-                    duration: AppMotion.of(context, AppMotion.quick),
-                    height: capsuleHeight,
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    alignment: Alignment.center,
-                    decoration: ShapeDecoration(
-                      color: tab.id == selectedId ? scheme.onSurface : idle,
-                      shape: const StadiumBorder(),
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 140),
-                      child: Text(
-                        tab.title.isEmpty ? l10n.botsTerminal : tab.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: label?.copyWith(color: tab.id == selectedId ? scheme.surface : scheme.onSurfaceVariant),
+          Expanded(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: TerminalPage.gutter),
+              children: [
+                for (final (i, tab) in tabs.indexed) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  Center(
+                    child: Semantics(
+                      key: ValueKey('terminal-tab-${tab.id}'),
+                      selected: tab.id == selectedId,
+                      inMutuallyExclusiveGroup: true,
+                      child: Pressable(
+                        onTap: () => onSelect(tab.id),
+                        onLongPress: () => onActions(tab),
+                        semanticLabel: tab.title.isEmpty ? l10n.botsTerminal : tab.title,
+                        child: AnimatedContainer(
+                          duration: AppMotion.of(context, AppMotion.quick),
+                          height: capsuleHeight,
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          alignment: Alignment.center,
+                          decoration: ShapeDecoration(
+                            color: tab.id == selectedId ? scheme.onSurface : idle,
+                            shape: const StadiumBorder(),
+                          ),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 140),
+                            child: Text(
+                              tab.title.isEmpty ? l10n.botsTerminal : tab.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: label?.copyWith(color: tab.id == selectedId ? scheme.surface : scheme.onSurfaceVariant),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                ],
+                const SizedBox(width: 8),
+                Center(
+                  child: roundKey(
+                    id: const ValueKey('terminal-new'),
+                    icon: AppIcons.add,
+                    semanticLabel: l10n.botsTerminalNew,
+                    onTap: onNew,
+                  ),
                 ),
-              ),
-            ),
-          ],
-          const SizedBox(width: 8),
-          Center(
-            child: Pressable(
-              key: const ValueKey('terminal-new'),
-              onTap: onNew,
-              semanticLabel: l10n.botsTerminalNew,
-              child: Container(
-                width: capsuleHeight,
-                height: capsuleHeight,
-                decoration: ShapeDecoration(color: idle, shape: const CircleBorder()),
-                child: Icon(AppIcons.add, size: 20, color: scheme.onSurfaceVariant),
-              ),
+              ],
             ),
           ),
+          if (onKeyboardInput case final onTap?) ...[
+            roundKey(
+              id: const ValueKey('terminal-keyboard'),
+              icon: AppIcons.keyboardInput,
+              semanticLabel: l10n.botsTerminalKeyboardInput,
+              onTap: onTap,
+            ),
+            const SizedBox(width: TerminalPage.gutter),
+          ],
         ],
       ),
     );

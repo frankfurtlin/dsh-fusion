@@ -314,6 +314,21 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
     }
   }
 
+  /// The explicit 「键盘输入」 action: hands the IME to the screen reader's field.
+  ///
+  /// Touch gets its keyboard by tapping the screen ([TerminalKeyboard.show]). A
+  /// screen reader cannot tap a drawn canvas, and the phone bridge's a11y
+  /// service can only write into a field that already owns an input
+  /// connection — ACTION_SET_TEXT on a field without one is accepted and
+  /// dropped. This runs the same handover from a real, focusable tap target:
+  /// end the key row's IME session, then give the hidden field the focus, which
+  /// is what opens the IME on a [TextField].
+  void focusKeyboardInput() {
+    if (!_canType) return;
+    _keyboard.currentState?.release();
+    _a11yField.requestFocus();
+  }
+
   /// Hardware keys: wait while the IME composes; sticky modifiers apply to
   /// the next printable key.
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
