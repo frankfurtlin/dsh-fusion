@@ -231,8 +231,8 @@ Libraries.dev metal-fx, translated to Flutter GLSL.
 | 许可 | MIT |
 | 用途 | 界面图标字体的字形；少数图标按它的网格与轮廓补画 |
 
-- `app/tool/icons/phosphor/`：图标源文件与 LICENSE
-- `app/assets/fonts/DshIcons.ttf`、`app/lib/ui/theme/dsh_glyphs.dart`：由 `app/tool/make_icon_font.py` 生成
+- `app/tool/icons/phosphor/`：图标源 SVG 与 codepoints（2026-11-27 随死工具清理移除，需要再生成时从 git 历史取回）
+- `app/assets/fonts/DshIcons.ttf`、`app/lib/ui/theme/dsh_glyphs.dart`：已生成并提交；生成脚本 `make_icon_font.py` 在更早的清理中已删除
 - `app/android/.../phone/a11y/ControlOverlay.kt`：收起键的路径取自 `arrows-in-simple`
 
 ### Material Icons（Apache-2.0）
