@@ -386,13 +386,13 @@ export function createTools(phones) {
     {
       name: 'phone_find',
       description:
-        'Find controls on the phone screen by their text or content description and get the point that taps each one. Prefer this over phone_ui_tree when you already know the label: it returns fewer nodes and the tap centre directly.',
+        'Find controls on the phone screen by their text, content description or hint (a drawn app like the terminal keeps its input field there) and get the point that taps each one. Prefer this over phone_ui_tree when you already know the label: it returns fewer nodes and the tap centre directly.',
       inputSchema: {
         type: 'object',
         properties: {
           ...DEVICE_PROPERTY,
-          text: { type: 'string', description: 'Text or content description to look for.' },
-          exact: { type: 'boolean', description: 'Match the whole text/description instead of a substring (default false).' },
+          text: { type: 'string', description: 'Text, content description or hint to look for.' },
+          exact: { type: 'boolean', description: 'Match the whole text/description/hint instead of a substring (default false).' },
           max: { type: 'integer', description: 'Cap on returned nodes (default 10, max 50).' },
         },
         required: ['text'],

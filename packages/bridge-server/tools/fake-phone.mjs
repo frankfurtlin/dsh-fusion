@@ -54,8 +54,10 @@ const treeEntry = (node) => ({
 const findEntry = (node) => ({
   ...(node.text ? { text: node.text } : {}),
   ...(node.desc ? { desc: node.desc } : {}),
+  ...(node.hint ? { hint: node.hint } : {}),
   view_id: `com.example.chat:id/${node.text.toLowerCase()}`,
   class: node.class,
+  ...(node.editable ? { editable: true } : {}),
   bounds: node.bounds,
   x: Math.round((node.bounds[0] + node.bounds[2]) / 2),
   y: Math.round((node.bounds[1] + node.bounds[3]) / 2),
@@ -241,7 +243,7 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
           const needle = String(msg.args?.text ?? '').trim().toLowerCase()
           const exact = Boolean(msg.args?.exact)
           const max = Math.max(1, Math.min(Number(msg.args?.max ?? 10) || 10, 50))
-          const nodes = SCREEN_NODES.filter((node) => [node.text, node.desc]
+          const nodes = SCREEN_NODES.filter((node) => [node.text, node.desc, node.hint]
             .filter((value) => typeof value === 'string')
             .some((value) => (exact ? value.trim().toLowerCase() === needle : value.trim().toLowerCase().includes(needle))))
             .slice(0, max)

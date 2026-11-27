@@ -182,9 +182,20 @@ public class A11yService extends AccessibilityService {
     });
   }
 
-  /** True when this node's text or content description carries the lower-cased, trimmed needle. */
+  /**
+   * True when this node's text, content description or hint carries the
+   * lower-cased, trimmed needle.
+   *
+   * The hint is how a drawn screen's input field is labelled: a Flutter text
+   * field has no content description, and Android reports its label there, as
+   * the name TalkBack reads for an empty edit box (the terminal's 「终端输入」
+   * is exactly that). Without it such a field cannot be found at all before it
+   * has text.
+   */
   private static boolean matches(AccessibilityNodeInfo node, String needle, boolean exact) {
-    return matches(node.getText(), needle, exact) || matches(node.getContentDescription(), needle, exact);
+    return matches(node.getText(), needle, exact)
+        || matches(node.getContentDescription(), needle, exact)
+        || matches(node.getHintText(), needle, exact);
   }
 
   private static boolean matches(CharSequence value, String needle, boolean exact) {
@@ -199,14 +210,17 @@ public class A11yService extends AccessibilityService {
     node.getBoundsInScreen(bounds);
     CharSequence text = node.getText();
     CharSequence desc = node.getContentDescription();
+    CharSequence hint = node.getHintText();
     if (!seen.add(bounds.flattenToString() + '|' + text + '|' + desc)) return;
     JSONObject entry = new JSONObject();
     if (text != null && text.length() > 0) entry.put("text", text.toString());
     if (desc != null && desc.length() > 0) entry.put("desc", desc.toString());
+    if (hint != null && hint.length() > 0) entry.put("hint", hint.toString());
     String viewId = node.getViewIdResourceName();
     if (viewId != null) entry.put("view_id", viewId);
     CharSequence cls = node.getClassName();
     if (cls != null) entry.put("class", cls.toString());
+    if (node.isEditable()) entry.put("editable", true);
     entry.put("bounds", new JSONArray(new int[] { bounds.left, bounds.top, bounds.right, bounds.bottom }));
     entry.put("x", bounds.centerX());
     entry.put("y", bounds.centerY());
