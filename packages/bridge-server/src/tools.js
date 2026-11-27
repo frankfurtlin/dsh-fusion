@@ -409,7 +409,7 @@ export function createTools(phones) {
     {
       name: 'phone_type',
       description:
-        'Type text into the input field that currently has keyboard focus on the phone. Tap the field first (phone_find then phone_tap); an empty string clears it.',
+        'Type text into the input field that currently has keyboard focus on the phone. When the focus is not on a text field but the screen has exactly one editable field (a drawn app like the terminal keeps its input box there), that field is focused first and the text retried once. Tap the field first (phone_find then phone_tap); an empty string clears it.',
       inputSchema: {
         type: 'object',
         properties: { ...DEVICE_PROPERTY, text: { type: 'string', description: 'Text to put in the focused field; an empty string clears it.' } },

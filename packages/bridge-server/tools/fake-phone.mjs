@@ -37,12 +37,64 @@ export const FAKE_CAPS = [
   'media.latest',
 ]
 
+/** The terminal's drawn canvas: what input focus rests on before anything is typed. */
+const XTERM_CANVAS = { class: 'android.view.View', clickable: true, bounds: [0, 400, 1080, 2200] }
+
+/** The terminal's real edit box: one hidden EditText, the screen's only editable node. */
+const TERMINAL_INPUT = { hint: '终端输入', class: 'android.widget.EditText', editable: true, bounds: [0, 2360, 1080, 2400] }
+
 /** Nodes the fake phone pretends are on screen; a11y.tree reports the first two. */
 const SCREEN_NODES = [
   { text: 'Chats', class: 'android.widget.TextView', bounds: [0, 0, 1080, 160] },
   { text: 'Alice', class: 'android.widget.TextView', clickable: true, bounds: [0, 160, 1080, 320] },
   { text: 'Send', desc: 'Send message', class: 'android.widget.Button', clickable: true, bounds: [800, 2200, 1080, 2400] },
+  TERMINAL_INPUT,
 ]
+
+/** "终端输入" / "Search | dsh": hint and text clipped to 20 characters, as the app reports them. */
+const labelOf = (node) => {
+  const clip = (value) => {
+    if (typeof value !== 'string') return ''
+    const text = value.trim().replace(/\s+/g, ' ')
+    return text.length > 20 ? `${text.slice(0, 20)}…` : text
+  }
+  const hint = clip(node.hint)
+  const text = clip(node.text)
+  if (hint && text && hint !== text) return `${hint} | ${text}`
+  return hint || text || '<no label>'
+}
+
+/**
+ * What a11y.text does on a screen, mirroring A11yService.typeText.
+ *
+ * The focused field takes the text. When the focus is on a node that takes no text, the screen's
+ * only editable node is the auto-focus case; zero or several editable nodes fail with the same
+ * wording the app uses, candidates included.
+ *
+ * @param {{ nodes: Array<object>, focus: object | null, text: unknown }} screen fake screen state
+ * @returns {{ ok: true, length: number, focused?: boolean } | { ok: false, error: string }} outcome
+ */
+export function typeOnScreen({ nodes, focus, text }) {
+  const value = String(text ?? '')
+  if (focus?.editable) return { ok: true, length: value.length }
+  const editable = nodes.filter((node) => node.editable)
+  if (editable.length > 1) {
+    const labels = editable.map(labelOf).join(' / ')
+    return {
+      ok: false,
+      error: `the screen shows ${editable.length} editable text fields but none of them has input focus; tap the field itself first: ${labels}`,
+    }
+  }
+  if (editable.length === 0) {
+    return {
+      ok: false,
+      error: focus
+        ? 'the focused node is not an editable text field; tap the field itself first'
+        : 'no text field has input focus; tap the field first',
+    }
+  }
+  return { ok: true, length: value.length, focused: true }
+}
 
 /** One tree row: bounds plus the tap centre, as a11y.tree reports them. */
 const treeEntry = (node) => ({
@@ -55,7 +107,7 @@ const findEntry = (node) => ({
   ...(node.text ? { text: node.text } : {}),
   ...(node.desc ? { desc: node.desc } : {}),
   ...(node.hint ? { hint: node.hint } : {}),
-  view_id: `com.example.chat:id/${node.text.toLowerCase()}`,
+  view_id: `com.example.chat:id/${String(node.text ?? node.hint ?? 'node').toLowerCase()}`,
   class: node.class,
   ...(node.editable ? { editable: true } : {}),
   bounds: node.bounds,
@@ -80,6 +132,8 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
       ['tree:/notes/todo.md', { data: 'buy milk\n', encoding: 'utf8', mime: 'text/markdown', at: Date.now() }],
       ['downloads:/hello.txt', { data: 'hello from the fake phone\n', encoding: 'utf8', mime: 'text/plain', at: Date.now() }],
     ])
+    /** Where the keyboard focus sits; the fake terminal starts on its drawn canvas. */
+    let focus = XTERM_CANVAS
     const entryOf = (path, meta) => ({
       name: path.slice(path.lastIndexOf('/') + 1),
       path,
@@ -250,8 +304,15 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
             .map(findEntry)
           return answer(true, { data: { count: nodes.length, nodes } })
         }
-        case 'a11y.text':
-          return answer(true, { data: { ok: true, length: String(msg.args?.text ?? '').length } })
+        case 'a11y.text': {
+          const value = String(msg.args?.text ?? '')
+          const typed = typeOnScreen({ nodes: SCREEN_NODES, focus, text: value })
+          if (!typed.ok) return answer(false, { error: typed.error })
+          // The app focuses the only edit box before retrying; from now on the focus is on it.
+          if (typed.focused) focus = SCREEN_NODES.find((node) => node.editable)
+          if (focus) focus.text = value
+          return answer(true, { data: { ok: true, length: typed.length } })
+        }
         case 'device.status':
           return answer(true, {
             data: {
@@ -280,6 +341,33 @@ export function connectFakePhone({ url, deviceId = 'fake-phone', name = 'Fake Ph
       }
     })
   })
+}
+
+/**
+ * Self-check for the typing simulation, no server needed:
+ * node tools/fake-phone.mjs --selftest
+ *
+ * Covers the four shapes A11yService.typeText distinguishes: the focused field, exactly one
+ * editable node (auto-focused, the terminal case), several edit boxes, and none.
+ */
+if (process.argv[2] === '--selftest') {
+  let failed = 0
+  const expect = (name, ok) => {
+    console.log(`  ${ok ? 'ok  ' : 'FAIL'} ${name}`)
+    if (!ok) failed += 1
+  }
+  const focused = typeOnScreen({ nodes: SCREEN_NODES, focus: TERMINAL_INPUT, text: 'ls' })
+  expect('the focused field takes the text', focused.ok === true && focused.length === 2 && !focused.focused)
+  const single = typeOnScreen({ nodes: SCREEN_NODES, focus: XTERM_CANVAS, text: 'ls' })
+  expect('the only editable node is focused and typed into', single.ok === true && single.length === 2 && single.focused === true)
+  const several = typeOnScreen({ nodes: [TERMINAL_INPUT, { hint: 'Search', editable: true }], focus: XTERM_CANVAS, text: 'ls' })
+  expect('several edit boxes fail and name both labels', several.ok === false && several.error.includes('终端输入') && several.error.includes('Search'))
+  const none = typeOnScreen({ nodes: [SCREEN_NODES[0]], focus: XTERM_CANVAS, text: 'ls' })
+  expect('no edit box keeps the original error', none.ok === false && none.error === 'the focused node is not an editable text field; tap the field itself first')
+  const unfocused = typeOnScreen({ nodes: [SCREEN_NODES[0]], focus: null, text: 'ls' })
+  expect('no input focus keeps the original error', unfocused.ok === false && unfocused.error === 'no text field has input focus; tap the field first')
+  console.log(`\n${5 - failed}/5 self-checks passed`)
+  process.exit(failed === 0 ? 0 : 1)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
