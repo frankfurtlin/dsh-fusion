@@ -68,7 +68,7 @@
   "iosPhoneLinkErrorStorage": "保存没成功。「记住在这台手机上」需要手机设了解锁密码。",
   "iosPhoneLinkErrorPairingRequired": "先导入配对凭据。",
   "iosPhoneLinkErrorTunnel": "连不上本机服务。先确认用于本机连接的 LocalDevVPN 已接通、开发者模式已打开，再检查连接。",
-  "iosSpeechCallEndNoRecognizer": "语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。",
+  "iosSpeechCallEndNoRecognizer": "语音通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写。iOS 上的系统识别不能整段转写。",
   "iosPhoneLinkErrorPairingRejected": "手机不认这份配对凭据。重新生成一份再导入。",
   "iosPhoneLinkErrorDdiNeeded": "需要先准备开发者镜像。",
   "iosPhoneLinkErrorDdiDownload": "镜像下载没成功。检查网络后再试。",

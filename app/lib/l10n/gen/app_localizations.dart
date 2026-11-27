@@ -287,13 +287,13 @@ abstract class L10n {
   /// No description provided for @accessVoiceModel.
   ///
   /// In zh, this message translates to:
-  /// **'离线识别，需下载约 {size} MB 语音模型'**
-  String accessVoiceModel(int size);
+  /// **'用手机的系统识别；也可以用设置里的 API Key 走云端转写'**
+  String get accessVoiceModel;
 
   /// No description provided for @accessVoiceMetered.
   ///
   /// In zh, this message translates to:
-  /// **'当前是移动数据，下载会消耗流量'**
+  /// **'当前是移动数据，云端转写会消耗流量'**
   String get accessVoiceMetered;
 
   /// No description provided for @accessFilesRiskBody.
@@ -587,8 +587,8 @@ abstract class L10n {
   /// No description provided for @accessVoiceDownload.
   ///
   /// In zh, this message translates to:
-  /// **'语音模型（约 {size} MB）会在引擎就绪后开始下载，进度在「设置 › 通用 › 语音输入」里查看'**
-  String accessVoiceDownload(int size);
+  /// **'语音输入用手机的系统识别，也可以在「设置 › 通用 › 语音」里改成云端转写（填服务地址和 Key）'**
+  String get accessVoiceDownload;
 
   /// No description provided for @accessPageTitle.
   ///
@@ -16931,7 +16931,7 @@ abstract class L10n {
   /// No description provided for @iosSpeechCallEndNoRecognizer.
   ///
   /// In zh, this message translates to:
-  /// **'语音通话需要能识别录音的方式：登录 DeepSeek 账号、填写 API Key，或配置其他可用的云端识别。iOS 暂不提供本地语音模型下载。'**
+  /// **'语音通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写。iOS 上的系统识别不能整段转写。'**
   String get iosSpeechCallEndNoRecognizer;
 
   /// No description provided for @iosPhoneLinkErrorPairingRejected.
@@ -19073,7 +19073,7 @@ abstract class L10n {
   /// No description provided for @petActionVoiceMissing.
   ///
   /// In zh, this message translates to:
-  /// **'先到 App 下载离线语音模型'**
+  /// **'桌宠麦克风随手机本地引擎一起删除了；录音也不会自己送到云端'**
   String get petActionVoiceMissing;
 
   /// No description provided for @petActionVoiceTitle.
@@ -30083,7 +30083,7 @@ abstract class L10n {
   /// No description provided for @speechNoCredential.
   ///
   /// In zh, this message translates to:
-  /// **'要先登录 DeepSeek 账号，或在设置里填 API Key'**
+  /// **'先在设置里填 DeepSeek API Key'**
   String get speechNoCredential;
 
   /// No description provided for @speechAccountUnusable.
@@ -30161,7 +30161,7 @@ abstract class L10n {
   /// No description provided for @speechCloudNotice.
   ///
   /// In zh, this message translates to:
-  /// **'语音会发给 DeepSeek 识别。想在手机上识别，可以换成语音模型。'**
+  /// **'语音会发给 DeepSeek 识别（用你的 API Key）。想在本机识别，可以在设置 › 语音里换成「系统」。'**
   String get speechCloudNotice;
 
   /// No description provided for @speechCloudNotSetUp.
@@ -30401,7 +30401,7 @@ abstract class L10n {
   /// No description provided for @speechCallEndNoRecognizer.
   ///
   /// In zh, this message translates to:
-  /// **'通话需要能识别录音的方式：登录 DeepSeek 账号、填 API Key，或下载语音模型'**
+  /// **'通话需要能识别整段录音的方式：设置里的 DeepSeek API Key，或设置 › 语音里的云端转写'**
   String get speechCallEndNoRecognizer;
 
   /// No description provided for @speechCallEndBackground.
@@ -35855,7 +35855,7 @@ abstract class L10n {
   /// No description provided for @voiceFallbackStarted.
   ///
   /// In zh, this message translates to:
-  /// **'已改用语音模型，请再说一次'**
+  /// **'已改用连接主机的识别，请再说一次'**
   String get voiceFallbackStarted;
 
   /// No description provided for @voiceChooseSystem.
@@ -35867,13 +35867,13 @@ abstract class L10n {
   /// No description provided for @voiceConfigureEngine.
   ///
   /// In zh, this message translates to:
-  /// **'请先在语音设置里下载语音模型'**
+  /// **'请先在设置 › 语音里选择识别方式'**
   String get voiceConfigureEngine;
 
   /// No description provided for @voiceConfigureEither.
   ///
   /// In zh, this message translates to:
-  /// **'系统识别用不了，可以在语音设置里下载语音模型'**
+  /// **'系统识别用不了，可以在设置 › 语音里选云端转写（填服务地址和 Key）'**
   String get voiceConfigureEither;
 
   /// No description provided for @voiceErrorNetworkTimeout.

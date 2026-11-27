@@ -16,15 +16,8 @@
   "accessFeatureVoiceNeeds": "Needs the microphone",
   "accessFeatureAlerts": "Reply alerts",
   "accessFeatureAlertsNeeds": "Needs notifications",
-  "accessVoiceModel": "Works offline; downloads a voice model of about {size} MB",
-  "@accessVoiceModel": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "accessVoiceMetered": "You're on mobile data; the download will use it",
+  "accessVoiceModel": "Uses the phone's own recognition; an API key in Settings also allows cloud transcription",
+  "accessVoiceMetered": "You're on mobile data; cloud transcription will use it",
   "accessFilesRiskBody": "AI can read and change your photos, downloads and documents.",
   "accessStepCount": "{index} / {total}",
   "@accessStepCount": {
@@ -125,14 +118,7 @@
     }
   },
   "accessSummaryMessage": "Turn on the rest anytime in Settings › General › System permissions",
-  "accessVoiceDownload": "The voice model (about {size} MB) starts downloading once the engine is ready. Follow it in Settings › General › Voice input.",
-  "@accessVoiceDownload": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
+  "accessVoiceDownload": "Voice input uses the phone's own recognition. To transcribe in the cloud instead, set it up in Settings › General › Voice (service address and key).",
   "accessPageTitle": "System permissions",
   "accessPageSubtitle": "What each feature needs from Android"
 }

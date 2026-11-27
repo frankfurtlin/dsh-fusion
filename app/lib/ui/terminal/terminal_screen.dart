@@ -111,6 +111,16 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
   double _pinchFont = TerminalFontSize.fallback;
   String? _composing;
 
+  /// The screen reader's field (see [_a11yFieldBox]): a real, invisible
+  /// [TextField] over the screen, skipped by keyboard traversal so a hardware
+  /// Tab stays on the terminal.
+  final _a11yField = FocusNode(debugLabel: 'terminal-a11y-field', skipTraversal: true);
+  final _a11yController = TextEditingController();
+
+  /// True while the field is being written back in step with the terminal, so
+  /// the write does not turn into input of its own.
+  bool _a11ySyncing = false;
+
   /// What the screen-reader channel has typed since the shell's last line
   /// break: the field's own text, so an a11y service that rewrites the whole
   /// field (ACTION_SET_TEXT) turns into the keystrokes that would have
@@ -122,6 +132,15 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
   bool get _canType => _tab.phase == TerminalPhase.live && _tab.writable;
 
   TerminalWorkspace get _workspace => ref.read(terminalWorkspaceProvider(widget.sessionId).notifier);
+
+  @override
+  void initState() {
+    super.initState();
+    // Added before the field is built, so on a focus change this listener runs
+    // first and the key row's IME session is closed before the field's opens.
+    _a11yField.addListener(_onA11yFieldFocus);
+    _a11yController.addListener(_onA11yChanged);
+  }
 
   @override
   void didUpdateWidget(TerminalScreen oldWidget) {
@@ -137,15 +156,26 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
       // goes once the old view has let go of it.
       _composing = null;
       _a11yText = '';
+      _setA11yText('');
       _view = GlobalKey<TerminalViewState>();
       final old = _scroll;
       _scroll = ScrollController();
       WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
     }
+    if (!_canType && (_a11yField.hasFocus || _composing != null)) {
+      // The shell stopped taking input (ended, another device): let go of the
+      // keyboard — the field leaves the tree on this same build anyway.
+      _a11yField.unfocus();
+      _composing = null;
+    }
   }
 
   @override
   void dispose() {
+    _a11yField.removeListener(_onA11yFieldFocus);
+    _a11yController.removeListener(_onA11yChanged);
+    _a11yField.dispose();
+    _a11yController.dispose();
     _selection.dispose();
     _scroll.dispose();
     super.dispose();
@@ -169,18 +199,32 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
 
   void _onBackspace() {
     final m = widget.modifiers.consume();
-    _terminal.keyInput(TerminalKey.backspace, ctrl: m.ctrl, alt: m.alt);
+    _backspace(ctrl: m.ctrl, alt: m.alt);
+  }
+
+  /// Backspace. The key row and the IME apply the sticky modifiers; the screen
+  /// reader's field handles a whole string at a time and enters with none.
+  void _backspace({bool ctrl = false, bool alt = false}) {
+    _terminal.keyInput(TerminalKey.backspace, ctrl: ctrl, alt: alt);
     _toBottom();
   }
 
   void _onEnter() {
     final m = widget.modifiers.consume();
-    _terminal.keyInput(TerminalKey.enter, ctrl: m.ctrl, alt: m.alt);
+    _enter(ctrl: m.ctrl, alt: m.alt);
+  }
+
+  /// Enter at the prompt — the one submission path of both input channels.
+  void _enter({bool ctrl = false, bool alt = false}) {
+    _terminal.keyInput(TerminalKey.enter, ctrl: ctrl, alt: alt);
     _toBottom();
   }
 
   void _onExtraKey(TerminalExtraKey key) {
     _keyboard.currentState?.flushComposing();
+    // The same for the accessibility field: end its composition so its
+    // committed text lands before this key, not after it.
+    _a11yController.clearComposing();
     final m = widget.modifiers.consume();
     key.send(_terminal, ctrl: m.ctrl, alt: m.alt);
     _toBottom();
@@ -189,38 +233,81 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
   // ── Screen reader ──
   //
   // xterm's screen is drawn: it has no text field for an a11y service to focus,
-  // so TalkBack and the phone bridge's type action see nothing to write into.
-  // The screen area carries an editable semantics node instead, and its edits
-  // become the same key input the key row sends. Sticky modifiers don't apply:
-  // this channel is a whole string at a time, not one keypress.
+  // so TalkBack and the phone bridge's type action have nothing to write into.
+  // [_a11yFieldBox] lays a real, invisible [TextField] over the screen instead;
+  // its edits become the same key input the key row sends. Sticky modifiers
+  // apply to a single character here too, exactly as on the touch channel.
 
-  /// TalkBack focused the terminal: open the IME bridge, so the keyboard it
-  /// brings up types into the terminal (the same path a tap takes).
-  void _onA11yFocus() => _keyboard.currentState?.show();
+  /// The accessibility field took the keyboard (or gave it back).
+  ///
+  /// This listener is added before the field is built, so it runs before the
+  /// field's own: the key row's IME session ends first, and the field attaches
+  /// onto a clean channel instead of two clients taking the keyboard over in
+  /// one focus change.
+  void _onA11yFieldFocus() {
+    if (_a11yField.hasFocus) {
+      _keyboard.currentState?.release();
+      return;
+    }
+    if (_composing != null) setState(() => _composing = null);
+  }
 
-  /// The field's new text. Deletions become Backspace, new text is typed, a
-  /// line break is Enter — then the field starts over from what is left.
-  void _onA11ySubmit(String next) {
-    if (!_canType) return;
-    _keyboard.currentState?.flushComposing();
+  /// The field's value changed. Composing text (pinyin before a candidate is
+  /// picked) only shows in the pill — sending it would deliver half-typed
+  /// characters. Everything else is typed, line breaks are Enter, and the
+  /// field then starts the next command from an empty field.
+  void _onA11yChanged() {
+    if (_a11ySyncing || !mounted) return;
+    final value = _a11yController.value;
+    final composing = value.composing;
+    if (composing.isValid && !composing.isCollapsed) {
+      final text = composing.textInside(value.text);
+      if (text != _composing) setState(() => _composing = text);
+      return;
+    }
+    if (_composing != null) setState(() => _composing = null);
+    if (!_canType) {
+      // The shell stopped taking input while the field had the text.
+      _setA11yText('');
+      return;
+    }
+    _submitA11y(value.text);
+  }
+
+  /// [next] (the whole field) as the difference from what was already typed:
+  /// deletions become Backspace, new text goes through [_onText], a line break
+  /// is [_enter]. What follows the last line break stays in the field.
+  void _submitA11y(String next) {
     final before = _a11yText;
     var common = 0;
     while (common < next.length && common < before.length && next.codeUnitAt(common) == before.codeUnitAt(common)) {
       common++;
     }
     for (var i = common; i < before.length; i++) {
-      _terminal.keyInput(TerminalKey.backspace);
+      _backspace();
     }
     final lines = next.substring(common).replaceAll('\r\n', '\n').split(RegExp('[\r\n]'));
     for (var i = 0; i < lines.length; i++) {
-      if (lines[i].isNotEmpty) _terminal.textInput(lines[i]);
-      if (i < lines.length - 1) _terminal.keyInput(TerminalKey.enter);
+      if (lines[i].isNotEmpty) _onText(lines[i]);
+      if (i < lines.length - 1) _enter();
     }
-    // The shell's line is a new one after a submit; otherwise the field mirrors
-    // what has been typed since the last one.
-    final kept = lines.length > 1 ? '' : next;
-    if (kept != _a11yText && mounted) setState(() => _a11yText = kept);
-    _toBottom();
+    // After a submit the shell's line is a new, empty one; otherwise the field
+    // mirrors what has been typed since the last one.
+    final kept = lines.length > 1 ? lines.last : next;
+    _a11yText = kept;
+    _setA11yText(kept);
+  }
+
+  /// Puts the field back in step with what has been sent, without feeding the
+  /// write back into [_onA11yChanged].
+  void _setA11yText(String text) {
+    if (_a11yController.text == text) return;
+    _a11ySyncing = true;
+    _a11yController.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    _a11ySyncing = false;
   }
 
   /// Hardware keys: wait while the IME composes; sticky modifiers apply to
@@ -365,6 +452,60 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
     };
   }
 
+  /// The screen reader's field: a real [TextField], invisible, over the whole
+  /// screen. xterm draws the screen and owns a bare [TextInputClient] of its
+  /// own, neither of which an a11y service can see as an editable node, so
+  /// this is what TalkBack focuses and what ACTION_SET_TEXT writes into.
+  ///
+  /// Everything about it is deliberately passive: no autofocus (touch keeps
+  /// going through [TerminalKeyboard]), no hit target ([IgnorePointer], so
+  /// taps, long presses and scrolls still reach the terminal), no cursor and no
+  /// selection overlay (nothing visible to draw), and a multiline IME so Enter
+  /// arrives as a line break in the value instead of a submit action.
+  Widget _a11yFieldBox() {
+    return IgnorePointer(
+      child: Opacity(
+        opacity: 0,
+        // At zero opacity the field's semantics must stay in the tree: they
+        // are the only editable node the terminal has.
+        alwaysIncludeSemantics: true,
+        child: TextField(
+          key: const ValueKey('terminal-a11y-input'),
+          controller: _a11yController,
+          focusNode: _a11yField,
+          // Multiline so Enter arrives as a line break in the value (a
+          // single-line field would send a submit action instead), filling the
+          // screen area and never spelling anything.
+          expands: true,
+          maxLines: null,
+          minLines: null,
+          keyboardType: TextInputType.multiline,
+          textInputAction: TextInputAction.newline,
+          textCapitalization: TextCapitalization.none,
+          autocorrect: false,
+          // The IME shape the key row's bridge asks for.
+          enableSuggestions: true,
+          enableIMEPersonalizedLearning: false,
+          smartDashesType: SmartDashesType.disabled,
+          smartQuotesType: SmartQuotesType.disabled,
+          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+          keyboardAppearance: Brightness.dark,
+          showCursor: false,
+          enableInteractiveSelection: false,
+          style: AppType.mono(color: Colors.transparent),
+          decoration: InputDecoration(
+            // TalkBack announces this, and the a11y tree reports it as the
+            // edit box's hint (Flutter has no contentDescription for fields).
+            labelText: appL10n.botsTerminalInput,
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+            isDense: true,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final font = ref.watch(terminalFontSizeProvider);
@@ -421,21 +562,6 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
       },
       child: screen,
     );
-    // An editable node over the screen: this is what an a11y service finds, and
-    // what [TerminalKeyboard] then gets the keyboard input from. Drawing only —
-    // touches still reach the terminal (the node adds no hit target).
-    if (canType) {
-      screen = Semantics(
-        container: true,
-        textField: true,
-        focusable: true,
-        label: appL10n.botsTerminalInput,
-        value: _a11yText,
-        onSetText: _onA11ySubmit,
-        onDidGainAccessibilityFocus: _onA11yFocus,
-        child: screen,
-      );
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -445,6 +571,8 @@ class TerminalScreenState extends ConsumerState<TerminalScreen> with FieldPaste<
             key: _stack,
             children: [
               Positioned.fill(child: blocked == null ? screen : Center(child: blocked)),
+              // The editable node an a11y service finds, over the screen.
+              if (blocked == null && canType) Positioned.fill(child: _a11yFieldBox()),
               if (blocked == null)
                 ListenableBuilder(
                   listenable: _selection,

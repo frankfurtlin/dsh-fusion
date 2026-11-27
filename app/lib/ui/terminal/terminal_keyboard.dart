@@ -92,6 +92,11 @@ class TerminalKeyboardState extends State<TerminalKeyboard> with TextInputClient
     _open();
   }
 
+  /// Ends this IME session without asking for it back, for when another client
+  /// takes the keyboard (the screen reader's field). Closing it first keeps
+  /// [TextInput]'s current client pointing at the field that is focused now.
+  void release() => _close();
+
   /// Sends what the IME is still composing as typed text and ends the
   /// composition, so a key from the key row lands after it (`git ch` + Tab).
   void flushComposing() {

@@ -1,5 +1,5 @@
-// One item's step on its own page: from 设置 › 系统权限 and from first run's
-// summary, the same step first run walks.
+// One item's step on its own page: from 设置 › 系统权限, the same step the
+// (deleted in 1.2.0) 首启 walk used to show.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
