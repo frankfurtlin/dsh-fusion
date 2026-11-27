@@ -1,8 +1,4 @@
 {
-  "remotePairTitle": "扫码配对电脑",
-  "remotePairSubtitle": "不用注册 Remote 账号，也不会传 DeepSeek 密码或登录凭据",
-  "remotePairNeedsDeepSeek": "先登录 DeepSeek 账号",
-  "remotePairNeedsDeepSeekBody": "扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。",
   "remotePairErrInvalidCode": "这不是 DSH Pocket 的配对二维码",
   "remotePairErrOtherServer": "这个二维码来自另一个 Remote 服务器",
   "remotePairErrUnsupported": "这个 Remote 服务器还不支持扫码配对",

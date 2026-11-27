@@ -36,17 +36,28 @@ class WorkshopAccountCredential {
 }
 
 class WorkshopAccountState {
-  const WorkshopAccountState({required this.phase, this.userCode, this.verificationUri,
-    this.expiresAt, this.id, this.login, this.credential, this.error});
+  const WorkshopAccountState({
+    required this.phase,
+    this.userCode,
+    this.verificationUri,
+    this.expiresAt,
+    this.id,
+    this.login,
+    this.credential,
+    this.error,
+  });
   final WorkshopAccountPhase phase;
+
   /// While [WorkshopAccountPhase.awaitingCode]: what to type, and where.
   final String? userCode;
   final Uri? verificationUri;
   final DateTime? expiresAt;
+
   /// While [WorkshopAccountPhase.signedIn].
   final int? id;
   final String? login;
   final WorkshopAccountCredential? credential;
+
   /// The last failed attempt; cleared when the next one starts.
   final WorkshopAccountError? error;
 }
@@ -75,7 +86,8 @@ final workshopGitHubProvider = Provider<GitHubDeviceFlow>((ref) {
 
 /// The pause between token polls; tests make it immediate.
 final workshopAccountWaitProvider = Provider<Future<void> Function(Duration)>(
-  (ref) => (interval) => Future<void>.delayed(interval),
+  (ref) =>
+      (interval) => Future<void>.delayed(interval),
 );
 
 class WorkshopAccountController extends Notifier<WorkshopAccountState> {
@@ -110,8 +122,12 @@ class WorkshopAccountController extends Notifier<WorkshopAccountState> {
       final saved = jsonDecode(await store.read(workshopAccountKey) ?? 'null');
       if (saved case {'token': final String token, 'id': final int id, 'login': final String login}
           when RegExp(r'^[A-Za-z0-9_]{1,255}$').hasMatch(token) && id > 0) {
-        next = WorkshopAccountState(phase: WorkshopAccountPhase.signedIn, id: id, login: login,
-          credential: WorkshopAccountCredential(token));
+        next = WorkshopAccountState(
+          phase: WorkshopAccountPhase.signedIn,
+          id: id,
+          login: login,
+          credential: WorkshopAccountCredential(token),
+        );
       }
     } on Object {
       // An unreadable record reads as signed out; the next sign-in replaces it.
@@ -135,8 +151,12 @@ class WorkshopAccountController extends Notifier<WorkshopAccountState> {
       if (clientId == null) workshopInvalid('workshop_account_unconfigured');
       final code = await github.requestCode(clientId);
       if (!_live(attempt)) return;
-      state = WorkshopAccountState(phase: WorkshopAccountPhase.awaitingCode, userCode: code.userCode,
-        verificationUri: code.verificationUri, expiresAt: DateTime.now().add(code.expiresIn));
+      state = WorkshopAccountState(
+        phase: WorkshopAccountPhase.awaitingCode,
+        userCode: code.userCode,
+        verificationUri: code.verificationUri,
+        expiresAt: DateTime.now().add(code.expiresIn),
+      );
       var interval = code.interval;
       while (true) {
         await wait(interval);
@@ -150,8 +170,12 @@ class WorkshopAccountController extends Notifier<WorkshopAccountState> {
             interval += const Duration(seconds: 5);
             continue;
           case GitHubPollStatus.expired || GitHubPollStatus.denied:
-            state = WorkshopAccountState(phase: WorkshopAccountPhase.signedOut,
-              error: poll.status == GitHubPollStatus.expired ? WorkshopAccountError.expired : WorkshopAccountError.denied);
+            state = WorkshopAccountState(
+              phase: WorkshopAccountPhase.signedOut,
+              error: poll.status == GitHubPollStatus.expired
+                  ? WorkshopAccountError.expired
+                  : WorkshopAccountError.denied,
+            );
             return;
           case GitHubPollStatus.token:
             final token = poll.token!;
@@ -176,24 +200,33 @@ class WorkshopAccountController extends Notifier<WorkshopAccountState> {
               }
             });
             if (!_live(attempt)) return;
-            state = WorkshopAccountState(phase: WorkshopAccountPhase.signedIn, id: user.id, login: user.login,
-              credential: WorkshopAccountCredential(token));
+            state = WorkshopAccountState(
+              phase: WorkshopAccountPhase.signedIn,
+              id: user.id,
+              login: user.login,
+              credential: WorkshopAccountCredential(token),
+            );
             return;
         }
       }
     } on Object catch (error) {
       if (!_live(attempt)) return;
       final code = error is WorkshopException ? error.code : null;
-      state = WorkshopAccountState(phase: WorkshopAccountPhase.signedOut,
+      state = WorkshopAccountState(
+        phase: WorkshopAccountPhase.signedOut,
         error: code == 'workshop_account_unconfigured' || code == 'workshop_unconfigured'
-            ? WorkshopAccountError.unconfigured : WorkshopAccountError.network);
+            ? WorkshopAccountError.unconfigured
+            : WorkshopAccountError.network,
+      );
     }
   }
 
   /// Stops waiting for approval. A code already approved on GitHub just
   /// expires unused. A sheet closing as the app shuts down may call this late.
   void cancelSignIn() {
-    if (!ref.mounted || state.phase == WorkshopAccountPhase.restoring || state.phase == WorkshopAccountPhase.signedIn) return;
+    if (!ref.mounted || state.phase == WorkshopAccountPhase.restoring || state.phase == WorkshopAccountPhase.signedIn) {
+      return;
+    }
     _attempt++;
     state = _signedOut;
   }

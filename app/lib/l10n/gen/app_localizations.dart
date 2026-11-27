@@ -4898,12 +4898,6 @@ abstract class L10n {
   /// **'放弃'**
   String get botsDiscard;
 
-  /// No description provided for @botsProgress.
-  ///
-  /// In zh, this message translates to:
-  /// **'进度'**
-  String get botsProgress;
-
   /// No description provided for @botsGlyphRun.
   ///
   /// In zh, this message translates to:
@@ -6019,12 +6013,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'所有人'**
   String get botsEveryone;
-
-  /// No description provided for @botsActivelyRunning.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在运行'**
-  String get botsActivelyRunning;
 
   /// No description provided for @botsListSeparator.
   ///
@@ -15650,12 +15638,6 @@ abstract class L10n {
   /// **'只保存在这台手机上，由系统密钥库加密。支持 Ed25519、RSA、ECDSA'**
   String get harmonyKeyStorageHelp;
 
-  /// No description provided for @harmonyUsageNotSent.
-  ///
-  /// In zh, this message translates to:
-  /// **'鸿蒙版暂不发送使用统计'**
-  String get harmonyUsageNotSent;
-
   /// No description provided for @harmonyVoiceSystemHint.
   ///
   /// In zh, this message translates to:
@@ -17552,42 +17534,6 @@ abstract class L10n {
   /// **'这个引擎不能安装市场插件'**
   String get marketInstallRefused;
 
-  /// No description provided for @marketSectionOfficial.
-  ///
-  /// In zh, this message translates to:
-  /// **'官方'**
-  String get marketSectionOfficial;
-
-  /// No description provided for @marketSectionAdapted.
-  ///
-  /// In zh, this message translates to:
-  /// **'适配 DSH Pocket'**
-  String get marketSectionAdapted;
-
-  /// No description provided for @marketSectionAll.
-  ///
-  /// In zh, this message translates to:
-  /// **'全部'**
-  String get marketSectionAll;
-
-  /// No description provided for @marketSectionLoading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在载入…'**
-  String get marketSectionLoading;
-
-  /// No description provided for @marketSectionFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'官方目录没打开'**
-  String get marketSectionFailed;
-
-  /// No description provided for @marketSectionEmpty.
-  ///
-  /// In zh, this message translates to:
-  /// **'暂无'**
-  String get marketSectionEmpty;
-
   /// No description provided for @marketTierOfficial.
   ///
   /// In zh, this message translates to:
@@ -17810,18 +17756,6 @@ abstract class L10n {
   /// **'npm 上的 {version} 和插件市场检查过的不是同一个包，已停止安装'**
   String marketMismatchMessage(String version);
 
-  /// No description provided for @marketSubmit.
-  ///
-  /// In zh, this message translates to:
-  /// **'提交插件'**
-  String get marketSubmit;
-
-  /// No description provided for @marketSubmitHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'在 GitHub 提交，通过自动检查即上架'**
-  String get marketSubmitHint;
-
   /// No description provided for @marketLinkNotFound.
   ///
   /// In zh, this message translates to:
@@ -17839,12 +17773,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'没能取得 npm 的版本校验信息，尚未开始安装。请检查网络后重试。'**
   String get marketVerificationUnavailableBody;
-
-  /// No description provided for @marketCombinedCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 个插件'**
-  String marketCombinedCount(int count);
 
   /// No description provided for @mediaGenerateTile.
   ///
@@ -23156,71 +23084,11 @@ abstract class L10n {
   /// **'搜索插件'**
   String get pluginsSearch;
 
-  /// No description provided for @pluginsMarketLoading.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在载入插件目录…'**
-  String get pluginsMarketLoading;
-
-  /// No description provided for @pluginsMarketLoadFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'插件目录没打开'**
-  String get pluginsMarketLoadFailed;
-
   /// No description provided for @pluginsMarketInvalid.
   ///
   /// In zh, this message translates to:
   /// **'目录格式有误'**
   String get pluginsMarketInvalid;
-
-  /// No description provided for @pluginsAll.
-  ///
-  /// In zh, this message translates to:
-  /// **'全部'**
-  String get pluginsAll;
-
-  /// No description provided for @pluginsMarketCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 个插件 · 来自 dshfind'**
-  String pluginsMarketCount(int count);
-
-  /// No description provided for @pluginsHideWeb.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐藏网页版插件'**
-  String get pluginsHideWeb;
-
-  /// No description provided for @pluginsShowWebCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'显示 {count} 个网页版插件'**
-  String pluginsShowWebCount(int count);
-
-  /// No description provided for @pluginsNoCategoryPlugins.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个分类下没有插件'**
-  String get pluginsNoCategoryPlugins;
-
-  /// No description provided for @pluginsNoSearchResults.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有找到「{query}」'**
-  String pluginsNoSearchResults(String query);
-
-  /// No description provided for @pluginsFailureDetails.
-  ///
-  /// In zh, this message translates to:
-  /// **'{title} · 点开查看'**
-  String pluginsFailureDetails(String title);
-
-  /// No description provided for @pluginsFeatured.
-  ///
-  /// In zh, this message translates to:
-  /// **'推荐'**
-  String get pluginsFeatured;
 
   /// No description provided for @pluginsInstalledRemoteRestart.
   ///
@@ -26996,18 +26864,6 @@ abstract class L10n {
   /// **'还没装 DSH？在主机上运行 {command}'**
   String remoteSshInstallCommand(String command);
 
-  /// Under the DSH Remote card; project is the upstream GitHub project (liguobao/ds-harness-remote), drawn as a link.
-  ///
-  /// In zh, this message translates to:
-  /// **'服务由 {project} 提供'**
-  String remoteRelayProvider(String project);
-
-  /// No description provided for @remoteRelayProviderServer.
-  ///
-  /// In zh, this message translates to:
-  /// **'服务由 {project} 提供 · 当前服务器 {server}'**
-  String remoteRelayProviderServer(String project, String server);
-
   /// No description provided for @remoteQuotedHostName.
   ///
   /// In zh, this message translates to:
@@ -27265,30 +27121,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'精简 简洁 历史 工具 传输 流量 远程 compact slim lite'**
   String get searchKwRemoteCompactHistory;
-
-  /// No description provided for @remotePairTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码配对电脑'**
-  String get remotePairTitle;
-
-  /// No description provided for @remotePairSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'不用注册 Remote 账号，也不会传 DeepSeek 密码或登录凭据'**
-  String get remotePairSubtitle;
-
-  /// No description provided for @remotePairNeedsDeepSeek.
-  ///
-  /// In zh, this message translates to:
-  /// **'先登录 DeepSeek 账号'**
-  String get remotePairNeedsDeepSeek;
-
-  /// No description provided for @remotePairNeedsDeepSeekBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。'**
-  String get remotePairNeedsDeepSeekBody;
 
   /// No description provided for @remotePairErrInvalidCode.
   ///
@@ -30878,12 +30710,6 @@ abstract class L10n {
   /// **'没能导出诊断包'**
   String get stateDiagnosticsExportFailed;
 
-  /// No description provided for @stateBrowserOpenFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'没能打开浏览器'**
-  String get stateBrowserOpenFailed;
-
   /// No description provided for @stateFileOpenFailed.
   ///
   /// In zh, this message translates to:
@@ -33781,18 +33607,6 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'正在下载 {percent}%'**
   String updateDownloadingPercent(int percent);
-
-  /// No description provided for @usageStatsSection.
-  ///
-  /// In zh, this message translates to:
-  /// **'改进 DSH Pocket'**
-  String get usageStatsSection;
-
-  /// No description provided for @usageStatsFooter.
-  ///
-  /// In zh, this message translates to:
-  /// **'这个开关只控制 dsh-go 自身的统计：各功能使用次数（含伙伴小屋、语音通话）、模型回复报告的 token 数、版本、手机品牌和型号、系统版本，不含对话、文件和账号；它不控制 Google ML Kit SDK 的统计。'**
-  String get usageStatsFooter;
 
   /// No description provided for @viewArtifactSaved.
   ///

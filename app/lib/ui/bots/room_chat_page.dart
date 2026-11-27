@@ -158,9 +158,7 @@ class _RoomChatPageState extends ConsumerState<RoomChatPage> {
     if (team == null || room == null || mobileUnavailable) {
       return AppPage.list(
         title: l10n.botsGroupChat,
-        children: [
-          DsBotUnavailableMessage(status: status, goneIcon: AppIcons.groupChat, goneTitle: l10n.botsRoomGone),
-        ],
+        children: [DsBotUnavailableMessage(status: status, goneIcon: AppIcons.groupChat, goneTitle: l10n.botsRoomGone)],
       );
     }
     final members = [for (final id in room.members) ?team.bot(id)];

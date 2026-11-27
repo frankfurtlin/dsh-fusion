@@ -60,7 +60,10 @@ class WorkshopPublishFrame extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [...children, if (action != null) const SizedBox(height: FormBottomBar.height)],
+            children: [
+              ...children,
+              if (action != null) const SizedBox(height: FormBottomBar.height),
+            ],
           ),
         ],
       ),
@@ -175,11 +178,7 @@ class WorkshopPublishSourceList extends ConsumerWidget {
         ListPageCard(
           children: [
             for (final source in sources.values)
-              _SourceRow(
-                source: source,
-                block: workshopPublishBlock(access, source.kind),
-                onTap: () => onPick(source),
-              ),
+              _SourceRow(source: source, block: workshopPublishBlock(access, source.kind), onTap: () => onPick(source)),
             _FileRow(onPick: onPick),
           ],
         ),
@@ -248,7 +247,11 @@ class _FileRowState extends ConsumerState<_FileRow> {
     } on Object catch (error) {
       if (mounted) showBriefNotice(context, workshopErrorLine(l10n, workshopLocalError(error).code));
     } finally {
-      try { await copy?.delete(); } on Object { /* A cache file. */ }
+      try {
+        await copy?.delete();
+      } on Object {
+        /* A cache file. */
+      }
       if (mounted) setState(() => _busy = false);
     }
   }
@@ -377,10 +380,8 @@ class _WorkshopPublishFormState extends ConsumerState<WorkshopPublishForm> {
 
   /// What the fields say now. The rights tick is not part of the form: it is
   /// given on the next step, for the packed result.
-  WorkshopPublicationInput _draft() => _typed().withDefaults(
-    login: ref.read(workshopAccountProvider).login,
-    fallbackId: _fallbackId,
-  );
+  WorkshopPublicationInput _draft() =>
+      _typed().withDefaults(login: ref.read(workshopAccountProvider).login, fallbackId: _fallbackId);
 
   /// An id for a work with no English name to make one from; kept for this
   /// form, so the draft does not change under the person.
@@ -401,7 +402,10 @@ class _WorkshopPublishFormState extends ConsumerState<WorkshopPublishForm> {
 
   bool _dirty() => !workshopSameDeclaration(
     _draft(),
-    ref.read(workshopPublishProvider).input.withDefaults(login: ref.read(workshopAccountProvider).login, fallbackId: _fallbackId),
+    ref
+        .read(workshopPublishProvider)
+        .input
+        .withDefaults(login: ref.read(workshopAccountProvider).login, fallbackId: _fallbackId),
   );
 
   void _edited(String field) {
@@ -414,9 +418,7 @@ class _WorkshopPublishFormState extends ConsumerState<WorkshopPublishForm> {
     final target = first == null ? null : _fieldKeys[first]?.currentContext;
     if (target == null) return;
     // Far enough down that the field's label clears the page's top bar.
-    unawaited(
-      Scrollable.ensureVisible(target, alignment: 0.16, duration: AppMotion.of(context, AppMotion.standard)),
-    );
+    unawaited(Scrollable.ensureVisible(target, alignment: 0.16, duration: AppMotion.of(context, AppMotion.standard)));
   }
 
   Future<void> _next() async {
@@ -812,10 +814,7 @@ class WorkshopPublishReview extends ConsumerWidget {
     void tick() => workshopPublishTickRights(context, ref);
 
     return WorkshopPublishFrame(
-      action: FilledButton(
-        onPressed: busy || block != null ? null : onSubmit,
-        child: Text(l10n.workshopPublishSubmit),
-      ),
+      action: FilledButton(onPressed: busy || block != null ? null : onSubmit, child: Text(l10n.workshopPublishSubmit)),
       children: [
         ...notes,
         if (block != null) WorkshopNote(workshopErrorLine(l10n, block), tone: WorkshopNoteTone.warning),

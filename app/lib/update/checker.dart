@@ -61,6 +61,7 @@ class UpdateChecker {
   Future<CheckResult> check({
     String? preferred,
     void Function(UpdateEndpoint endpoint)? onAttempt,
+
     /// What this build is. A source that answers with something no newer than
     /// this is not the end of the search: another source may still know a
     /// release (a stale channel must not hide the GitHub release). Null keeps

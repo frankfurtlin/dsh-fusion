@@ -36,9 +36,9 @@ class AppUpdateTiles extends ConsumerWidget {
           onLongPress: () async {
             await controller.resetAutoCheckClock();
             if (!context.mounted) return;
-            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-              SnackBar(content: Text(l10n.updateAutoCheckReset), duration: const Duration(seconds: 2)),
-            );
+            ScaffoldMessenger.maybeOf(
+              context,
+            )?.showSnackBar(SnackBar(content: Text(l10n.updateAutoCheckReset), duration: const Duration(seconds: 2)));
           },
           child: SettingsTile(
             icon: tint == null ? null : AppIcons.checkUpdate,

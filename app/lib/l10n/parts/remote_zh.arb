@@ -562,26 +562,6 @@
       }
     }
   },
-  "remoteRelayProvider": "服务由 {project} 提供",
-  "@remoteRelayProvider": {
-    "description": "Under the DSH Remote card; project is the upstream GitHub project (liguobao/ds-harness-remote), drawn as a link.",
-    "placeholders": {
-      "project": {
-        "type": "String"
-      }
-    }
-  },
-  "remoteRelayProviderServer": "服务由 {project} 提供 · 当前服务器 {server}",
-  "@remoteRelayProviderServer": {
-    "placeholders": {
-      "project": {
-        "type": "String"
-      },
-      "server": {
-        "type": "String"
-      }
-    }
-  },
   "remoteQuotedHostName": "「{name}」",
   "@remoteQuotedHostName": {
     "placeholders": {

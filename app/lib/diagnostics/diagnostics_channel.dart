@@ -197,7 +197,8 @@ class NativeDiagnostics {
 /// platforms) it answers empty.
 class DiagnosticsChannel {
   const DiagnosticsChannel([this.channel = const MethodChannel('dsh/diagnostics')]) : _imeSource = 'privilegedIme';
-  const DiagnosticsChannel.ohos([this.channel = const MethodChannel('dsh/diagnostics')]) : _imeSource = 'ohosWindowGeometry';
+  const DiagnosticsChannel.ohos([this.channel = const MethodChannel('dsh/diagnostics')])
+    : _imeSource = 'ohosWindowGeometry';
 
   final MethodChannel channel;
   final String _imeSource;
@@ -227,9 +228,7 @@ class DiagnosticsChannel {
       final raw = await channel.invokeMethod<Object?>('collectSystemIme');
       final at = DateTime.now();
       final evidence = SystemImeEvidence.fromNative(raw, now: at);
-      return evidence.source == _imeSource
-          ? evidence
-          : SystemImeEvidence.failure('failed', at, source: _imeSource);
+      return evidence.source == _imeSource ? evidence : SystemImeEvidence.failure('failed', at, source: _imeSource);
     } on MissingPluginException {
       return SystemImeEvidence.failure('unsupported', DateTime.now(), source: _imeSource);
     } on PlatformException {
@@ -267,5 +266,6 @@ class DiagnosticsChannel {
   }
 }
 
-final diagnosticsChannelProvider = Provider<DiagnosticsChannel>((ref) =>
-    ref.watch(operatingSystemProvider) == 'ohos' ? const DiagnosticsChannel.ohos() : const DiagnosticsChannel());
+final diagnosticsChannelProvider = Provider<DiagnosticsChannel>(
+  (ref) => ref.watch(operatingSystemProvider) == 'ohos' ? const DiagnosticsChannel.ohos() : const DiagnosticsChannel(),
+);

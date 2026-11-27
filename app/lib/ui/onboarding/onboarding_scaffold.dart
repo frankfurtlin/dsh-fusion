@@ -8,13 +8,7 @@ import '../theme/theme.dart';
 /// thin step bar in the top row. Provided by `OnboardingFlow`; absent when a
 /// page is opened on its own (API key from settings).
 class OnboardingProgress extends InheritedWidget {
-  const OnboardingProgress({
-    super.key,
-    required this.step,
-    required this.steps,
-    this.since,
-    required super.child,
-  });
+  const OnboardingProgress({super.key, required this.step, required this.steps, this.since, required super.child});
 
   /// 1-based step shown as current.
   final int step;
@@ -28,8 +22,7 @@ class OnboardingProgress extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<OnboardingProgress>();
 
   @override
-  bool updateShouldNotify(OnboardingProgress oldWidget) =>
-      step != oldWidget.step || steps != oldWidget.steps;
+  bool updateShouldNotify(OnboardingProgress oldWidget) => step != oldWidget.step || steps != oldWidget.steps;
 }
 
 /// Shared frame for the first-run pages: backdrop, safe area, a 440dp reading column
@@ -46,7 +39,6 @@ class OnboardingScaffold extends StatelessWidget {
 
   /// Optional widget pinned at the top-left (the back button).
   final Widget? leading;
-
 
   @override
   Widget build(BuildContext context) {

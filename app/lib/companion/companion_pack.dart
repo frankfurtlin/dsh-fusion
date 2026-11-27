@@ -23,7 +23,8 @@ import '../pets/pet_pack_validator.dart' show decodePetJson, PetValidationExcept
 import '../workshop/workshop_export.dart';
 import '../workshop/workshop_models.dart';
 import '../workshop/workshop_receipt.dart';
-import 'companion_adapt_contract.dart' show companionAdaptParams, companionAdaptEmotions, companionAdaptActions, companionAdaptZones;
+import 'companion_adapt_contract.dart'
+    show companionAdaptParams, companionAdaptEmotions, companionAdaptActions, companionAdaptZones;
 
 part 'companion_pack_integrity.dart';
 part 'companion_pack_export.dart';
@@ -139,7 +140,8 @@ class CompanionPackStore {
   /// Runs the same install transaction in this isolate with one replaceable
   /// output boundary. Production construction keeps the compute isolate.
   @visibleForTesting
-  CompanionPackStore.withOutputForTesting(this.root, {
+  CompanionPackStore.withOutputForTesting(
+    this.root, {
     this.expectedRuntime = companionRuntimeDigest,
     required OutputFileStream Function(String path) this._openOutput,
   });
@@ -150,7 +152,8 @@ class CompanionPackStore {
   final OutputFileStream Function(String path)? _openOutput;
 
   static final _roots = <String, _CompanionRootState>{};
-  _CompanionRootState get _state => _roots.putIfAbsent(root.absolute.uri.normalizePath().toString(), _CompanionRootState.new);
+  _CompanionRootState get _state =>
+      _roots.putIfAbsent(root.absolute.uri.normalizePath().toString(), _CompanionRootState.new);
 
   /// Shared across all stores for this root. Subscribe before an asynchronous
   /// availability check, and discard its result if this number changed.
@@ -208,9 +211,11 @@ class CompanionPackStore {
 
   Directory get pack => Directory('${root.path}/pack');
 
-  Future<bool> installed() => _exclusive(() async =>
-      await File('${pack.path}/runtime/live2dcubismcore.min.js').exists() &&
-      await File('${pack.path}/character/index.json').exists());
+  Future<bool> installed() => _exclusive(
+    () async =>
+        await File('${pack.path}/runtime/live2dcubismcore.min.js').exists() &&
+        await File('${pack.path}/character/index.json').exists(),
+  );
 
   /// A file-integrity gate for offering the floating renderer. The pinned
   /// runtime, index and all model references must be complete. This cannot
@@ -230,15 +235,29 @@ class CompanionPackStore {
   /// Exports model data only. User preferences are never read. Names/persona
   /// must be supplied explicitly for this export; otherwise a neutral name
   /// and no persona are written. Audio, runtime and local receipts stay out.
-  Future<File> exportZip(File destination, {String? name, String? persona, String? author, String? license, String? source}) => _exclusive(() async {
+  Future<File> exportZip(
+    File destination, {
+    String? name,
+    String? persona,
+    String? author,
+    String? license,
+    String? source,
+  }) => _exclusive(() async {
     final target = await workshopExportTarget(destination);
     final output = target.path;
-    final home = await root.exists() ? await root.resolveSymbolicLinks() : root.absolute.uri.normalizePath().toFilePath();
+    final home = await root.exists()
+        ? await root.resolveSymbolicLinks()
+        : root.absolute.uri.normalizePath().toFilePath();
     final prefix = home.endsWith(Platform.pathSeparator) ? home : '$home${Platform.pathSeparator}';
     if (output == home || output.startsWith(prefix)) throw const CompanionPackException(CompanionPackProblem.storage);
-    await workshopCommitExport(target, (staging) => compute(_exportCompanion, (pack.path, staging.path, <String, String>{
-      'name': ?name, 'persona': ?persona, 'author': ?author, 'license': ?license, 'source': ?source,
-    })));
+    await workshopCommitExport(
+      target,
+      (staging) => compute(_exportCompanion, (
+        pack.path,
+        staging.path,
+        <String, String>{'name': ?name, 'persona': ?persona, 'author': ?author, 'license': ?license, 'source': ?source},
+      )),
+    );
     return destination;
   });
 
@@ -266,28 +285,32 @@ class CompanionPackStore {
   /// Unpacks [zip] next to the current pack and swaps it in. If the swap fails,
   /// attempts to restore the old pack; a failed restoration leaves it in
   /// `pack.previous`. A zip with only `character/` keeps the installed runtime.
-  Future<void> install(String zip, {WorkshopReceipt? workshop, bool replaceExisting = false}) => _exclusive(() => _change(() async {
-    if (workshop != null && workshop.kind != 'companion') workshopInvalid('workshop_install_record');
-    if (workshop != null) await workshopCheckReplacement(pack, workshop, replaceExisting: replaceExisting);
-    final args = (zip, root.path, expectedRuntime, workshop == null ? null : jsonEncode(workshop.toJson()));
-    final openOutput = _openOutput;
-    if (openOutput == null) {
-      await compute(_install, args);
-    } else {
-      await _installWithOutput(args, openOutput);
-    }
-  }));
+  Future<void> install(String zip, {WorkshopReceipt? workshop, bool replaceExisting = false}) => _exclusive(
+    () => _change(() async {
+      if (workshop != null && workshop.kind != 'companion') workshopInvalid('workshop_install_record');
+      if (workshop != null) await workshopCheckReplacement(pack, workshop, replaceExisting: replaceExisting);
+      final args = (zip, root.path, expectedRuntime, workshop == null ? null : jsonEncode(workshop.toJson()));
+      final openOutput = _openOutput;
+      if (openOutput == null) {
+        await compute(_install, args);
+      } else {
+        await _installWithOutput(args, openOutput);
+      }
+    }),
+  );
 
-  Future<void> remove({WorkshopReceipt? expectedWorkshop}) => _exclusive(() => _change(() async {
-    if (expectedWorkshop != null) await workshopCheckRemoval(pack, expectedWorkshop);
-    final trash = Directory('${root.path}/pack.trash');
-    if (await trash.exists()) await trash.delete(recursive: true);
-    // A leftover backup must never resurrect an intentional removal.
-    final previous = Directory('${root.path}/pack.previous');
-    if (await previous.exists()) await previous.delete(recursive: true);
-    if (await pack.exists()) await pack.rename(trash.path);
-    await _forget(trash);
-  }));
+  Future<void> remove({WorkshopReceipt? expectedWorkshop}) => _exclusive(
+    () => _change(() async {
+      if (expectedWorkshop != null) await workshopCheckRemoval(pack, expectedWorkshop);
+      final trash = Directory('${root.path}/pack.trash');
+      if (await trash.exists()) await trash.delete(recursive: true);
+      // A leftover backup must never resurrect an intentional removal.
+      final previous = Directory('${root.path}/pack.previous');
+      if (await previous.exists()) await previous.delete(recursive: true);
+      if (await pack.exists()) await pack.rename(trash.path);
+      await _forget(trash);
+    }),
+  );
 }
 
 class _CompanionRootState {
@@ -300,8 +323,10 @@ class _CompanionRootState {
 Future<void> _install((String, String, String, String?) args) =>
     _installWithOutput(args, (path) => OutputFileStream(path));
 
-Future<void> _installWithOutput((String, String, String, String?) args,
-    OutputFileStream Function(String path) openOutput) async {
+Future<void> _installWithOutput(
+  (String, String, String, String?) args,
+  OutputFileStream Function(String path) openOutput,
+) async {
   final (zipPath, rootPath, expected, receiptJson) = args;
   final staging = Directory('$rootPath/pack.staging');
   final previous = Directory('$rootPath/pack.previous');
@@ -390,8 +415,7 @@ Future<void> _installWithOutput((String, String, String, String?) args,
           // Cleanup must not replace the primary extraction failure.
         }
         if (error is FileSystemException) rethrow;
-        Error.throwWithStackTrace(
-          CompanionPackException(CompanionPackProblem.notAPack, file.name), stack);
+        Error.throwWithStackTrace(CompanionPackException(CompanionPackProblem.notAPack, file.name), stack);
       }
       await output.close();
       // A header can lie about the size; what landed on disk can't.
@@ -458,7 +482,9 @@ Future<void> _installWithOutput((String, String, String, String?) args,
   } on FileSystemException catch (error, stack) {
     await _forget(staging);
     Error.throwWithStackTrace(
-      CompanionPackException(CompanionPackProblem.storage, error.osError?.message, error.osError?.errorCode), stack);
+      CompanionPackException(CompanionPackProblem.storage, error.osError?.message, error.osError?.errorCode),
+      stack,
+    );
   } finally {
     try {
       await input?.close();

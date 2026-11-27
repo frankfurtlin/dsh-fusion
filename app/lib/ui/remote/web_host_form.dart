@@ -78,11 +78,7 @@ class _WebHostFormPageState extends ConsumerState<WebHostFormPage> {
       _testResult = null;
     });
     try {
-      final session = await GatewayLogin().login(
-        Uri.parse(base),
-        username: _account.text.trim(),
-        password: password,
-      );
+      final session = await GatewayLogin().login(Uri.parse(base), username: _account.text.trim(), password: password);
       if (!mounted) return;
       setState(() {
         _testing = false;
@@ -117,12 +113,7 @@ class _WebHostFormPageState extends ConsumerState<WebHostFormPage> {
       _saving = true;
       _error = null;
     });
-    final config = WebHostConfig(
-      id: _id,
-      name: _name.text.trim(),
-      baseUrl: base,
-      username: account,
-    );
+    final config = WebHostConfig(id: _id, name: _name.text.trim(), baseUrl: base, username: account);
     final hosts = ref.read(hostsProvider.notifier);
     final saved = await hosts.saveWeb(config, password: password);
     if (!mounted) return;
@@ -146,10 +137,7 @@ class _WebHostFormPageState extends ConsumerState<WebHostFormPage> {
         content: Text(l10n.webLoginRemoveHint),
         actions: [
           TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.commonCancel)),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.commonDelete),
-          ),
+          FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.commonDelete)),
         ],
       ),
     );
@@ -264,10 +252,7 @@ class _WebHostFormPageState extends ConsumerState<WebHostFormPage> {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: FilledButton(
-                      onPressed: _saving ? null : _save,
-                      child: Text(l10n.commonSave),
-                    ),
+                    child: FilledButton(onPressed: _saving ? null : _save, child: Text(l10n.commonSave)),
                   ),
                 ],
               ),

@@ -1,7 +1,6 @@
 // About DSH Pocket: app information, the original author and personal profiles,
 // then the brand mark, slogan and unofficial-app disclaimer.
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,5 +76,4 @@ class AboutPage extends ConsumerWidget {
       ],
     );
   }
-
 }

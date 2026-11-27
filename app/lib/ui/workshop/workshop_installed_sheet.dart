@@ -153,7 +153,9 @@ class WorkshopInstalledAvatar extends StatelessWidget {
       dimension: size,
       child: DecoratedBox(
         decoration: ShapeDecoration(color: scheme.surfaceContainerHighest, shape: Squircle.border(size * 0.25)),
-        child: Center(child: Icon(AppIcons.question, size: size * 0.5, color: scheme.onSurfaceVariant)),
+        child: Center(
+          child: Icon(AppIcons.question, size: size * 0.5, color: scheme.onSurfaceVariant),
+        ),
       ),
     );
   }
@@ -257,10 +259,7 @@ class WorkshopInstalledSheet extends ConsumerWidget {
                   margin: const EdgeInsets.symmetric(horizontal: kSheetGutter),
                   children: switch (local) {
                     WorkshopInstalled(:final receipt) => [
-                      ListPageRow(
-                        title: l10n.workshopInstalledFactKind,
-                        value: workshopKindText(l10n, receipt.kind),
-                      ),
+                      ListPageRow(title: l10n.workshopInstalledFactKind, value: workshopKindText(l10n, receipt.kind)),
                       ListPageRow(title: l10n.workshopInstalledFactId, value: receipt.id),
                       ListPageRow(title: l10n.commonVersion, value: receipt.version),
                       ListPageRow(title: l10n.workshopInstalledFactOrigin, value: receipt.origin.host),

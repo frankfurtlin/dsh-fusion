@@ -23,6 +23,7 @@ class PhoneSkillAutoPrompt extends ConsumerStatefulWidget {
     required this.child,
   });
   final PhoneSkillStatus status;
+
   /// The skill card is part of the page (status ready and skills available).
   final bool enabled;
   final bool autoPromptReady;
@@ -41,7 +42,11 @@ class _PhoneSkillAutoPromptState extends ConsumerState<PhoneSkillAutoPrompt> {
   @override
   void initState() {
     super.initState();
-    _lifecycle = AppLifecycleListener(onStateChange: (_) { _visibilityEpoch++; });
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (_) {
+        _visibilityEpoch++;
+      },
+    );
   }
 
   @override
@@ -55,10 +60,14 @@ class _PhoneSkillAutoPromptState extends ConsumerState<PhoneSkillAutoPrompt> {
     super.didUpdateWidget(oldWidget);
     // A new completion can ask while this page is visible; candidates already
     // present when the card appeared, or when the setting was turned on, cannot.
-    if (_presenting || !oldWidget.enabled || !widget.enabled || !widget.autoPromptReady ||
+    if (_presenting ||
+        !oldWidget.enabled ||
+        !widget.enabled ||
+        !widget.autoPromptReady ||
         oldWidget.promptBaseline != widget.promptBaseline ||
         WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed ||
-        !oldWidget.status.askAfterSuccess || !widget.status.askAfterSuccess) {
+        !oldWidget.status.askAfterSuccess ||
+        !widget.status.askAfterSuccess) {
       return;
     }
     final previous = {for (final c in oldWidget.status.candidates) (c.taskId, c.generation)};
@@ -69,8 +78,11 @@ class _PhoneSkillAutoPromptState extends ConsumerState<PhoneSkillAutoPrompt> {
       final baseline = widget.promptBaseline;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        if (_visibilityEpoch != epoch || widget.promptBaseline != baseline || !widget.autoPromptReady ||
-            !widget.enabled || WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed ||
+        if (_visibilityEpoch != epoch ||
+            widget.promptBaseline != baseline ||
+            !widget.autoPromptReady ||
+            !widget.enabled ||
+            WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed ||
             ModalRoute.of(context)?.isCurrent != true) {
           _presenting = false;
           return;
@@ -137,8 +149,11 @@ class _PhoneSkillSectionState extends ConsumerState<PhoneSkillSection> {
   Future<void> _openResult(PhoneSkillSaveResult result) async {
     if (_presenting) return;
     setState(() => _presenting = true);
-    await showDialog<void>(context: context, barrierDismissible: false,
-      builder: (_) => PhoneSkillEditor.result(channel: ref.read(phoneChannelProvider), result: result));
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PhoneSkillEditor.result(channel: ref.read(phoneChannelProvider), result: result),
+    );
     if (!mounted) return;
     setState(() => _presenting = false);
     unawaited(ref.read(phoneProvider.notifier).refreshStatus());
@@ -168,8 +183,10 @@ class _PhoneSkillSectionState extends ConsumerState<PhoneSkillSection> {
           icon: AppIcons.bookmark,
           title: result.handle.name,
           subtitle: context.l10n.phoneSkillBundleRevision(result.handle.bundleRevision),
-          trailing: TextButton(onPressed: _presenting ? null : () => _openResult(result),
-            child: Text(context.l10n.phoneSkillCheckWrite)),
+          trailing: TextButton(
+            onPressed: _presenting ? null : () => _openResult(result),
+            child: Text(context.l10n.phoneSkillCheckWrite),
+          ),
           chevron: false,
         ),
       for (final candidate in widget.status.candidates)
@@ -260,30 +277,43 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
       _error = null;
       switch (reply.kind) {
         case PhoneSkillReplyKind.shown:
-          if (fromQuery || widget.candidate == null) { _error = 'stale'; return; }
+          if (fromQuery || widget.candidate == null) {
+            _error = 'stale';
+            return;
+          }
           final view = reply.draft!;
           final previous = _draft;
-          if (view.taskId != widget.candidate!.taskId || view.generation != widget.candidate!.generation ||
+          if (view.taskId != widget.candidate!.taskId ||
+              view.generation != widget.candidate!.generation ||
               previous != null && (view.draftId != previous.draftId || view.revision < previous.revision)) {
             _error = 'stale';
             return;
           }
           final frozen = _writeDraft;
-          if (_unverified != null || frozen != null && frozen.bundleRevision != null &&
-              (view.revision != frozen.revision || view.bundleRevision != frozen.bundleRevision ||
-               view.skillName != frozen.skillName)) {
+          if (_unverified != null ||
+              frozen != null &&
+                  frozen.bundleRevision != null &&
+                  (view.revision != frozen.revision ||
+                      view.bundleRevision != frozen.bundleRevision ||
+                      view.skillName != frozen.skillName)) {
             _error = 'stale';
             return;
           }
           _draft = view;
           _order = [...view.stepOrder];
-          for (final index in _order) { _checks.putIfAbsent(index, TextEditingController.new); }
+          for (final index in _order) {
+            _checks.putIfAbsent(index, TextEditingController.new);
+          }
           _dirty = false;
           _confirmed = false;
           _pendingWrite = _writeDraft?.bundleRevision != null || view.phase == 'staging' || view.phase == 'committing';
           if (_pendingWrite && view.bundleRevision != null) _queryHandle ??= PhoneSkillSaveHandle.fromDraft(view);
         case PhoneSkillReplyKind.saved:
-          if (!openTerminal && !_matchesWrite(reply)) { _error = 'stale'; _confirmed = false; return; }
+          if (!openTerminal && !_matchesWrite(reply)) {
+            _error = 'stale';
+            _confirmed = false;
+            return;
+          }
           _saved = true;
           _unverified = null;
           _pendingWrite = false;
@@ -291,16 +321,24 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
           _savedBundleRevision = reply.bundleRevision;
           _goal.clear();
           _prerequisites.clear();
-          for (final controller in _checks.values) { controller.clear(); }
+          for (final controller in _checks.values) {
+            controller.clear();
+          }
         case PhoneSkillReplyKind.unverified:
           if (!openTerminal && (_queryHandle == null && _draft?.bundleRevision == null || !_matchesWrite(reply))) {
-            _error = 'stale'; _confirmed = false; return;
+            _error = 'stale';
+            _confirmed = false;
+            return;
           }
           _unverified = reply;
           _pendingWrite = false;
           _confirmed = false;
         case PhoneSkillReplyKind.saving:
-          if (!_matchesWrite(reply)) { _error = 'stale'; _confirmed = false; return; }
+          if (!_matchesWrite(reply)) {
+            _error = 'stale';
+            _confirmed = false;
+            return;
+          }
           _pendingWrite = _unverified == null;
           _confirmed = false;
         case PhoneSkillReplyKind.rejected:
@@ -319,15 +357,25 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
     });
   }
 
-  void _changed() => setState(() { _dirty = true; _confirmed = false; });
+  void _changed() => setState(() {
+    _dirty = true;
+    _confirmed = false;
+  });
 
   Future<void> _applyEdits() async {
     if (_busy || _pendingWrite || _unverified != null || _saved || _closing) return;
     final draft = _draft!;
-    setState(() { _busy = true; _confirmed = false; });
-    final reply = await widget.channel.editSkillDraft(draft, goal: _goal.text,
-      prerequisites: _prerequisites.text, checkpoints: [for (final index in _order) _checks[index]!.text],
-      stepOrder: [..._order]);
+    setState(() {
+      _busy = true;
+      _confirmed = false;
+    });
+    final reply = await widget.channel.editSkillDraft(
+      draft,
+      goal: _goal.text,
+      prerequisites: _prerequisites.text,
+      checkpoints: [for (final index in _order) _checks[index]!.text],
+      stepOrder: [..._order],
+    );
     _accept(reply);
   }
 
@@ -335,7 +383,9 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
     if (_busy || _pendingWrite || _unverified != null || _saved || _closing || !_confirmed || _dirty) return;
     final draft = _draft!;
     setState(() {
-      _busy = true; _confirmed = false; _writeDraft = draft;
+      _busy = true;
+      _confirmed = false;
+      _writeDraft = draft;
       // Freeze before dispatch: losing this ACK does not establish that no bundle was published.
       if (draft.bundleRevision != null) {
         _pendingWrite = true;
@@ -352,7 +402,9 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
     final result = widget.result;
     setState(() => _busy = true);
     final reply = handle == null ? await channel.viewSkillDraft(_draft!) : await channel.checkSkillSave(handle);
-    if (!mounted || !identical(channel, widget.channel) || !identical(result, widget.result) ||
+    if (!mounted ||
+        !identical(channel, widget.channel) ||
+        !identical(result, widget.result) ||
         !identical(handle, _queryHandle)) {
       return;
     }
@@ -367,16 +419,25 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
       final reply = await widget.channel.discardSkillDraft(draft);
       if (!mounted) return;
       if (reply.code == 'cannot_cancel' || reply.code == 'unavailable') {
-        final leave = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
-          title: Text(context.l10n.phoneSkillWriting),
-          content: Text(context.l10n.phoneSkillCannotCancel),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.l10n.phoneSkillKeepWaiting)),
-            TextButton(onPressed: () => Navigator.pop(context, true), child: Text(context.l10n.commonClose)),
-          ],
-        ));
+        final leave = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(context.l10n.phoneSkillWriting),
+            content: Text(context.l10n.phoneSkillCannotCancel),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(context.l10n.phoneSkillKeepWaiting),
+              ),
+              TextButton(onPressed: () => Navigator.pop(context, true), child: Text(context.l10n.commonClose)),
+            ],
+          ),
+        );
         if (!mounted) return;
-        if (leave != true) { setState(() => _closing = false); return; }
+        if (leave != true) {
+          setState(() => _closing = false);
+          return;
+        }
       } else if (reply.kind == PhoneSkillReplyKind.saved) {
         _accept(reply);
         setState(() => _closing = false);
@@ -391,10 +452,14 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
   @override
   void dispose() {
     final draft = _draft;
-    if (!_saved && _unverified == null && !_allowPop && draft != null) unawaited(widget.channel.discardSkillDraft(draft));
+    if (!_saved && _unverified == null && !_allowPop && draft != null) {
+      unawaited(widget.channel.discardSkillDraft(draft));
+    }
     _goal.dispose();
     _prerequisites.dispose();
-    for (final controller in _checks.values) { controller.dispose(); }
+    for (final controller in _checks.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -405,78 +470,140 @@ class _PhoneSkillEditorState extends State<PhoneSkillEditor> {
     final editable = !_busy && !_pendingWrite && _unverified == null && !_saved && !_closing;
     return PopScope(
       canPop: _allowPop,
-      onPopInvokedWithResult: (didPop, _) { if (!didPop) unawaited(_close()); },
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) unawaited(_close());
+      },
       child: AlertDialog(
         title: Text(_saved ? l10n.commonSaved : l10n.phoneSkillSaveAction),
         content: SizedBox(
           width: 640,
-          child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_busy) const LinearProgressIndicator(),
-              if (_error != null) Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(_skillError(context, _error!))),
-              if (_saved) ...[
-                Text(l10n.phoneSkillSavedBody),
-                SelectableText(_savedPath!),
-                if (_savedBundleRevision case final revision?) Text(l10n.phoneSkillBundleRevision(revision)),
-              ],
-              if (_unverified != null) ...[
-                Text(_unverified!.publication == 'published'
-                  ? l10n.phoneSkillBundlePublishedUnverified : l10n.phoneSkillBundleUnknown),
-                SelectableText(_unverified!.relativePath!),
-                if (draft == null) Text(l10n.phoneSkillBundleRevision(_unverified!.bundleRevision!)),
-              ],
-              if (draft == null && _pendingWrite) Text(l10n.phoneSkillWriting),
-              if (!_saved && draft != null) ...[
-                if (draft.bundleRevision case final revision?) ...[
-                  SelectableText(draft.skillName),
-                  Text(l10n.phoneSkillBundleRevision(revision)),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (_busy) const LinearProgressIndicator(),
+                if (_error != null)
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(_skillError(context, _error!))),
+                if (_saved) ...[
+                  Text(l10n.phoneSkillSavedBody),
+                  SelectableText(_savedPath!),
+                  if (_savedBundleRevision case final revision?) Text(l10n.phoneSkillBundleRevision(revision)),
                 ],
-                Text(l10n.phoneSkillPrivacyHint),
-                const SizedBox(height: 12),
-                TextField(controller: _goal, enabled: editable, maxLength: 2000, onChanged: (_) => _changed(),
-                  decoration: InputDecoration(labelText: l10n.phoneSkillGoal)),
-                TextField(controller: _prerequisites, enabled: editable, maxLength: 2000, onChanged: (_) => _changed(),
-                  decoration: InputDecoration(labelText: l10n.phoneSkillPrerequisites)),
-                for (var position = 0; position < _order.length; position++) ...[
-                  Row(children: [
-                    Expanded(child: Text(l10n.phoneSkillStep(_order[position] + 1))),
-                    IconButton(tooltip: l10n.phoneSkillMoveUp, icon: const Icon(AppIcons.collapse),
-                      onPressed: editable && position > 0 ? () => setState(() {
-                        final index = _order.removeAt(position); _order.insert(position - 1, index); _dirty = true; _confirmed = false;
-                      }) : null),
-                    IconButton(tooltip: l10n.phoneSkillMoveDown, icon: const Icon(AppIcons.expand),
-                      onPressed: editable && position + 1 < _order.length ? () => setState(() {
-                        final index = _order.removeAt(position); _order.insert(position + 1, index); _dirty = true; _confirmed = false;
-                      }) : null),
-                    IconButton(tooltip: l10n.commonDelete, icon: const Icon(AppIcons.delete),
-                      onPressed: editable && _order.length > 1 ? () => setState(() {
-                        _order.removeAt(position); _dirty = true; _confirmed = false;
-                      }) : null),
-                  ]),
-                  TextField(controller: _checks[_order[position]], enabled: editable, maxLength: 2000,
-                    onChanged: (_) => _changed(), decoration: InputDecoration(labelText: l10n.phoneSkillCheckpoint)),
+                if (_unverified != null) ...[
+                  Text(
+                    _unverified!.publication == 'published'
+                        ? l10n.phoneSkillBundlePublishedUnverified
+                        : l10n.phoneSkillBundleUnknown,
+                  ),
+                  SelectableText(_unverified!.relativePath!),
+                  if (draft == null) Text(l10n.phoneSkillBundleRevision(_unverified!.bundleRevision!)),
                 ],
-                TextButton(onPressed: editable && _dirty ? _applyEdits : null, child: Text(l10n.phoneSkillUpdatePreview)),
-                const Divider(),
-                Text(l10n.phoneSkillPreviewTitle, style: Theme.of(context).textTheme.titleSmall),
-                if (draft.parameterizedFields.isNotEmpty) Text(l10n.phoneSkillParameterizedHint),
-                SelectableText(draft.markdown),
-                CheckboxListTile(contentPadding: EdgeInsets.zero, value: _confirmed,
-                  onChanged: editable && !_dirty ? (value) => setState(() => _confirmed = value == true) : null,
-                  title: Text(l10n.phoneSkillFinalConfirmation)),
-                if (_pendingWrite) Text(draft.bundleRevision != null && _error != null
-                  ? l10n.phoneSkillBundleUnknown : l10n.phoneSkillWriting),
+                if (draft == null && _pendingWrite) Text(l10n.phoneSkillWriting),
+                if (!_saved && draft != null) ...[
+                  if (draft.bundleRevision case final revision?) ...[
+                    SelectableText(draft.skillName),
+                    Text(l10n.phoneSkillBundleRevision(revision)),
+                  ],
+                  Text(l10n.phoneSkillPrivacyHint),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _goal,
+                    enabled: editable,
+                    maxLength: 2000,
+                    onChanged: (_) => _changed(),
+                    decoration: InputDecoration(labelText: l10n.phoneSkillGoal),
+                  ),
+                  TextField(
+                    controller: _prerequisites,
+                    enabled: editable,
+                    maxLength: 2000,
+                    onChanged: (_) => _changed(),
+                    decoration: InputDecoration(labelText: l10n.phoneSkillPrerequisites),
+                  ),
+                  for (var position = 0; position < _order.length; position++) ...[
+                    Row(
+                      children: [
+                        Expanded(child: Text(l10n.phoneSkillStep(_order[position] + 1))),
+                        IconButton(
+                          tooltip: l10n.phoneSkillMoveUp,
+                          icon: const Icon(AppIcons.collapse),
+                          onPressed: editable && position > 0
+                              ? () => setState(() {
+                                  final index = _order.removeAt(position);
+                                  _order.insert(position - 1, index);
+                                  _dirty = true;
+                                  _confirmed = false;
+                                })
+                              : null,
+                        ),
+                        IconButton(
+                          tooltip: l10n.phoneSkillMoveDown,
+                          icon: const Icon(AppIcons.expand),
+                          onPressed: editable && position + 1 < _order.length
+                              ? () => setState(() {
+                                  final index = _order.removeAt(position);
+                                  _order.insert(position + 1, index);
+                                  _dirty = true;
+                                  _confirmed = false;
+                                })
+                              : null,
+                        ),
+                        IconButton(
+                          tooltip: l10n.commonDelete,
+                          icon: const Icon(AppIcons.delete),
+                          onPressed: editable && _order.length > 1
+                              ? () => setState(() {
+                                  _order.removeAt(position);
+                                  _dirty = true;
+                                  _confirmed = false;
+                                })
+                              : null,
+                        ),
+                      ],
+                    ),
+                    TextField(
+                      controller: _checks[_order[position]],
+                      enabled: editable,
+                      maxLength: 2000,
+                      onChanged: (_) => _changed(),
+                      decoration: InputDecoration(labelText: l10n.phoneSkillCheckpoint),
+                    ),
+                  ],
+                  TextButton(
+                    onPressed: editable && _dirty ? _applyEdits : null,
+                    child: Text(l10n.phoneSkillUpdatePreview),
+                  ),
+                  const Divider(),
+                  Text(l10n.phoneSkillPreviewTitle, style: Theme.of(context).textTheme.titleSmall),
+                  if (draft.parameterizedFields.isNotEmpty) Text(l10n.phoneSkillParameterizedHint),
+                  SelectableText(draft.markdown),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: _confirmed,
+                    onChanged: editable && !_dirty ? (value) => setState(() => _confirmed = value == true) : null,
+                    title: Text(l10n.phoneSkillFinalConfirmation),
+                  ),
+                  if (_pendingWrite)
+                    Text(
+                      draft.bundleRevision != null && _error != null
+                          ? l10n.phoneSkillBundleUnknown
+                          : l10n.phoneSkillWriting,
+                    ),
+                ],
               ],
-            ],
-          )),
+            ),
+          ),
         ),
         actions: [
           TextButton(onPressed: _closing ? null : _close, child: Text(l10n.commonClose)),
-          if ((draft != null || _queryHandle != null) && (_pendingWrite || _unverified != null)) TextButton(onPressed: _busy ? null : _checkWrite, child: Text(l10n.phoneSkillCheckWrite)),
-          if (widget.result == null && !_saved && !_pendingWrite && _unverified == null) FilledButton(
-            onPressed: editable && draft != null && !_dirty && _confirmed ? _save : null,
-            child: Text(l10n.commonSave),
-          ),
+          if ((draft != null || _queryHandle != null) && (_pendingWrite || _unverified != null))
+            TextButton(onPressed: _busy ? null : _checkWrite, child: Text(l10n.phoneSkillCheckWrite)),
+          if (widget.result == null && !_saved && !_pendingWrite && _unverified == null)
+            FilledButton(
+              onPressed: editable && draft != null && !_dirty && _confirmed ? _save : null,
+              child: Text(l10n.commonSave),
+            ),
         ],
       ),
     );

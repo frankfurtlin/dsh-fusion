@@ -374,12 +374,7 @@ class PluginInstallsController extends Notifier<Map<String, PluginInstallJob>> {
         );
       } on DshException catch (error) {
         if (error is DshRemoteException) rethrow;
-        result = await _recover(
-          client,
-          requestId,
-          name,
-          requireResult: ref.read(operatingSystemProvider) == 'ohos',
-        );
+        result = await _recover(client, requestId, name, requireResult: ref.read(operatingSystemProvider) == 'ohos');
       }
       if (result.succeeded) {
         return finish((j) => j.copyWith(phase: PluginInstallPhase.succeeded, result: result));

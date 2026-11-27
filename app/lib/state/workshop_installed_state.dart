@@ -54,8 +54,7 @@ class WorkshopInstalledRow {
 enum WorkshopRemovalPhase { idle, removing, succeeded, failed }
 
 class WorkshopRemovalState {
-  const WorkshopRemovalState({this.phase = WorkshopRemovalPhase.idle, this.target,
-    this.error, this.refreshError});
+  const WorkshopRemovalState({this.phase = WorkshopRemovalPhase.idle, this.target, this.error, this.refreshError});
   final WorkshopRemovalPhase phase;
   final WorkshopLocalEntry? target;
   final String? error, refreshError;
@@ -64,27 +63,38 @@ class WorkshopRemovalState {
 const _unchanged = Object();
 
 class WorkshopInstalledListState {
-  WorkshopInstalledListState({List<WorkshopInstalledRow> rows = const [], this.loading = false,
-    this.refreshing = false, this.loadError, this.catalogError,
+  WorkshopInstalledListState({
+    List<WorkshopInstalledRow> rows = const [],
+    this.loading = false,
+    this.refreshing = false,
+    this.loadError,
+    this.catalogError,
     this.catalogStale,
-    this.removal = const WorkshopRemovalState()}) : rows = List.unmodifiable(rows);
+    this.removal = const WorkshopRemovalState(),
+  }) : rows = List.unmodifiable(rows);
   final List<WorkshopInstalledRow> rows;
   final bool loading, refreshing;
   final String? loadError, catalogError;
   final bool? catalogStale;
   final WorkshopRemovalState removal;
 
-  WorkshopInstalledListState copyWith({List<WorkshopInstalledRow>? rows, bool? loading,
-    bool? refreshing, Object? loadError = _unchanged, Object? catalogError = _unchanged,
+  WorkshopInstalledListState copyWith({
+    List<WorkshopInstalledRow>? rows,
+    bool? loading,
+    bool? refreshing,
+    Object? loadError = _unchanged,
+    Object? catalogError = _unchanged,
     Object? catalogStale = _unchanged,
-    WorkshopRemovalState? removal}) => WorkshopInstalledListState(
-      rows: rows ?? this.rows, loading: loading ?? this.loading,
-      refreshing: refreshing ?? this.refreshing,
-      loadError: identical(loadError, _unchanged) ? this.loadError : loadError as String?,
-      catalogError: identical(catalogError, _unchanged) ? this.catalogError : catalogError as String?,
-      catalogStale: identical(catalogStale, _unchanged) ? this.catalogStale : catalogStale as bool?,
-      removal: removal ?? this.removal,
-    );
+    WorkshopRemovalState? removal,
+  }) => WorkshopInstalledListState(
+    rows: rows ?? this.rows,
+    loading: loading ?? this.loading,
+    refreshing: refreshing ?? this.refreshing,
+    loadError: identical(loadError, _unchanged) ? this.loadError : loadError as String?,
+    catalogError: identical(catalogError, _unchanged) ? this.catalogError : catalogError as String?,
+    catalogStale: identical(catalogStale, _unchanged) ? this.catalogStale : catalogStale as bool?,
+    removal: removal ?? this.removal,
+  );
 }
 
 final workshopInstalledProvider = NotifierProvider<WorkshopInstalledController, WorkshopInstalledListState>(
@@ -114,8 +124,11 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
         // A deferred catalog must not leave an old projection marked known
         // if the independent local read fails. Keep the local rows instead.
         if (_readingLocal || previous?.origin != next.origin || next.snapshot == null) {
-          state = state.copyWith(rows: [for (final row in state.rows) WorkshopInstalledRow(local: row.local)],
-            catalogStale: null, catalogError: next.refreshError);
+          state = state.copyWith(
+            rows: [for (final row in state.rows) WorkshopInstalledRow(local: row.local)],
+            catalogStale: null,
+            catalogError: next.refreshError,
+          );
         }
         // A catalog event must not discard an independent local read. The
         // latter publishes its rows first and then takes the latest catalog.
@@ -133,6 +146,7 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
     final _ = state;
     return ref.mounted && generation == _generation;
   }
+
   bool _currentRead(int generation, int read) => _current(generation) && read == _read;
 
   /// Clears a displayed terminal result without starting or changing a mutation.
@@ -170,8 +184,13 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
       final packages = await packagesFuture;
       final entries = await packages.installed();
       if (!_currentRead(generation, read)) return;
-      state = state.copyWith(rows: [for (final entry in entries) WorkshopInstalledRow(local: entry)],
-        loading: false, loadError: null, catalogError: null, catalogStale: null);
+      state = state.copyWith(
+        rows: [for (final entry in entries) WorkshopInstalledRow(local: entry)],
+        loading: false,
+        loadError: null,
+        catalogError: null,
+        catalogStale: null,
+      );
       _readingLocal = false;
       await _enrich(generation, read, ++_catalogRead);
     } on Object catch (error) {
@@ -192,8 +211,12 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
     final catalog = ref.read(workshopCatalogProvider);
     final snapshot = catalog.snapshot;
     if (snapshot == null) {
-      state = state.copyWith(rows: [for (final row in state.rows) WorkshopInstalledRow(local: row.local)],
-        catalogError: catalog.refreshError, catalogStale: null, refreshing: false);
+      state = state.copyWith(
+        rows: [for (final row in state.rows) WorkshopInstalledRow(local: row.local)],
+        catalogError: catalog.refreshError,
+        catalogStale: null,
+        refreshing: false,
+      );
       return;
     }
     try {
@@ -204,10 +227,16 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
       if (!current()) return;
       final currentCatalog = ref.read(workshopCatalogProvider);
       if (currentCatalog.origin != catalog.origin || !identical(currentCatalog.snapshot, snapshot)) return;
-      state = state.copyWith(rows: [for (final item in projected)
-        WorkshopInstalledRow(local: item.installed,
-          remote: item.installed is WorkshopInstalled ? item : null)],
-        loading: false, refreshing: false, catalogError: currentCatalog.refreshError, catalogStale: snapshot.stale);
+      state = state.copyWith(
+        rows: [
+          for (final item in projected)
+            WorkshopInstalledRow(local: item.installed, remote: item.installed is WorkshopInstalled ? item : null),
+        ],
+        loading: false,
+        refreshing: false,
+        catalogError: currentCatalog.refreshError,
+        catalogStale: snapshot.stale,
+      );
     } on Object catch (error) {
       if (current()) {
         state = state.copyWith(catalogError: workshopLocalError(error).code, refreshing: false);
@@ -230,14 +259,19 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
     final packagesFuture = _packages;
     final changed = ref.read(workshopPackageChangedProvider);
     final catalogController = ref.read(workshopCatalogProvider.notifier);
-    state = state.copyWith(removal: WorkshopRemovalState(phase: WorkshopRemovalPhase.removing, target: entry));
+    state = state.copyWith(
+      removal: WorkshopRemovalState(phase: WorkshopRemovalPhase.removing, target: entry),
+    );
     try {
       if (entry is! WorkshopInstalled) workshopInvalid('workshop_install_record');
       final packages = await packagesFuture;
       await packages.remove(entry);
       String? refreshError;
-      try { await changed(entry, removed: true); }
-      on Object { refreshError = 'workshop_local_refresh'; }
+      try {
+        await changed(entry, removed: true);
+      } on Object {
+        refreshError = 'workshop_local_refresh';
+      }
       // The mutation already committed. List errors have their own fields and
       // cannot turn this result into a failed/rolled-back uninstall.
       try {
@@ -247,13 +281,23 @@ class WorkshopInstalledController extends Notifier<WorkshopInstalledListState> {
         refreshError = 'workshop_local_refresh';
       }
       if (_current(generation)) {
-        state = state.copyWith(removal: WorkshopRemovalState(
-          phase: WorkshopRemovalPhase.succeeded, target: entry, refreshError: refreshError));
+        state = state.copyWith(
+          removal: WorkshopRemovalState(
+            phase: WorkshopRemovalPhase.succeeded,
+            target: entry,
+            refreshError: refreshError,
+          ),
+        );
       }
     } on Object catch (error) {
       if (_current(generation)) {
-        state = state.copyWith(removal: WorkshopRemovalState(
-          phase: WorkshopRemovalPhase.failed, target: entry, error: workshopLocalError(error).code));
+        state = state.copyWith(
+          removal: WorkshopRemovalState(
+            phase: WorkshopRemovalPhase.failed,
+            target: entry,
+            error: workshopLocalError(error).code,
+          ),
+        );
       }
     } finally {
       gate.release(token);

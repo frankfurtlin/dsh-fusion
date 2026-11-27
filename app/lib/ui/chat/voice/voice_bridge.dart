@@ -161,10 +161,8 @@ class MethodChannelVoiceBridge implements VoiceBridge {
   }
 
   @override
-  Stream<VoiceEvent> get events => _stream ??= voicePlatformEvents
-      .map(_decode)
-      .where((e) => e != null)
-      .cast<VoiceEvent>();
+  Stream<VoiceEvent> get events =>
+      _stream ??= voicePlatformEvents.map(_decode).where((e) => e != null).cast<VoiceEvent>();
 
   VoiceEvent? _decode(Object? raw) {
     if (raw is! Map || raw['sessionId'] != _session) return null;

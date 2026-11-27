@@ -12,9 +12,8 @@ import 'access_walk.dart';
 
 /// Pushes [item]'s step; it closes itself once the item is on (or 设好了,
 /// or 跳过), and back closes it any time.
-Future<void> openAccessItem(BuildContext context, AccessItem item) => Navigator.of(
-  context,
-).push(MaterialPageRoute<void>(builder: (_) => AccessItemPage(item: item)));
+Future<void> openAccessItem(BuildContext context, AccessItem item) =>
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => AccessItemPage(item: item)));
 
 class AccessItemPage extends ConsumerWidget {
   const AccessItemPage({super.key, required this.item});

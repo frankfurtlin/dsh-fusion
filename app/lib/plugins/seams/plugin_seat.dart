@@ -56,9 +56,9 @@ class PluginSeat extends ConsumerWidget {
 
     final children = <Widget>[];
     for (final item in items) {
-      final key = ValueKey([
-        item.mode.name, item.occupant.package, item.occupant.cell, ?item.configNamespace,
-      ].join('|'));
+      final key = ValueKey(
+        [item.mode.name, item.occupant.package, item.occupant.cell, ?item.configNamespace].join('|'),
+      );
       switch (item.mode) {
         case SeatMode.native:
           children.add(KeyedSubtree(key: key, child: item.adapter!.build(context, plan.seat, item.occupant)));

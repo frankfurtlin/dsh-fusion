@@ -159,8 +159,7 @@ class MemoryPluginConfigApi implements PluginConfigApi {
     _changes.add(null);
   }
 
-  bool _live(MemoryPluginEntry entry, List<String> path) =>
-      PluginConfigForm(entry.view()).isLive(path);
+  bool _live(MemoryPluginEntry entry, List<String> path) => PluginConfigForm(entry.view()).isLive(path);
 
   PluginConfigForm _form(MemoryPluginEntry e) => PluginConfigForm(
     e.view(writable: writable && !e.overridden),

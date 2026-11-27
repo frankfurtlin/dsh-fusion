@@ -78,11 +78,12 @@ final sshLinkFactoryProvider = Provider<SshLinkFactory>(
 typedef WebLinkFactory = WebHostLink Function(Ref ref, WebHostConfig config);
 
 final webLinkFactoryProvider = Provider<WebLinkFactory>(
-  (ref) => (ref, config) => WebHostLink.obtain(
-    config: config,
-    loadPassword: () => ref.read(hostsProvider.notifier).loadWebPassword(config.id),
-    kicks: ref.read(networkKicksProvider),
-  ),
+  (ref) =>
+      (ref, config) => WebHostLink.obtain(
+        config: config,
+        loadPassword: () => ref.read(hostsProvider.notifier).loadWebPassword(config.id),
+        kicks: ref.read(networkKicksProvider),
+      ),
 );
 
 /// The live link to a remote host; null for 本机, no host at all, or an

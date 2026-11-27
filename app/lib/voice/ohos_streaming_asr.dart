@@ -7,7 +7,9 @@ import 'streaming_asr.dart';
 /// Core Speech consumes the existing microphone tap. It does not load sherpa
 /// model paths or open a second recorder. SDK/phone behavior remains unverified.
 class OhosStreamingAsr extends StreamingAsr {
-  OhosStreamingAsr({MethodChannel? channel}) : _channel = channel ?? const MethodChannel('dsh/streaming_asr'), _readinessProbe = false;
+  OhosStreamingAsr({MethodChannel? channel})
+    : _channel = channel ?? const MethodChannel('dsh/streaming_asr'),
+      _readinessProbe = false;
   OhosStreamingAsr.forReadiness() : _channel = const MethodChannel('dsh/streaming_asr'), _readinessProbe = true;
 
   final MethodChannel _channel;

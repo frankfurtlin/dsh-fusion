@@ -18,8 +18,12 @@ enum WorkshopPublishPhase { idle, checking, preparing, ready, creating, uploadin
 /// The page must explain the local loss and possible server submission, then
 /// return this exact offer. It is not a server cancellation authorization.
 class WorkshopPendingAbandonOffer {
-  const WorkshopPendingAbandonOffer._({required this.range, required this.worker,
-    required this.account, required this.accountId});
+  const WorkshopPendingAbandonOffer._({
+    required this.range,
+    required this.worker,
+    required this.account,
+    required this.accountId,
+  });
   final WorkshopPendingAbandonRange range;
   final Uri worker, account;
   final int accountId;
@@ -29,15 +33,30 @@ class WorkshopPendingAbandonOffer {
 /// private directory names, and absolute paths. A completed upload is not a
 /// completed submission until the server response has been checked.
 class WorkshopPublishState {
-  WorkshopPublishState({required this.session, this.source, WorkshopPublicationInput? input,
-    this.phase = WorkshopPublishPhase.idle, this.busy = false,
-    this.waitingForPreviousOperation = false, this.pendingChecked = false,
-    this.hasPending = false, this.pendingKnownUnsent = false, this.preparedMetadata, List<String> files = const [],
-    Map<String, String> fieldErrors = const {}, this.sent = 0, this.total = 0,
-    this.result, this.error, this.preferenceError, this.cleanupError,
-    this.abandonOffer, this.recoveryError})
-    : input = input ?? WorkshopPublicationInput(), files = List.unmodifiable(files),
-      fieldErrors = Map.unmodifiable(fieldErrors);
+  WorkshopPublishState({
+    required this.session,
+    this.source,
+    WorkshopPublicationInput? input,
+    this.phase = WorkshopPublishPhase.idle,
+    this.busy = false,
+    this.waitingForPreviousOperation = false,
+    this.pendingChecked = false,
+    this.hasPending = false,
+    this.pendingKnownUnsent = false,
+    this.preparedMetadata,
+    List<String> files = const [],
+    Map<String, String> fieldErrors = const {},
+    this.sent = 0,
+    this.total = 0,
+    this.result,
+    this.error,
+    this.preferenceError,
+    this.cleanupError,
+    this.abandonOffer,
+    this.recoveryError,
+  }) : input = input ?? WorkshopPublicationInput(),
+       files = List.unmodifiable(files),
+       fieldErrors = Map.unmodifiable(fieldErrors);
 
   final Object session;
   final WorkshopPublishSource? source;
@@ -55,37 +74,66 @@ class WorkshopPublishState {
   bool get working => busy || waitingForPreviousOperation;
   bool get canEditMetadata => pendingChecked && !working && !hasPending;
   bool get canDiscardUnsentSubmission => !working && hasPending && pendingKnownUnsent;
-  bool get canRequestPendingAbandonment => !working && (result != null
-      ? hasPending && preferenceError != null
-      : hasPending || !pendingChecked && preferenceError != null);
-  bool get canStartNewSubmission => !working && !hasPending &&
+  bool get canRequestPendingAbandonment =>
+      !working &&
+      (result != null
+          ? hasPending && preferenceError != null
+          : hasPending || !pendingChecked && preferenceError != null);
+  bool get canStartNewSubmission =>
+      !working &&
+      !hasPending &&
       (result?.status == WorkshopSubmissionStatus.rejected || result?.status == WorkshopSubmissionStatus.withdrawn);
 
-  WorkshopPublishState copyWith({WorkshopPublishSource? source, bool clearSource = false,
-    WorkshopPublicationInput? input, WorkshopPublishPhase? phase, bool? busy,
-    bool? waitingForPreviousOperation, bool? pendingChecked, bool? hasPending, bool? pendingKnownUnsent,
-    WorkshopMetadata? preparedMetadata, bool clearPrepared = false,
-    List<String>? files, Map<String, String>? fieldErrors, int? sent, int? total,
-    WorkshopSubmission? result, bool clearResult = false, WorkshopException? error,
-    bool clearError = false, WorkshopException? preferenceError, bool clearPreferenceError = false,
-    WorkshopException? cleanupError, bool clearCleanupError = false,
-    WorkshopPendingAbandonOffer? abandonOffer, bool clearAbandonOffer = false,
-    WorkshopException? recoveryError, bool clearRecoveryError = false}) => WorkshopPublishState(
-      session: session, source: clearSource ? null : source ?? this.source,
-      input: input ?? this.input, phase: phase ?? this.phase, busy: busy ?? this.busy,
-      waitingForPreviousOperation: waitingForPreviousOperation ?? this.waitingForPreviousOperation,
-      pendingChecked: pendingChecked ?? this.pendingChecked, hasPending: hasPending ?? this.hasPending,
-      pendingKnownUnsent: pendingKnownUnsent ?? this.pendingKnownUnsent,
-      preparedMetadata: clearPrepared ? null : preparedMetadata ?? this.preparedMetadata,
-      files: clearPrepared ? const [] : files ?? this.files, fieldErrors: fieldErrors ?? this.fieldErrors,
-      sent: sent ?? this.sent, total: total ?? this.total,
-      result: clearResult ? null : result ?? this.result,
-      error: clearError ? null : error ?? this.error,
-      preferenceError: clearPreferenceError ? null : preferenceError ?? this.preferenceError,
-      cleanupError: clearCleanupError ? null : cleanupError ?? this.cleanupError,
-      abandonOffer: clearAbandonOffer ? null : abandonOffer ?? this.abandonOffer,
-      recoveryError: clearRecoveryError ? null : recoveryError ?? this.recoveryError,
-    );
+  WorkshopPublishState copyWith({
+    WorkshopPublishSource? source,
+    bool clearSource = false,
+    WorkshopPublicationInput? input,
+    WorkshopPublishPhase? phase,
+    bool? busy,
+    bool? waitingForPreviousOperation,
+    bool? pendingChecked,
+    bool? hasPending,
+    bool? pendingKnownUnsent,
+    WorkshopMetadata? preparedMetadata,
+    bool clearPrepared = false,
+    List<String>? files,
+    Map<String, String>? fieldErrors,
+    int? sent,
+    int? total,
+    WorkshopSubmission? result,
+    bool clearResult = false,
+    WorkshopException? error,
+    bool clearError = false,
+    WorkshopException? preferenceError,
+    bool clearPreferenceError = false,
+    WorkshopException? cleanupError,
+    bool clearCleanupError = false,
+    WorkshopPendingAbandonOffer? abandonOffer,
+    bool clearAbandonOffer = false,
+    WorkshopException? recoveryError,
+    bool clearRecoveryError = false,
+  }) => WorkshopPublishState(
+    session: session,
+    source: clearSource ? null : source ?? this.source,
+    input: input ?? this.input,
+    phase: phase ?? this.phase,
+    busy: busy ?? this.busy,
+    waitingForPreviousOperation: waitingForPreviousOperation ?? this.waitingForPreviousOperation,
+    pendingChecked: pendingChecked ?? this.pendingChecked,
+    hasPending: hasPending ?? this.hasPending,
+    pendingKnownUnsent: pendingKnownUnsent ?? this.pendingKnownUnsent,
+    preparedMetadata: clearPrepared ? null : preparedMetadata ?? this.preparedMetadata,
+    files: clearPrepared ? const [] : files ?? this.files,
+    fieldErrors: fieldErrors ?? this.fieldErrors,
+    sent: sent ?? this.sent,
+    total: total ?? this.total,
+    result: clearResult ? null : result ?? this.result,
+    error: clearError ? null : error ?? this.error,
+    preferenceError: clearPreferenceError ? null : preferenceError ?? this.preferenceError,
+    cleanupError: clearCleanupError ? null : cleanupError ?? this.cleanupError,
+    abandonOffer: clearAbandonOffer ? null : abandonOffer ?? this.abandonOffer,
+    recoveryError: clearRecoveryError ? null : recoveryError ?? this.recoveryError,
+  );
 }
 
 final workshopRequestIdProvider = Provider<String Function()>((ref) => WorkshopClient.newRequestId);
@@ -113,8 +161,13 @@ class _DraftLease {
 }
 
 class _PublishIntent {
-  _PublishIntent({required this.scope, required this.pending, required this.lease, this.saved = false,
-    this.mayHaveDispatched = false});
+  _PublishIntent({
+    required this.scope,
+    required this.pending,
+    required this.lease,
+    this.saved = false,
+    this.mayHaveDispatched = false,
+  });
   final String scope;
   final WorkshopPendingSubmission pending;
   final _DraftLease lease;
@@ -194,8 +247,14 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     final token = Object();
     _operation = token;
     if (!recoveringPending) context.abandonment = null;
-    state = state.copyWith(busy: true, waitingForPreviousOperation: false, phase: phase,
-      clearError: !recoveringPending, clearAbandonOffer: !recoveringPending, clearRecoveryError: true);
+    state = state.copyWith(
+      busy: true,
+      waitingForPreviousOperation: false,
+      phase: phase,
+      clearError: !recoveringPending,
+      clearAbandonOffer: !recoveringPending,
+      clearRecoveryError: true,
+    );
     return token;
   }
 
@@ -211,9 +270,13 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
   bool _editorReady(_PublishContext context, {bool requireProfile = true}) {
     if (!_current(context)) return false;
     final access = ref.read(workshopAccessProvider);
-    final code = state.working ? 'workshop_busy'
-        : requireProfile && access.accountId == null ? 'workshop_profile_required'
-        : !context.checked ? 'workshop_pending_check_required' : null;
+    final code = state.working
+        ? 'workshop_busy'
+        : requireProfile && access.accountId == null
+        ? 'workshop_profile_required'
+        : !context.checked
+        ? 'workshop_pending_check_required'
+        : null;
     if (code == null) return true;
     state = state.copyWith(error: WorkshopException(code));
     return false;
@@ -226,12 +289,18 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     if (authorization.requestScope == null || authorization.accountId == null) {
       workshopInvalid('workshop_profile_required');
     }
-    final scope = _digest([authorization.client.origin.toString(),
-      authorization.credential.account.toString(), authorization.accountId]);
+    final scope = _digest([
+      authorization.client.origin.toString(),
+      authorization.credential.account.toString(),
+      authorization.accountId,
+    ]);
     if (context.scope != null && context.scope != scope) workshopInvalid('workshop_cancelled');
     context.scope = scope;
-    context.account = (worker: authorization.client.origin,
-      account: authorization.credential.account, userId: authorization.accountId!);
+    context.account = (
+      worker: authorization.client.origin,
+      account: authorization.credential.account,
+      userId: authorization.accountId!,
+    );
     return authorization;
   }
 
@@ -288,11 +357,22 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
           return;
         }
         context.prepared = lease;
-        context.intent = _PublishIntent(scope: context.scope!, pending: pending, lease: lease,
-          saved: true, mayHaveDispatched: true);
-        state = state.copyWith(input: WorkshopPublicationInput.fromMetadata(pending.metadata),
-          preparedMetadata: pending.metadata, files: pending.files, hasPending: true, pendingKnownUnsent: false,
-          phase: WorkshopPublishPhase.ready, fieldErrors: const {});
+        context.intent = _PublishIntent(
+          scope: context.scope!,
+          pending: pending,
+          lease: lease,
+          saved: true,
+          mayHaveDispatched: true,
+        );
+        state = state.copyWith(
+          input: WorkshopPublicationInput.fromMetadata(pending.metadata),
+          preparedMetadata: pending.metadata,
+          files: pending.files,
+          hasPending: true,
+          pendingKnownUnsent: false,
+          phase: WorkshopPublishPhase.ready,
+          fieldErrors: const {},
+        );
       } else {
         state = state.copyWith(phase: WorkshopPublishPhase.idle);
       }
@@ -301,8 +381,11 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     } on Object catch (error) {
       if (_current(context)) {
         final mapped = workshopLocalError(error);
-        state = state.copyWith(phase: WorkshopPublishPhase.failed,
-          error: mapped, preferenceError: mapped.code == 'workshop_preferences' ? mapped : null);
+        state = state.copyWith(
+          phase: WorkshopPublishPhase.failed,
+          error: mapped,
+          preferenceError: mapped.code == 'workshop_preferences' ? mapped : null,
+        );
       }
     } finally {
       _end(token);
@@ -358,10 +441,20 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     context.intent = null;
     context.abandonment = null;
     if (old != null) _retire(context, old);
-    state = state.copyWith(source: source, input: input, clearPrepared: true,
-      clearResult: true, fieldErrors: const {}, sent: 0, total: 0,
-      phase: WorkshopPublishPhase.idle, clearError: true, clearPreferenceError: true,
-      clearAbandonOffer: true, clearRecoveryError: true);
+    state = state.copyWith(
+      source: source,
+      input: input,
+      clearPrepared: true,
+      clearResult: true,
+      fieldErrors: const {},
+      sent: 0,
+      total: 0,
+      phase: WorkshopPublishPhase.idle,
+      clearError: true,
+      clearPreferenceError: true,
+      clearAbandonOffer: true,
+      clearRecoveryError: true,
+    );
   }
 
   bool setInput(WorkshopPublicationInput input) {
@@ -373,8 +466,8 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       state = state.copyWith(error: const WorkshopException('workshop_source_required'));
       return false;
     }
-    final changed = jsonEncode(_canonical(current.input.declaration(kind))) !=
-        jsonEncode(_canonical(input.declaration(kind)));
+    final changed =
+        jsonEncode(_canonical(current.input.declaration(kind))) != jsonEncode(_canonical(input.declaration(kind)));
     if (changed && current.hasPending) {
       state = state.copyWith(error: const WorkshopException('workshop_pending_submission'));
       return false;
@@ -386,10 +479,18 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       context.abandonment = null;
       if (old != null) _retire(context, old);
     }
-    state = state.copyWith(input: input, clearPrepared: changed, clearResult: changed,
-      fieldErrors: const {}, clearError: true, clearAbandonOffer: changed, clearRecoveryError: changed,
+    state = state.copyWith(
+      input: input,
+      clearPrepared: changed,
+      clearResult: changed,
+      fieldErrors: const {},
+      clearError: true,
+      clearAbandonOffer: changed,
+      clearRecoveryError: changed,
       phase: changed ? WorkshopPublishPhase.idle : current.phase,
-      sent: changed ? 0 : current.sent, total: changed ? 0 : current.total);
+      sent: changed ? 0 : current.sent,
+      total: changed ? 0 : current.total,
+    );
     return true;
   }
 
@@ -440,10 +541,16 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
         workshopInvalid('workshop_prepared_mismatch');
       }
       context.prepared = lease;
-      state = state.copyWith(preparedMetadata: metadata, files: draft.upload.files,
-        phase: WorkshopPublishPhase.ready, clearError: true);
+      state = state.copyWith(
+        preparedMetadata: metadata,
+        files: draft.upload.files,
+        phase: WorkshopPublishPhase.ready,
+        clearError: true,
+      );
     } on Object catch (error) {
-      if (_current(context)) state = state.copyWith(error: workshopLocalError(error), phase: WorkshopPublishPhase.failed);
+      if (_current(context)) {
+        state = state.copyWith(error: workshopLocalError(error), phase: WorkshopPublishPhase.failed);
+      }
     } finally {
       _end(token);
     }
@@ -452,17 +559,24 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
   void _checkSubmission(WorkshopSubmission result, _PublishIntent intent, WorkshopAuthorization authorization) {
     if (intent.submissionId != null && result.id != intent.submissionId ||
         !_sameMetadata(result.metadata, intent.pending.metadata) ||
-        result.ownerOrigin != authorization.credential.account || result.ownerId != authorization.accountId) {
+        result.ownerOrigin != authorization.credential.account ||
+        result.ownerId != authorization.accountId) {
       throw const WorkshopException('workshop_bad_response', resultUnknown: true);
     }
     // A request id is the client's idempotency token, not a submission id.
     intent.submissionId = result.id;
   }
 
-  Future<void> _finishKnown(_PublishContext context, _PublishIntent intent,
-    WorkshopSubmission result, WorkshopPreferences preferences) async {
+  Future<void> _finishKnown(
+    _PublishContext context,
+    _PublishIntent intent,
+    WorkshopSubmission result,
+    WorkshopPreferences preferences,
+  ) async {
     intent.result = result;
-    if (_current(context)) state = state.copyWith(result: result, phase: WorkshopPublishPhase.complete, clearError: true);
+    if (_current(context)) {
+      state = state.copyWith(result: result, phase: WorkshopPublishPhase.complete, clearError: true);
+    }
     try {
       await preferences.clearPendingSubmission(intent.scope, intent.pending.requestId);
     } on Object {
@@ -472,7 +586,9 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     intent.cleared = true;
     intent.lease.draft.retained = false;
     _retire(context, intent.lease);
-    if (_current(context)) state = state.copyWith(hasPending: false, pendingKnownUnsent: false, clearPreferenceError: true);
+    if (_current(context)) {
+      state = state.copyWith(hasPending: false, pendingKnownUnsent: false, clearPreferenceError: true);
+    }
   }
 
   /// Every retry uses the same persisted metadata/request id. In particular,
@@ -518,9 +634,15 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
         final fingerprint = _fingerprint(context.scope!, metadata);
         final id = await preferences.reserveSubmissionRequestId(fingerprint, requestId());
         _requireCurrent(context);
-        final pending = WorkshopPendingSubmission.fromJson(WorkshopPendingSubmission(
-          requestId: id, fingerprint: fingerprint, directoryName: lease.draft.directoryName,
-          metadata: metadata, files: lease.draft.upload.files).toJson());
+        final pending = WorkshopPendingSubmission.fromJson(
+          WorkshopPendingSubmission(
+            requestId: id,
+            fingerprint: fingerprint,
+            directoryName: lease.draft.directoryName,
+            metadata: metadata,
+            files: lease.draft.upload.files,
+          ).toJson(),
+        );
         intent = _PublishIntent(scope: context.scope!, pending: pending, lease: lease);
         context.intent = intent;
       }
@@ -534,8 +656,10 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
           intent.saved = true;
         } on Object {
           if (_current(context)) {
-            state = state.copyWith(preferenceError: const WorkshopException('workshop_preferences'),
-              phase: WorkshopPublishPhase.failed);
+            state = state.copyWith(
+              preferenceError: const WorkshopException('workshop_preferences'),
+              phase: WorkshopPublishPhase.failed,
+            );
           }
           return;
         }
@@ -547,8 +671,12 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       state = state.copyWith(pendingKnownUnsent: false);
       late WorkshopSubmission result;
       try {
-        result = await authorization.client.createSubmission(intent.pending.metadata,
-          requestId: intent.pending.requestId, rightsConfirmed: true, credential: authorization.credential);
+        result = await authorization.client.createSubmission(
+          intent.pending.metadata,
+          requestId: intent.pending.requestId,
+          rightsConfirmed: true,
+          credential: authorization.credential,
+        );
       } on Object catch (error) {
         if (!previouslyDispatched && error is WorkshopException && error.mutationNotSent) {
           intent.mayHaveDispatched = false;
@@ -559,17 +687,24 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       _requireCurrent(context);
       if (result.status == WorkshopSubmissionStatus.draft) {
         state = state.copyWith(phase: WorkshopPublishPhase.uploading, sent: 0, total: intent.pending.metadata.size);
-        result = await authorization.client.upload(result, lease.draft.upload.file,
-          credential: authorization.credential, onProgress: (sent, total) {
+        result = await authorization.client.upload(
+          result,
+          lease.draft.upload.file,
+          credential: authorization.credential,
+          onProgress: (sent, total) {
             if (!_current(context) || !identical(_operation, token)) return;
             final current = state;
             if (current.phase != WorkshopPublishPhase.uploading &&
                 current.phase != WorkshopPublishPhase.awaitingResponse) {
               return;
             }
-            state = current.copyWith(sent: sent, total: total,
-              phase: sent == total ? WorkshopPublishPhase.awaitingResponse : WorkshopPublishPhase.uploading);
-          });
+            state = current.copyWith(
+              sent: sent,
+              total: total,
+              phase: sent == total ? WorkshopPublishPhase.awaitingResponse : WorkshopPublishPhase.uploading,
+            );
+          },
+        );
         _checkSubmission(result, intent, authorization);
         _requireCurrent(context);
         if (result.status == WorkshopSubmissionStatus.draft) {
@@ -580,16 +715,22 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     } on Object catch (error) {
       if (_current(context)) {
         final mapped = workshopLocalError(error);
-        state = state.copyWith(error: mapped,
+        state = state.copyWith(
+          error: mapped,
           pendingKnownUnsent: context.intent != null && !context.intent!.mayHaveDispatched,
           preferenceError: mapped.code == 'workshop_preferences' ? mapped : null,
-          phase: WorkshopPublishPhase.failed);
+          phase: WorkshopPublishPhase.failed,
+        );
         // The journal keeps the request id, so signing in again resumes it.
         workshopForgetRefusedAccount(ref, mapped);
       }
     } finally {
       lease.borrowers--;
-      try { await _clean(context, lease); } finally { _end(token); }
+      try {
+        await _clean(context, lease);
+      } finally {
+        _end(token);
+      }
     }
   }
 
@@ -615,14 +756,19 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       if (store == null) workshopInvalid('workshop_recovery_unsupported');
       final snapshot = await store.pendingRecovery(context.scope!);
       _requireCurrent(context);
-      final offer = WorkshopPendingAbandonOffer._(range: snapshot.range,
-        worker: account.worker, account: account.account, accountId: account.userId);
+      final offer = WorkshopPendingAbandonOffer._(
+        range: snapshot.range,
+        worker: account.worker,
+        account: account.account,
+        accountId: account.userId,
+      );
       context.abandonment = (store: store, snapshot: snapshot);
       state = state.copyWith(abandonOffer: offer, clearRecoveryError: true);
     } on Object catch (error) {
       if (_current(context)) {
-        state = state.copyWith(recoveryError: error is WorkshopException ? error
-            : const WorkshopException('workshop_preferences'));
+        state = state.copyWith(
+          recoveryError: error is WorkshopException ? error : const WorkshopException('workshop_preferences'),
+        );
       }
     } finally {
       _end(token);
@@ -666,15 +812,33 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       }
       if (_current(context)) {
         if (result != null) {
-          state = state.copyWith(result: result, phase: WorkshopPublishPhase.complete,
-            hasPending: false, pendingKnownUnsent: false, clearError: true,
-            clearPreferenceError: true, clearAbandonOffer: true, clearRecoveryError: true);
+          state = state.copyWith(
+            result: result,
+            phase: WorkshopPublishPhase.complete,
+            hasPending: false,
+            pendingKnownUnsent: false,
+            clearError: true,
+            clearPreferenceError: true,
+            clearAbandonOffer: true,
+            clearRecoveryError: true,
+          );
         } else {
-          state = state.copyWith(input: current.input.copyWith(rightsConfirmed: false),
-            hasPending: false, pendingKnownUnsent: false, pendingChecked: true,
-            clearPrepared: true, clearResult: true, sent: 0, total: 0,
-            fieldErrors: const {}, phase: WorkshopPublishPhase.idle,
-            clearError: true, clearPreferenceError: true, clearAbandonOffer: true, clearRecoveryError: true);
+          state = state.copyWith(
+            input: current.input.copyWith(rightsConfirmed: false),
+            hasPending: false,
+            pendingKnownUnsent: false,
+            pendingChecked: true,
+            clearPrepared: true,
+            clearResult: true,
+            sent: 0,
+            total: 0,
+            fieldErrors: const {},
+            phase: WorkshopPublishPhase.idle,
+            clearError: true,
+            clearPreferenceError: true,
+            clearAbandonOffer: true,
+            clearRecoveryError: true,
+          );
         }
       }
     } on Object catch (error) {
@@ -687,7 +851,11 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     } finally {
       if (lease != null) {
         lease.borrowers--;
-        try { await _clean(context, lease); } finally { _end(token); }
+        try {
+          await _clean(context, lease);
+        } finally {
+          _end(token);
+        }
       } else {
         _end(token);
       }
@@ -716,21 +884,36 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       context.prepared = null;
       _retire(context, lease);
       if (_current(context)) {
-        state = state.copyWith(input: current.input.copyWith(rightsConfirmed: false),
-          hasPending: false, pendingKnownUnsent: false, clearPrepared: true, clearResult: true,
-          sent: 0, total: 0, fieldErrors: const {}, phase: WorkshopPublishPhase.idle,
-          clearError: true, clearPreferenceError: true);
+        state = state.copyWith(
+          input: current.input.copyWith(rightsConfirmed: false),
+          hasPending: false,
+          pendingKnownUnsent: false,
+          clearPrepared: true,
+          clearResult: true,
+          sent: 0,
+          total: 0,
+          fieldErrors: const {},
+          phase: WorkshopPublishPhase.idle,
+          clearError: true,
+          clearPreferenceError: true,
+        );
       }
     } on Object catch (error) {
       if (_current(context)) {
         final mapped = workshopLocalError(error);
-        state = state.copyWith(error: mapped,
+        state = state.copyWith(
+          error: mapped,
           preferenceError: mapped.code == 'workshop_preferences' ? mapped : null,
-          phase: WorkshopPublishPhase.failed);
+          phase: WorkshopPublishPhase.failed,
+        );
       }
     } finally {
       lease.borrowers--;
-      try { await _clean(context, lease); } finally { _end(token); }
+      try {
+        await _clean(context, lease);
+      } finally {
+        _end(token);
+      }
     }
   }
 
@@ -749,8 +932,9 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     if (token == null) return;
     try {
       await _authorize(context);
-      await ref.read(workshopPreferencesProvider).retireSubmissionRequestId(
-        intent.pending.fingerprint, intent.pending.requestId);
+      await ref
+          .read(workshopPreferencesProvider)
+          .retireSubmissionRequestId(intent.pending.fingerprint, intent.pending.requestId);
       _requireCurrent(context);
       state = state.copyWith(clearPreferenceError: true);
       if (!await _cleanRetired(context)) {
@@ -760,15 +944,26 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
       _requireCurrent(context);
       context.intent = null;
       context.prepared = null;
-      state = state.copyWith(input: current.input.copyWith(rightsConfirmed: false), clearPrepared: true,
-        clearResult: true, hasPending: false, sent: 0, total: 0, fieldErrors: const {},
-        phase: WorkshopPublishPhase.idle, clearError: true, clearPreferenceError: true);
+      state = state.copyWith(
+        input: current.input.copyWith(rightsConfirmed: false),
+        clearPrepared: true,
+        clearResult: true,
+        hasPending: false,
+        sent: 0,
+        total: 0,
+        fieldErrors: const {},
+        phase: WorkshopPublishPhase.idle,
+        clearError: true,
+        clearPreferenceError: true,
+      );
     } on Object catch (error) {
       if (_current(context)) {
         final mapped = workshopLocalError(error);
-        state = state.copyWith(error: mapped,
+        state = state.copyWith(
+          error: mapped,
           preferenceError: mapped.code == 'workshop_preferences' ? mapped : null,
-          phase: WorkshopPublishPhase.complete);
+          phase: WorkshopPublishPhase.complete,
+        );
       }
     } finally {
       _end(token);
@@ -781,7 +976,11 @@ class WorkshopPublishController extends Notifier<WorkshopPublishState> {
     if (current.working) return;
     final token = _begin(context, current.phase);
     if (token == null) return;
-    try { await _cleanRetired(context); } finally { _end(token); }
+    try {
+      await _cleanRetired(context);
+    } finally {
+      _end(token);
+    }
   }
 }
 

@@ -61,7 +61,6 @@
   "harmonyPluginRefusedHint": "You can turn bundled plugins on or off, or connect a computer to manage plugins",
   "harmonyPasswordStorageHelp": "Saved only on this phone, encrypted by the system keystore",
   "harmonyKeyStorageHelp": "Saved only on this phone, encrypted by the system keystore. Supports Ed25519, RSA and ECDSA.",
-  "harmonyUsageNotSent": "Usage statistics aren't sent on HarmonyOS for now",
   "harmonyVoiceSystemHint": "Uses the system's speech recognition",
   "harmonyVoiceSystemHintChinese": "Uses the system's speech recognition, Chinese only",
   "harmonyVoiceAutoHint": "Uses the phone’s own speech recognition, or the cloud recognizer chosen below",

@@ -32,7 +32,8 @@ class SelfUpdatePending {
   });
 
   factory SelfUpdatePending.fromMap(Map<Object?, Object?> value) => SelfUpdatePending(
-    state: SelfUpdatePendingState.values.where((state) => state.name == value['state']).firstOrNull ??
+    state:
+        SelfUpdatePendingState.values.where((state) => state.name == value['state']).firstOrNull ??
         SelfUpdatePendingState.unknown,
     backend: UpdateInstallRoute.parse(value['backend']),
     versionCode: _positiveInt(value['versionCode']),
@@ -89,7 +90,17 @@ class PrivilegedInstallStatus {
   final String? errorCode;
 }
 
-enum PrivilegedInstallOutcome { success, aborted, blocked, incompatible, invalid, storage, failed, unavailable, unknown }
+enum PrivilegedInstallOutcome {
+  success,
+  aborted,
+  blocked,
+  incompatible,
+  invalid,
+  storage,
+  failed,
+  unavailable,
+  unknown,
+}
 
 class PrivilegedInstallResult {
   const PrivilegedInstallResult({
@@ -102,15 +113,18 @@ class PrivilegedInstallResult {
   factory PrivilegedInstallResult.fromMap(Map<Object?, Object?> value) => PrivilegedInstallResult(
     status: switch (value['status']) {
       'failure' || 'signature' || 'downgrade' || 'conflict' => PrivilegedInstallOutcome.failed,
-      _ => PrivilegedInstallOutcome.values.where((status) => status.name == value['status']).firstOrNull ??
-          PrivilegedInstallOutcome.unknown,
+      _ =>
+        PrivilegedInstallOutcome.values.where((status) => status.name == value['status']).firstOrNull ??
+            PrivilegedInstallOutcome.unknown,
     },
-    errorCode: _code(value['errorCode']) ?? switch (value['status']) {
-      'signature' => 'signatureMismatch',
-      'downgrade' => 'notNewer',
-      'conflict' => 'installConflict',
-      _ => null,
-    },
+    errorCode:
+        _code(value['errorCode']) ??
+        switch (value['status']) {
+          'signature' => 'signatureMismatch',
+          'downgrade' => 'notNewer',
+          'conflict' => 'installConflict',
+          _ => null,
+        },
     submitted: value['submitted'] == true,
     outcomeUnknown: value['outcomeUnknown'] != false,
   );
@@ -172,20 +186,33 @@ class ChannelPrivilegedInstaller implements PrivilegedInstaller {
     required UpdateInstallRoute backend,
     int? port,
   }) async {
-    if (backend == UpdateInstallRoute.system || versionCode <= 0 ||
+    if (backend == UpdateInstallRoute.system ||
+        versionCode <= 0 ||
         !RegExp(r'^[a-fA-F0-9]{64}$').hasMatch(sha256) ||
         (port != null && (port < 1 || port > 65535))) {
       return const PrivilegedInstallResult(
-        status: PrivilegedInstallOutcome.invalid, errorCode: 'invalidArguments', outcomeUnknown: false,
+        status: PrivilegedInstallOutcome.invalid,
+        errorCode: 'invalidArguments',
+        outcomeUnknown: false,
       );
     }
     try {
-      return PrivilegedInstallResult.fromMap(_map(await _channel.invokeMethod<Object?>('installPrivileged', {
-        'path': path, 'sha256': sha256, 'versionCode': versionCode, 'backend': backend.name, 'port': ?port,
-      })));
+      return PrivilegedInstallResult.fromMap(
+        _map(
+          await _channel.invokeMethod<Object?>('installPrivileged', {
+            'path': path,
+            'sha256': sha256,
+            'versionCode': versionCode,
+            'backend': backend.name,
+            'port': ?port,
+          }),
+        ),
+      );
     } on MissingPluginException {
       return const PrivilegedInstallResult(
-        status: PrivilegedInstallOutcome.unavailable, errorCode: 'nativeUnavailable', outcomeUnknown: false,
+        status: PrivilegedInstallOutcome.unavailable,
+        errorCode: 'nativeUnavailable',
+        outcomeUnknown: false,
       );
     } on PlatformException catch (error) {
       // The native call may have dispatched before the connection was lost.

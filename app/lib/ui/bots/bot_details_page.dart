@@ -80,9 +80,7 @@ class BotDetailsPage extends ConsumerWidget {
     if (team == null || bot == null || mobileUnavailable) {
       return AppPage.list(
         title: 'Bot',
-        children: [
-          DsBotUnavailableMessage(status: status, goneIcon: AppIcons.bot, goneTitle: l10n.botsBotGone),
-        ],
+        children: [DsBotUnavailableMessage(status: status, goneIcon: AppIcons.bot, goneTitle: l10n.botsBotGone)],
       );
     }
     final usageResult = ref.watch(dsBotUsageProvider(bot.id));

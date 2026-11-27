@@ -10,8 +10,16 @@ import 'streaming_asr.dart';
 import 'streaming_pcm.dart';
 
 class LiveWords {
-  LiveWords(this._pcm, this._asr, this._model, this._source, this._onWords, {NativeTrial? trial, void Function(Object error)? onFailure})
-    : _trial = trial, _onFailure = onFailure; // ignore: prefer_initializing_formals
+  LiveWords(
+    this._pcm,
+    this._asr,
+    this._model,
+    this._source,
+    this._onWords, {
+    NativeTrial? trial,
+    void Function(Object error)? onFailure,
+  }) : _trial = trial, // ignore: prefer_initializing_formals
+       _onFailure = onFailure; // ignore: prefer_initializing_formals
 
   final StreamingPcmCapture _pcm;
   final StreamingAsr _asr;
@@ -62,8 +70,7 @@ class LiveWords {
       if (_stopped) return await _release();
       if (_model.isSystem && !_ownsSystem) throw StateError('LiveWords was replaced');
       // A frame that lands while it stops is simply not heard.
-      _frames = _pcm.frames.listen((frame) => unawaited(_feed(frame)),
-        onError: _model.isSystem ? _failed : null);
+      _frames = _pcm.frames.listen((frame) => unawaited(_feed(frame)), onError: _model.isSystem ? _failed : null);
       if (_model.isSystem) _resets = _pcm.resets.listen(_resetCaption);
       await _pcm.start(_source);
       if (_stopped) return await _release();
@@ -133,8 +140,9 @@ class LiveWords {
   Future<void> _release() async {
     if (_model.isSystem) {
       final releasing = _releasing ??= _releaseSystem();
-      try { await releasing; }
-      catch (_) {
+      try {
+        await releasing;
+      } catch (_) {
         if (identical(_releasing, releasing)) _releasing = null;
         rethrow;
       }
@@ -155,11 +163,16 @@ class LiveWords {
   }
 
   Future<void> _releaseSystem() async {
-    if (_proving) { _proving = false; _trial?.dropped(); }
+    if (_proving) {
+      _proving = false;
+      _trial?.dropped();
+    }
     final frames = _frames;
     final events = _events;
     final resets = _resets;
-    _frames = null; _events = null; _resets = null;
+    _frames = null;
+    _events = null;
+    _resets = null;
     try {
       if (identical(_systemPcmOwner[_pcm], this)) {
         await _pcm.stop();
@@ -173,9 +186,9 @@ class LiveWords {
           await _asr.stop(finalize: false);
           if (identical(_systemAsrOwner[_asr], this)) _systemAsrOwner[_asr] = null;
         }
+      } finally {
+        await events?.cancel();
       }
-      finally { await events?.cancel(); }
     }
   }
-
 }

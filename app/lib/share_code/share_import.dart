@@ -47,7 +47,6 @@ class ImportTarget {
 
   /// The on-device engine runs its repair profile: no installs.
 
-
   /// The engine takes no market installs (HarmonyOS's own).
   final bool installRefused;
 
@@ -466,9 +465,8 @@ Future<ImportPlan> planImport(SharePayload payload, ImportTarget target, {requir
   return ImportPlan(payload: payload, target: target, changes: changes);
 }
 
-String _cantInstall(ImportTarget target) => target.installRefused
-    ? appL10n.marketInstallRefused
-    : appL10n.pluginsHostInstallBlocked;
+String _cantInstall(ImportTarget target) =>
+    target.installRefused ? appL10n.marketInstallRefused : appL10n.pluginsHostInstallBlocked;
 
 // ── Applying ─────────────────────────────────────────────────────────────────
 

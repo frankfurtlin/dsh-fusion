@@ -191,7 +191,9 @@ List<Widget> collapseSchemaGroups(
         final entry = entries[index];
         if (entry.section.title case final title? when !own(index)) {
           final prefix = heading == null ? null : '$heading · ';
-          rows.add(SchemaGroupLabel(prefix != null && title.startsWith(prefix) ? title.substring(prefix.length) : title));
+          rows.add(
+            SchemaGroupLabel(prefix != null && title.startsWith(prefix) ? title.substring(prefix.length) : title),
+          );
         }
         rows.addAll(entry.rows);
         sections.add(entry.section);

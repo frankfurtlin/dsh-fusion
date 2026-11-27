@@ -238,7 +238,11 @@ class PhoneTurnEndController extends Notifier<void> {
       }
       for (final task in status.tasks) {
         final id = task.id, run = task.endedRunId, generation = task.endedGeneration;
-        if (id != null && id > 0 && task.sessionId != null && run != null && generation != null &&
+        if (id != null &&
+            id > 0 &&
+            task.sessionId != null &&
+            run != null &&
+            generation != null &&
             _nativeEnds.add((id, run, generation))) {
           unawaited(_nativeEnded(task));
         }
@@ -254,9 +258,7 @@ class PhoneTurnEndController extends Notifier<void> {
       if (reading != null) _retireRead(reading);
       return;
     }
-    _trace(
-      'task=${legacy.id} event=status active=${legacy.active} stopped=${legacy.stopped} paused=${legacy.paused}',
-    );
+    _trace('task=${legacy.id} event=status active=${legacy.active} stopped=${legacy.stopped} paused=${legacy.paused}');
     if (link.onStatus(legacy)) {
       final reading = _reading;
       if (reading != null) _retireRead(reading, invalidate: false);
@@ -289,11 +291,20 @@ class PhoneTurnEndController extends Notifier<void> {
     final reopen = ref.read(phoneReturnPrefProvider) && !ref.read(appForegroundProvider);
     final host = ref.read(activeHostProvider);
     final bot = ref.read(dsBotSessionFilterProvider)(host, session);
-    final result = await ref.read(phoneChannelProvider).finishTask(
-      taskId: id, sessionId: session, host: host.encode(), reopen: reopen,
-      runId: task.endedRunId, generation: task.endedGeneration, appOnly: bot,
-    );
-    if (!ref.mounted || !identical(_lifetime, lifetime) || !result.current ||
+    final result = await ref
+        .read(phoneChannelProvider)
+        .finishTask(
+          taskId: id,
+          sessionId: session,
+          host: host.encode(),
+          reopen: reopen,
+          runId: task.endedRunId,
+          generation: task.endedGeneration,
+          appOnly: bot,
+        );
+    if (!ref.mounted ||
+        !identical(_lifetime, lifetime) ||
+        !result.current ||
         _nativeLatest[session] != id ||
         !identical(ref.read(activeConnectionProvider).value?.client, client) ||
         !identical(client?.mux.generation, generation)) {
@@ -301,14 +312,28 @@ class PhoneTurnEndController extends Notifier<void> {
     }
     if (result.opened && result.launched && !bot) ref.read(chatRevealProvider.notifier).reveal(session);
     if (result.closed && reopen && !result.opened && !result.notified && !bot && !ref.read(appForegroundProvider)) {
-      await ref.read(notifyChannelProvider).tryShow(
-        NotifyPost(group: notifyGroup(host, session), key: 'phone-$id', attention: true,
-          title: AppInfo.name, text: task.completion == 'completed' ? appL10n.phoneTaskResultReady : appL10n.phoneTaskEndedResult, publicText: appL10n.phoneTaskEndedResult,
-          sessionId: session, host: host, kind: 'phone-result'),
-        stillCurrent: () => ref.mounted && identical(_lifetime, lifetime) && _nativeLatest[session] == id &&
-          !ref.read(appForegroundProvider) && identical(ref.read(activeConnectionProvider).value?.client, client) &&
-          identical(client?.mux.generation, generation),
-      );
+      await ref
+          .read(notifyChannelProvider)
+          .tryShow(
+            NotifyPost(
+              group: notifyGroup(host, session),
+              key: 'phone-$id',
+              attention: true,
+              title: AppInfo.name,
+              text: task.completion == 'completed' ? appL10n.phoneTaskResultReady : appL10n.phoneTaskEndedResult,
+              publicText: appL10n.phoneTaskEndedResult,
+              sessionId: session,
+              host: host,
+              kind: 'phone-result',
+            ),
+            stillCurrent: () =>
+                ref.mounted &&
+                identical(_lifetime, lifetime) &&
+                _nativeLatest[session] == id &&
+                !ref.read(appForegroundProvider) &&
+                identical(ref.read(activeConnectionProvider).value?.client, client) &&
+                identical(client?.mux.generation, generation),
+          );
     }
   }
 

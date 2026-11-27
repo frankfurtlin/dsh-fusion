@@ -75,11 +75,7 @@ class PocketLog {
   /// 记一条。字段里的敏感值会被剥掉。
   void log(String event, [Map<String, Object?> fields = const {}]) {
     if (!enabled) return;
-    final entry = <String, Object?>{
-      'ts': DateTime.now().toIso8601String(),
-      'event': event,
-      ...redactEntry(fields),
-    };
+    final entry = <String, Object?>{'ts': DateTime.now().toIso8601String(), 'event': event, ...redactEntry(fields)};
     _queue.add(entry);
     while (_queue.length > _maxQueued) {
       _queue.removeAt(0);
@@ -99,11 +95,7 @@ class PocketLog {
       request.headers
         ..contentType = ContentType.json
         ..set('Authorization', 'Bearer $_token');
-      request.write(jsonEncode({
-        'device': device,
-        'app': _appVersion,
-        'events': batch,
-      }));
+      request.write(jsonEncode({'device': device, 'app': _appVersion, 'events': batch}));
       final response = await request.close().timeout(const Duration(seconds: 20));
       await response.drain<void>();
       if (response.statusCode == 200) {

@@ -39,10 +39,12 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
   void initState() {
     super.initState();
     _resumed = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
-    _lifecycle = AppLifecycleListener(onStateChange: (state) {
-      _resumed = state == AppLifecycleState.resumed;
-      _syncVisibility();
-    });
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (state) {
+        _resumed = state == AppLifecycleState.resumed;
+        _syncVisibility();
+      },
+    );
   }
 
   @override
@@ -92,14 +94,18 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
     _transition = _transition.then((_) async {
       await _cancelSubscription();
       if (!mounted || !_visible || _epoch != epoch) return;
-      _subscription = widget.channel.previewFrames(widget.taskId).listen(
-        (frame) { if (mounted && _visible && _epoch == epoch) _receive(frame); },
-        onError: (Object _) {
-          if (!mounted || !_visible || _epoch != epoch) return;
-          _clearImage();
-          setState(() => _state = 'unavailable');
-        },
-      );
+      _subscription = widget.channel
+          .previewFrames(widget.taskId)
+          .listen(
+            (frame) {
+              if (mounted && _visible && _epoch == epoch) _receive(frame);
+            },
+            onError: (Object _) {
+              if (!mounted || !_visible || _epoch != epoch) return;
+              _clearImage();
+              setState(() => _state = 'unavailable');
+            },
+          );
     });
   }
 
@@ -109,7 +115,8 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
       setState(() => _state = 'unavailable');
       return;
     }
-    if (frame.taskId != widget.taskId || frame.generation < _nativeGeneration ||
+    if (frame.taskId != widget.taskId ||
+        frame.generation < _nativeGeneration ||
         frame.generation == _nativeGeneration && frame.sequence <= _nativeSequence) {
       return;
     }
@@ -140,8 +147,12 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
         ui.Codec? codec;
         ui.Image? decoded;
         try {
-          codec = await ui.instantiateImageCodec(frame.imageBytes!, targetWidth: frame.width,
-              targetHeight: frame.height, allowUpscaling: false);
+          codec = await ui.instantiateImageCodec(
+            frame.imageBytes!,
+            targetWidth: frame.width,
+            targetHeight: frame.height,
+            allowUpscaling: false,
+          );
           decoded = (await codec.getNextFrame()).image;
         } catch (_) {
           // No exception details or image bytes enter logs or diagnostics.
@@ -158,7 +169,10 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
           continue;
         }
         final old = _image;
-        setState(() { _image = decoded; _state = 'frame'; });
+        setState(() {
+          _image = decoded;
+          _state = 'frame';
+        });
         old?.dispose();
       }
     } finally {
@@ -185,13 +199,17 @@ class _PhoneBackgroundPreviewDialogState extends State<PhoneBackgroundPreviewDia
         width: 320,
         height: MediaQuery.sizeOf(context).height * 0.5,
         child: _image != null
-            ? IgnorePointer(child: RawImage(image: _image, fit: BoxFit.contain, filterQuality: FilterQuality.low))
-            : Center(child: Text(switch (_state) {
-                'off' => l10n.phonePreviewOff,
-                'inUse' => l10n.phonePreviewInUse,
-                'unavailable' || 'protected' => l10n.phonePreviewUnavailable,
-                _ => l10n.phonePreviewWaiting,
-              }, textAlign: TextAlign.center)),
+            ? IgnorePointer(
+                child: RawImage(image: _image, fit: BoxFit.contain, filterQuality: FilterQuality.low),
+              )
+            : Center(
+                child: Text(switch (_state) {
+                  'off' => l10n.phonePreviewOff,
+                  'inUse' => l10n.phonePreviewInUse,
+                  'unavailable' || 'protected' => l10n.phonePreviewUnavailable,
+                  _ => l10n.phonePreviewWaiting,
+                }, textAlign: TextAlign.center),
+              ),
       ),
       actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.commonClose))],
     );

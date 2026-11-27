@@ -184,8 +184,7 @@ Map<String, Object?> _marketManifest(Map<String, Object?> input, PetPack pack) {
     // read only the plain first name of a reaction.
     json['reactions'] = {
       for (final entry in pack.reactions.entries)
-        for (final (index, name) in entry.value.indexed)
-          (index == 0 ? entry.key : '${entry.key}${index + 1}'): name,
+        for (final (index, name) in entry.value.indexed) (index == 0 ? entry.key : '${entry.key}${index + 1}'): name,
     };
   }
   final canvas = json['canvas'] as Map<String, Object?>;

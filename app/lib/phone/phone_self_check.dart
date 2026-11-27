@@ -10,8 +10,22 @@ import '../diagnostics/diagnostics_markdown.dart' show diagnosticsMarkdownBytes;
 import '../state/artifacts.dart' show FilesChannel;
 
 const phoneSelfCheckStages = <String>[
-  'device', 'channel', 'display', 'input_probe', 'launch', 'tree', 'tap', 'scroll',
-  'back', 'text_ascii', 'text_zh', 'capture', 'continuity', 'main', 'ocr', 'cleanup',
+  'device',
+  'channel',
+  'display',
+  'input_probe',
+  'launch',
+  'tree',
+  'tap',
+  'scroll',
+  'back',
+  'text_ascii',
+  'text_zh',
+  'capture',
+  'continuity',
+  'main',
+  'ocr',
+  'cleanup',
 ];
 const phoneSelfCheckProfiles = <String>['probe_b', 'target_c1', 'target_c2'];
 const _probeCovered = {'device', 'channel', 'display', 'input_probe', 'cleanup'};
@@ -20,18 +34,55 @@ const _targetC2Covered = {..._targetCovered, 'text_ascii', 'text_zh', 'capture',
 const _runStates = {'idle', 'running', 'cleaning', 'done', 'cancelled'};
 const _stepStates = {'not_run', 'running', 'pass', 'fail', 'skipped', 'unknown', 'cancelled'};
 const _reasons = {
-  'busy', 'unavailable', 'unsupported', 'cancelled', 'retired', 'phoneDisabled', 'locked',
-  'channelUnavailable', 'unsupportedPeer', 'invalidResponse', 'cleanupFailed', 'invalidArguments',
-  'identityChanged', 'selfCheckAlreadyStarted', 'displayUnsupported', 'displayMissing',
-  'releasePending', 'releaseUnconfirmed', 'releaseFailed', 'releaseQueryFailed', 'releaseReceiptRequired',
-  'inputWindowNotReady', 'inputUnconfirmed', 'inputRejected', 'inputApiUnavailable',
-  'inputProbeCleanupFailed', 'systemOperationDenied', 'deviceUnavailable', 'timeout',
-  'targetUnavailable', 'targetChanged', 'targetCleanupPending', 'targetWrongMain',
-  'targetReadbackMismatch', 'treeCleanupPending', 'targetLaunchDenied',
-  'targetFrameUnavailable', 'targetFrameMismatch', 'targetContinuityUnconfirmed',
-  'mainSamplesChanged', 'mainSamplesUnchanged', 'mainSamplesIncomplete', 'notInstalled',
+  'busy',
+  'unavailable',
+  'unsupported',
+  'cancelled',
+  'retired',
+  'phoneDisabled',
+  'locked',
+  'channelUnavailable',
+  'unsupportedPeer',
+  'invalidResponse',
+  'cleanupFailed',
+  'invalidArguments',
+  'identityChanged',
+  'selfCheckAlreadyStarted',
+  'displayUnsupported',
+  'displayMissing',
+  'releasePending',
+  'releaseUnconfirmed',
+  'releaseFailed',
+  'releaseQueryFailed',
+  'releaseReceiptRequired',
+  'inputWindowNotReady',
+  'inputUnconfirmed',
+  'inputRejected',
+  'inputApiUnavailable',
+  'inputProbeCleanupFailed',
+  'systemOperationDenied',
+  'deviceUnavailable',
+  'timeout',
+  'targetUnavailable',
+  'targetChanged',
+  'targetCleanupPending',
+  'targetWrongMain',
+  'targetReadbackMismatch',
+  'treeCleanupPending',
+  'targetLaunchDenied',
+  'targetFrameUnavailable',
+  'targetFrameMismatch',
+  'targetContinuityUnconfirmed',
+  'mainSamplesChanged',
+  'mainSamplesUnchanged',
+  'mainSamplesIncomplete',
+  'notInstalled',
 };
-String? _reason(Object? value) => value == null ? null : value is String && _reasons.contains(value) ? value : 'other';
+String? _reason(Object? value) => value == null
+    ? null
+    : value is String && _reasons.contains(value)
+    ? value
+    : 'other';
 
 /// A fixed UI label category; raw native text never reaches widgets or exports.
 String phoneSelfCheckReasonGroup(String? reason) => switch (reason) {
@@ -45,8 +96,13 @@ String phoneSelfCheckReasonGroup(String? reason) => switch (reason) {
   'invalidResponse' || 'invalidArguments' => 'invalid',
   'displayUnsupported' || 'displayMissing' => 'display',
   'inputWindowNotReady' || 'inputUnconfirmed' || 'inputRejected' => 'input',
-  'cleanupFailed' || 'releasePending' || 'releaseUnconfirmed' || 'releaseFailed' ||
-  'releaseQueryFailed' || 'releaseReceiptRequired' || 'inputProbeCleanupFailed' => 'cleanup',
+  'cleanupFailed' ||
+  'releasePending' ||
+  'releaseUnconfirmed' ||
+  'releaseFailed' ||
+  'releaseQueryFailed' ||
+  'releaseReceiptRequired' ||
+  'inputProbeCleanupFailed' => 'cleanup',
   'systemOperationDenied' => 'denied',
   'timeout' => 'timeout',
   'targetUnavailable' => 'target_unavailable',
@@ -79,7 +135,11 @@ class PhoneSelfCheckStep {
     final c2 = profile == 'target_c2';
     final main = (profile == 'target_c1' || c2) && stage == 'main';
     final ocr = c2 && stage == 'ocr';
-    final covered = c2 ? _targetC2Covered : profile == 'target_c1' ? _targetCovered : _probeCovered;
+    final covered = c2
+        ? _targetC2Covered
+        : profile == 'target_c1'
+        ? _targetCovered
+        : _probeCovered;
     if (!covered.contains(stage) && !main && !ocr) return PhoneSelfCheckStep._(stage, 'not_run', false, null, null);
     // No profile may turn a claim of MAIN absence into a pass. Initial unobserved state is allowed.
     if (main && value == null) {
@@ -89,7 +149,9 @@ class PhoneSelfCheckStep {
     final state = value['state'];
     final observed = value['observed'];
     final duration = value['durationMs'];
-    if (state is! String || !_stepStates.contains(state) || observed is! bool ||
+    if (state is! String ||
+        !_stepStates.contains(state) ||
+        observed is! bool ||
         duration != null && (duration is! int || duration < 0)) {
       return PhoneSelfCheckStep._(stage, 'unknown', false, 'invalidResponse', null);
     }
@@ -99,10 +161,11 @@ class PhoneSelfCheckStep {
     if (main) {
       final reason = value['reason'];
       final wrongMain = state == 'fail' && observed && reason == 'targetWrongMain';
-      final sampled = c2 && (
-        state == 'fail' && observed && reason == 'mainSamplesChanged' ||
-        state == 'unknown' && observed && reason == 'mainSamplesUnchanged' ||
-        state == 'unknown' && reason == 'mainSamplesIncomplete');
+      final sampled =
+          c2 &&
+          (state == 'fail' && observed && reason == 'mainSamplesChanged' ||
+              state == 'unknown' && observed && reason == 'mainSamplesUnchanged' ||
+              state == 'unknown' && reason == 'mainSamplesIncomplete');
       if (!wrongMain && !sampled) return PhoneSelfCheckStep._(stage, 'unknown', false, 'invalidResponse', null);
     }
     if (ocr && (state != 'not_run' || observed || value['reason'] != 'notInstalled') ||
@@ -118,17 +181,29 @@ class PhoneSelfCheckStep {
 }
 
 class PhoneSelfCheckSnapshot {
-  const PhoneSelfCheckSnapshot._({required this.available, required this.accepted, required this.state,
-    required this.steps, this.runHandle, this.reason, this.profile});
+  const PhoneSelfCheckSnapshot._({
+    required this.available,
+    required this.accepted,
+    required this.state,
+    required this.steps,
+    this.runHandle,
+    this.reason,
+    this.profile,
+  });
   factory PhoneSelfCheckSnapshot.unavailable() => PhoneSelfCheckSnapshot._(
-    available: false, accepted: false, state: 'unknown', reason: 'unavailable',
+    available: false,
+    accepted: false,
+    state: 'unknown',
+    reason: 'unavailable',
     steps: List.unmodifiable([for (final stage in phoneSelfCheckStages) PhoneSelfCheckStep.parse(stage, null)]),
   );
   final bool available;
   final bool accepted;
   final String state;
+
   /// Native run identity metadata. A UI choice never changes this value.
   final String? profile;
+
   /// Local action identity only. Never rendered, logged, used as a filename, or exported.
   final String? runHandle;
   final String? reason;
@@ -137,8 +212,13 @@ class PhoneSelfCheckSnapshot {
   bool get holdsResource => active;
 
   static PhoneSelfCheckSnapshot parse(Object? value) {
-    if (value is! Map || value['v'] is! int || value['v'] != 1 || value['accepted'] is! bool ||
-        value['coverage'] != 'partial' || value['state'] is! String || !_runStates.contains(value['state'])) {
+    if (value is! Map ||
+        value['v'] is! int ||
+        value['v'] != 1 ||
+        value['accepted'] is! bool ||
+        value['coverage'] != 'partial' ||
+        value['state'] is! String ||
+        !_runStates.contains(value['state'])) {
       return PhoneSelfCheckSnapshot.unavailable();
     }
     final profile = value.containsKey('profile') ? value['profile'] : 'probe_b';
@@ -155,15 +235,24 @@ class PhoneSelfCheckSnapshot {
       byStage[stage] = raw;
     }
     final rawHandle = value['runHandle'];
-    final handle = rawHandle is String && rawHandle.isNotEmpty && rawHandle.length <= 256 &&
-        utf8.encode(rawHandle).length <= 256 ? rawHandle : null;
+    final handle =
+        rawHandle is String && rawHandle.isNotEmpty && rawHandle.length <= 256 && utf8.encode(rawHandle).length <= 256
+        ? rawHandle
+        : null;
     final state = value['state'] as String;
     if (rawHandle != null && handle == null || (state == 'running' || state == 'cleaning') && handle == null) {
       return PhoneSelfCheckSnapshot.unavailable();
     }
-    return PhoneSelfCheckSnapshot._(available: true, accepted: value['accepted'] as bool,
-      state: state, runHandle: handle, reason: _reason(value['reason']), profile: profile,
-      steps: List.unmodifiable([for (final stage in phoneSelfCheckStages) PhoneSelfCheckStep.parse(stage, byStage[stage], profile: profile)]),
+    return PhoneSelfCheckSnapshot._(
+      available: true,
+      accepted: value['accepted'] as bool,
+      state: state,
+      runHandle: handle,
+      reason: _reason(value['reason']),
+      profile: profile,
+      steps: List.unmodifiable([
+        for (final stage in phoneSelfCheckStages) PhoneSelfCheckStep.parse(stage, byStage[stage], profile: profile),
+      ]),
     );
   }
 }
@@ -176,11 +265,17 @@ class PhoneSelfCheckChannel {
     if (!phoneSelfCheckProfiles.contains(profile)) return Future.value(PhoneSelfCheckSnapshot.unavailable());
     return _invoke('startPhoneSelfCheck', {'v': 1, if (profile != 'probe_b') 'profile': profile});
   }
-  Future<PhoneSelfCheckSnapshot> cancel(String handle) => _invoke('cancelPhoneSelfCheck', {'v': 1, 'runHandle': handle});
+
+  Future<PhoneSelfCheckSnapshot> cancel(String handle) =>
+      _invoke('cancelPhoneSelfCheck', {'v': 1, 'runHandle': handle});
   Future<PhoneSelfCheckSnapshot> _invoke(String method, [Map<String, Object?>? args]) async {
-    try { return PhoneSelfCheckSnapshot.parse(await channel.invokeMethod<Object?>(method, args)); }
-    on MissingPluginException { return PhoneSelfCheckSnapshot.unavailable(); }
-    on PlatformException { return PhoneSelfCheckSnapshot.unavailable(); }
+    try {
+      return PhoneSelfCheckSnapshot.parse(await channel.invokeMethod<Object?>(method, args));
+    } on MissingPluginException {
+      return PhoneSelfCheckSnapshot.unavailable();
+    } on PlatformException {
+      return PhoneSelfCheckSnapshot.unavailable();
+    }
   }
 }
 
@@ -202,13 +297,18 @@ class PhoneSelfCheckController extends ChangeNotifier {
 
   void setVisible(bool value) {
     _visible = value;
-    if (!value) { _timer?.cancel(); _timer = null; }
-    else { unawaited(refresh()); }
+    if (!value) {
+      _timer?.cancel();
+      _timer = null;
+    } else {
+      unawaited(refresh());
+    }
   }
 
   Future<void> refresh() async {
     if (_disposed || !_visible || commandPending || _query != null) return;
-    _timer?.cancel(); _timer = null;
+    _timer?.cancel();
+    _timer = null;
     final query = Object();
     _query = query;
     final generation = _generation;
@@ -225,13 +325,15 @@ class PhoneSelfCheckController extends ChangeNotifier {
   Future<void> start({String profile = 'probe_b'}) async {
     if (canStart && phoneSelfCheckProfiles.contains(profile)) await _command(() => channel.start(profile: profile));
   }
+
   Future<void> cancel() async {
     final handle = snapshot.runHandle;
     if (canCancel && handle != null) await _command(() => channel.cancel(handle));
   }
 
   Future<void> _command(Future<PhoneSelfCheckSnapshot> Function() send) async {
-    _timer?.cancel(); _timer = null;
+    _timer?.cancel();
+    _timer = null;
     final generation = ++_generation;
     _query = null; // An older read may still return; it no longer blocks this action's polls.
     commandPending = true;
@@ -242,27 +344,46 @@ class PhoneSelfCheckController extends ChangeNotifier {
       _uncertain = !next.available;
       _accept(next);
     } finally {
-      if (!_disposed && generation == _generation) { commandPending = false; notifyListeners(); }
+      if (!_disposed && generation == _generation) {
+        commandPending = false;
+        notifyListeners();
+      }
       _schedule();
     }
   }
 
   void _accept(PhoneSelfCheckSnapshot next) {
-    if (next.available && snapshot.runHandle != null && next.runHandle == snapshot.runHandle && next.profile != snapshot.profile) {
+    if (next.available &&
+        snapshot.runHandle != null &&
+        next.runHandle == snapshot.runHandle &&
+        next.profile != snapshot.profile) {
       // A run cannot switch coverage after it starts, including a reply that drops C1's profile.
-      readFailed = true; _uncertain = true;
-    } else if (next.available) { snapshot = next; _uncertain = false; readFailed = false; }
-    else { readFailed = true; }
+      readFailed = true;
+      _uncertain = true;
+    } else if (next.available) {
+      snapshot = next;
+      _uncertain = false;
+      readFailed = false;
+    } else {
+      readFailed = true;
+    }
     notifyListeners();
   }
 
   void _schedule() {
     if (_disposed || !_visible || commandPending || _timer != null || (!snapshot.active && !_uncertain)) return;
-    _timer = Timer(const Duration(milliseconds: 800), () { _timer = null; unawaited(refresh()); });
+    _timer = Timer(const Duration(milliseconds: 800), () {
+      _timer = null;
+      unawaited(refresh());
+    });
   }
 
-  @override void dispose() {
-    _disposed = true; _generation++; _timer?.cancel(); _timer = null;
+  @override
+  void dispose() {
+    _disposed = true;
+    _generation++;
+    _timer?.cancel();
+    _timer = null;
     super.dispose();
   }
 }
@@ -272,13 +393,23 @@ String phoneSelfCheckMarkdown(PhoneSelfCheckSnapshot snapshot) {
   final out = StringBuffer('# DSH local phone self-check\n\nCoverage: partial.\n');
   out.writeln('Profile: ${snapshot.profile ?? "unknown"}');
   if (snapshot.profile == 'target_c1') {
-    out.writeln('Only device, selected channel, ordinary display, fixed target launch/tree/tap and cleanup are covered.');
-    out.writeln('MAIN only records an observed wrong-display failure; no MAIN pass or absence of disturbance is claimed.');
+    out.writeln(
+      'Only device, selected channel, ordinary display, fixed target launch/tree/tap and cleanup are covered.',
+    );
+    out.writeln(
+      'MAIN only records an observed wrong-display failure; no MAIN pass or absence of disturbance is claimed.',
+    );
     out.writeln('Input receiver, scrolling, back, text, images, continuity and OCR are not tested.');
   } else if (snapshot.profile == 'target_c2') {
-    out.writeln('Fixed local target: launch/tree/tap, fixed ASCII and Chinese ACTION_SET_TEXT replacement/readback, local pattern capture and three controlled refresh observations.');
-    out.writeln('Controlled refresh does not test FPS, smoothness or an uninterrupted stream. No producer timestamp freshness is claimed.');
-    out.writeln('MAIN compares finite task and focus samples only; unchanged samples cannot prove no disturbance between samples. MAIN never passes. Changes may include user actions.');
+    out.writeln(
+      'Fixed local target: launch/tree/tap, fixed ASCII and Chinese ACTION_SET_TEXT replacement/readback, local pattern capture and three controlled refresh observations.',
+    );
+    out.writeln(
+      'Controlled refresh does not test FPS, smoothness or an uninterrupted stream. No producer timestamp freshness is claimed.',
+    );
+    out.writeln(
+      'MAIN compares finite task and focus samples only; unchanged samples cannot prove no disturbance between samples. MAIN never passes. Changes may include user actions.',
+    );
     out.writeln('OCR is not installed or tested. Input receiver, scrolling and back are not tested.');
   } else if (snapshot.profile == 'probe_b') {
     out.writeln('Only device, selected channel, presentation display, input receiver and cleanup are covered.');
@@ -293,7 +424,9 @@ String phoneSelfCheckMarkdown(PhoneSelfCheckSnapshot snapshot) {
   out.writeln('| Stage | State | Observed | Reason | Duration (ms) |');
   out.writeln('| --- | --- | --- | --- | --- |');
   for (final step in snapshot.steps) {
-    out.writeln('| ${step.stage} | ${step.state} | ${step.observed} | ${phoneSelfCheckReasonGroup(step.reason)} | ${step.durationMs ?? "unknown"} |');
+    out.writeln(
+      '| ${step.stage} | ${step.state} | ${step.observed} | ${phoneSelfCheckReasonGroup(step.reason)} | ${step.durationMs ?? "unknown"} |',
+    );
   }
   final text = out.toString();
   if (utf8.encode(text).length > diagnosticsMarkdownBytes) throw StateError('selfCheckReportBudget');
@@ -302,7 +435,7 @@ String phoneSelfCheckMarkdown(PhoneSelfCheckSnapshot snapshot) {
 
 class PhoneSelfCheckReport {
   PhoneSelfCheckReport({this.files = const FilesChannel(), Future<Directory> Function()? cacheRoot})
-      : _cacheRoot = cacheRoot ?? getTemporaryDirectory;
+    : _cacheRoot = cacheRoot ?? getTemporaryDirectory;
   final FilesChannel files;
   final Future<Directory> Function() _cacheRoot;
 
@@ -315,7 +448,11 @@ class PhoneSelfCheckReport {
       await file.writeAsBytes(bytes, flush: true);
       await files.saveToDownloads(file.path, name: 'dsh-phone-self-check.md', mime: 'text/markdown');
     } finally {
-      try { await directory.delete(recursive: true); } catch (_) { /* Copy outcome is not changed by cache cleanup. */ }
+      try {
+        await directory.delete(recursive: true);
+      } catch (_) {
+        /* Copy outcome is not changed by cache cleanup. */
+      }
     }
   }
 }

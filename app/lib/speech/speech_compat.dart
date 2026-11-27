@@ -2,6 +2,7 @@
 // Keep its existing enum and methods intact. Main b452 has real members with
 // these names; Dart instance members take precedence over these extensions.
 import 'package:flutter/services.dart';
+
 import '../companion/companion_voice_source.dart';
 import '../diagnostics/diagnostics_channel.dart';
 

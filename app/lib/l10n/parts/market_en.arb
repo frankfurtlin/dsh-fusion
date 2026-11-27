@@ -1,10 +1,4 @@
 {
-  "marketSectionOfficial": "Official",
-  "marketSectionAdapted": "Made for DSH Pocket",
-  "marketSectionAll": "All",
-  "marketSectionLoading": "Loading…",
-  "marketSectionFailed": "The official catalogue didn't load",
-  "marketSectionEmpty": "None yet",
   "marketTierOfficial": "Official",
   "marketTierAdapted": "Made for DSH Pocket",
   "marketRiskMedium": "Medium risk",
@@ -84,8 +78,6 @@
       }
     }
   },
-  "marketSubmit": "Submit a plugin",
-  "marketSubmitHint": "On GitHub; listed once the automatic checks pass",
   "marketLinkNotFound": "{name} isn't in the plugin market",
   "@marketLinkNotFound": {
     "placeholders": {
@@ -95,13 +87,5 @@
     }
   },
   "marketVerificationUnavailableTitle": "Could not verify the version",
-  "marketVerificationUnavailableBody": "npm did not return integrity information. Installation has not started. Check your connection and try again.",
-  "marketCombinedCount": "{count} plugins",
-  "@marketCombinedCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "marketVerificationUnavailableBody": "npm did not return integrity information. Installation has not started. Check your connection and try again."
 }

@@ -273,8 +273,6 @@
   "remoteHostedYearDate": "{month, select, 1{Jan} 2{Feb} 3{Mar} 4{Apr} 5{May} 6{Jun} 7{Jul} 8{Aug} 9{Sep} 10{Oct} 11{Nov} 12{Dec} other{{month}}} {day}, {year}",
   "remoteHostKeyVerifyCommand": "Run {command} on that host to see the same fingerprint. DSH will refuse to connect if it changes.",
   "remoteSshInstallCommand": "DSH not installed? Run {command} on the host.",
-  "remoteRelayProvider": "Service by {project}",
-  "remoteRelayProviderServer": "Service by {project} · Current server: {server}",
   "remoteQuotedHostName": "“{name}”",
   "remoteErrorDetail": "{message} ({detail})",
   "remotePathLan": "LAN",

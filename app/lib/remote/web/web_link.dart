@@ -41,13 +41,9 @@ class WebHostLink implements HostLink {
     return link;
   }
 
-  WebHostLink._({
-    required this.config,
-    required this.loadPassword,
-    GatewayLogin? login,
-    Stream<void>? kicks,
-  }) : _login = login ?? GatewayLogin(),
-       _backoff = Backoff() {
+  WebHostLink._({required this.config, required this.loadPassword, GatewayLogin? login, Stream<void>? kicks})
+    : _login = login ?? GatewayLogin(),
+      _backoff = Backoff() {
     _kickSub = kicks?.listen((_) => kick());
   }
 
@@ -110,13 +106,8 @@ class WebHostLink implements HostLink {
     _statuses.add(next);
   }
 
-  HostLinkStatus _stage(HostLinkStep step, {String? detail}) => HostLinkStatus(
-    HostLinkPhase.connecting,
-    step: step,
-    completed: const {},
-    attempt: _attempt,
-    detail: detail,
-  );
+  HostLinkStatus _stage(HostLinkStep step, {String? detail}) =>
+      HostLinkStatus(HostLinkPhase.connecting, step: step, completed: const {}, attempt: _attempt, detail: detail);
 
   @override
   Future<DshClient> open() {
@@ -137,7 +128,12 @@ class WebHostLink implements HostLink {
       } on HostLinkError catch (error) {
         last = error;
       } catch (error) {
-        last = HostLinkError(HostLinkErrorKind.other, appL10n.commonConnectionFailed, detail: '$error', retryable: true);
+        last = HostLinkError(
+          HostLinkErrorKind.other,
+          appL10n.commonConnectionFailed,
+          detail: '$error',
+          retryable: true,
+        );
       }
       if (_closed || !last.retryable || _backoff.exhausted) break;
       final delay = _backoff.next();
@@ -240,11 +236,8 @@ class WebHostLink implements HostLink {
       error.message,
       detail: error.detail,
     ),
-    GatewayLoginErrorKind.locked || GatewayLoginErrorKind.throttled => HostLinkError(
-      HostLinkErrorKind.authFailed,
-      error.message,
-      detail: error.detail,
-    ),
+    GatewayLoginErrorKind.locked ||
+    GatewayLoginErrorKind.throttled => HostLinkError(HostLinkErrorKind.authFailed, error.message, detail: error.detail),
     GatewayLoginErrorKind.notGateway => HostLinkError(
       HostLinkErrorKind.unavailable,
       error.message,

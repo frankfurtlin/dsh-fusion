@@ -38,6 +38,7 @@ Future<void> workshopCommitExport(File target, Future<void> Function(File stagin
           workshopInvalid('workshop_export_exists');
         }
       }
+
       await absent();
       await target.parent.create(recursive: true);
       final random = Random.secure();
@@ -56,13 +57,16 @@ Future<void> workshopCommitExport(File target, Future<void> Function(File stagin
       throw _exportStorage(error);
     } finally {
       final temporary = staging;
-      try { if (temporary != null && await temporary.exists()) await temporary.delete(); }
-      on FileSystemException { /* Only the private staging file may remain. */ }
+      try {
+        if (temporary != null && await temporary.exists()) await temporary.delete();
+      } on FileSystemException {
+        /* Only the private staging file may remain. */
+      }
     }
   });
   _exportTail = run.then<void>((_) {}, onError: (_) {});
   return run;
 }
 
-WorkshopException _exportStorage(FileSystemException error) => WorkshopException(
-  const {28, 122}.contains(error.osError?.errorCode) ? 'workshop_no_space' : 'workshop_storage');
+WorkshopException _exportStorage(FileSystemException error) =>
+    WorkshopException(const {28, 122}.contains(error.osError?.errorCode) ? 'workshop_no_space' : 'workshop_storage');

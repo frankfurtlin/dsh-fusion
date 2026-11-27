@@ -11,13 +11,7 @@ import 'composer_strip.dart';
 import 'native_capability_scope.dart';
 
 class NativeComposerBar extends ConsumerStatefulWidget {
-  const NativeComposerBar({
-    super.key,
-    required this.sessionId,
-    required this.visible,
-    this.leading,
-    this.strip = true,
-  });
+  const NativeComposerBar({super.key, required this.sessionId, required this.visible, this.leading, this.strip = true});
 
   /// The conversation on screen; null on the new-chat screen.
   final String? sessionId;

@@ -313,8 +313,8 @@ final engineImageReaderProvider = Provider<CachedImageReader>(
     EngineImageReader(ref.watch(artifactFilesProvider).connection?.client),
     capacity: 32,
     keeps: (image) => switch (image) {
-      RasterImage(provider: MemoryImage(:final bytes)) || SvgImageBytes(:final bytes) =>
-        bytes.length <= maxHeldEngineImageBytes,
+      RasterImage(provider: MemoryImage(:final bytes)) ||
+      SvgImageBytes(:final bytes) => bytes.length <= maxHeldEngineImageBytes,
       _ => true,
     },
   ),

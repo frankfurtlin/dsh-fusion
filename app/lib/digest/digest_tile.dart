@@ -18,9 +18,7 @@ class DigestTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: item.url.isEmpty
-            ? null
-            : () => launchUrl(Uri.parse(item.url), mode: LaunchMode.externalApplication),
+        onTap: item.url.isEmpty ? null : () => launchUrl(Uri.parse(item.url), mode: LaunchMode.externalApplication),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -29,12 +27,7 @@ class DigestTile extends StatelessWidget {
               Text(item.title, style: theme.textTheme.titleSmall),
               if (item.summary.isNotEmpty) ...[
                 const SizedBox(height: 6),
-                Text(
-                  item.summary,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall,
-                ),
+                Text(item.summary, maxLines: 3, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodySmall),
               ],
               const SizedBox(height: 8),
               Wrap(

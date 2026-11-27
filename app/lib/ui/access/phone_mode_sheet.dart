@@ -32,11 +32,8 @@ import '../theme/app_icons.dart';
 const phoneModeChoices = [PhoneConfirmMode.ask, PhoneConfirmMode.always];
 
 /// The chosen mode; null when the sheet was closed without one.
-Future<PhoneConfirmMode?> showPhoneModeSheet(BuildContext context) => showAppSheet<PhoneConfirmMode>(
-  context,
-  isScrollControlled: true,
-  builder: (_) => const PhoneModeSheet(),
-);
+Future<PhoneConfirmMode?> showPhoneModeSheet(BuildContext context) =>
+    showAppSheet<PhoneConfirmMode>(context, isScrollControlled: true, builder: (_) => const PhoneModeSheet());
 
 class PhoneModeSheet extends StatefulWidget {
   const PhoneModeSheet({super.key});

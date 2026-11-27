@@ -1,4 +1,2 @@
 {
-  "usageStatsSection": "Improve DSH Pocket",
-  "usageStatsFooter": "This switch controls dsh-go’s own statistics: feature counts (companion room visits and voice calls included), the token counts model replies report, versions, phone maker and model, and system version. It includes no chats, files or accounts, and does not control Google ML Kit SDK statistics."
 }

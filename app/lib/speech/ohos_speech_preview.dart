@@ -36,6 +36,7 @@ class OhosSpeechSpeaker implements CompanionSpeaker {
     _settings = next;
     _phone.settings = next;
   }
+
   @override
   Future<bool> ready(CompanionVoiceSettings next) async {
     settings = next;
@@ -43,6 +44,7 @@ class OhosSpeechSpeaker implements CompanionSpeaker {
     if (!next.usesDeepSeekSpeech && next.source == CompanionVoiceSource.system) return _phone.ready(next);
     return next.usesDeepSeekSpeech;
   }
+
   @override
   Future<bool> warmPhone() async => !_disposed && await _phone.warmPhone();
 
@@ -84,16 +86,20 @@ class OhosSpeechSpeaker implements CompanionSpeaker {
           // A stopped/evicted preview is not a successful voice sample. Wait
           // for natural playback completion so a late stream failure remains
           // visible through the existing preview Future<String?> contract.
-          _complete(out, out._completed ? null : 'cancelled',
-            CompanionVoiceEvent(out._completed ? CompanionVoiceEventType.done : CompanionVoiceEventType.stopped, id));
+          _complete(
+            out,
+            out._completed ? null : 'cancelled',
+            CompanionVoiceEvent(out._completed ? CompanionVoiceEventType.done : CompanionVoiceEventType.stopped, id),
+          );
         case SpeechOutLevel():
           break;
       }
     });
-    out..add(text)..finish();
+    out
+      ..add(text)
+      ..finish();
     return result.future;
   }
-
 
   void _heardPhone(CompanionVoiceEvent event) {
     if (_disposed || _settings.usesDeepSeekSpeech || _settings.source != CompanionVoiceSource.system) return;
@@ -221,7 +227,8 @@ class _OhosUnavailableOut implements SpeechOut {
   @override
   void add(String text) => finish();
   @override
-  void finish() => _close(const SpeechOutFailed(DeepSeekSpeechError(DeepSeekSpeechFailure.protocol, 'unsupported voice format')));
+  void finish() =>
+      _close(const SpeechOutFailed(DeepSeekSpeechError(DeepSeekSpeechFailure.protocol, 'unsupported voice format')));
   @override
   void stop() => _close(const SpeechOutDone());
   @override

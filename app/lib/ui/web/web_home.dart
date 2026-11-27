@@ -172,10 +172,7 @@ class _WebHomeState extends ConsumerState<WebHome> {
       NoDshWeb(:final reason) => _NoWeb(reason: reason, handle: _handle),
     };
     return ChatAlertHost(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [page, const LinkHost(), const WebEntryHost(), const _PetHost()],
-      ),
+      child: Stack(fit: StackFit.expand, children: [page, const LinkHost(), const WebEntryHost(), const _PetHost()]),
     );
   }
 }

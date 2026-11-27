@@ -339,11 +339,7 @@ class _ShareImageCellState extends ConsumerState<_ShareImageCell> {
       case WorkspaceImageSource(:final path):
         final sessionId = _sessionId;
         if (sessionId == null) return _fail();
-        final resolved = workspaceImagePath(
-          path,
-          cwd: path.startsWith('/') ? null : _cwdOf(sessionId),
-          local: false,
-        );
+        final resolved = workspaceImagePath(path, cwd: path.startsWith('/') ? null : _cwdOf(sessionId), local: false);
         final source = widget.image;
         ref
             .read(workspaceImageReaderProvider)

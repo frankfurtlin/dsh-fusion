@@ -47,10 +47,7 @@ abstract final class UpdateManifestSignature {
     try {
       return await Ed25519().verify(
         utf8.encode(message),
-        signature: Signature(
-          signatureBytes,
-          publicKey: SimplePublicKey(publicKey, type: KeyPairType.ed25519),
-        ),
+        signature: Signature(signatureBytes, publicKey: SimplePublicKey(publicKey, type: KeyPairType.ed25519)),
       );
     } on Object {
       // 长度不对等异常一律算验不过。

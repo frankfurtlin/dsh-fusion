@@ -8,14 +8,18 @@ enum WorkshopReportPhase { idle, sending, succeeded, failed, unknown }
 
 /// Public, in-memory inputs only. A report has no requestId or author query.
 class WorkshopReportAttempt {
-  const WorkshopReportAttempt._({required this.kind, required this.id,
-    required this.version, required this.reason});
+  const WorkshopReportAttempt._({required this.kind, required this.id, required this.version, required this.reason});
   final String kind, id, version, reason;
 }
 
 class WorkshopReportState {
-  const WorkshopReportState({required this.session, this.phase = WorkshopReportPhase.idle,
-    this.attempt, this.reportId, this.error});
+  const WorkshopReportState({
+    required this.session,
+    this.phase = WorkshopReportPhase.idle,
+    this.attempt,
+    this.reportId,
+    this.error,
+  });
   final Object session;
   final WorkshopReportPhase phase;
   final WorkshopReportAttempt? attempt;
@@ -30,9 +34,8 @@ final workshopReportProvider = NotifierProvider<WorkshopReportController, Worksh
 
 class WorkshopReportController extends Notifier<WorkshopReportState> {
   @override
-  WorkshopReportState build() => WorkshopReportState(
-    session: ref.watch(workshopAccessProvider.select((value) => value.session)),
-  );
+  WorkshopReportState build() =>
+      WorkshopReportState(session: ref.watch(workshopAccessProvider.select((value) => value.session)));
 
   bool _current(Object session) {
     if (!ref.mounted) {
@@ -50,8 +53,7 @@ class WorkshopReportController extends Notifier<WorkshopReportState> {
       return false;
     }
     final current = state;
-    if (current.busy || current.phase == WorkshopReportPhase.unknown &&
-        !identical(confirmedUnknown, current.attempt)) {
+    if (current.busy || current.phase == WorkshopReportPhase.unknown && !identical(confirmedUnknown, current.attempt)) {
       return false;
     }
     state = WorkshopReportState(session: current.session);
@@ -65,13 +67,18 @@ class WorkshopReportController extends Notifier<WorkshopReportState> {
       return false;
     }
     final current = state;
-    if (current.busy || current.phase == WorkshopReportPhase.unknown ||
+    if (current.busy ||
+        current.phase == WorkshopReportPhase.unknown ||
         current.phase == WorkshopReportPhase.succeeded) {
       return false;
     }
     final session = current.session, metadata = entry.metadata;
-    final attempt = WorkshopReportAttempt._(kind: metadata.kind, id: metadata.id,
-      version: metadata.version, reason: reason);
+    final attempt = WorkshopReportAttempt._(
+      kind: metadata.kind,
+      id: metadata.id,
+      version: metadata.version,
+      reason: reason,
+    );
     state = WorkshopReportState(session: session, phase: WorkshopReportPhase.sending, attempt: attempt);
     try {
       if (!metadata.supported) {
@@ -84,19 +91,31 @@ class WorkshopReportController extends Notifier<WorkshopReportState> {
       if (!_current(session) || !identical(authorization.session, session)) {
         workshopInvalid('workshop_cancelled');
       }
-      final id = await authorization.client.report(kind: attempt.kind, id: attempt.id,
-        version: attempt.version, reason: attempt.reason, credential: authorization.credential);
+      final id = await authorization.client.report(
+        kind: attempt.kind,
+        id: attempt.id,
+        version: attempt.version,
+        reason: attempt.reason,
+        credential: authorization.credential,
+      );
       if (_current(session)) {
-        state = WorkshopReportState(session: session, phase: WorkshopReportPhase.succeeded,
-          attempt: attempt, reportId: id);
+        state = WorkshopReportState(
+          session: session,
+          phase: WorkshopReportPhase.succeeded,
+          attempt: attempt,
+          reportId: id,
+        );
       }
     } on Object catch (error) {
       if (_current(session)) {
         // The Client distinguishes its read-only preflight from the report POST.
         final failure = workshopTransportError(error);
-        state = WorkshopReportState(session: session,
+        state = WorkshopReportState(
+          session: session,
           phase: failure.resultUnknown ? WorkshopReportPhase.unknown : WorkshopReportPhase.failed,
-          attempt: attempt, error: failure);
+          attempt: attempt,
+          error: failure,
+        );
         workshopForgetRefusedAccount(ref, failure);
       }
     }

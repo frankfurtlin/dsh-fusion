@@ -6,9 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../workshop/workshop_models.dart';
 
 class WorkshopPendingSubmission {
-  WorkshopPendingSubmission({required this.requestId, required this.fingerprint,
-    required this.directoryName, required this.metadata, required List<String> files})
-    : files = List.unmodifiable(files);
+  WorkshopPendingSubmission({
+    required this.requestId,
+    required this.fingerprint,
+    required this.directoryName,
+    required this.metadata,
+    required List<String> files,
+  }) : files = List.unmodifiable(files);
   final String requestId, fingerprint, directoryName;
   final WorkshopMetadata metadata;
   final List<String> files;
@@ -18,22 +22,34 @@ class WorkshopPendingSubmission {
       final map = workshopMap(value);
       final id = map['requestId'], fingerprint = map['fingerprint'];
       final directory = map['directoryName'], files = map['files'];
-      if (id is! String || !RegExp(r'^[a-f0-9]{32}$').hasMatch(id) ||
-          !workshopHash(fingerprint) || directory is! String ||
+      if (id is! String ||
+          !RegExp(r'^[a-f0-9]{32}$').hasMatch(id) ||
+          !workshopHash(fingerprint) ||
+          directory is! String ||
           !RegExp(r'^draft-[A-Za-z0-9_-]{1,100}$').hasMatch(directory) ||
-          files is! List || files.any((file) => file is! String)) {
+          files is! List ||
+          files.any((file) => file is! String)) {
         workshopInvalid('workshop_preferences');
       }
-      return WorkshopPendingSubmission(requestId: id, fingerprint: fingerprint as String,
-        directoryName: directory, metadata: WorkshopMetadata.fromJson(map['metadata']),
-        files: files.cast<String>());
+      return WorkshopPendingSubmission(
+        requestId: id,
+        fingerprint: fingerprint as String,
+        directoryName: directory,
+        metadata: WorkshopMetadata.fromJson(map['metadata']),
+        files: files.cast<String>(),
+      );
     } on Object {
       throw const WorkshopException('workshop_preferences');
     }
   }
 
-  Map<String, Object?> toJson() => {'requestId': requestId, 'fingerprint': fingerprint,
-    'directoryName': directoryName, 'metadata': metadata.toJson(), 'files': files};
+  Map<String, Object?> toJson() => {
+    'requestId': requestId,
+    'fingerprint': fingerprint,
+    'directoryName': directoryName,
+    'metadata': metadata.toJson(),
+    'files': files,
+  };
 }
 
 /// Only disclosure acknowledgements and non-secret idempotency identifiers.
@@ -41,6 +57,7 @@ class WorkshopPendingSubmission {
 abstract interface class WorkshopPreferences {
   Future<bool> disclosureAccepted(Uri worker, Uri account);
   Future<void> acceptDisclosure(Uri worker, Uri account);
+
   /// Atomically keeps the first identifier for these exact account/metadata
   /// bytes. A replacement controller gets the same identifier before sending.
   Future<String> reserveSubmissionRequestId(String fingerprint, String proposed);
@@ -66,8 +83,7 @@ abstract interface class WorkshopPendingRecoveryStore {
 }
 
 class _PrefsPendingRecoverySnapshot implements WorkshopPendingRecoverySnapshot {
-  const _PrefsPendingRecoverySnapshot(this.scope, this.version, this.range,
-    {this.hadRecord = false, this.remaining});
+  const _PrefsPendingRecoverySnapshot(this.scope, this.version, this.range, {this.hadRecord = false, this.remaining});
   final String scope, version;
   @override
   final WorkshopPendingAbandonRange range;
@@ -126,11 +142,13 @@ class PrefsWorkshopPreferences implements WorkshopPreferences, WorkshopPendingRe
     final text = prefs.getString(_requestsKey);
     if (text == null) return {};
     final decoded = jsonDecode(text);
-    if (decoded is! Map<String, Object?> || decoded.entries.any((entry) {
-      final value = entry.value;
-      return !RegExp(r'^[a-f0-9]{64}$').hasMatch(entry.key) ||
-          value is! String || !RegExp(r'^[a-f0-9]{32}$').hasMatch(value);
-    })) {
+    if (decoded is! Map<String, Object?> ||
+        decoded.entries.any((entry) {
+          final value = entry.value;
+          return !RegExp(r'^[a-f0-9]{64}$').hasMatch(entry.key) ||
+              value is! String ||
+              !RegExp(r'^[a-f0-9]{32}$').hasMatch(value);
+        })) {
       throw const WorkshopException('workshop_preferences');
     }
     return decoded.cast<String, String>();
@@ -209,7 +227,9 @@ class PrefsWorkshopPreferences implements WorkshopPreferences, WorkshopPendingRe
     _fingerprint(scope);
     return _exclusive((prefs) async {
       final all = _pending(prefs);
-      if (!all.containsKey(scope) || WorkshopPendingSubmission.fromJson(all[scope]).requestId != expectedRequestId) return;
+      if (!all.containsKey(scope) || WorkshopPendingSubmission.fromJson(all[scope]).requestId != expectedRequestId) {
+        return;
+      }
       all.remove(scope);
       if (!await prefs.setString(_pendingKey, jsonEncode(all))) workshopInvalid('workshop_preferences');
     });
@@ -256,8 +276,13 @@ class PrefsWorkshopPreferences implements WorkshopPreferences, WorkshopPendingRe
       }
       final hadRecord = all.containsKey(scope);
       final remaining = hadRecord ? jsonEncode({...all}..remove(scope)) : null;
-      return _PrefsPendingRecoverySnapshot(scope, version, WorkshopPendingAbandonRange.currentAccount,
-        hadRecord: hadRecord, remaining: remaining);
+      return _PrefsPendingRecoverySnapshot(
+        scope,
+        version,
+        WorkshopPendingAbandonRange.currentAccount,
+        hadRecord: hadRecord,
+        remaining: remaining,
+      );
     });
   }
 

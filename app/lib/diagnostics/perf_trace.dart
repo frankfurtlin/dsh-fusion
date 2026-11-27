@@ -58,8 +58,7 @@ abstract final class PerfTrace {
   }
 
   /// 记一个已经量好的点（例如在别处用本地 Stopwatch 量的）。
-  static void note(String name, int ms, [Map<String, Object?> fields = const {}]) =>
-      _add(name, ms, fields);
+  static void note(String name, int ms, [Map<String, Object?> fields = const {}]) => _add(name, ms, fields);
 
   /// 把 [run] 量一遍再返回；失败也记一条（带 error），错误照旧抛出。
   static Future<T> measure<T>(
@@ -91,11 +90,7 @@ abstract final class PerfTrace {
       _spans.removeAt(0);
     }
     // 操作日志开着的时候顺手发一条：服务器侧能看到跨启动的分布。
-    PocketLog.instance.log('perf', {
-      'span': name,
-      'ms': ms,
-      ...fields,
-    });
+    PocketLog.instance.log('perf', {'span': name, 'ms': ms, ...fields});
   }
 
   static String _firstLine(String text) {

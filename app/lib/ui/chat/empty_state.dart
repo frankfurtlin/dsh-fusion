@@ -17,7 +17,10 @@ class ChatSuggestion {
       _prompt = prompt,
       _defaultIndex = null;
 
-  const ChatSuggestion._default(this.icon, this._defaultIndex, this.tint) : _label = null, _prompt = null, _detail = null;
+  const ChatSuggestion._default(this.icon, this._defaultIndex, this.tint)
+    : _label = null,
+      _prompt = null,
+      _detail = null;
 
   final IconData icon;
   final SuggestionTint tint;
@@ -314,10 +317,7 @@ class ChatEmptyState extends StatelessWidget {
                   ),
                 ),
               ],
-              if (connected && options != null) ...[
-                const SizedBox(height: optionsGap),
-                enter(Center(child: options!)),
-              ],
+              if (connected && options != null) ...[const SizedBox(height: optionsGap), enter(Center(child: options!))],
               if (suggestions.isNotEmpty || tipList.isNotEmpty)
                 ExpandReveal(
                   open: retry == null && idle == null,

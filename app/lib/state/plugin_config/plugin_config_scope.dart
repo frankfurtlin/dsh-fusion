@@ -165,13 +165,8 @@ class PluginConfigScope {
   }
 
   /// [allows], with what the Host [listed] for [entryId] (null: not listed).
-  bool admits(String entryId, PluginConfigEntry? listed) => allows(
-    entryId,
-    package: listed?.package,
-    bundle: listed?.bundle,
-    owner: listed?.owner,
-    kind: listed?.kind,
-  );
+  bool admits(String entryId, PluginConfigEntry? listed) =>
+      allows(entryId, package: listed?.package, bundle: listed?.bundle, owner: listed?.owner, kind: listed?.kind);
 
   /// Why a read or write out of scope did not go out, in words.
   PluginConfigFailure refusal() => switch (status) {

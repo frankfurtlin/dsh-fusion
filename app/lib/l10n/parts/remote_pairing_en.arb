@@ -1,8 +1,4 @@
 {
-  "remotePairTitle": "Pair a computer",
-  "remotePairSubtitle": "No Remote account needed. Your DeepSeek password and sign-in tokens are never sent.",
-  "remotePairNeedsDeepSeek": "Sign in to DeepSeek first",
-  "remotePairNeedsDeepSeekBody": "Pairing needs the DeepSeek account signed in on DSH Pocket. Only its account ID goes along, to label this phone; no password, cookie or token.",
   "remotePairErrInvalidCode": "That isn’t a DSH Pocket pairing code",
   "remotePairErrOtherServer": "This code is from another Remote server",
   "remotePairErrUnsupported": "This Remote server doesn’t support pairing by scanning yet",

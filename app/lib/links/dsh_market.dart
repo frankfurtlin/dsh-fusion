@@ -12,10 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../l10n/l10n.dart';
 
 /// Where the person's own DSH lives, and the market path on it.
-const dshMarketOrigin = String.fromEnvironment(
-  'DSH_MARKET_ORIGIN',
-  defaultValue: 'https://dsh.frankfurtlin.top',
-);
+const dshMarketOrigin = String.fromEnvironment('DSH_MARKET_ORIGIN', defaultValue: 'https://dsh.frankfurtlin.top');
 
 /// The market page on that instance (dsh-market mounts itself under `/dsh-market`).
 final dshMarketUri = Uri.parse('$dshMarketOrigin/dsh-market');

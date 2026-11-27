@@ -185,11 +185,7 @@ class DsBotController extends Notifier<DsBotStatus> {
         host: host,
       );
     }
-    final base = DsBotStatus(
-      availability: DsBotAvailability.connecting,
-      host: host,
-      hostLabel: conn.label,
-    );
+    final base = DsBotStatus(availability: DsBotAvailability.connecting, host: host, hostLabel: conn.label);
     final api = ref.read(dsBotApiFactoryProvider)(conn);
     if (api == null) return base.copyWith(availability: DsBotAvailability.relay);
     _api = api;

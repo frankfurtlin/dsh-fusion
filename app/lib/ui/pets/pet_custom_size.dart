@@ -121,9 +121,11 @@ class _PetCustomSizePanelState extends ConsumerState<PetCustomSizePanel> {
               },
               onChangeEnd: (raw) {
                 final next = PetCustomSizePanel.snap(raw);
-                unawaited(ref.read(petPrefsProvider.notifier).setCustomHeight(next).whenComplete(() {
-                  if (mounted) setState(() => _draft = null);
-                }));
+                unawaited(
+                  ref.read(petPrefsProvider.notifier).setCustomHeight(next).whenComplete(() {
+                    if (mounted) setState(() => _draft = null);
+                  }),
+                );
               },
             ),
           ),

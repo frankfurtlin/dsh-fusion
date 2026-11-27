@@ -111,7 +111,8 @@ String configSearchText(SchemaFieldSpec field, SchemaNode node) {
     field.key,
     humanizeKey(field.key),
     field.path.join('.'),
-    if (kindOf(node) == FieldKind.choice) for (final (_, label) in choicesFor(node, copy)) label,
+    if (kindOf(node) == FieldKind.choice)
+      for (final (_, label) in choicesFor(node, copy)) label,
   ].join('\n').toLowerCase();
 }
 
@@ -163,7 +164,10 @@ PluginConfigLayout pluginConfigLayout(
     return configTierOf(f.key, node, live: !form.allLive && form.isLive(f.path));
   }
 
-  final tiers = {for (final s in drawn) for (final f in s.fields) f.ref.key: tier(f)};
+  final tiers = {
+    for (final s in drawn)
+      for (final f in s.fields) f.ref.key: tier(f),
+  };
   final folded = tiers.values.where((t) => t == ConfigTier.advanced).length;
   final authored = declaresCollapse(view.schema);
   final fold = !authored && count >= _foldFrom && folded >= _minFolded && folded < count;

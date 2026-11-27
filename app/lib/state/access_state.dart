@@ -31,18 +31,20 @@ import 'android_features.dart';
 import 'notify_state.dart';
 import 'phone_state.dart';
 import 'system_actions_state.dart';
-import 'voice_model_state.dart' show VoiceModelController, voiceModelDefaultBytes;
+import 'voice_model_state.dart' show voiceModelDefaultBytes, voiceModelOnboardingKey;
 import 'voice_state.dart';
 
-/// The offline voice model's download in MB as the voice settings show it,
-/// said before it is chosen (the voice feature downloads it once the engine
-/// is up).
+/// The offline voice model's size in MB as the voice settings show it, said
+/// before 语音输入 is chosen. The download it used to start (the on-device
+/// engine's model) was removed with 1.2.0; the size is still what first run
+/// and 系统权限 say.
 final voiceModelApproxMb = (voiceModelDefaultBytes / 1000000).round();
 
-/// First run's answer about voice input, which [VoiceModelController] picks
-/// up: true when 语音输入 was picked (it starts the download once), false when
-/// the page was confirmed without it, absent when the page was skipped.
-const onboardingWantsVoiceKey = VoiceModelController.onboardingKey;
+/// First run's answer about voice input: true when 语音输入 was picked, false
+/// when the page was confirmed without it, absent when the page was skipped.
+/// (The old on-device model download that read it is gone; the answer stays
+/// on record.)
+const onboardingWantsVoiceKey = voiceModelOnboardingKey;
 
 /// What a person picks on first run: things DSH Pocket does, not permission names.
 /// What [os] offers is [accessFeaturesFor]'s, never all of these.

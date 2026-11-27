@@ -2638,9 +2638,6 @@ class L10nZh extends L10n {
   String get botsDiscard => '放弃';
 
   @override
-  String get botsProgress => '进度';
-
-  @override
   String get botsGlyphRun => '运行';
 
   @override
@@ -3257,9 +3254,6 @@ class L10nZh extends L10n {
 
   @override
   String get botsEveryone => '所有人';
-
-  @override
-  String get botsActivelyRunning => '正在运行';
 
   @override
   String get botsListSeparator => '，';
@@ -8466,9 +8460,6 @@ class L10nZh extends L10n {
   String get harmonyKeyStorageHelp => '只保存在这台手机上，由系统密钥库加密。支持 Ed25519、RSA、ECDSA';
 
   @override
-  String get harmonyUsageNotSent => '鸿蒙版暂不发送使用统计';
-
-  @override
   String get harmonyVoiceSystemHint => '使用系统的语音识别';
 
   @override
@@ -9468,24 +9459,6 @@ class L10nZh extends L10n {
   String get marketInstallRefused => '这个引擎不能安装市场插件';
 
   @override
-  String get marketSectionOfficial => '官方';
-
-  @override
-  String get marketSectionAdapted => '适配 DSH Pocket';
-
-  @override
-  String get marketSectionAll => '全部';
-
-  @override
-  String get marketSectionLoading => '正在载入…';
-
-  @override
-  String get marketSectionFailed => '官方目录没打开';
-
-  @override
-  String get marketSectionEmpty => '暂无';
-
-  @override
   String get marketTierOfficial => '官方';
 
   @override
@@ -9609,12 +9582,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String get marketSubmit => '提交插件';
-
-  @override
-  String get marketSubmitHint => '在 GitHub 提交，通过自动检查即上架';
-
-  @override
   String marketLinkNotFound(String name) {
     return '插件市场里没有 $name';
   }
@@ -9624,11 +9591,6 @@ class L10nZh extends L10n {
 
   @override
   String get marketVerificationUnavailableBody => '没能取得 npm 的版本校验信息，尚未开始安装。请检查网络后重试。';
-
-  @override
-  String marketCombinedCount(int count) {
-    return '$count 个插件';
-  }
 
   @override
   String get mediaGenerateTile => '生成';
@@ -12535,45 +12497,7 @@ class L10nZh extends L10n {
   String get pluginsSearch => '搜索插件';
 
   @override
-  String get pluginsMarketLoading => '正在载入插件目录…';
-
-  @override
-  String get pluginsMarketLoadFailed => '插件目录没打开';
-
-  @override
   String get pluginsMarketInvalid => '目录格式有误';
-
-  @override
-  String get pluginsAll => '全部';
-
-  @override
-  String pluginsMarketCount(int count) {
-    return '$count 个插件 · 来自 dshfind';
-  }
-
-  @override
-  String get pluginsHideWeb => '隐藏网页版插件';
-
-  @override
-  String pluginsShowWebCount(int count) {
-    return '显示 $count 个网页版插件';
-  }
-
-  @override
-  String get pluginsNoCategoryPlugins => '这个分类下没有插件';
-
-  @override
-  String pluginsNoSearchResults(String query) {
-    return '没有找到「$query」';
-  }
-
-  @override
-  String pluginsFailureDetails(String title) {
-    return '$title · 点开查看';
-  }
-
-  @override
-  String get pluginsFeatured => '推荐';
 
   @override
   String pluginsInstalledRemoteRestart(String name, String host) {
@@ -14715,16 +14639,6 @@ class L10nZh extends L10n {
   }
 
   @override
-  String remoteRelayProvider(String project) {
-    return '服务由 $project 提供';
-  }
-
-  @override
-  String remoteRelayProviderServer(String project, String server) {
-    return '服务由 $project 提供 · 当前服务器 $server';
-  }
-
-  @override
   String remoteQuotedHostName(String name) {
     return '「$name」';
   }
@@ -14858,19 +14772,6 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwRemoteCompactHistory => '精简 简洁 历史 工具 传输 流量 远程 compact slim lite';
-
-  @override
-  String get remotePairTitle => '扫码配对电脑';
-
-  @override
-  String get remotePairSubtitle => '不用注册 Remote 账号，也不会传 DeepSeek 密码或登录凭据';
-
-  @override
-  String get remotePairNeedsDeepSeek => '先登录 DeepSeek 账号';
-
-  @override
-  String get remotePairNeedsDeepSeekBody =>
-      '扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。';
 
   @override
   String get remotePairErrInvalidCode => '这不是 DSH Pocket 的配对二维码';
@@ -16807,9 +16708,6 @@ class L10nZh extends L10n {
   String get stateDiagnosticsExportFailed => '没能导出诊断包';
 
   @override
-  String get stateBrowserOpenFailed => '没能打开浏览器';
-
-  @override
   String get stateFileOpenFailed => '无法打开这个文件';
 
   @override
@@ -18374,13 +18272,6 @@ class L10nZh extends L10n {
   String updateDownloadingPercent(int percent) {
     return '正在下载 $percent%';
   }
-
-  @override
-  String get usageStatsSection => '改进 DSH Pocket';
-
-  @override
-  String get usageStatsFooter =>
-      '这个开关只控制 dsh-go 自身的统计：各功能使用次数（含伙伴小屋、语音通话）、模型回复报告的 token 数、版本、手机品牌和型号、系统版本，不含对话、文件和账号；它不控制 Google ML Kit SDK 的统计。';
 
   @override
   String viewArtifactSaved(String value) {

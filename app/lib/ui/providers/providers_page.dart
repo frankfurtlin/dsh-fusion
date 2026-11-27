@@ -150,7 +150,9 @@ class _DeepSeekCard extends ConsumerWidget {
       row = ListPageRow(
         leading: const Monogram('DeepSeek'),
         title: 'DeepSeek',
-        subtitle: settings.hasApiKey ? ('API Key · ${maskApiKey(settings.apiKey)}') : l10n.engineProvidersNotConfiguredHere,
+        subtitle: settings.hasApiKey
+            ? ('API Key · ${maskApiKey(settings.apiKey)}')
+            : l10n.engineProvidersNotConfiguredHere,
         trailing: ProviderDot(settings.hasApiKey ? StatusTone.ok : StatusTone.idle),
       );
     }
