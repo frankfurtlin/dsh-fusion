@@ -9,7 +9,7 @@ import 'package:dsh_app/runtime/runtime_state.dart';
 import 'package:dsh_app/state/access_state.dart';
 import 'package:dsh_app/state/android_features.dart';
 import 'package:dsh_app/state/system_actions_state.dart';
-import 'package:dsh_app/state/voice_model_state.dart';
+import 'package:dsh_app/state/voice_model_state.dart' show voiceModelWantedKey;
 import 'package:dsh_app/ui/access/access_walk.dart';
 import 'package:dsh_app/ui/access/phone_mode_sheet.dart';
 import 'package:dsh_app/ui/phone/phone_disclosure_sheet.dart';
@@ -367,7 +367,7 @@ void main() {
       expect(find.byKey(const ValueKey('access-voice')), findsNothing);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(onboardingWantsVoiceKey), isFalse);
-      expect(prefs.getBool(VoiceModelController.wantedKey), isNull);
+      expect(prefs.getBool(voiceModelWantedKey), isNull);
     });
 
     testWidgets('on Android: the same pick writes the wish and says so', (tester) async {

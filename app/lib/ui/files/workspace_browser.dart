@@ -189,8 +189,7 @@ class _WorkspaceBrowserState extends ConsumerState<WorkspaceBrowser> with Single
     // produces an absolute path the Host may not agree is inside the workspace
     // (`workspace-file/outside-workspace`), which is what a remote Host hit:
     // the listing worked and every tapped file failed.
-    Navigator.of(context)
-        .push(FilePreviewPage.route(sessionId: widget.sessionId, path: rel, bytes: bytes));
+    Navigator.of(context).push(FilePreviewPage.route(sessionId: widget.sessionId, path: rel, bytes: bytes));
   }
 
   Future<void> _fileMenu(String rel, int? bytes) async {

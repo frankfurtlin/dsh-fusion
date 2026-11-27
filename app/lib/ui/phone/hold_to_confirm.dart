@@ -151,10 +151,7 @@ class _HoldToConfirmButtonState extends State<HoldToConfirmButton> with SingleTi
                       face(colors.danger.withValues(alpha: 0.12), colors.danger),
                       // The filled face, revealed from the left as the hold goes on;
                       // its label sits exactly over the one below.
-                      ClipRect(
-                        clipper: _LeftPart(_fill.value),
-                        child: face(colors.danger, colors.onDanger),
-                      ),
+                      ClipRect(clipper: _LeftPart(_fill.value), child: face(colors.danger, colors.onDanger)),
                     ],
                   ),
                 ),

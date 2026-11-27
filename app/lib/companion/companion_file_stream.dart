@@ -36,11 +36,7 @@ Future<void> consumeCompanionFileStream(
     onListen: () {
       if (finished) return;
       try {
-        reader = source.listen(
-          relay.add,
-          onError: relay.addError,
-          onDone: () => unawaited(relay.close()),
-        );
+        reader = source.listen(relay.add, onError: relay.addError, onDone: () => unawaited(relay.close()));
       } catch (error, stack) {
         // onListen is guarded by the controller. Deliver a synchronous listen
         // failure as a stream event after listen returns, rather than to Zone.

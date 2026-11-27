@@ -16,8 +16,17 @@ import 'workshop_preferences.dart';
 import 'workshop_publication.dart';
 
 class WorkshopPublishSource {
-  const WorkshopPublishSource({required this.kind, required this.localId,
-    this.name, this.author, this.license, this.source, this.preview, this.library, this.store});
+  const WorkshopPublishSource({
+    required this.kind,
+    required this.localId,
+    this.name,
+    this.author,
+    this.license,
+    this.source,
+    this.preview,
+    this.library,
+    this.store,
+  });
   final String kind, localId;
   final String? name, author, license, source;
   final WorkshopPreviewInput? preview;
@@ -31,22 +40,38 @@ class WorkshopPublishSource {
   bool get fromFile => library != null || store != null;
 
   WorkshopPublishSource withPreview(WorkshopPreviewInput? value) => WorkshopPublishSource(
-    kind: kind, localId: localId, name: name, author: author, license: license, source: source, preview: value,
-    library: library, store: store);
+    kind: kind,
+    localId: localId,
+    name: name,
+    author: author,
+    license: license,
+    source: source,
+    preview: value,
+    library: library,
+    store: store,
+  );
 
   WorkshopPublicationInput initialInput() {
-    final candidate = kind == 'pet' && localId.startsWith(userPetPrefix)
-        ? localId.substring(userPetPrefix.length) : '';
-    return WorkshopPublicationInput(id: workshopId(candidate) ? candidate : '',
-      titleZh: kind == 'pet' ? name ?? '' : '', titleEn: kind == 'pet' ? name ?? '' : '',
-      author: author ?? '', license: license ?? '', source: source ?? '');
+    final candidate = kind == 'pet' && localId.startsWith(userPetPrefix) ? localId.substring(userPetPrefix.length) : '';
+    return WorkshopPublicationInput(
+      id: workshopId(candidate) ? candidate : '',
+      titleZh: kind == 'pet' ? name ?? '' : '',
+      titleEn: kind == 'pet' ? name ?? '' : '',
+      author: author ?? '',
+      license: license ?? '',
+      source: source ?? '',
+    );
   }
 }
 
 class WorkshopPublishSources {
-  WorkshopPublishSources({List<WorkshopPublishSource> values = const [],
-    Map<String, WorkshopException> issues = const {}, this.loading = false, this.generation = 0})
-    : values = List.unmodifiable(values), issues = Map.unmodifiable(issues);
+  WorkshopPublishSources({
+    List<WorkshopPublishSource> values = const [],
+    Map<String, WorkshopException> issues = const {},
+    this.loading = false,
+    this.generation = 0,
+  }) : values = List.unmodifiable(values),
+       issues = Map.unmodifiable(issues);
   final List<WorkshopPublishSource> values;
   final Map<String, WorkshopException> issues;
   final bool loading;
@@ -60,8 +85,16 @@ final workshopSourcesLoaderProvider = Provider<Future<WorkshopPublishSources> Fu
     final values = <WorkshopPublishSource>[], issues = <String, WorkshopException>{};
     try {
       for (final pet in await pets.list()) {
-        values.add(WorkshopPublishSource(kind: 'pet', localId: pet.id, name: pet.name,
-          author: pet.author, license: pet.license, source: pet.source));
+        values.add(
+          WorkshopPublishSource(
+            kind: 'pet',
+            localId: pet.id,
+            name: pet.name,
+            author: pet.author,
+            license: pet.license,
+            source: pet.source,
+          ),
+        );
       }
     } on Object catch (error) {
       issues['pet'] = workshopLocalError(error);
@@ -70,8 +103,15 @@ final workshopSourcesLoaderProvider = Provider<Future<WorkshopPublishSources> Fu
       final store = await companion();
       if (await store.installed()) {
         final character = await store.character();
-        values.add(WorkshopPublishSource(kind: 'companion', localId: 'companion',
-          author: character.author, license: character.license, source: character.source));
+        values.add(
+          WorkshopPublishSource(
+            kind: 'companion',
+            localId: 'companion',
+            author: character.author,
+            license: character.license,
+            source: character.source,
+          ),
+        );
       } else {
         issues['companion'] = const WorkshopException('workshop_companion_unavailable');
       }
@@ -97,13 +137,16 @@ class WorkshopPublishSourcesController extends Notifier<WorkshopPublishSources> 
 
   Future<void> refresh() async {
     final current = state;
-    state = WorkshopPublishSources(values: current.values, issues: current.issues,
-      loading: true, generation: current.generation);
+    state = WorkshopPublishSources(
+      values: current.values,
+      issues: current.issues,
+      loading: true,
+      generation: current.generation,
+    );
     await _read(current.generation, ++_request, _loader);
   }
 
-  bool _current(int generation, int request) => ref.mounted &&
-      state.generation == generation && _request == request;
+  bool _current(int generation, int request) => ref.mounted && state.generation == generation && _request == request;
 
   Future<void> _read(int generation, int request, Future<WorkshopPublishSources> Function() loader) async {
     try {
@@ -113,8 +156,11 @@ class WorkshopPublishSourcesController extends Notifier<WorkshopPublishSources> 
       }
     } on Object catch (error) {
       if (_current(generation, request)) {
-        state = WorkshopPublishSources(values: state.values,
-          issues: {'all': workshopLocalError(error)}, generation: generation);
+        state = WorkshopPublishSources(
+          values: state.values,
+          issues: {'all': workshopLocalError(error)},
+          generation: generation,
+        );
       }
     }
   }
@@ -142,6 +188,7 @@ class WorkshopPreparedDraft {
     // finally must clear the assigned Future so a later retry can run.
     return _disposal = Future<void>.microtask(_clean);
   }
+
   Future<void> _clean() async {
     try {
       await cleanup();
@@ -170,16 +217,34 @@ final workshopFileStagerProvider = Provider<WorkshopFileStager>((ref) {
         if (await runtime.exists()) await _copyTree(runtime, Directory('${store.pack.path}/runtime'));
         await store.install(zip.path);
         final character = await store.character();
-        return WorkshopPublishSource(kind: 'companion', localId: 'file', name: character.name,
-          author: character.author, license: character.license, source: character.source, store: store);
+        return WorkshopPublishSource(
+          kind: 'companion',
+          localId: 'file',
+          name: character.name,
+          author: character.author,
+          license: character.license,
+          source: character.source,
+          store: store,
+        );
       }
       final library = PetLibrary(() async => Directory('${root.path}/pets'));
       final installed = await library.install(zip);
       final pack = await library.load(installed.id);
-      return WorkshopPublishSource(kind: 'pet', localId: installed.id, name: pack.name,
-        author: pack.author, license: pack.license, source: pack.source, library: library);
+      return WorkshopPublishSource(
+        kind: 'pet',
+        localId: installed.id,
+        name: pack.name,
+        author: pack.author,
+        license: pack.license,
+        source: pack.source,
+        library: library,
+      );
     } on Object {
-      try { await root.delete(recursive: true); } on Object { /* The temporary folder goes with the cache. */ }
+      try {
+        await root.delete(recursive: true);
+      } on Object {
+        /* The temporary folder goes with the cache. */
+      }
       rethrow;
     }
   };
@@ -209,7 +274,9 @@ Future<void> _copyTree(Directory from, Directory to) async {
 }
 
 typedef WorkshopPrepareDraft = Future<WorkshopPreparedDraft> Function(
-  WorkshopPublishSource source, WorkshopPublication publication);
+  WorkshopPublishSource source,
+  WorkshopPublication publication,
+);
 typedef WorkshopRestoreDraft = Future<WorkshopPreparedDraft> Function(WorkshopPendingSubmission pending);
 
 final workshopPrepareDraftProvider = Provider<WorkshopPrepareDraft>((ref) {
@@ -238,17 +305,30 @@ final workshopPrepareDraftProvider = Provider<WorkshopPrepareDraft>((ref) {
         upload = await repo.preparePet(source.library ?? pets, source.localId, file, publication);
       } else if (source.kind == 'companion' && (source.localId == 'companion' || source.store != null)) {
         // No personal name, persona, runtime, or private preference is passed.
-        upload = await repo.prepareCompanion(source.store ?? await companion(), file, publication, preview: source.preview);
+        upload = await repo.prepareCompanion(
+          source.store ?? await companion(),
+          file,
+          publication,
+          preview: source.preview,
+        );
       } else {
         throw const WorkshopException('workshop_unsupported_kind');
       }
-      return WorkshopPreparedDraft(upload: upload,
+      return WorkshopPreparedDraft(
+        upload: upload,
         directoryName: draft.uri.pathSegments.where((part) => part.isNotEmpty).last,
-        cleanup: () async { if (await draft.exists()) await draft.delete(recursive: true); });
+        cleanup: () async {
+          if (await draft.exists()) await draft.delete(recursive: true);
+        },
+      );
     } on Object catch (error) {
       final failed = owned;
       if (failed != null) {
-        try { if (await failed.exists()) await failed.delete(recursive: true); } on Object { /* Keep the preparation error. */ }
+        try {
+          if (await failed.exists()) await failed.delete(recursive: true);
+        } on Object {
+          /* Keep the preparation error. */
+        }
       }
       throw workshopLocalError(error);
     }
@@ -263,10 +343,15 @@ final workshopRestoreDraftProvider = Provider<WorkshopRestoreDraft>((ref) {
     final root = await directory();
     final draft = Directory('${root.path}/exports/${checked.directoryName}');
     return WorkshopPreparedDraft(
-      upload: WorkshopPreparedUpload(file: File('${draft.path}/archive.zip'),
-        metadata: checked.metadata, files: checked.files),
+      upload: WorkshopPreparedUpload(
+        file: File('${draft.path}/archive.zip'),
+        metadata: checked.metadata,
+        files: checked.files,
+      ),
       directoryName: checked.directoryName,
-      cleanup: () async { if (await draft.exists()) await draft.delete(recursive: true); },
+      cleanup: () async {
+        if (await draft.exists()) await draft.delete(recursive: true);
+      },
     )..retained = true;
   };
 });

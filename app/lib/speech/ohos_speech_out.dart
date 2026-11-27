@@ -41,9 +41,12 @@ class _OhosDeepSeekOut implements SpeechOut {
     this.levels = false,
     DeepSeekSpeechFailure Function()? gap,
   }) : _gap = gap ?? DeepSeekOut._noCredential {
-    _sub = _audio.events.listen(_heard, onDone: () {
-      if (!_ended) _finish(const SpeechOutFailed('audio channel closed'), stopNative: true);
-    });
+    _sub = _audio.events.listen(
+      _heard,
+      onDone: () {
+        if (!_ended) _finish(const SpeechOutFailed('audio channel closed'), stopNative: true);
+      },
+    );
   }
 
   final DeepSeekSpeechResolver _resolve;
@@ -213,11 +216,16 @@ class _OhosDeepSeekOut implements SpeechOut {
     unawaited(_speech?.then<void>((speech) => speech?.close(), onError: (Object _, StackTrace _) {}));
     unawaited(_reader?.cancel().then<void>((_) {}, onError: (Object _, StackTrace _) {}));
     final retirement = _ohosSpeechLane.release(this, stopNative: stopNative);
-    unawaited(retirement.then<void>((_) {
-      _publish(terminal);
-    }, onError: (Object _, StackTrace _) {
-      _publish(const SpeechOutFailed(DeepSeekSpeechError(DeepSeekSpeechFailure.protocol, 'audio stop failed')));
-    }));
+    unawaited(
+      retirement.then<void>(
+        (_) {
+          _publish(terminal);
+        },
+        onError: (Object _, StackTrace _) {
+          _publish(const SpeechOutFailed(DeepSeekSpeechError(DeepSeekSpeechFailure.protocol, 'audio stop failed')));
+        },
+      ),
+    );
   }
 
   void _publish(SpeechOutEvent terminal) {

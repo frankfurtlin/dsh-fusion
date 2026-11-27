@@ -131,8 +131,7 @@ class SessionRowSnapshot {
     _loaded.clear();
   }
 
-  Future<File> _file(Directory directory, String key) async =>
-      File('${directory.path}/session_list/$key.json');
+  Future<File> _file(Directory directory, String key) async => File('${directory.path}/session_list/$key.json');
 
   Future<List<SessionSummary>> _read(String key) async {
     try {
@@ -148,9 +147,9 @@ class SessionRowSnapshot {
       if (savedAt != null) _savedAt[key] = savedAt.toLocal();
       final total = decoded['total'];
       if (total is int) _savedTotal[key] = total;
-      return [
-        for (final raw in rows.take(_maxRows)) _fromJson(raw),
-      ].whereType<SessionSummary>().toList(growable: false);
+      return [for (final raw in rows.take(_maxRows)) _fromJson(raw)]
+          .whereType<SessionSummary>()
+          .toList(growable: false);
     } catch (_) {
       return const [];
     }

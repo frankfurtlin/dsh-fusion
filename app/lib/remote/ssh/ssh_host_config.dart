@@ -172,9 +172,21 @@ class SshHostConfig {
       other.hostKeyFingerprint == hostKeyFingerprint;
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, host, port, user, auth, launchCommand, dshMode, remotePort, compression,
-          workingDirectory, hostKeyType, hostKeyFingerprint);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    host,
+    port,
+    user,
+    auth,
+    launchCommand,
+    dshMode,
+    remotePort,
+    compression,
+    workingDirectory,
+    hostKeyType,
+    hostKeyFingerprint,
+  );
 }
 
 /// The secret material for one SSH host, loaded from the [SecretStore].

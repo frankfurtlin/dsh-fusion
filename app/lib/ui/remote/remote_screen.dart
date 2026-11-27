@@ -35,7 +35,6 @@ import 'remote_web/remote_web_entry.dart';
 class RemoteScreen extends ConsumerWidget {
   const RemoteScreen({super.key});
 
-
   Future<void> _use(BuildContext context, WidgetRef ref, HostRef host) async {
     final navigator = Navigator.of(context);
     if (ref.read(activeHostProvider) == host) {
@@ -303,14 +302,13 @@ class _HostState extends StatelessWidget {
 
 /// A trailing 20dp icon button whose glyph ends at the row's 16dp edge.
 class _EdgeIconButton extends StatelessWidget {
-  const _EdgeIconButton({required this.icon, required this.tooltip, required this.onPressed, });
+  const _EdgeIconButton({required this.icon, required this.tooltip, required this.onPressed});
 
   final Widget icon;
   final String tooltip;
   final VoidCallback? onPressed;
 
   /// False when another trailing button follows it.
-
 
   @override
   Widget build(BuildContext context) {
@@ -393,5 +391,3 @@ class _SshRow extends ConsumerWidget {
     );
   }
 }
-
-

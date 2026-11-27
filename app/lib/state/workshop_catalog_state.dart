@@ -12,10 +12,19 @@ enum WorkshopKindFilter { all, pet, companion }
 const _unchanged = Object();
 
 class WorkshopCatalogState {
-  WorkshopCatalogState({this.origin, this.snapshot, List<WorkshopItemState> items = const [],
-    this.loading = false, this.refreshing = false, this.localStateKnown = false,
-    this.refreshError, this.localError, this.cacheIssue,
-    this.kind = WorkshopKindFilter.all, this.query = ''}) : items = List.unmodifiable(items);
+  WorkshopCatalogState({
+    this.origin,
+    this.snapshot,
+    List<WorkshopItemState> items = const [],
+    this.loading = false,
+    this.refreshing = false,
+    this.localStateKnown = false,
+    this.refreshError,
+    this.localError,
+    this.cacheIssue,
+    this.kind = WorkshopKindFilter.all,
+    this.query = '',
+  }) : items = List.unmodifiable(items);
 
   final Uri? origin;
   final WorkshopCatalogSnapshot? snapshot;
@@ -27,26 +36,42 @@ class WorkshopCatalogState {
 
   List<WorkshopItemState> get visibleItems {
     final search = query.trim().toLowerCase();
-    return List.unmodifiable(items.where((item) {
-      final metadata = item.entry.metadata;
-      if (kind != WorkshopKindFilter.all && metadata.kind != kind.name) return false;
-      return search.isEmpty || metadata.author.toLowerCase().contains(search) ||
-        metadata.title.values.any((title) => title.toLowerCase().contains(search));
-    }));
+    return List.unmodifiable(
+      items.where((item) {
+        final metadata = item.entry.metadata;
+        if (kind != WorkshopKindFilter.all && metadata.kind != kind.name) return false;
+        return search.isEmpty ||
+            metadata.author.toLowerCase().contains(search) ||
+            metadata.title.values.any((title) => title.toLowerCase().contains(search));
+      }),
+    );
   }
 
-  WorkshopCatalogState copyWith({Uri? origin, WorkshopCatalogSnapshot? snapshot,
-    List<WorkshopItemState>? items, bool? loading, bool? refreshing, bool? localStateKnown,
-    Object? refreshError = _unchanged, Object? localError = _unchanged,
-    Object? cacheIssue = _unchanged, WorkshopKindFilter? kind, String? query}) => WorkshopCatalogState(
-      origin: origin ?? this.origin, snapshot: snapshot ?? this.snapshot, items: items ?? this.items,
-      loading: loading ?? this.loading, refreshing: refreshing ?? this.refreshing,
-      localStateKnown: localStateKnown ?? this.localStateKnown,
-      refreshError: identical(refreshError, _unchanged) ? this.refreshError : refreshError as String?,
-      localError: identical(localError, _unchanged) ? this.localError : localError as String?,
-      cacheIssue: identical(cacheIssue, _unchanged) ? this.cacheIssue : cacheIssue as String?,
-      kind: kind ?? this.kind, query: query ?? this.query,
-    );
+  WorkshopCatalogState copyWith({
+    Uri? origin,
+    WorkshopCatalogSnapshot? snapshot,
+    List<WorkshopItemState>? items,
+    bool? loading,
+    bool? refreshing,
+    bool? localStateKnown,
+    Object? refreshError = _unchanged,
+    Object? localError = _unchanged,
+    Object? cacheIssue = _unchanged,
+    WorkshopKindFilter? kind,
+    String? query,
+  }) => WorkshopCatalogState(
+    origin: origin ?? this.origin,
+    snapshot: snapshot ?? this.snapshot,
+    items: items ?? this.items,
+    loading: loading ?? this.loading,
+    refreshing: refreshing ?? this.refreshing,
+    localStateKnown: localStateKnown ?? this.localStateKnown,
+    refreshError: identical(refreshError, _unchanged) ? this.refreshError : refreshError as String?,
+    localError: identical(localError, _unchanged) ? this.localError : localError as String?,
+    cacheIssue: identical(cacheIssue, _unchanged) ? this.cacheIssue : cacheIssue as String?,
+    kind: kind ?? this.kind,
+    query: query ?? this.query,
+  );
 }
 
 final workshopCatalogProvider = NotifierProvider<WorkshopCatalogController, WorkshopCatalogState>(
@@ -56,8 +81,7 @@ final workshopCatalogProvider = NotifierProvider<WorkshopCatalogController, Work
 /// Details and the filtered browser share the repository's one item projection.
 /// Read [workshopCatalogProvider] as well to distinguish unknown local state.
 final workshopItemProvider = Provider.family<WorkshopItemState?, String>((ref, identity) {
-  return ref.watch(workshopCatalogProvider).items
-    .where((item) => item.entry.metadata.identity == identity).firstOrNull;
+  return ref.watch(workshopCatalogProvider).items.where((item) => item.entry.metadata.identity == identity).firstOrNull;
 });
 
 class WorkshopCatalogController extends Notifier<WorkshopCatalogState> {
@@ -88,9 +112,11 @@ class WorkshopCatalogController extends Notifier<WorkshopCatalogState> {
     _localRefresh = null;
     _ready = Future<void>.microtask(() => _load(generation, cachedFirst: true));
     _refreshing = _ready;
-    unawaited(_ready.whenComplete(() {
-      if (_current(generation)) _refreshing = null;
-    }));
+    unawaited(
+      _ready.whenComplete(() {
+        if (_current(generation)) _refreshing = null;
+      }),
+    );
     return WorkshopCatalogState(loading: true, refreshing: true);
   }
 
@@ -151,15 +177,29 @@ class WorkshopCatalogController extends Notifier<WorkshopCatalogState> {
     }
   }
 
-  Future<void> _accept(int generation, Uri origin, WorkshopCatalogSnapshot snapshot,
-    Future<WorkshopRepository> repositoryFuture, String appVersion) async {
+  Future<void> _accept(
+    int generation,
+    Uri origin,
+    WorkshopCatalogSnapshot snapshot,
+    Future<WorkshopRepository> repositoryFuture,
+    String appVersion,
+  ) async {
     // A receipt read can be queued behind a current installer. Publish the
     // catalog immediately and label its local status unknown until projected.
-    final publicItems = [for (final entry in snapshot.catalog.entries)
-      WorkshopItemState(entry: entry, unavailable: snapshot.catalog.unavailable(entry, appVersion))];
-    state = state.copyWith(origin: origin, snapshot: snapshot, items: publicItems, loading: false,
-      localStateKnown: false, localError: null,
-      refreshError: snapshot.refreshError?.code, cacheIssue: snapshot.cacheIssue);
+    final publicItems = [
+      for (final entry in snapshot.catalog.entries)
+        WorkshopItemState(entry: entry, unavailable: snapshot.catalog.unavailable(entry, appVersion)),
+    ];
+    state = state.copyWith(
+      origin: origin,
+      snapshot: snapshot,
+      items: publicItems,
+      loading: false,
+      localStateKnown: false,
+      localError: null,
+      refreshError: snapshot.refreshError?.code,
+      cacheIssue: snapshot.cacheIssue,
+    );
     List<WorkshopItemState> items;
     String? localError;
     try {
@@ -174,9 +214,16 @@ class WorkshopCatalogController extends Notifier<WorkshopCatalogState> {
       items = publicItems;
     }
     if (!_current(generation)) return;
-    state = state.copyWith(origin: origin, snapshot: snapshot, items: items, loading: false,
-      localStateKnown: localError == null, localError: localError,
-      refreshError: snapshot.refreshError?.code, cacheIssue: snapshot.cacheIssue);
+    state = state.copyWith(
+      origin: origin,
+      snapshot: snapshot,
+      items: items,
+      loading: false,
+      localStateKnown: localError == null,
+      localError: localError,
+      refreshError: snapshot.refreshError?.code,
+      cacheIssue: snapshot.cacheIssue,
+    );
   }
 
   /// Re-read receipts after a mutation without starting another HTTP refresh.

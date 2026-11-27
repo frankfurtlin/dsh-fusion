@@ -263,15 +263,16 @@ class SshHostLink implements HostLink {
         // Attach-only never executes a remote command or touches managed state.
         endpoint = RemoteDshEndpoint(port: _config.remotePort, token: token, reused: true);
       } else {
-        endpoint = await RemoteDshBootstrap(
-          transport,
-          launchCommand: _config.launchCommand,
-          workingDirectory: _config.workingDirectory,
-          environment: remoteEnvironment,
-        ).ensureRunning(
-          forceRestart: restart,
-          onDetail: (d) => at(HostLinkStep.startDsh, detail: d),
-        );
+        endpoint =
+            await RemoteDshBootstrap(
+              transport,
+              launchCommand: _config.launchCommand,
+              workingDirectory: _config.workingDirectory,
+              environment: remoteEnvironment,
+            ).ensureRunning(
+              forceRestart: restart,
+              onDetail: (d) => at(HostLinkStep.startDsh, detail: d),
+            );
       }
       PerfTrace.end('ssh_dsh', {'attachOnly': _config.dshMode == SshDshMode.attachOnly, 'reused': endpoint.reused});
       _checkOpen();
@@ -324,7 +325,9 @@ class SshHostLink implements HostLink {
           completed: HostLinkStep.values.toSet(),
           detail: _config.dshMode == SshDshMode.attachOnly
               ? appL10n.remoteDshAttached
-              : endpoint.reused ? appL10n.remoteDshReused : appL10n.remoteDshStarted,
+              : endpoint.reused
+              ? appL10n.remoteDshReused
+              : appL10n.remoteDshStarted,
         ),
       );
       _startKeepAlive();
@@ -363,7 +366,9 @@ class SshHostLink implements HostLink {
       );
     } on DshException catch (e) {
       throw HostLinkError(
-        HostLinkErrorKind.tunnelFailed, appL10n.remoteErrDshTunnel, detail: '$e',
+        HostLinkErrorKind.tunnelFailed,
+        appL10n.remoteErrDshTunnel,
+        detail: '$e',
         retryable: _config.dshMode == SshDshMode.managed,
       );
     }

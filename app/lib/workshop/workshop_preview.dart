@@ -10,11 +10,9 @@ import 'workshop_models.dart';
 /// Explicit local input, with no path or credential in page state. The PNG
 /// snapshot is private; later changes to the caller's byte array cannot alter it.
 final class WorkshopPreviewInput {
-  const WorkshopPreviewInput.petIdle()
-      : source = 'pet-idle', _png = null, width = null, height = null;
+  const WorkshopPreviewInput.petIdle() : source = 'pet-idle', _png = null, width = null, height = null;
 
-  WorkshopPreviewInput._companion(this._png, this.width, this.height)
-      : source = 'companion-preview';
+  WorkshopPreviewInput._companion(this._png, this.width, this.height) : source = 'companion-preview';
 
   factory WorkshopPreviewInput.companionPng(Uint8List bytes) {
     if (bytes.isEmpty || bytes.length > workshopPreviewBytes) {
@@ -26,7 +24,10 @@ final class WorkshopPreviewInput {
       workshopInvalid('workshop_preview_png');
     }
     final (width, height) = size;
-    if (width < 1 || height < 1 || width > workshopPreviewSide || height > workshopPreviewSide ||
+    if (width < 1 ||
+        height < 1 ||
+        width > workshopPreviewSide ||
+        height > workshopPreviewSide ||
         width * height > workshopPreviewPixels) {
       workshopInvalid('workshop_preview_dimensions');
     }
@@ -58,7 +59,8 @@ void workshopCheckPetPreview(Archive archive) {
   }
   final pack = PetPack.parse(json);
   final idle = pack.animations[pack.states['idle']!.first]!;
-  if (idle.frameWidth > workshopPreviewSide || idle.frameHeight > workshopPreviewSide ||
+  if (idle.frameWidth > workshopPreviewSide ||
+      idle.frameHeight > workshopPreviewSide ||
       idle.frameWidth * idle.frameHeight > workshopPreviewPixels) {
     workshopInvalid('workshop_preview_dimensions');
   }

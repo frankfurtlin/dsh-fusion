@@ -17,12 +17,7 @@ import 'dart:math' as math;
 
 /// One saved 网页登录 host. Persisted as JSON in SharedPreferences (no secret).
 class WebHostConfig {
-  const WebHostConfig({
-    required this.id,
-    required this.name,
-    required this.baseUrl,
-    required this.username,
-  });
+  const WebHostConfig({required this.id, required this.name, required this.baseUrl, required this.username});
 
   /// Stable id (`web-<hex>`); also the secret-store namespace.
   final String id;
@@ -57,12 +52,7 @@ class WebHostConfig {
     username: username ?? this.username,
   );
 
-  Map<String, Object?> toJson() => {
-    'id': id,
-    'name': name,
-    'baseUrl': baseUrl,
-    'username': username,
-  };
+  Map<String, Object?> toJson() => {'id': id, 'name': name, 'baseUrl': baseUrl, 'username': username};
 
   static WebHostConfig? fromJson(Object? raw) {
     if (raw is! Map) return null;
@@ -73,12 +63,7 @@ class WebHostConfig {
     final normalized = normalizeBaseUrl(baseUrl);
     if (normalized == null) return null;
     final name = raw['name'];
-    return WebHostConfig(
-      id: id,
-      name: name is String ? name : '',
-      baseUrl: normalized,
-      username: username,
-    );
+    return WebHostConfig(id: id, name: name is String ? name : '', baseUrl: normalized, username: username);
   }
 
   static String newId([math.Random? random]) {

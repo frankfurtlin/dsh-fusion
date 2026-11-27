@@ -3,7 +3,6 @@
   "stateStoragePermission": "No storage permission to save to Downloads",
   "stateDiagnosticsStorageFull": "Not enough storage to create the diagnostics bundle",
   "stateDiagnosticsExportFailed": "Couldn’t export diagnostics bundle",
-  "stateBrowserOpenFailed": "Couldn’t open the browser",
   "stateFileOpenFailed": "Can’t open this file",
   "stateLinkOpenFailed": "Can’t open this link",
   "stateAlertPublicDone": "A turn finished",

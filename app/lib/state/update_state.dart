@@ -137,12 +137,15 @@ class AppUpdateState {
   Uri? get noticePage {
     if (!noticeOnly) return null;
     final page = latest?.pageUrl;
-    if (page == null || (page.scheme != 'https' && page.scheme != 'http') ||
-        page.host.isEmpty || page.userInfo.isNotEmpty) {
+    if (page == null ||
+        (page.scheme != 'https' && page.scheme != 'http') ||
+        page.host.isEmpty ||
+        page.userInfo.isNotEmpty) {
       return null;
     }
     return page;
   }
+
   final bool autoCheck;
 
   /// Installed version (native versionName + versionCode).
@@ -184,6 +187,7 @@ class AppUpdateState {
 
   bool get hasSelfUpdateResult => selfUpdate.state != SelfUpdatePendingState.none;
   bool get hasUpdate => latest != null;
+
   /// The same release from another source counts: the API's `1.2.0` is the manifest's
   /// `1.2.0+N` ([AppVersion.compareTo] reads builds only when both have one).
   bool get isSkipped => latest != null && AppVersion.tryParse(skippedVersion)?.compareTo(latest!.version) == 0;
@@ -204,8 +208,10 @@ class AppUpdateState {
   double? get progress => total == null || total == 0 ? null : (received / total!).clamp(0.0, 1.0);
 
   bool get busy =>
-      task == UpdateTaskPhase.downloading || task == UpdateTaskPhase.verifying ||
-      task == UpdateTaskPhase.installing || selfUpdate.unresolved;
+      task == UpdateTaskPhase.downloading ||
+      task == UpdateTaskPhase.verifying ||
+      task == UpdateTaskPhase.installing ||
+      selfUpdate.unresolved;
 
   AppUpdateState copyWith({
     bool? loaded,
@@ -475,7 +481,8 @@ class AppUpdateController extends Notifier<AppUpdateState> {
     var granted = false;
     try {
       granted = await _privileged.requestShizukuPermission();
-    } catch (_) {} finally {
+    } catch (_) {
+    } finally {
       if (ref.mounted) state = state.copyWith(loadingInstallStatus: false);
     }
     if (!ref.mounted) return;
@@ -486,8 +493,10 @@ class AppUpdateController extends Notifier<AppUpdateState> {
   /// Only native confirmation can clear an inactive unknown journal. This is
   /// not cancellation of a system install and never starts another attempt.
   Future<void> acknowledgeUnknownSelfUpdate() async {
-    if (_privilegedDispatching || state.loadingInstallStatus ||
-        state.selfUpdate.state != SelfUpdatePendingState.unknown || !state.selfUpdate.canAcknowledge) {
+    if (_privilegedDispatching ||
+        state.loadingInstallStatus ||
+        state.selfUpdate.state != SelfUpdatePendingState.unknown ||
+        !state.selfUpdate.canAcknowledge) {
       return;
     }
     final run = _run;
@@ -499,8 +508,10 @@ class AppUpdateController extends Notifier<AppUpdateState> {
         _run++;
         _reconcileRead++;
         state = state.copyWith(
-          selfUpdate: pending, task: _apk?.isFor(state) == true ? UpdateTaskPhase.ready : UpdateTaskPhase.idle,
-          problem: () => null, privilegedErrorCode: () => null,
+          selfUpdate: pending,
+          task: _apk?.isFor(state) == true ? UpdateTaskPhase.ready : UpdateTaskPhase.idle,
+          problem: () => null,
+          privilegedErrorCode: () => null,
         );
       }
     } catch (_) {
@@ -531,7 +542,9 @@ class AppUpdateController extends Notifier<AppUpdateState> {
         if (!ref.mounted || read != _reconcileRead || run != _run) return;
         final code = app.versionCode;
         final target = pending.versionCode;
-        final verified = code != null && target != null &&
+        final verified =
+            code != null &&
+            target != null &&
             (pending.state == SelfUpdatePendingState.installed ? code == target : code > target);
         if (verified) {
           _run++;
@@ -540,18 +553,24 @@ class AppUpdateController extends Notifier<AppUpdateState> {
           final latest = state.latest;
           final keepOffer = latest != null && latest.version.isNewerThan(current);
           state = state.copyWith(
-            current: current, selfUpdate: pending, task: UpdateTaskPhase.idle,
+            current: current,
+            selfUpdate: pending,
+            task: UpdateTaskPhase.idle,
             latest: () => keepOffer ? latest : null,
             check: keepOffer ? UpdateCheckPhase.available : UpdateCheckPhase.upToDate,
-            problem: () => null, privilegedErrorCode: () => null, apkHere: false,
+            problem: () => null,
+            privilegedErrorCode: () => null,
+            apkHere: false,
           );
           if (!keepOffer) unawaited(_prefs?.remove(_latestKey));
           return;
         }
       } catch (_) {}
       pending = SelfUpdatePending(
-        state: SelfUpdatePendingState.unknown, backend: pending.backend,
-        versionCode: pending.versionCode, errorCode: 'outcomeUnknown',
+        state: SelfUpdatePendingState.unknown,
+        backend: pending.backend,
+        versionCode: pending.versionCode,
+        errorCode: 'outcomeUnknown',
       );
     }
     if (!ref.mounted || read != _reconcileRead || run != _run) return;
@@ -575,7 +594,9 @@ class AppUpdateController extends Notifier<AppUpdateState> {
         // Keep the compiled build on that fallback instead of inventing build 0.
         current = device.build > 0
             ? version.withBuild(device.build)
-            : version.name == current.name ? current : version;
+            : version.name == current.name
+            ? current
+            : version;
       }
     } catch (_) {
       // A device-facts failure does not disable checking the configured feed.
@@ -1056,8 +1077,11 @@ class AppUpdateController extends Notifier<AppUpdateState> {
     // check that was still running all belong to the attempt that replaced it.
     final run = ++_run;
     state = state.copyWith(
-      task: UpdateTaskPhase.installing, problem: () => null, installRoute: route,
-      selfUpdate: const SelfUpdatePending(), privilegedErrorCode: () => null,
+      task: UpdateTaskPhase.installing,
+      problem: () => null,
+      installRoute: route,
+      selfUpdate: const SelfUpdatePending(),
+      privilegedErrorCode: () => null,
     );
     bool owns() => ref.mounted && run == _run;
     // A file that failed its checks is deleted before the failure shows (the
@@ -1113,20 +1137,31 @@ class AppUpdateController extends Notifier<AppUpdateState> {
       if (!bound()) return await conflict();
       if (route != UpdateInstallRoute.system) {
         final versionCode = inspection.versionCode;
-        if (versionCode == null || versionCode <= 0 || (state.current.build != null && versionCode <= state.current.build!)) {
+        if (versionCode == null ||
+            versionCode <= 0 ||
+            (state.current.build != null && versionCode <= state.current.build!)) {
           return await fail(UpdateProblem.downgrade);
         }
         _privilegedDispatching = true;
         final PrivilegedInstallResult result;
         try {
           result = await _privileged.install(
-            path: apk.file.path, sha256: apk.sha256, versionCode: versionCode, backend: route, port: port,
+            path: apk.file.path,
+            sha256: apk.sha256,
+            versionCode: versionCode,
+            backend: route,
+            port: port,
           );
         } catch (_) {
           if (owns()) {
-            state = state.copyWith(selfUpdate: SelfUpdatePending(
-              state: SelfUpdatePendingState.unknown, backend: route, versionCode: versionCode, errorCode: 'outcomeUnknown',
-            ));
+            state = state.copyWith(
+              selfUpdate: SelfUpdatePending(
+                state: SelfUpdatePendingState.unknown,
+                backend: route,
+                versionCode: versionCode,
+                errorCode: 'outcomeUnknown',
+              ),
+            );
           }
           _privilegedDispatching = false;
           if (owns()) await reconcileSelfUpdate();
@@ -1136,11 +1171,17 @@ class AppUpdateController extends Notifier<AppUpdateState> {
         }
         if (!owns()) return;
         state = state.copyWith(privilegedErrorCode: () => result.errorCode);
-        if (result.outcomeUnknown || result.status == PrivilegedInstallOutcome.unknown ||
+        if (result.outcomeUnknown ||
+            result.status == PrivilegedInstallOutcome.unknown ||
             result.status == PrivilegedInstallOutcome.success) {
-          state = state.copyWith(selfUpdate: SelfUpdatePending(
-            state: SelfUpdatePendingState.unknown, backend: route, versionCode: versionCode, errorCode: result.errorCode,
-          ));
+          state = state.copyWith(
+            selfUpdate: SelfUpdatePending(
+              state: SelfUpdatePendingState.unknown,
+              backend: route,
+              versionCode: versionCode,
+              errorCode: result.errorCode,
+            ),
+          );
           await reconcileSelfUpdate();
           return;
         }
@@ -1160,8 +1201,13 @@ class AppUpdateController extends Notifier<AppUpdateState> {
           _ => null,
         };
         if (preflightProblem != null) {
-          return await fail(preflightProblem, discard: preflightProblem == UpdateProblem.checksum ||
-              preflightProblem == UpdateProblem.invalid || preflightProblem == UpdateProblem.notDsh);
+          return await fail(
+            preflightProblem,
+            discard:
+                preflightProblem == UpdateProblem.checksum ||
+                preflightProblem == UpdateProblem.invalid ||
+                preflightProblem == UpdateProblem.notDsh,
+          );
         }
         return await fail(switch (result.status) {
           PrivilegedInstallOutcome.blocked => UpdateProblem.blocked,

@@ -137,7 +137,10 @@ class AccessFeatureRow extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(feature.title(l10n), style: settingsTitleStyle(context)?.copyWith(color: scheme.onSurface)),
+                        Text(
+                          feature.title(l10n),
+                          style: settingsTitleStyle(context)?.copyWith(color: scheme.onSurface),
+                        ),
                         for (final line in under) ...[
                           const SizedBox(height: 1),
                           Text(

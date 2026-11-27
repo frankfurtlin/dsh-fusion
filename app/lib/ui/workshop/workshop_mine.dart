@@ -329,7 +329,9 @@ class _AccountLine extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Flexible(child: Text(l10n.workshopAccountLine(login), style: style, overflow: TextOverflow.ellipsis)),
+          Flexible(
+            child: Text(l10n.workshopAccountLine(login), style: style, overflow: TextOverflow.ellipsis),
+          ),
           TextButton(
             onPressed: () async {
               try {

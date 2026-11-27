@@ -226,7 +226,8 @@ class AdbStatus {
 }
 
 enum PhoneBackgroundViewport {
-  portrait, landscape;
+  portrait,
+  landscape;
 
   /// Native preference capability, not proof that the privileged peer can create landscape.
   static PhoneBackgroundViewport? fromMap(Map<Object?, Object?> m) {
@@ -254,9 +255,15 @@ class BackgroundParallelism {
     final effective = value['effectiveLimit'];
     final held = value['heldSlots'];
     final reason = value['reason'];
-    if (configured is! int || configured < 1 || configured > 3 ||
-        effective is! int || effective < 0 || effective > configured ||
-        held is! int || held < 0 || held > 3) {
+    if (configured is! int ||
+        configured < 1 ||
+        configured > 3 ||
+        effective is! int ||
+        effective < 0 ||
+        effective > configured ||
+        held is! int ||
+        held < 0 ||
+        held > 3) {
       return null;
     }
     if (reason != null &&
@@ -397,7 +404,9 @@ class PhoneTaskStatus {
     retiring: _flag(m['retiring']),
     cleanupFailed: _flag(m['cleanupFailed']),
     settling: _flag(m['settling']),
-    completion: const {'completed', 'other', 'unknown'}.contains(m['completion']) ? m['completion'] as String : 'unknown',
+    completion: const {'completed', 'other', 'unknown'}.contains(m['completion'])
+        ? m['completion'] as String
+        : 'unknown',
     id: _int(m['id']),
     active: _flag(m['active']),
     app: _text(m['app']),
@@ -413,6 +422,7 @@ class PhoneTaskStatus {
   final String? runId;
   final int? generation;
   final String? waitingForScreen;
+
   /// Null only for absent legacy metadata; malformed present values never grant a slot.
   final bool? backgroundSlot;
   final PhoneAppWait? waitingForApp;
@@ -457,7 +467,10 @@ class PhoneTaskStatus {
 }
 
 List<PhoneTaskStatus> _phoneTasks(Map<Object?, Object?> m) => m['taskProtocol'] == 1 && m['tasks'] is List
-    ? [for (final item in m['tasks'] as List) if (item is Map) PhoneTaskStatus.fromMap(item.cast<Object?, Object?>())]
+    ? [
+        for (final item in m['tasks'] as List)
+          if (item is Map) PhoneTaskStatus.fromMap(item.cast<Object?, Object?>()),
+      ]
     : const [];
 
 PhoneTaskStatus _selectedPhoneTask(Map<Object?, Object?> m) {
@@ -550,17 +563,22 @@ class PhoneTaskInterruption {
     final count = raw['count'];
     final token = raw['batchToken'];
     final error = raw['error'];
-    if (state is! String || !const ['loading', 'ready', 'error'].contains(state) ||
-        count is! int || count < 0 || count > 256) {
+    if (state is! String ||
+        !const ['loading', 'ready', 'error'].contains(state) ||
+        count is! int ||
+        count < 0 ||
+        count > 256) {
       return invalid;
     }
     if (state == 'ready') {
       if (error != null || (count == 0 && token != null)) return invalid;
-      if (count > 0 && (token is! String ||
-          !RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$').hasMatch(token))) {
+      if (count > 0 &&
+          (token is! String ||
+              !RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$').hasMatch(token))) {
         return invalid;
       }
-    } else if (token != null || (state == 'loading' && (error != null || count != 0)) ||
+    } else if (token != null ||
+        (state == 'loading' && (error != null || count != 0)) ||
         (state == 'error' && error != 'loadFailed' && error != 'writeFailed')) {
       return invalid;
     }
@@ -630,8 +648,7 @@ class PhoneStatus {
       taskInterruption = const PhoneTaskInterruption();
 
   factory PhoneStatus.fromMap(Map<Object?, Object?> m) => PhoneStatus(
-    statusRevision: m['statusRevision'] is int && (m['statusRevision'] as int) > 0
-        ? m['statusRevision'] as int : null,
+    statusRevision: m['statusRevision'] is int && (m['statusRevision'] as int) > 0 ? m['statusRevision'] as int : null,
     statusRevisionPresent: m.containsKey('statusRevision'),
     enabled: _flag(m['enabled']),
     bridgeListening: _flag(m['bridgeListening']),
@@ -1239,8 +1256,12 @@ class PhonePreviewFrame {
     final generation = raw['generation'];
     final sequence = raw['sequence'];
     final state = raw['state'];
-    if (taskId is! int || taskId <= 0 || generation is! int || generation < 0 ||
-        sequence is! int || sequence < 0 ||
+    if (taskId is! int ||
+        taskId <= 0 ||
+        generation is! int ||
+        generation < 0 ||
+        sequence is! int ||
+        sequence < 0 ||
         !const {'off', 'waiting', 'frame', 'unavailable', 'protected', 'inUse'}.contains(state)) {
       return null;
     }
@@ -1250,12 +1271,26 @@ class PhonePreviewFrame {
     final bytes = raw['imageBytes'];
     final width = raw['width'];
     final height = raw['height'];
-    if (bytes is! Uint8List || bytes.isEmpty || bytes.lengthInBytes > 128 * 1024 ||
-        width is! int || width < 1 || width > 800 || height is! int || height < 1 || height > 800) {
+    if (bytes is! Uint8List ||
+        bytes.isEmpty ||
+        bytes.lengthInBytes > 128 * 1024 ||
+        width is! int ||
+        width < 1 ||
+        width > 800 ||
+        height is! int ||
+        height < 1 ||
+        height > 800) {
       return null;
     }
-    return PhonePreviewFrame(taskId: taskId, generation: generation, sequence: sequence,
-        state: 'frame', width: width, height: height, imageBytes: bytes);
+    return PhonePreviewFrame(
+      taskId: taskId,
+      generation: generation,
+      sequence: sequence,
+      state: 'frame',
+      width: width,
+      height: height,
+      imageBytes: bytes,
+    );
   }
 
   final int taskId;
@@ -1304,8 +1339,7 @@ class PhoneChannel {
   Future<PhoneResult> setBackgroundViewport(PhoneBackgroundViewport preset) =>
       _result('setBackgroundViewport', {'preset': preset.name});
 
-  Future<PhoneResult> setBackgroundParallelLimit(int limit) =>
-      _result('setBackgroundParallelLimit', {'limit': limit});
+  Future<PhoneResult> setBackgroundParallelLimit(int limit) => _result('setBackgroundParallelLimit', {'limit': limit});
 
   Future<bool> setBackgroundPreview(bool enabled) => _bool('setBackgroundPreview', {'enabled': enabled});
 
@@ -1357,33 +1391,46 @@ class PhoneChannel {
 
   Future<bool> setSkillSavePrompt(bool enabled) => _bool('setSkillSavePrompt', {'enabled': enabled});
 
-  Future<PhoneSkillReply> openSkillDraft(PhoneSkillCandidate candidate, {required bool confirmed}) =>
-      _skillReply('skillDraft', {'action': 'open', 'taskId': candidate.taskId,
-        'generation': candidate.generation, 'confirmed': confirmed});
+  Future<PhoneSkillReply> openSkillDraft(PhoneSkillCandidate candidate, {required bool confirmed}) => _skillReply(
+    'skillDraft',
+    {'action': 'open', 'taskId': candidate.taskId, 'generation': candidate.generation, 'confirmed': confirmed},
+  );
 
-  Future<PhoneSkillReply> editSkillDraft(PhoneSkillDraftView draft, {required String goal,
-    required String prerequisites, required List<String> checkpoints, required List<int> stepOrder}) =>
-      _skillReply('skillDraft', {'action': 'edit', 'taskId': draft.taskId, 'draftId': draft.draftId,
-        'revision': draft.revision, 'goal': goal, 'prerequisites': prerequisites,
-        'checkpoints': checkpoints, 'stepOrder': stepOrder});
+  Future<PhoneSkillReply> editSkillDraft(
+    PhoneSkillDraftView draft, {
+    required String goal,
+    required String prerequisites,
+    required List<String> checkpoints,
+    required List<int> stepOrder,
+  }) => _skillReply('skillDraft', {
+    'action': 'edit',
+    'taskId': draft.taskId,
+    'draftId': draft.draftId,
+    'revision': draft.revision,
+    'goal': goal,
+    'prerequisites': prerequisites,
+    'checkpoints': checkpoints,
+    'stepOrder': stepOrder,
+  });
 
-  Future<PhoneSkillReply> checkSkillSave(PhoneSkillSaveHandle handle) =>
-      _skillReply('skillDraft', handle.query);
+  Future<PhoneSkillReply> checkSkillSave(PhoneSkillSaveHandle handle) => _skillReply('skillDraft', handle.query);
 
-  Future<PhoneSkillReply> viewSkillDraft(PhoneSkillDraftView draft) => _skillReply('skillDraft',
-      {'action': 'view', 'taskId': draft.taskId, 'draftId': draft.draftId});
+  Future<PhoneSkillReply> viewSkillDraft(PhoneSkillDraftView draft) =>
+      _skillReply('skillDraft', {'action': 'view', 'taskId': draft.taskId, 'draftId': draft.draftId});
 
-  Future<PhoneSkillReply> saveSkillDraft(PhoneSkillDraftView draft, {required bool confirmed}) =>
-      _skillReply('saveSkillDraft', {'taskId': draft.taskId, 'draftId': draft.draftId,
-        'revision': draft.revision, 'confirmed': confirmed});
+  Future<PhoneSkillReply> saveSkillDraft(PhoneSkillDraftView draft, {required bool confirmed}) => _skillReply(
+    'saveSkillDraft',
+    {'taskId': draft.taskId, 'draftId': draft.draftId, 'revision': draft.revision, 'confirmed': confirmed},
+  );
 
   Future<PhoneSkillReply> discardSkillDraft(PhoneSkillDraftView draft) =>
       _skillReply('discardSkillDraft', {'taskId': draft.taskId, 'draftId': draft.draftId});
 
   Future<PhoneSkillReplayInspection> inspectSkillReplay(String skillId) async {
     try {
-      return PhoneSkillReplayInspection.parse(await _methods.invokeMapMethod<Object?, Object?>(
-        'inspectSkillReplay', {'skillId': skillId}));
+      return PhoneSkillReplayInspection.parse(
+        await _methods.invokeMapMethod<Object?, Object?>('inspectSkillReplay', {'skillId': skillId}),
+      );
     } on MissingPluginException {
       return const PhoneSkillReplayInspection.unavailable();
     } on PlatformException {
@@ -1391,12 +1438,26 @@ class PhoneChannel {
     }
   }
 
-  Future<PhoneSkillReplayReady?> prepareSkillReplay({required String skillId, required String revision,
-    required String sessionId, required PhoneSkillReplayApp app}) async {
+  Future<PhoneSkillReplayReady?> prepareSkillReplay({
+    required String skillId,
+    required String revision,
+    required String sessionId,
+    required PhoneSkillReplayApp app,
+  }) async {
     try {
-      return PhoneSkillReplayReady.parse(await _methods.invokeMapMethod<Object?, Object?>(
-        'prepareSkillReplay', {'skillId': skillId, 'revision': revision, 'sessionId': sessionId,
-          'parameters': {'appSlots': {'app1': {'packageName': app.packageName, 'uid': app.uid}}, 'values': <String, Object?>{}}}));
+      return PhoneSkillReplayReady.parse(
+        await _methods.invokeMapMethod<Object?, Object?>('prepareSkillReplay', {
+          'skillId': skillId,
+          'revision': revision,
+          'sessionId': sessionId,
+          'parameters': {
+            'appSlots': {
+              'app1': {'packageName': app.packageName, 'uid': app.uid},
+            },
+            'values': <String, Object?>{},
+          },
+        }),
+      );
     } on MissingPluginException {
       return null;
     } on PlatformException {
@@ -1425,7 +1486,6 @@ class PhoneChannel {
       return const PhoneSkillReply.unavailable();
     }
   }
-
 
   Future<bool> openAccessibilitySettings() => _bool('openAccessibilitySettings');
 
@@ -1482,8 +1542,7 @@ class PhoneChannel {
 
   Future<bool> setPolicies(PhonePolicies policies) => _bool('setPolicies', policies.toWire());
 
-  Future<bool> setLocalOcrEnabled(bool enabled) =>
-      _bool('setPolicies', {'localOcrEnabled': enabled});
+  Future<bool> setLocalOcrEnabled(bool enabled) => _bool('setPolicies', {'localOcrEnabled': enabled});
 
   /// Lifts or restores one hard rule, and nothing else (`setPolicies` keeps
   /// what it isn't sent).
@@ -1594,7 +1653,15 @@ class PhoneChannel {
   /// The turn that drove the phone ended: closes the overlay and ends the
   /// task; with [reopen], brings the app forward on [sessionId] (just the app
   /// when null) if it is in the background, and says whether it came up.
-  Future<PhoneFinish> finishTask({required int taskId, String? sessionId, String? host, bool reopen = false, String? runId, int? generation, bool appOnly = false}) async {
+  Future<PhoneFinish> finishTask({
+    required int taskId,
+    String? sessionId,
+    String? host,
+    bool reopen = false,
+    String? runId,
+    int? generation,
+    bool appOnly = false,
+  }) async {
     try {
       final map = await _methods.invokeMapMethod<Object?, Object?>('finishTask', {
         'taskId': taskId,

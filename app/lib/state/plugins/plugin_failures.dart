@@ -78,11 +78,7 @@ PluginFailure _installRefusedFailure() =>
 
 /// Maps a failed (or cancelled) [result] to user copy. [published] is the
 /// version's index publish time, used to explain pnpm's 24-hour cooldown.
-PluginFailure describeOperationFailure(
-  PluginOperationResult result, {
-  DateTime? published,
-  DateTime? now,
-}) {
+PluginFailure describeOperationFailure(PluginOperationResult result, {DateTime? published, DateTime? now}) {
   final run = result.packageResult;
   final detail = [?result.error?.diagnostic, if (run != null && run.output.trim().isNotEmpty) run.output].join('\n\n');
   final d = detail.isEmpty ? null : detail;

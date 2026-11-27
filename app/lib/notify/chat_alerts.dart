@@ -772,7 +772,8 @@ class HostAlertTracker {
             error is DshTransportException ||
             error is DshCarrierLostException ||
             error is DshProtocolException ||
-            error is DshHttpException && (error.statusCode >= 500 || error.statusCode == 408 || error.statusCode == 429) ||
+            error is DshHttpException &&
+                (error.statusCode >= 500 || error.statusCode == 408 || error.statusCode == 429) ||
             error is DshRemoteException && (error.code == 'gateway/internal' || error.details['retryable'] == true);
         if (!current() || !retryable || attempt == 1) return;
         await Future<void>.delayed(const Duration(milliseconds: 250));

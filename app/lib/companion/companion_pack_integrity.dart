@@ -24,7 +24,10 @@ void _complete(bool value, String code) {
 }
 
 Future<Uint8List> _companionBytes(File file, int cap) async {
-  _complete(await FileSystemEntity.type(file.path, followLinks: false) == FileSystemEntityType.file, 'companion_missing_file');
+  _complete(
+    await FileSystemEntity.type(file.path, followLinks: false) == FileSystemEntityType.file,
+    'companion_missing_file',
+  );
   final handle = await file.open();
   try {
     final size = await handle.length();
@@ -47,7 +50,9 @@ Future<Object?> _companionJson(File file) async {
   try {
     var bytes = await _companionBytes(file, companionJsonCap);
     // Some editors save a UTF-8 BOM; the JSON under it is still fine.
-    if (bytes.length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf) bytes = Uint8List.sublistView(bytes, 3);
+    if (bytes.length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf) {
+      bytes = Uint8List.sublistView(bytes, 3);
+    }
     return decodePetJson(bytes, maxBytes: companionJsonCap);
   } on PetValidationException {
     throw const _CompanionIntegrity('companion_bad_json');
@@ -55,7 +60,10 @@ Future<Object?> _companionJson(File file) async {
 }
 
 Future<Map<String, File>> _companionFiles(Directory directory) async {
-  _complete(await FileSystemEntity.type(directory.path, followLinks: false) == FileSystemEntityType.directory, 'companion_missing_file');
+  _complete(
+    await FileSystemEntity.type(directory.path, followLinks: false) == FileSystemEntityType.directory,
+    'companion_missing_file',
+  );
   final files = <String, File>{}, aliases = <String>{};
   var size = 0;
   await for (final entity in directory.list(recursive: true, followLinks: false)) {
@@ -86,7 +94,10 @@ Future<_CompanionInventory> _characterInventory(Directory character) async {
   _complete(rawIndex is List && rawIndex.isNotEmpty && rawIndex.length <= _maxFiles, 'companion_bad_index');
   final index = <String>{};
   for (final name in rawIndex as List) {
-    _complete(name is String && isSafePackPath(name) && files.containsKey(name) && index.add(name), 'companion_bad_index');
+    _complete(
+      name is String && isSafePackPath(name) && files.containsKey(name) && index.add(name),
+      'companion_bad_index',
+    );
   }
   _complete(index.contains('character.json'), 'companion_bad_index');
   final config = await _companionJson(files['character.json']!);
@@ -99,25 +110,39 @@ Future<_CompanionInventory> _characterInventory(Directory character) async {
   _complete(selected == null || selected is String && modelNames.contains(selected), 'companion_missing_model');
 
   String reference(String home, Object? value, Set<String> extensions) {
-    _complete(value is String && isSafePackPath(value) && !RegExp(r'[\u0000:%?#]').hasMatch(value), 'companion_bad_reference');
+    _complete(
+      value is String && isSafePackPath(value) && !RegExp(r'[\u0000:%?#]').hasMatch(value),
+      'companion_bad_reference',
+    );
     final path = '$home$value';
-    _complete(index.contains(path) && files.containsKey(path) && extensions.contains(_extension(path)), 'companion_missing_reference');
+    _complete(
+      index.contains(path) && files.containsKey(path) && extensions.contains(_extension(path)),
+      'companion_missing_reference',
+    );
     refs.add(path);
     return path;
   }
 
   for (final name in modelNames) {
     final model = await _companionJson(files[name]!);
-    _complete(model is Map<String, Object?> && model['Version'] == 3 && model['FileReferences'] is Map<String, Object?>, 'companion_bad_model');
+    _complete(
+      model is Map<String, Object?> && model['Version'] == 3 && model['FileReferences'] is Map<String, Object?>,
+      'companion_bad_model',
+    );
     final json = model as Map<String, Object?>, fileRefs = json['FileReferences'] as Map<String, Object?>;
     final home = name.substring(0, name.lastIndexOf('/') + 1);
     final moc = reference(home, fileRefs['Moc'], {'.moc3'});
     final handle = await files[moc]!.open();
     try {
       final head = await handle.read(5);
-      _complete(head.length == 5 && ascii.decode(head.sublist(0, 4), allowInvalid: true) == 'MOC3', 'companion_bad_moc');
+      _complete(
+        head.length == 5 && ascii.decode(head.sublist(0, 4), allowInvalid: true) == 'MOC3',
+        'companion_bad_moc',
+      );
       _complete(head[4] >= 1 && head[4] <= companionMaxMocVersion, 'companion_moc_version');
-    } finally { await handle.close(); }
+    } finally {
+      await handle.close();
+    }
     final textures = fileRefs['Textures'];
     _complete(textures is List && textures.isNotEmpty && textures.length <= 64, 'companion_missing_texture');
     for (final texture in textures as List) {
@@ -158,8 +183,12 @@ Future<String?> _packUnavailable((String, String) args) async {
     final runtime = Directory('$pack/runtime');
     if (!await runtime.exists()) return 'companion_runtime_missing';
     final files = await _companionFiles(runtime);
-    _complete(files.containsKey('live2dcubismcore.min.js') && files.containsKey('cubism-framework.js') &&
-        files.keys.any((name) => name.startsWith('shaders/')), 'companion_runtime_incomplete');
+    _complete(
+      files.containsKey('live2dcubismcore.min.js') &&
+          files.containsKey('cubism-framework.js') &&
+          files.keys.any((name) => name.startsWith('shaders/')),
+      'companion_runtime_incomplete',
+    );
     final hashes = <String, String>{};
     for (final file in files.entries) {
       hashes['runtime/${file.key}'] = (await sha256.bind(file.value.openRead()).first).toString();

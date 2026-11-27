@@ -191,7 +191,11 @@ class _Placeholder extends StatelessWidget {
               )
             : SizedBox.square(
                 dimension: 22,
-                child: CircularProgressIndicator(strokeWidth: 2, strokeCap: StrokeCap.round, color: colors.textTertiary),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  strokeCap: StrokeCap.round,
+                  color: colors.textTertiary,
+                ),
               ),
       ),
     );
@@ -608,8 +612,7 @@ class _ShareFilePageState extends State<ShareFilePage> {
     final idle = ready && !model.fileTooLarge;
     final progress = model.progress;
     final String? error =
-        model.error ??
-        (model.fileTooLarge ? l10n.viewShareTooLarge(maxConversationFileBytes ~/ (1024 * 1024)) : null);
+        model.error ?? (model.fileTooLarge ? l10n.viewShareTooLarge(maxConversationFileBytes ~/ (1024 * 1024)) : null);
     return SharePageLayout(
       title: l10n.viewShareAsFile,
       top: top,

@@ -199,9 +199,7 @@ class BridgeChannel {
     Future<void> poll() async {
       final config = await this.config();
       if (config == null || controller.isClosed) return;
-      controller.add(
-        BridgeStatus(status: config.status, running: config.running),
-      );
+      controller.add(BridgeStatus(status: config.status, running: config.running));
     }
 
     void startPolling() {
@@ -262,5 +260,9 @@ String? _text(Object? value) => value is String && value.isNotEmpty ? value : nu
 
 bool _flag(Object? value) => value == true;
 
-List<String> _strings(Object? value) =>
-    value is List ? [for (final item in value) if (item is String) item] : const [];
+List<String> _strings(Object? value) => value is List
+    ? [
+        for (final item in value)
+          if (item is String) item,
+      ]
+    : const [];

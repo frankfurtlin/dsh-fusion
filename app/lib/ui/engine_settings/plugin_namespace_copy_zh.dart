@@ -31,40 +31,16 @@ const pluginNamespaceCopyZh = <String, Map<String, FieldCopy>>{
       label: '上下文面板入口',
       choices: {'all': '全部', 'tab': '标签页', 'sidebar': '侧边栏', 'hide': '隐藏'},
     ),
-    'defaultGranularity': FieldCopy(
-      label: '趋势图 · 粒度',
-      choices: {'step': '步骤', 'turn': '轮次'},
-    ),
-    'defaultTrendMode': FieldCopy(
-      label: '趋势图 · 展示方式',
-      choices: {'total': '全量', 'delta': '增量'},
-    ),
-    'defaultDeltaBase': FieldCopy(
-      label: '上下文浏览器 · 对比基线',
-      choices: {'step': '步骤', 'turn': '轮次'},
-    ),
-    'defaultToolSort': FieldCopy(
-      label: '工具定义 · 排序',
-      choices: {'size': '按大小', 'count': '按次数', 'name': '按名称'},
-    ),
+    'defaultGranularity': FieldCopy(label: '趋势图 · 粒度', choices: {'step': '步骤', 'turn': '轮次'}),
+    'defaultTrendMode': FieldCopy(label: '趋势图 · 展示方式', choices: {'total': '全量', 'delta': '增量'}),
+    'defaultDeltaBase': FieldCopy(label: '上下文浏览器 · 对比基线', choices: {'step': '步骤', 'turn': '轮次'}),
+    'defaultToolSort': FieldCopy(label: '工具定义 · 排序', choices: {'size': '按大小', 'count': '按次数', 'name': '按名称'}),
     'defaultFileSort': FieldCopy(
       label: '文件活动 · 排序',
-      choices: {
-        'count': '按次数',
-        'lines': '按行数',
-        'latest': '按最新',
-        'path': '按路径',
-        'name': '按文件名',
-      },
+      choices: {'count': '按次数', 'lines': '按行数', 'latest': '按最新', 'path': '按路径', 'name': '按文件名'},
     ),
-    'insightsEntry': FieldCopy(
-      label: '上下文洞察',
-      choices: {'show': '显示', 'hide': '隐藏'},
-    ),
-    'defaultDurationCurve': FieldCopy(
-      label: '趋势图 · 耗时曲线',
-      choices: {'show': '显示', 'hide': '隐藏'},
-    ),
+    'insightsEntry': FieldCopy(label: '上下文洞察', choices: {'show': '显示', 'hide': '隐藏'}),
+    'defaultDurationCurve': FieldCopy(label: '趋势图 · 耗时曲线', choices: {'show': '显示', 'hide': '隐藏'}),
     'overviewAutoSteps': FieldCopy(
       label: '趋势图 · 自动总览',
       choices: {'100': '100 步', '200': '200 步', '300': '300 步', 'off': '不启用'},
@@ -73,10 +49,7 @@ const pluginNamespaceCopyZh = <String, Map<String, FieldCopy>>{
       label: '上下文洞察 · 默认时间范围',
       choices: {'today': '今天', '7d': '近 7 天', '30d': '近 30 天', 'all': '全部'},
     ),
-    'fleetTab': FieldCopy(
-      label: '编队标签页',
-      choices: {'show': '显示', 'hide': '隐藏'},
-    ),
+    'fleetTab': FieldCopy(label: '编队标签页', choices: {'show': '显示', 'hide': '隐藏'}),
     'promptPrefix': FieldCopy(label: '系统提示词前缀', hint: '拼接在系统提示词之前'),
     'promptSuffix': FieldCopy(label: '系统提示词后缀', hint: '拼接在系统提示词之后'),
   },
@@ -84,10 +57,7 @@ const pluginNamespaceCopyZh = <String, Map<String, FieldCopy>>{
   'imagegen': {
     'enabled': FieldCopy(label: '启用插件', hint: '关闭后生图面板不可用'),
     'announceToAgent': FieldCopy(label: '向 Agent 播报本插件', hint: '将能力写入系统提示词'),
-    'allowAgentImageGeneration': FieldCopy(
-      label: '允许 Agent 调用生图',
-      hint: '侧边栏工作台不受此开关影响',
-    ),
+    'allowAgentImageGeneration': FieldCopy(label: '允许 Agent 调用生图', hint: '侧边栏工作台不受此开关影响'),
     'channels': FieldCopy(label: '提供方渠道', hint: '图像服务与模型配置'),
     'defaultChannelId': FieldCopy(label: '默认渠道 ID'),
     'defaultModel': FieldCopy(label: '默认模型'),
@@ -128,14 +98,8 @@ const pluginNamespaceCopyZh = <String, Map<String, FieldCopy>>{
     'memory.toolResult': FieldCopy(label: '将工具结果存为记忆'),
     'memory.autoRecall': FieldCopy(label: '自动召回记忆'),
     'memory.autoRecallLimit': FieldCopy(label: '自动召回数量上限'),
-    'memory.contextWindow.enabled': FieldCopy(
-      label: '短期会话窗口',
-      hint: '控制窗口记录与上下文注入',
-    ),
-    'memory.contextWindow.turns': FieldCopy(
-      label: '窗口保留记录数',
-      hint: '按记录条数计，不按对话轮数',
-    ),
+    'memory.contextWindow.enabled': FieldCopy(label: '短期会话窗口', hint: '控制窗口记录与上下文注入'),
+    'memory.contextWindow.turns': FieldCopy(label: '窗口保留记录数', hint: '按记录条数计，不按对话轮数'),
     'toolCallTimeoutMs': FieldCopy(label: '工具调用超时'),
   },
   // @nanmicoder/dsh-agent-teams 0.1.27; bundle row: agent-teams.
@@ -207,10 +171,7 @@ const pluginNamespaceCopyZh = <String, Map<String, FieldCopy>>{
     'dataRoot': FieldCopy(label: '识别服务数据目录'),
     'modelDirectory': FieldCopy(label: '模型目录'),
     'vadModelPath': FieldCopy(label: '语音活动检测模型路径'),
-    'precision': FieldCopy(
-      label: '模型精度',
-      choices: {'int8': 'INT8 量化', 'fp32': 'FP32 浮点'},
-    ),
+    'precision': FieldCopy(label: '模型精度', choices: {'int8': 'INT8 量化', 'fp32': 'FP32 浮点'}),
     'threads': FieldCopy(label: '识别线程数'),
     'maxAudioBytes': FieldCopy(label: '录音大小上限（字节）'),
     'inferenceTimeoutMs': FieldCopy(label: '识别超时'),

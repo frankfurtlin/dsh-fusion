@@ -66,7 +66,9 @@ class _SignInSheetState extends ConsumerState<_SignInSheet> {
       children: [
         const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2)),
         const SizedBox(width: 10),
-        Flexible(child: Text(text, style: theme.textTheme.bodySmall?.copyWith(color: colors.textTertiary))),
+        Flexible(
+          child: Text(text, style: theme.textTheme.bodySmall?.copyWith(color: colors.textTertiary)),
+        ),
       ],
     );
 
@@ -84,8 +86,12 @@ class _SignInSheetState extends ConsumerState<_SignInSheet> {
               child: Center(
                 child: Text(
                   code,
-                  style: AppType.mono(size: 28, weight: FontWeight.w600, height: 1.2, color: theme.colorScheme.onSurface)
-                      .copyWith(letterSpacing: 4),
+                  style: AppType.mono(
+                    size: 28,
+                    weight: FontWeight.w600,
+                    height: 1.2,
+                    color: theme.colorScheme.onSurface,
+                  ).copyWith(letterSpacing: 4),
                 ),
               ),
             ),
@@ -143,7 +149,10 @@ class _SignInSheetState extends ConsumerState<_SignInSheet> {
         SheetHeader(l10n.workshopSignInTitle),
         Padding(
           padding: const EdgeInsets.fromLTRB(kSheetGutter, 4, kSheetGutter, 20),
-          child: Text(l10n.workshopSignInLead, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            l10n.workshopSignInLead,
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSheetGutter),

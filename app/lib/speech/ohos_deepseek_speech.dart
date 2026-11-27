@@ -47,10 +47,12 @@ class _OhosBridgeSpeech extends BridgeDeepSeekSpeech {
     if (_closed) return;
     DshHttpStreamResponse? response;
     try {
-      response = await _connection.postJsonStream('$_bridge/tts', {
-        'text': text,
-        'voice': deepSeekVoices.contains(voice) ? voice : deepSeekVoices.first,
-      }, abort: _abort, headerTimeout: const Duration(seconds: 60));
+      response = await _connection.postJsonStream(
+        '$_bridge/tts',
+        {'text': text, 'voice': deepSeekVoices.contains(voice) ? voice : deepSeekVoices.first},
+        abort: _abort,
+        headerTimeout: const Duration(seconds: 60),
+      );
       if (_closed) return;
       if (response.statusCode != 200) {
         final body = await _ohosSpeechErrorBody(response.body);

@@ -134,9 +134,7 @@ class RoomDetailsPage extends ConsumerWidget {
     if (team == null || room == null || mobileUnavailable) {
       return AppPage.list(
         title: l10n.botsGroupChat,
-        children: [
-          DsBotUnavailableMessage(status: status, goneIcon: AppIcons.groupChat, goneTitle: l10n.botsRoomGone),
-        ],
+        children: [DsBotUnavailableMessage(status: status, goneIcon: AppIcons.groupChat, goneTitle: l10n.botsRoomGone)],
       );
     }
     final dsh = DshColors.of(context);

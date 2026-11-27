@@ -143,7 +143,11 @@ class _WorkshopBrowseSliverState extends ConsumerState<WorkshopBrowseSliver> {
             child: Padding(
               padding: const EdgeInsets.only(top: 24),
               child: filtering
-                  ? EmptyView(icon: AppIcons.search, title: l10n.workshopNoMatchTitle, message: l10n.workshopNoMatchMessage)
+                  ? EmptyView(
+                      icon: AppIcons.search,
+                      title: l10n.workshopNoMatchTitle,
+                      message: l10n.workshopNoMatchMessage,
+                    )
                   : EmptyView(
                       icon: AppIcons.workshop,
                       title: l10n.workshopEmptyTitle,

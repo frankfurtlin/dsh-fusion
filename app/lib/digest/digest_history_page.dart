@@ -82,16 +82,16 @@ class _DigestHistoryPageState extends State<DigestHistoryPage> {
               ),
             )
           : _index.isEmpty
-          ? Center(child: EmptyView(title: l10n.digestHistoryEmpty, message: l10n.digestHistoryEmptyDetail))
+          ? Center(
+              child: EmptyView(title: l10n.digestHistoryEmpty, message: l10n.digestHistoryEmptyDetail),
+            )
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView.builder(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 24),
                 itemCount: _index.batches.length,
-                itemBuilder: (context, index) => _BatchTile(
-                  batch: _index.batches[index],
-                  load: () => _items(_index.batches[index].id),
-                ),
+                itemBuilder: (context, index) =>
+                    _BatchTile(batch: _index.batches[index], load: () => _items(_index.batches[index].id)),
               ),
             ),
     );

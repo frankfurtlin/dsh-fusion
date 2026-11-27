@@ -29,12 +29,7 @@ import 'remote_web_error.dart';
 /// independent tunnel origins are NOT full storage isolation. Never clear the
 /// app-wide cookie or local-storage store, which also holds ordinary logins.
 class RemoteWebPage extends ConsumerStatefulWidget {
-  const RemoteWebPage({
-    super.key,
-    required this.carrier,
-    required this.session,
-    this.trustedTunnelDomains = const {},
-  });
+  const RemoteWebPage({super.key, required this.carrier, required this.session, this.trustedTunnelDomains = const {}});
 
   final RemoteTunnelCarrier carrier;
   final RemoteHostSession session;

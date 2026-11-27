@@ -120,9 +120,7 @@ void _environment(StringBuffer b, DiagnosticsSnapshot s) {
       '- API Key：${s.settings.hasApiKey ? '已设置' : '未设置'} · 自定义服务商 ${s.settings.customProviderIds.length}'
       ' · 主题 ${s.settings.themeMode.name} · 对话字号 ${s.settings.chatTextScale}',
     )
-    ..writeln(
-      '- 完成后收起过程 ${s.settings.foldCompletedTurns}',
-    )
+    ..writeln('- 完成后收起过程 ${s.settings.foldCompletedTurns}')
     ..writeln();
 }
 

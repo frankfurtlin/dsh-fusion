@@ -2798,9 +2798,6 @@ class L10nEn extends L10n {
   String get botsDiscard => 'Discard';
 
   @override
-  String get botsProgress => 'Progress';
-
-  @override
   String get botsGlyphRun => 'Run';
 
   @override
@@ -3442,9 +3439,6 @@ class L10nEn extends L10n {
 
   @override
   String get botsEveryone => 'Everyone';
-
-  @override
-  String get botsActivelyRunning => 'Running';
 
   @override
   String get botsListSeparator => ', ';
@@ -8944,9 +8938,6 @@ class L10nEn extends L10n {
       'Saved only on this phone, encrypted by the system keystore. Supports Ed25519, RSA and ECDSA.';
 
   @override
-  String get harmonyUsageNotSent => 'Usage statistics aren\'t sent on HarmonyOS for now';
-
-  @override
   String get harmonyVoiceSystemHint => 'Uses the system\'s speech recognition';
 
   @override
@@ -10010,24 +10001,6 @@ class L10nEn extends L10n {
   String get marketInstallRefused => 'This engine can\'t install market plugins';
 
   @override
-  String get marketSectionOfficial => 'Official';
-
-  @override
-  String get marketSectionAdapted => 'Made for DSH Pocket';
-
-  @override
-  String get marketSectionAll => 'All';
-
-  @override
-  String get marketSectionLoading => 'Loading…';
-
-  @override
-  String get marketSectionFailed => 'The official catalogue didn\'t load';
-
-  @override
-  String get marketSectionEmpty => 'None yet';
-
-  @override
   String get marketTierOfficial => 'Official';
 
   @override
@@ -10154,12 +10127,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get marketSubmit => 'Submit a plugin';
-
-  @override
-  String get marketSubmitHint => 'On GitHub; listed once the automatic checks pass';
-
-  @override
   String marketLinkNotFound(String name) {
     return '$name isn\'t in the plugin market';
   }
@@ -10170,11 +10137,6 @@ class L10nEn extends L10n {
   @override
   String get marketVerificationUnavailableBody =>
       'npm did not return integrity information. Installation has not started. Check your connection and try again.';
-
-  @override
-  String marketCombinedCount(int count) {
-    return '$count plugins';
-  }
 
   @override
   String get mediaGenerateTile => 'Create';
@@ -13216,52 +13178,7 @@ class L10nEn extends L10n {
   String get pluginsSearch => 'Search plugins';
 
   @override
-  String get pluginsMarketLoading => 'Loading plugin directory…';
-
-  @override
-  String get pluginsMarketLoadFailed => 'Couldn’t open the plugin directory';
-
-  @override
   String get pluginsMarketInvalid => 'Invalid directory format';
-
-  @override
-  String get pluginsAll => 'All';
-
-  @override
-  String pluginsMarketCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count plugins', one: '1 plugin');
-    return '$_temp0 · from dshfind';
-  }
-
-  @override
-  String get pluginsHideWeb => 'Hide Web plugins';
-
-  @override
-  String pluginsShowWebCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Show $count Web plugins',
-      one: 'Show 1 Web plugin',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get pluginsNoCategoryPlugins => 'No plugins in this category';
-
-  @override
-  String pluginsNoSearchResults(String query) {
-    return 'No results for “$query”';
-  }
-
-  @override
-  String pluginsFailureDetails(String title) {
-    return '$title · Tap to view';
-  }
-
-  @override
-  String get pluginsFeatured => 'Recommended';
 
   @override
   String pluginsInstalledRemoteRestart(String name, String host) {
@@ -15516,16 +15433,6 @@ class L10nEn extends L10n {
   }
 
   @override
-  String remoteRelayProvider(String project) {
-    return 'Service by $project';
-  }
-
-  @override
-  String remoteRelayProviderServer(String project, String server) {
-    return 'Service by $project · Current server: $server';
-  }
-
-  @override
   String remoteQuotedHostName(String name) {
     return '“$name”';
   }
@@ -15666,20 +15573,6 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwRemoteCompactHistory => 'compact slim lite history tools transfer bandwidth remote';
-
-  @override
-  String get remotePairTitle => 'Pair a computer';
-
-  @override
-  String get remotePairSubtitle =>
-      'No Remote account needed. Your DeepSeek password and sign-in tokens are never sent.';
-
-  @override
-  String get remotePairNeedsDeepSeek => 'Sign in to DeepSeek first';
-
-  @override
-  String get remotePairNeedsDeepSeekBody =>
-      'Pairing needs the DeepSeek account signed in on DSH Pocket. Only its account ID goes along, to label this phone; no password, cookie or token.';
 
   @override
   String get remotePairErrInvalidCode => 'That isn’t a DSH Pocket pairing code';
@@ -17765,9 +17658,6 @@ class L10nEn extends L10n {
   String get stateDiagnosticsExportFailed => 'Couldn’t export diagnostics bundle';
 
   @override
-  String get stateBrowserOpenFailed => 'Couldn’t open the browser';
-
-  @override
   String get stateFileOpenFailed => 'Can’t open this file';
 
   @override
@@ -19411,13 +19301,6 @@ class L10nEn extends L10n {
   String updateDownloadingPercent(int percent) {
     return 'Downloading $percent%';
   }
-
-  @override
-  String get usageStatsSection => 'Improve DSH Pocket';
-
-  @override
-  String get usageStatsFooter =>
-      'This switch controls dsh-go’s own statistics: feature counts (companion room visits and voice calls included), the token counts model replies report, versions, phone maker and model, and system version. It includes no chats, files or accounts, and does not control Google ML Kit SDK statistics.';
 
   @override
   String viewArtifactSaved(String value) {

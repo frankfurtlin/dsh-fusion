@@ -25,10 +25,16 @@ class ComposerInsert {
   const ComposerInsert({required this.token, required this.sessionId, this.skill}) : phoneSkill = null;
 
   /// `/name` for [skill] in [sessionId]'s composer (null: a new conversation).
-  const ComposerInsert.skill(String name, {required this.sessionId}) : token = '/$name', skill = name, phoneSkill = null;
+  const ComposerInsert.skill(String name, {required this.sessionId})
+    : token = '/$name',
+      skill = name,
+      phoneSkill = null;
 
   ComposerInsert.phoneRoute(PreparedPhoneSkill prepared)
-      : token = '', sessionId = prepared.origin.sessionId, skill = null, phoneSkill = prepared;
+    : token = '',
+      sessionId = prepared.origin.sessionId,
+      skill = null,
+      phoneSkill = prepared;
 
   /// A route remains in a read-only in-memory card, never in the ordinary draft.
   final PreparedPhoneSkill? phoneSkill;
@@ -46,7 +52,11 @@ class ComposerInsert {
 
   @override
   bool operator ==(Object other) =>
-      other is ComposerInsert && other.token == token && other.sessionId == sessionId && other.skill == skill && identical(other.phoneSkill, phoneSkill);
+      other is ComposerInsert &&
+      other.token == token &&
+      other.sessionId == sessionId &&
+      other.skill == skill &&
+      identical(other.phoneSkill, phoneSkill);
 
   @override
   int get hashCode => Object.hash(token, sessionId, skill, phoneSkill);

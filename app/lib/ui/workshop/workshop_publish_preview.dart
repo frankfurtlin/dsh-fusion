@@ -309,6 +309,9 @@ class WorkshopPublishPreviewRow extends StatelessWidget {
       return ListPageRow(title: title, value: l10n.workshopPublishReviewPreviewIdle);
     }
     if (cover == null) return ListPageRow(title: title, value: l10n.workshopPublishCoverChosen);
-    return ListPageRow(title: title, trailing: WorkshopCoverThumb(bytes: cover!.bytes, size: 40));
+    return ListPageRow(
+      title: title,
+      trailing: WorkshopCoverThumb(bytes: cover!.bytes, size: 40),
+    );
   }
 }

@@ -471,10 +471,7 @@ Future<bool> removePluginBundle(BuildContext context, PluginBundle bundle, {Rout
     if (result.succeeded && !result.needsRestart) return true;
     if (result.succeeded) {
       await publishResult(
-        SnackBar(
-          content: Text(l10n.pluginsUninstalledRestartRemote(title, host.label)),
-          persist: false,
-        ),
+        SnackBar(content: Text(l10n.pluginsUninstalledRestartRemote(title, host.label)), persist: false),
       );
       return true;
     }
@@ -506,9 +503,7 @@ Future<void> togglePluginBundle(BuildContext context, PluginBundle bundle, bool 
         ..showSnackBar(
           SnackBar(
             content: Text(
-              enabled
-                  ? l10n.pluginsEnabledRestartRemote(host!.label)
-                  : l10n.pluginsDisabledRestartRemote(host!.label),
+              enabled ? l10n.pluginsEnabledRestartRemote(host!.label) : l10n.pluginsDisabledRestartRemote(host!.label),
             ),
             persist: false,
           ),

@@ -1011,10 +1011,7 @@ class _EmptyCatalog extends StatelessWidget {
         action: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FilledButton(
-              onPressed: () => push(const ApiKeyPage()),
-              child: Text(l10n.viewModelEnterKey),
-            ),
+            FilledButton(onPressed: () => push(const ApiKeyPage()), child: Text(l10n.viewModelEnterKey)),
             const SizedBox(height: 4),
             TextButton(onPressed: () => push(const ProviderFormPage()), child: Text(l10n.viewModelAddProvider)),
           ],

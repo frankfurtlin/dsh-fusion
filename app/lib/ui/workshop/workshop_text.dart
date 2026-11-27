@@ -44,7 +44,9 @@ String workshopErrorLine(L10n l10n, String code) => switch (code) {
   'workshop_readers_busy' => l10n.workshopErrorReadersBusy,
   'workshop_install_record' || 'workshop_install_conflict' => l10n.workshopErrorInstallRecord,
   'workshop_other_origin' => l10n.workshopErrorOtherOrigin,
-  'workshop_account_auth_required' || 'workshop_account_auth_invalid' || 'workshop_profile_required' => l10n.workshopErrorSignIn,
+  'workshop_account_auth_required' ||
+  'workshop_account_auth_invalid' ||
+  'workshop_profile_required' => l10n.workshopErrorSignIn,
   'workshop_consent_required' || 'workshop_confirmation_stale' => l10n.workshopErrorConsent,
   // The getters keep their old names until the sign-in wording is rewritten.
   'workshop_account_origin' => l10n.workshopErrorAccountMismatch,

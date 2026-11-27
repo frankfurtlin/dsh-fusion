@@ -46,11 +46,7 @@ class DigestItem {
 
 /// 一次读到的摘要：条目 + 开关状态 + 生成时间。
 class DigestSnapshot {
-  const DigestSnapshot({
-    required this.items,
-    required this.enabled,
-    required this.generatedAt,
-  });
+  const DigestSnapshot({required this.items, required this.enabled, required this.generatedAt});
 
   final List<DigestItem> items;
   final bool enabled;
@@ -67,21 +63,13 @@ class DigestSnapshot {
     try {
       final root = jsonDecode(raw);
       if (root is! Map) return DigestSnapshot(items: const [], enabled: enabled, generatedAt: '');
-      final items = [
-        for (final entry in (root['items'] as List? ?? const []))
-          ?DigestItem.fromJson(entry),
-      ];
-      return DigestSnapshot(
-        items: items,
-        enabled: enabled,
-        generatedAt: root['generatedAt'] as String? ?? '',
-      );
+      final items = [for (final entry in (root['items'] as List? ?? const [])) ?DigestItem.fromJson(entry)];
+      return DigestSnapshot(items: items, enabled: enabled, generatedAt: root['generatedAt'] as String? ?? '');
     } catch (_) {
       return DigestSnapshot(items: const [], enabled: enabled, generatedAt: '');
     }
   }
 }
-
 
 /// 一批推送（服务端每 6 小时一轮，留最近 30 天）。
 class DigestBatch {
@@ -130,9 +118,8 @@ class DigestHistoryIndex {
     try {
       final root = jsonDecode(raw);
       if (root is! Map) return empty;
-      final batches = [
-        for (final entry in (root['batches'] as List? ?? const [])) ?DigestBatch.fromJson(entry),
-      ]..sort((a, b) => b.id.compareTo(a.id));
+      final batches = [for (final entry in (root['batches'] as List? ?? const [])) ?DigestBatch.fromJson(entry)]
+        ..sort((a, b) => b.id.compareTo(a.id));
       return DigestHistoryIndex(batches);
     } catch (_) {
       return empty;
@@ -167,10 +154,7 @@ class DigestApi {
     final result = await _channel.invokeMapMethod<String, Object?>('refresh');
     final json = result?['json'] as String? ?? '';
     final snapshot = DigestSnapshot.parse(json, enabled: true);
-    PocketLog.instance.log('digest_refresh', {
-      'fresh': result?['fresh'],
-      'items': snapshot.items.length,
-    });
+    PocketLog.instance.log('digest_refresh', {'fresh': result?['fresh'], 'items': snapshot.items.length});
     return snapshot;
   }
 

@@ -117,8 +117,7 @@ class _AccessWalkState extends ConsumerState<AccessWalk> {
     super.dispose();
   }
 
-  AccessState? _stateOf(AccessItem item, AccessReadings r) =>
-      accessStateOf(item, r, ref.read(accessVisitedProvider));
+  AccessState? _stateOf(AccessItem item, AccessReadings r) => accessStateOf(item, r, ref.read(accessVisitedProvider));
 
   /// The next item that needs the person, or done.
   void _advance() {
@@ -129,9 +128,7 @@ class _AccessWalkState extends ConsumerState<AccessWalk> {
       AccessState.visited => widget.revisit,
       AccessState.off || AccessState.unknown => true,
     };
-    final next = widget.items
-        .where((i) => !_skipped.contains(i) && !_finishedItems.contains(i) && open(i))
-        .firstOrNull;
+    final next = widget.items.where((i) => !_skipped.contains(i) && !_finishedItems.contains(i) && open(i)).firstOrNull;
     if (next == null) {
       if (_finished) return;
       _finished = true;
@@ -162,9 +159,12 @@ class _AccessWalkState extends ConsumerState<AccessWalk> {
     _finishedItems.add(item);
     setState(() => _done = item);
     _doneTimer?.cancel();
-    _doneTimer = Timer(AppMotion.of(context, AccessWalk.doneHold) == Duration.zero ? Duration.zero : AccessWalk.doneHold, () {
-      if (mounted) _advance();
-    });
+    _doneTimer = Timer(
+      AppMotion.of(context, AccessWalk.doneHold) == Duration.zero ? Duration.zero : AccessWalk.doneHold,
+      () {
+        if (mounted) _advance();
+      },
+    );
   }
 
   void _toast(String text) => ScaffoldMessenger.maybeOf(context)
@@ -273,7 +273,10 @@ class _AccessWalkState extends ConsumerState<AccessWalk> {
     final (String primary, VoidCallback onPrimary) = switch (item) {
       _ when item.vendor && tries > 0 => (l10n.accessItsSet, () => unawaited(_confirmVendor(item))),
       _ when item.vendor => (l10n.accessOpenSettings, () => unawaited(_go(item))),
-      AccessItem.accessibility when restricted == 2 => (l10n.accessOpenAppInfo, () => unawaited(_go(item, appInfo: true))),
+      AccessItem.accessibility when restricted == 2 => (
+        l10n.accessOpenAppInfo,
+        () => unawaited(_go(item, appInfo: true)),
+      ),
       AccessItem.accessibility when restricted != null => (l10n.accessOpenA11y, () => unawaited(_go(item))),
       _ when tries > 0 => (l10n.commonRetry, () => unawaited(_go(item))),
       _ => (l10n.accessTurnOn, () => unawaited(_go(item))),

@@ -383,10 +383,8 @@ fi''');
     );
   }
 
-  static HostLinkError _sharedInstanceError() => HostLinkError(
-    HostLinkErrorKind.dshStartFailed,
-    appL10n.remoteErrSharedInstance,
-  );
+  static HostLinkError _sharedInstanceError() =>
+      HostLinkError(HostLinkErrorKind.dshStartFailed, appL10n.remoteErrSharedInstance);
 
   static bool _looksNotFound(String log) => RegExp(
     r'command not found|not found|No such file or directory|can.t open|ENOENT',

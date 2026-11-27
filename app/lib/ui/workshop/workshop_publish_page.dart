@@ -339,7 +339,9 @@ class _WorkshopPublishPageState extends ConsumerState<WorkshopPublishPage> {
     switch (_stepOf(access, publish)) {
       case _Step.loading:
         return WorkshopPublishFrame(
-          children: [_Waiting(caption: publish.waitingForPreviousOperation ? l10n.workshopPublishWaitingPrevious : null)],
+          children: [
+            _Waiting(caption: publish.waitingForPreviousOperation ? l10n.workshopPublishWaitingPrevious : null),
+          ],
         );
       case _Step.unreachable:
         final code = access.error!.code;
@@ -402,7 +404,12 @@ class _WorkshopPublishPageState extends ConsumerState<WorkshopPublishPage> {
           below: WorkshopPublishLetGo(publish: publish, onLetGo: () => unawaited(_letGo()), centered: true),
         );
       case _Step.sending:
-        return WorkshopPublishFrame(children: [...notes, _Sending(publish: publish)]);
+        return WorkshopPublishFrame(
+          children: [
+            ...notes,
+            _Sending(publish: publish),
+          ],
+        );
       case _Step.result:
         return _Result(
           publish: publish,
@@ -537,11 +544,7 @@ class _Summary extends StatelessWidget {
           leading: WorkshopAvatar(metadata),
           leadingWidth: 40,
           title: workshopTitleOf(metadata, Localizations.localeOf(context).languageCode),
-          subtitle: [
-            workshopKindText(l10n, metadata.kind),
-            metadata.version,
-            formatBytes(metadata.size),
-          ].join(' · '),
+          subtitle: [workshopKindText(l10n, metadata.kind), metadata.version, formatBytes(metadata.size)].join(' · '),
         ),
       ],
     );
@@ -639,7 +642,8 @@ class _Result extends StatelessWidget {
     final result = publish.result!;
     final busy = publish.working;
     final failure = workshopPublishFailure(publish);
-    final again = result.status == WorkshopSubmissionStatus.rejected || result.status == WorkshopSubmissionStatus.withdrawn;
+    final again =
+        result.status == WorkshopSubmissionStatus.rejected || result.status == WorkshopSubmissionStatus.withdrawn;
     final reason = result.status == WorkshopSubmissionStatus.rejected ? result.reviewReason : result.withdrawalReason;
     final (icon, title) = switch (result.status) {
       WorkshopSubmissionStatus.approved => (AppIcons.verified, l10n.workshopPublishApprovedTitle),

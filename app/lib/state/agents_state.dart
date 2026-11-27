@@ -496,10 +496,7 @@ final teamMessagesProvider = FutureProvider.autoDispose.family<TeamMessagesSnaps
       }(),
   ]);
   out.sort((a, b) => b.time.compareTo(a.time));
-  return TeamMessagesSnapshot(
-    messages: List.unmodifiable(out),
-    unreadableMembers: Set.unmodifiable(unreadable),
-  );
+  return TeamMessagesSnapshot(messages: List.unmodifiable(out), unreadableMembers: Set.unmodifiable(unreadable));
 });
 
 // -----------------------------------------------------------------------------

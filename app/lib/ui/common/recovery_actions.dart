@@ -52,6 +52,7 @@ class RecoveryActions extends StatelessWidget {
           final singleLine = fits(label, availableWidth: constraints.maxWidth, insets: insets);
           return Text(label, maxLines: singleLine ? 1 : null, textAlign: singleLine ? null : TextAlign.center);
         }
+
         Widget outlined(({String label, VoidCallback? onPressed}) action) =>
             OutlinedButton(onPressed: action.onPressed, child: labelText(action.label));
         final paired = secondary.length > 1 && secondary.every((a) => fits(a.label));

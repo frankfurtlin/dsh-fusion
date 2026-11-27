@@ -1790,9 +1790,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
                                       starting: starting,
                                       tidying: tidying,
                                       idle: idle,
-                                      onReconnect: connAsync.hasError && !connAsync.isLoading
-                                          ? _reconnect
-                                          : null,
+                                      onReconnect: connAsync.hasError && !connAsync.isLoading ? _reconnect : null,
                                       onSuggestion: _onSuggestion,
                                       options: NewChatOptions(
                                         folderLabel: !hasFolders

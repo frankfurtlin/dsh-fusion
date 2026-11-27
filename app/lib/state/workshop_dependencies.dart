@@ -28,11 +28,10 @@ final workshopOriginProvider = Provider<Uri?>((ref) {
 
 /// Tests replace the existing storage/network seams, without loading a page.
 final workshopDirectoryProvider = Provider<Future<Directory> Function()>(
-  (ref) => () async => Directory('${(await getApplicationSupportDirectory()).path}/workshop'),
+  (ref) =>
+      () async => Directory('${(await getApplicationSupportDirectory()).path}/workshop'),
 );
-final workshopHttpFactoryProvider = Provider<WorkshopHttp Function(Uri)>(
-  (ref) => IoWorkshopHttp.new,
-);
+final workshopHttpFactoryProvider = Provider<WorkshopHttp Function(Uri)>((ref) => IoWorkshopHttp.new);
 final workshopAppVersionProvider = Provider<String>((ref) => AppInfo.version);
 
 final workshopClientProvider = FutureProvider<WorkshopClient>((ref) async {
@@ -49,11 +48,7 @@ final workshopClientProvider = FutureProvider<WorkshopClient>((ref) async {
   final origin = workshopOrigin(configured);
   final root = await directory();
   if (disposed || !ref.mounted) workshopInvalid('workshop_cancelled');
-  final client = WorkshopClient(
-    origin: origin,
-    cacheFile: File('${root.path}/catalog.json'),
-    http: createHttp(origin),
-  );
+  final client = WorkshopClient(origin: origin, cacheFile: File('${root.path}/catalog.json'), http: createHttp(origin));
   owned = client;
   return client;
 }, retry: (_, _) => null);
@@ -91,19 +86,16 @@ final workshopRepositoryProvider = FutureProvider<WorkshopRepository>((ref) asyn
 /// Called only by explicit actions. Healthy dependencies remain shared/open.
 void retryWorkshopDependencies(Ref ref, {bool includeLocal = false}) {
   final clientFailed = ref.exists(workshopClientProvider) && ref.read(workshopClientProvider).hasError;
-  final packagesFailed = includeLocal && ref.exists(workshopPackagesProvider) &&
-      ref.read(workshopPackagesProvider).hasError;
-  final repositoryFailed = includeLocal && ref.exists(workshopRepositoryProvider) &&
-      ref.read(workshopRepositoryProvider).hasError;
+  final packagesFailed =
+      includeLocal && ref.exists(workshopPackagesProvider) && ref.read(workshopPackagesProvider).hasError;
+  final repositoryFailed =
+      includeLocal && ref.exists(workshopRepositoryProvider) && ref.read(workshopRepositoryProvider).hasError;
   if (clientFailed) ref.invalidate(workshopClientProvider);
   if (packagesFailed) ref.invalidate(workshopPackagesProvider);
   if (repositoryFailed) ref.invalidate(workshopRepositoryProvider);
 }
 
-typedef WorkshopPackageChanged = Future<void> Function(
-  WorkshopInstalled item, {
-  required bool removed,
-});
+typedef WorkshopPackageChanged = Future<void> Function(WorkshopInstalled item, {required bool removed});
 
 Future<void> _waitPetPreferences(Ref ref) async {
   if (!ref.mounted) workshopInvalid('workshop_cancelled');

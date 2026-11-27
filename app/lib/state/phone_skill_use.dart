@@ -16,21 +16,29 @@ class PhoneSkillUseOrigin {
   static PhoneSkillUseOrigin? capture(ProviderContainer container, String sessionId) {
     // 手机本地引擎已删除：这份来源记录跟着当前活动连接（远程主机）走。
     final active = container.read(activeConnectionProvider);
-    if (active.isLoading || active.hasError || active.value == null ||
+    if (active.isLoading ||
+        active.hasError ||
+        active.value == null ||
         container.read(currentSessionProvider) != sessionId) {
       return null;
     }
     final client = active.value!.client;
     final generation = client.mux.generation;
     if (generation == null) return null;
-    return PhoneSkillUseOrigin._(client, generation, sessionId,
-      container.read(currentSessionProvider.notifier).selectionRevision);
+    return PhoneSkillUseOrigin._(
+      client,
+      generation,
+      sessionId,
+      container.read(currentSessionProvider.notifier).selectionRevision,
+    );
   }
 
   bool current(ProviderContainer container) {
     final now = capture(container, sessionId);
-    return now != null && identical(now.client, client) && identical(now.generation, generation) &&
-      now.selectionRevision == selectionRevision;
+    return now != null &&
+        identical(now.client, client) &&
+        identical(now.generation, generation) &&
+        now.selectionRevision == selectionRevision;
   }
 }
 

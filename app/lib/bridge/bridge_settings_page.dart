@@ -246,10 +246,7 @@ class _BridgeSettingsPageState extends ConsumerState<BridgeSettingsPage> with Wi
     if (uri == null || !uri.hasAuthority || (uri.scheme != 'http' && uri.scheme != 'https')) {
       return l10n.bridgeOriginInvalid;
     }
-    if (uri.userInfo.isNotEmpty ||
-        (uri.path.isNotEmpty && uri.path != '/') ||
-        uri.hasQuery ||
-        uri.hasFragment) {
+    if (uri.userInfo.isNotEmpty || (uri.path.isNotEmpty && uri.path != '/') || uri.hasQuery || uri.hasFragment) {
       return l10n.bridgeOriginBare;
     }
     return null;
@@ -414,11 +411,7 @@ class _BridgeSettingsPageState extends ConsumerState<BridgeSettingsPage> with Wi
                 ),
               ],
             ),
-            if (status.isNotEmpty)
-              _Note(
-                key: const ValueKey('bridge-status'),
-                text: status,
-              ),
+            if (status.isNotEmpty) _Note(key: const ValueKey('bridge-status'), text: status),
             if (caps.isNotEmpty) InfoRow(label: l10n.bridgeCapsLabel, value: caps.length.toString()),
           ],
         ),
@@ -427,10 +420,7 @@ class _BridgeSettingsPageState extends ConsumerState<BridgeSettingsPage> with Wi
           footer: Text(l10n.bridgeA11yHint),
           children: [
             if (a11yKnown)
-              SettingsTile(
-                title: l10n.bridgeA11yState,
-                value: Text(a11y.ok ? l10n.bridgeA11yOn : l10n.bridgeA11yOff),
-              ),
+              SettingsTile(title: l10n.bridgeA11yState, value: Text(a11y.ok ? l10n.bridgeA11yOn : l10n.bridgeA11yOff)),
             SettingsSwitchTile(
               title: l10n.bridgeA11yAllow,
               value: _a11yOn,
@@ -442,10 +432,7 @@ class _BridgeSettingsPageState extends ConsumerState<BridgeSettingsPage> with Wi
                       setState(() => _a11yOn = on && applied);
                     },
             ),
-            SettingsTile(
-              title: l10n.bridgeA11yOpen,
-              onTap: () => unawaited(_openAccessibility()),
-            ),
+            SettingsTile(title: l10n.bridgeA11yOpen, onTap: () => unawaited(_openAccessibility())),
           ],
         ),
       ],

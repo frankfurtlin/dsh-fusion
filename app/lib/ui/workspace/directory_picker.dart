@@ -203,9 +203,7 @@ typedef Crumb = ({String label, String path});
 List<Crumb> displayCrumbs(DirectoryLevel level) {
   final crumbs = level.crumbs;
   final home = crumbs.indexWhere((c) => c.path == level.home);
-  final (start, label) = home >= 0
-      ? (home, appL10n.remoteDirectoryHome)
-      : (0, appL10n.remoteDirectoryRoot);
+  final (start, label) = home >= 0 ? (home, appL10n.remoteDirectoryHome) : (0, appL10n.remoteDirectoryRoot);
   return [
     for (final (i, c) in crumbs.indexed)
       if (i == start) (label: label, path: c.path) else if (i > start) (label: c.name, path: c.path),
@@ -382,12 +380,7 @@ class _DirectoryBrowserPageState extends ConsumerState<DirectoryBrowserPage> {
 }
 
 class _LevelList extends StatelessWidget {
-  const _LevelList({
-    required this.level,
-    required this.showHidden,
-    required this.onOpen,
-    required this.onToggleHidden,
-  });
+  const _LevelList({required this.level, required this.showHidden, required this.onOpen, required this.onToggleHidden});
 
   final DirectoryLevel level;
   final bool showHidden;

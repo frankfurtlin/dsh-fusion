@@ -575,7 +575,6 @@
   "botsDiscardTitle": "放弃修改？",
   "botsKeepEditing": "继续编辑",
   "botsDiscard": "放弃",
-  "botsProgress": "进度",
   "botsGlyphRun": "运行",
   "botsGlyphJobOutput": "查看后台任务",
   "botsGlyphJobs": "后台任务",
@@ -982,7 +981,6 @@
     }
   },
   "botsEveryone": "所有人",
-  "botsActivelyRunning": "正在运行",
   "botsListSeparator": "，",
   "botsNameSeparator": "、",
   "botsGlyphSubagent": "子代理",

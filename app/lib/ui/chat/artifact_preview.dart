@@ -420,8 +420,7 @@ class _ArtifactPreviewPageState extends ConsumerState<ArtifactPreviewPage> {
   }
 
   List<Widget> get _actions => [
-    if (previewModeOf(_artifact.path) == PreviewMode.html ||
-        previewModeOf(_artifact.path) == PreviewMode.svg)
+    if (previewModeOf(_artifact.path) == PreviewMode.html || previewModeOf(_artifact.path) == PreviewMode.svg)
       GlassIconButton(
         icon: _asSource ? AppIcons.preview : AppIcons.code,
         tooltip: _asSource ? context.l10n.viewHtmlRendered : context.l10n.viewHtmlSource,
@@ -1878,13 +1877,7 @@ class _PdfPageState extends State<_PdfPage> {
 /// come through the same path as images — [artifactFilesProvider] materializes
 /// the file locally whether it lives on this phone or on the host.
 class _SvgPreview extends ConsumerStatefulWidget {
-  const _SvgPreview({
-    super.key,
-    required this.sessionId,
-    required this.artifact,
-    required this.revision,
-    this.onOpen,
-  });
+  const _SvgPreview({super.key, required this.sessionId, required this.artifact, required this.revision, this.onOpen});
 
   final String sessionId;
   final Artifact artifact;
@@ -1976,13 +1969,7 @@ class _SvgPreviewState extends ConsumerState<_SvgPreview> {
 /// 3. Every navigation is prevented. A link does nothing; the viewer's
 ///    "open elsewhere" is the way out.
 class _HtmlPreview extends ConsumerStatefulWidget {
-  const _HtmlPreview({
-    super.key,
-    required this.sessionId,
-    required this.artifact,
-    required this.revision,
-    this.onOpen,
-  });
+  const _HtmlPreview({super.key, required this.sessionId, required this.artifact, required this.revision, this.onOpen});
 
   final String sessionId;
   final Artifact artifact;
@@ -2052,9 +2039,11 @@ class _HtmlPreviewState extends ConsumerState<_HtmlPreview> {
       await controller.loadHtmlString(document);
       if (!mounted) return;
 
-      final guard = WebViewGuard(onGone: (_) {
-        if (mounted) setState(() => _controller = null);
-      });
+      final guard = WebViewGuard(
+        onGone: (_) {
+          if (mounted) setState(() => _controller = null);
+        },
+      );
       final media = MediaQuery.maybeOf(context);
       await guard.attach(
         controller,

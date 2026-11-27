@@ -18,11 +18,22 @@ class WorkshopDisclosure {
 }
 
 class WorkshopAccessState {
-  const WorkshopAccessState({required this.session, this.loading = false,
-    this.accountRestoring = false, this.signedIn = false, this.worker, this.account, this.accountId,
-    this.capabilities, this.disclosure, this.disclosureAccepted = false,
-    this.disclosureSaved = false, this.savingDisclosure = false,
-    this.error, this.preferenceError});
+  const WorkshopAccessState({
+    required this.session,
+    this.loading = false,
+    this.accountRestoring = false,
+    this.signedIn = false,
+    this.worker,
+    this.account,
+    this.accountId,
+    this.capabilities,
+    this.disclosure,
+    this.disclosureAccepted = false,
+    this.disclosureSaved = false,
+    this.savingDisclosure = false,
+    this.error,
+    this.preferenceError,
+  });
 
   /// In-memory account/deployment generation. It contains no credential.
   final Object session;
@@ -34,22 +45,38 @@ class WorkshopAccessState {
   final bool disclosureAccepted, disclosureSaved, savingDisclosure;
   final WorkshopException? error, preferenceError;
 
-  bool get canAuthenticate => !loading && signedIn && error == null &&
-      capabilities != null && disclosureAccepted;
+  bool get canAuthenticate => !loading && signedIn && error == null && capabilities != null && disclosureAccepted;
   bool get uploadsEnabled => capabilities?.features.uploads ?? false;
+
   /// The deployment registered a GitHub OAuth App, so signing in can work.
   bool get signInAvailable => capabilities?.account.clientId != null;
   bool get companionEnabled => capabilities?.features.companion ?? false;
-  bool canSubmit(String kind) => canAuthenticate && accountId != null && uploadsEnabled &&
-      capabilities!.kinds.contains(kind) && (kind == 'pet' || kind == 'companion' && companionEnabled);
+  bool canSubmit(String kind) =>
+      canAuthenticate &&
+      accountId != null &&
+      uploadsEnabled &&
+      capabilities!.kinds.contains(kind) &&
+      (kind == 'pet' || kind == 'companion' && companionEnabled);
 
-  WorkshopAccessState copyWith({bool? loading, bool? disclosureAccepted,
-    bool? disclosureSaved, bool? savingDisclosure, WorkshopException? error,
-    bool clearError = false, WorkshopException? preferenceError,
-    bool clearPreferenceError = false}) => WorkshopAccessState(
-    session: session, loading: loading ?? this.loading,
-    accountRestoring: accountRestoring, signedIn: signedIn, worker: worker, account: account, accountId: accountId,
-    capabilities: capabilities, disclosure: disclosure,
+  WorkshopAccessState copyWith({
+    bool? loading,
+    bool? disclosureAccepted,
+    bool? disclosureSaved,
+    bool? savingDisclosure,
+    WorkshopException? error,
+    bool clearError = false,
+    WorkshopException? preferenceError,
+    bool clearPreferenceError = false,
+  }) => WorkshopAccessState(
+    session: session,
+    loading: loading ?? this.loading,
+    accountRestoring: accountRestoring,
+    signedIn: signedIn,
+    worker: worker,
+    account: account,
+    accountId: accountId,
+    capabilities: capabilities,
+    disclosure: disclosure,
     disclosureAccepted: disclosureAccepted ?? this.disclosureAccepted,
     disclosureSaved: disclosureSaved ?? this.disclosureSaved,
     savingDisclosure: savingDisclosure ?? this.savingDisclosure,
@@ -60,11 +87,17 @@ class WorkshopAccessState {
 
 /// One operation's captured context; never put this object in page state.
 class WorkshopAuthorization {
-  const WorkshopAuthorization({required this.session, required this.client,
-    required this.credential, required this.requestScope, this.accountId});
+  const WorkshopAuthorization({
+    required this.session,
+    required this.client,
+    required this.credential,
+    required this.requestScope,
+    this.accountId,
+  });
   final Object session;
   final WorkshopClient client;
   final WorkshopCredential credential;
+
   /// Stable public account identity. Signing in again with the same GitHub
   /// account must not create a new idempotency scope.
   final String? requestScope;
@@ -72,8 +105,15 @@ class WorkshopAuthorization {
 }
 
 class _AccessContext {
-  _AccessContext({required this.session, required this.client, required this.credential,
-    required this.signedIn, required this.restoring, required this.preferences, required this.userId});
+  _AccessContext({
+    required this.session,
+    required this.client,
+    required this.credential,
+    required this.signedIn,
+    required this.restoring,
+    required this.preferences,
+    required this.userId,
+  });
   final Object session;
   final Future<WorkshopClient> client;
   final WorkshopAccountCredential? credential;
@@ -93,32 +133,52 @@ class WorkshopAccessController extends Notifier<WorkshopAccessState> {
   WorkshopAccessState build() {
     // Only a signed-in account's credential counts; waiting for a code is
     // still signed out and must not start a new session.
-    final auth = ref.watch(workshopAccountProvider.select((value) => (
-      value.phase == WorkshopAccountPhase.signedIn ? value.credential : null,
-      value.phase == WorkshopAccountPhase.restoring, value.id)));
+    final auth = ref.watch(
+      workshopAccountProvider.select(
+        (value) => (
+          value.phase == WorkshopAccountPhase.signedIn ? value.credential : null,
+          value.phase == WorkshopAccountPhase.restoring,
+          value.id,
+        ),
+      ),
+    );
     final client = ref.watch(workshopClientProvider.future);
     final preferences = ref.watch(workshopPreferencesProvider);
     final profileId = auth.$3;
     final userId = profileId != null && profileId > 0 ? profileId : null;
     final previous = _context;
-    final sameAccount = previous != null &&
-        identical(previous.credential, auth.$1) && identical(previous.client, client) &&
+    final sameAccount =
+        previous != null &&
+        identical(previous.credential, auth.$1) &&
+        identical(previous.client, client) &&
         identical(previous.preferences, preferences) &&
         (_knownUserId == null || userId == null || _knownUserId == userId);
     _knownUserId = sameAccount ? userId ?? _knownUserId : userId;
-    final context = _AccessContext(session: sameAccount ? previous.session : Object(),
-      client: client, credential: auth.$1, signedIn: auth.$1 != null,
-      restoring: auth.$2, preferences: preferences, userId: userId);
+    final context = _AccessContext(
+      session: sameAccount ? previous.session : Object(),
+      client: client,
+      credential: auth.$1,
+      signedIn: auth.$1 != null,
+      restoring: auth.$2,
+      preferences: preferences,
+      userId: userId,
+    );
     _context = context;
     _loaded = _refresh(context, ++_load);
-    return WorkshopAccessState(session: context.session, loading: true,
-      accountRestoring: context.restoring, signedIn: context.signedIn, accountId: context.userId);
+    return WorkshopAccessState(
+      session: context.session,
+      loading: true,
+      accountRestoring: context.restoring,
+      signedIn: context.signedIn,
+      accountId: context.userId,
+    );
   }
 
   bool _current(_AccessContext context, [int? load]) {
     if (!ref.mounted) return false;
     final current = state;
-    return identical(current.session, context.session) && identical(_context, context) &&
+    return identical(current.session, context.session) &&
+        identical(_context, context) &&
         (load == null || load == _load);
   }
 
@@ -142,8 +202,13 @@ class WorkshopAccessController extends Notifier<WorkshopAccessState> {
     }
     if (state.savingDisclosure) return;
     _confirmedHere.add(_pair(offered.worker, offered.account));
-    state = state.copyWith(disclosureAccepted: true, disclosureSaved: false,
-      savingDisclosure: true, clearPreferenceError: true, clearError: true);
+    state = state.copyWith(
+      disclosureAccepted: true,
+      disclosureSaved: false,
+      savingDisclosure: true,
+      clearPreferenceError: true,
+      clearError: true,
+    );
     try {
       await context.preferences.acceptDisclosure(offered.worker, offered.account);
       if (_current(context) && identical(state.disclosure, offered)) {
@@ -151,8 +216,10 @@ class WorkshopAccessController extends Notifier<WorkshopAccessState> {
       }
     } on Object {
       if (_current(context) && identical(state.disclosure, offered)) {
-        state = state.copyWith(savingDisclosure: false,
-          preferenceError: const WorkshopException('workshop_preferences'));
+        state = state.copyWith(
+          savingDisclosure: false,
+          preferenceError: const WorkshopException('workshop_preferences'),
+        );
       }
     }
   }
@@ -172,13 +239,22 @@ class WorkshopAccessController extends Notifier<WorkshopAccessState> {
     if (!current.disclosureAccepted) workshopInvalid('workshop_consent_required');
     final client = await context.client;
     if (!_current(context, load)) workshopInvalid('workshop_cancelled');
-    final credential = WorkshopCredential.forConsentedWorker(worker: client.origin, account: current.account!,
-      token: context.credential!.token, disclosureAccepted: true);
-    final scope = context.userId == null ? null : jsonEncode([
-      client.origin.toString(), current.account.toString(), context.userId,
-    ]);
-    return WorkshopAuthorization(session: context.session, client: client,
-      credential: credential, requestScope: scope, accountId: context.userId);
+    final credential = WorkshopCredential.forConsentedWorker(
+      worker: client.origin,
+      account: current.account!,
+      token: context.credential!.token,
+      disclosureAccepted: true,
+    );
+    final scope = context.userId == null
+        ? null
+        : jsonEncode([client.origin.toString(), current.account.toString(), context.userId]);
+    return WorkshopAuthorization(
+      session: context.session,
+      client: client,
+      credential: credential,
+      requestScope: scope,
+      accountId: context.userId,
+    );
   }
 
   Future<void> _refresh(_AccessContext context, int load) async {
@@ -199,16 +275,28 @@ class WorkshopAccessController extends Notifier<WorkshopAccessState> {
         preferenceError = const WorkshopException('workshop_preferences');
       }
       if (!_current(context, load)) return;
-      state = WorkshopAccessState(session: context.session, signedIn: context.signedIn,
-        accountRestoring: context.restoring, worker: client.origin, account: account, accountId: context.userId,
+      state = WorkshopAccessState(
+        session: context.session,
+        signedIn: context.signedIn,
+        accountRestoring: context.restoring,
+        worker: client.origin,
+        account: account,
+        accountId: context.userId,
         capabilities: capabilities,
         disclosure: context.signedIn ? WorkshopDisclosure._(client.origin, account) : null,
         disclosureAccepted: saved || _confirmedHere.contains(_pair(client.origin, account)),
-        disclosureSaved: saved, preferenceError: preferenceError);
+        disclosureSaved: saved,
+        preferenceError: preferenceError,
+      );
     } on Object catch (error) {
       if (_current(context, load)) {
-        state = WorkshopAccessState(session: context.session, signedIn: context.signedIn,
-          accountRestoring: context.restoring, accountId: context.userId, error: workshopLocalError(error));
+        state = WorkshopAccessState(
+          session: context.session,
+          signedIn: context.signedIn,
+          accountRestoring: context.restoring,
+          accountId: context.userId,
+          error: workshopLocalError(error),
+        );
       }
     }
   }

@@ -288,11 +288,7 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
         final savedAt = snapshot.savedAtFor(host);
         final total = snapshot.totalFor(host);
         final ageSeconds = savedAt == null ? null : DateTime.now().difference(savedAt).inSeconds;
-        PerfTrace.note('session_list_cached', 0, {
-          'rows': cached.length,
-          'total': ?total,
-          'ageS': ?ageSeconds,
-        });
+        PerfTrace.note('session_list_cached', 0, {'rows': cached.length, 'total': ?total, 'ageS': ?ageSeconds});
         // Paint once this build's initialization is over; the real list replaces it.
         Future.microtask(() {
           if (r.mounted && state.isLoading) state = AsyncData(_visible());
@@ -684,7 +680,9 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
     final conn = r.read(readListLiveConnectionProvider);
     if (conn == null) return;
     final last = _lastLoadedAt;
-    if (!force && last != null && identical(_lastLoadedClient, conn.client) &&
+    if (!force &&
+        last != null &&
+        identical(_lastLoadedClient, conn.client) &&
         DateTime.now().difference(last) < _refreshThrottle) {
       PerfTrace.note('session_list_skipped', 0);
       return;
@@ -743,10 +741,7 @@ class SessionsController extends AsyncNotifier<List<SessionSummary>> {
 
   /// Creates for a captured connection. The caller retires its intent through
   /// [isCurrent]; waits and workspace fallback must not start a later write.
-  Future<String> createForConnection(
-    HostConnection conn, {
-    required bool Function() isCurrent,
-  }) async {
+  Future<String> createForConnection(HostConnection conn, {required bool Function() isCurrent}) async {
     final owner = ref;
     void checkCurrent() {
       if (!owner.mounted || !isCurrent()) throw const DshClosedException('session creation superseded');

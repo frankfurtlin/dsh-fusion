@@ -2,8 +2,9 @@ part of 'pet_library.dart';
 
 Map<String, Object?> _petFields(Object? input, Iterable<String> keys) {
   final map = input is Map ? input : const {};
-  return {for (final key in keys)
-    if (map[key] is String || map[key] is bool || map[key] is num && (map[key] as num).isFinite) key: map[key],
+  return {
+    for (final key in keys)
+      if (map[key] is String || map[key] is bool || map[key] is num && (map[key] as num).isFinite) key: map[key],
   };
 }
 
@@ -12,18 +13,24 @@ Map<String, Object?> _petFields(Object? input, Iterable<String> keys) {
 Map<String, Object?> _petExportJson(Map<String, Object?> raw) {
   final out = _petFields(raw, ['schema', 'id', 'name', 'author', 'license', 'source', 'pixelArt', 'scale']);
   for (final entry in {
-    'canvas': ['w', 'h'], 'anchor': ['x', 'baseline'], 'contentBox': ['x', 'y', 'w', 'h'],
-    'roam': ['anim', 'faces', 'facing', 'flip'], 'sleep': ['afterMs'],
+    'canvas': ['w', 'h'],
+    'anchor': ['x', 'baseline'],
+    'contentBox': ['x', 'y', 'w', 'h'],
+    'roam': ['anim', 'faces', 'facing', 'flip'],
+    'sleep': ['afterMs'],
   }.entries) {
     if (raw.containsKey(entry.key)) out[entry.key] = _petFields(raw[entry.key], entry.value);
   }
   final animations = raw['animations'] as Map;
   out['animations'] = {
-    for (final entry in animations.entries) entry.key: {
-      ..._petFields(entry.value, ['sheet', 'frameW', 'frameH', 'cols', 'loop']),
-      'box': _petFields((entry.value as Map)['box'], ['x', 'y', 'w', 'h']),
-      'frames': [for (final frame in (entry.value as Map)['frames'] as List) _petFields(frame, ['i', 'ms'])],
-    },
+    for (final entry in animations.entries)
+      entry.key: {
+        ..._petFields(entry.value, ['sheet', 'frameW', 'frameH', 'cols', 'loop']),
+        'box': _petFields((entry.value as Map)['box'], ['x', 'y', 'w', 'h']),
+        'frames': [
+          for (final frame in (entry.value as Map)['frames'] as List) _petFields(frame, ['i', 'ms']),
+        ],
+      },
   };
   // These maps contain only parser-checked scalar names/numbers or lists.
   final pack = PetPack.parse(raw);
@@ -34,13 +41,15 @@ Map<String, Object?> _petExportJson(Map<String, Object?> raw) {
     // pack stays usable on them.
     out['reactions'] = {
       for (final entry in pack.reactions.entries)
-        for (final (index, name) in entry.value.indexed)
-          (index == 0 ? entry.key : '${entry.key}${index + 1}'): name,
+        for (final (index, name) in entry.value.indexed) (index == 0 ? entry.key : '${entry.key}${index + 1}'): name,
     };
   }
   if (pack.tiers.isNotEmpty) {
     out['tiers'] = {
-      for (final tier in pack.tiers.entries) tier.key: [for (final item in tier.value) {'min': item.min, 'anim': item.anim}],
+      for (final tier in pack.tiers.entries)
+        tier.key: [
+          for (final item in tier.value) {'min': item.min, 'anim': item.anim},
+        ],
     };
   }
   final timings = _petFields(raw['timings'], ['wakeMs']);
@@ -51,16 +60,21 @@ Map<String, Object?> _petExportJson(Map<String, Object?> raw) {
   final hits = raw['hitBoxes'];
   if (hits is Map) {
     out['hitBoxes'] = {
-      for (final key in ['default', 'wide', 'sleeping']) if (hits[key] is Map) key: _petFields(hits[key], ['x', 'y', 'w', 'h']),
-      for (final key in ['wideAnims', 'sleepingAnims']) if (hits[key] is List) key: (hits[key] as List).whereType<String>().toList(),
-      if (hits['byAnim'] is Map) 'byAnim': {
-        for (final entry in (hits['byAnim'] as Map).entries) entry.key: _petFields(entry.value, ['x', 'y', 'w', 'h']),
-      },
+      for (final key in ['default', 'wide', 'sleeping'])
+        if (hits[key] is Map) key: _petFields(hits[key], ['x', 'y', 'w', 'h']),
+      for (final key in ['wideAnims', 'sleepingAnims'])
+        if (hits[key] is List) key: (hits[key] as List).whereType<String>().toList(),
+      if (hits['byAnim'] is Map)
+        'byAnim': {
+          for (final entry in (hits['byAnim'] as Map).entries) entry.key: _petFields(entry.value, ['x', 'y', 'w', 'h']),
+        },
     };
   }
   if (pack.idlePool.isNotEmpty) {
     out['idlePool'] = {
-      'anims': [for (final item in pack.idlePool) {'anim': item.anim, 'ms': item.ms, 'weight': item.weight}],
+      'anims': [
+        for (final item in pack.idlePool) {'anim': item.anim, 'ms': item.ms, 'weight': item.weight},
+      ],
       'everyMs': {'mean': pack.idleEvery.mean, 'min': pack.idleEvery.min, 'max': pack.idleEvery.max},
     };
   }
@@ -88,7 +102,9 @@ Future<Uint8List> _petExportRead(File file, int cap) async {
     }
     if (bytes.length > cap) throw const PetImportException(PetImportProblem.tooLarge);
     return bytes.takeBytes();
-  } finally { await input.close(); }
+  } finally {
+    await input.close();
+  }
 }
 
 Future<void> _exportPet((String, String, Map<String, String>) args) async {
@@ -105,19 +121,29 @@ Future<void> _exportPet((String, String, Map<String, String>) args) async {
     if (names.length > petSheetCountCap) throw const PetImportException(PetImportProblem.tooLarge);
     var total = 0;
     for (final name in names) {
-      if (name.startsWith('.') || name.contains('/') || name.contains('\\') || name.contains('\u0000') ||
-          !name.toLowerCase().endsWith('.png') || name.length > petSheetNameCap || utf8.encode(name).length > 255) {
+      if (name.startsWith('.') ||
+          name.contains('/') ||
+          name.contains('\\') ||
+          name.contains('\u0000') ||
+          !name.toLowerCase().endsWith('.png') ||
+          name.length > petSheetNameCap ||
+          utf8.encode(name).length > 255) {
         throw const PetImportException(PetImportProblem.badSheet);
       }
       final remaining = petTotalSheetByteCap - total;
-      final bytes = await _petExportRead(File('$folder/$name'), remaining < petSheetByteCap ? remaining : petSheetByteCap);
+      final bytes = await _petExportRead(
+        File('$folder/$name'),
+        remaining < petSheetByteCap ? remaining : petSheetByteCap,
+      );
       total += bytes.length;
       sheets[name] = bytes;
     }
     final json = {..._petExportJson(decoded), ...attribution};
     final checked = PetPackValidator.validateParts(json, sheets);
     final archive = Archive()..add(ArchiveFile.bytes('pack.json', utf8.encode(jsonEncode(checked.json))));
-    for (final entry in checked.sheets.entries) { archive.add(ArchiveFile.bytes(entry.key, entry.value)); }
+    for (final entry in checked.sheets.entries) {
+      archive.add(ArchiveFile.bytes(entry.key, entry.value));
+    }
     final bytes = Uint8List.fromList(ZipEncoder().encode(archive));
     PetPackValidator.validateArchive(bytes);
     final target = File(destination);
@@ -132,6 +158,10 @@ Future<void> _exportPet((String, String, Map<String, String>) args) async {
   } on FileSystemException catch (error) {
     throw PetImportException(PetImportProblem.storage, null, error.osError?.errorCode);
   } finally {
-    try { if (await temporary.exists()) await temporary.delete(); } on FileSystemException { /* A later cache cleanup can remove it. */ }
+    try {
+      if (await temporary.exists()) await temporary.delete();
+    } on FileSystemException {
+      /* A later cache cleanup can remove it. */
+    }
   }
 }

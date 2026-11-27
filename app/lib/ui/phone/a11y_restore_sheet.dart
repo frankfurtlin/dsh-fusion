@@ -61,8 +61,10 @@ class _A11yRestoreSheetState extends ConsumerState<A11yRestoreSheet> {
   /// Only a root connection; 不打扰模式 stays as it is, and so does an Android
   /// version that can't run it (the grant needs no virtual display).
   Future<void> _prepareRoot() async {
-    if (_busy || !ref.read(phoneProvider).status.ready ||
-        !await confirmRisk(context, RiskNotices.rootChannel) || !mounted) {
+    if (_busy ||
+        !ref.read(phoneProvider).status.ready ||
+        !await confirmRisk(context, RiskNotices.rootChannel) ||
+        !mounted) {
       return;
     }
     final status = ref.read(phoneProvider).status;

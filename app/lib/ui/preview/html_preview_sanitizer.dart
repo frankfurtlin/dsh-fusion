@@ -33,16 +33,10 @@ final _blockedBlocks = RegExp(
 );
 
 /// `<meta http-equiv="refresh">` is a navigation the CSP does not cover.
-final _metaRefresh = RegExp(
-  r'''<\s*meta\b[^>]*http-equiv\s*=\s*["']?\s*refresh[^>]*>''',
-  caseSensitive: false,
-);
+final _metaRefresh = RegExp(r'''<\s*meta\b[^>]*http-equiv\s*=\s*["']?\s*refresh[^>]*>''', caseSensitive: false);
 
 /// `onclick="…"`, `onload=…` and friends.
-final _eventHandler = RegExp(
-  r'''\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)''',
-  caseSensitive: false,
-);
+final _eventHandler = RegExp(r'''\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)''', caseSensitive: false);
 
 /// `href="javascript:…"` and `src="javascript:…"`.
 final _javascriptUrl = RegExp(
@@ -51,10 +45,7 @@ final _javascriptUrl = RegExp(
 );
 
 /// `url(http://…)` inside styles or `style="…"`.
-final _remoteUrl = RegExp(
-  r'''url\(\s*['"]?(?:https?:)?//[^)]*\)''',
-  caseSensitive: false,
-);
+final _remoteUrl = RegExp(r'''url\(\s*['"]?(?:https?:)?//[^)]*\)''', caseSensitive: false);
 
 /// Elements whose `src`/`href` would hit the network; the CSP blocks them, but
 /// dropping the attribute keeps the layout from waiting on a doomed request.
@@ -87,7 +78,8 @@ String sanitizeHtmlForPreview(String source) {
 
 /// Puts the CSP and a charset in front of whatever the document has.
 String _injectHead(String html) {
-  const head = '<meta charset="utf-8">'
+  const head =
+      '<meta charset="utf-8">'
       '<meta http-equiv="Content-Security-Policy" content="$_csp">'
       '<meta name="referrer" content="no-referrer">'
       '<meta name="viewport" content="width=device-width, initial-scale=1">';

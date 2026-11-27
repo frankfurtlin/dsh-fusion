@@ -365,9 +365,7 @@ class _SuspendedPageState extends ConsumerState<_SuspendedPage> {
       children: [
         SettingsSection(
           title: l10n.harmonyBackgroundAway,
-          children: [
-            SettingsTile(title: l10n.harmonyBackgroundRemoteTitle, subtitle: l10n.harmonyBackgroundRemote),
-          ],
+          children: [SettingsTile(title: l10n.harmonyBackgroundRemoteTitle, subtitle: l10n.harmonyBackgroundRemote)],
         ),
         SettingsSection(
           title: l10n.harmonyBackgroundLong,

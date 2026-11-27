@@ -6,14 +6,28 @@ class SystemImeEvidence {
   static const maxEvents = 64;
   static const windowMs = 120000;
   static const codes = {
-    'ok', 'noEvents', 'unavailable', 'unsupported', 'denied', 'cancelled',
-    'busy', 'timeout', 'limitExceeded', 'failed',
+    'ok',
+    'noEvents',
+    'unavailable',
+    'unsupported',
+    'denied',
+    'cancelled',
+    'busy',
+    'timeout',
+    'limitExceeded',
+    'failed',
   };
   static const reasons = {
-    'SHOW_SOFT_INPUT', 'SHOW_SOFT_INPUT_FROM_IME', 'SHOW_AUTO_EDITOR_FORWARD_NAV',
-    'SHOW_STATE_VISIBLE_FORWARD_NAV', 'SHOW_STATE_ALWAYS_VISIBLE', 'HIDE_SOFT_INPUT',
-    'HIDE_SOFT_INPUT_FROM_IME', 'HIDE_STATE_HIDDEN_FORWARD_NAV',
-    'HIDE_ALWAYS_HIDDEN_STATE', 'HIDE_WINDOW_LOST_FOCUS',
+    'SHOW_SOFT_INPUT',
+    'SHOW_SOFT_INPUT_FROM_IME',
+    'SHOW_AUTO_EDITOR_FORWARD_NAV',
+    'SHOW_STATE_VISIBLE_FORWARD_NAV',
+    'SHOW_STATE_ALWAYS_VISIBLE',
+    'HIDE_SOFT_INPUT',
+    'HIDE_SOFT_INPUT_FROM_IME',
+    'HIDE_STATE_HIDDEN_FORWARD_NAV',
+    'HIDE_ALWAYS_HIDDEN_STATE',
+    'HIDE_WINDOW_LOST_FOCUS',
   };
 
   final String source;
@@ -22,9 +36,12 @@ class SystemImeEvidence {
   final List<SystemImeEvent> events;
   bool get ok => code == 'ok' || code == 'noEvents';
 
-  factory SystemImeEvidence.failure(String code, DateTime at, {String source = 'privilegedIme'}) =>
-      SystemImeEvidence._(codes.contains(code) && code != 'ok' && code != 'noEvents' ? code : 'failed',
-          at.millisecondsSinceEpoch, const [], source: source == 'ohosWindowGeometry' ? source : 'privilegedIme');
+  factory SystemImeEvidence.failure(String code, DateTime at, {String source = 'privilegedIme'}) => SystemImeEvidence._(
+    codes.contains(code) && code != 'ok' && code != 'noEvents' ? code : 'failed',
+    at.millisecondsSinceEpoch,
+    const [],
+    source: source == 'ohosWindowGeometry' ? source : 'privilegedIme',
+  );
 
   factory SystemImeEvidence.fromNative(Object? raw, {required DateTime now}) {
     final source = raw is Map && raw['source'] == 'ohosWindowGeometry' ? 'ohosWindowGeometry' : 'privilegedIme';
@@ -34,11 +51,16 @@ class SystemImeEvidence {
     final capturedAt = raw['capturedAt'];
     final rows = raw['events'];
     final nowMs = now.millisecondsSinceEpoch;
-    if (code is! String || !codes.contains(code) ||
-        raw['source'] != source || raw['ok'] is! bool ||
+    if (code is! String ||
+        !codes.contains(code) ||
+        raw['source'] != source ||
+        raw['ok'] is! bool ||
         raw['ok'] != (code == 'ok' || code == 'noEvents') ||
-        capturedAt is! int || capturedAt <= 0 ||
-        capturedAt > nowMs || capturedAt < nowMs - windowMs || rows is! List) {
+        capturedAt is! int ||
+        capturedAt <= 0 ||
+        capturedAt > nowMs ||
+        capturedAt < nowMs - windowMs ||
+        rows is! List) {
       return invalid();
     }
     if (rows.length > maxEvents) return SystemImeEvidence.failure('limitExceeded', now, source: source);
@@ -51,9 +73,14 @@ class SystemImeEvidence {
       final fromUser = row['fromUser'];
       final reason = row['reason'];
       final origin = row['origin'];
-      if (timestamp is! int || timestamp < capturedAt - windowMs || timestamp > capturedAt ||
-          !row.containsKey('fromUser') || (fromUser != null && fromUser is! bool) ||
-          event is! String || reason is! String || origin is! String) {
+      if (timestamp is! int ||
+          timestamp < capturedAt - windowMs ||
+          timestamp > capturedAt ||
+          !row.containsKey('fromUser') ||
+          (fromUser != null && fromUser is! bool) ||
+          event is! String ||
+          reason is! String ||
+          origin is! String) {
         return invalid();
       }
       if (source == 'ohosWindowGeometry') {
@@ -115,13 +142,17 @@ Map<String, Object?>? _keyboardGeometry(String event, Object? raw) {
   bool finite(Object? value) => value is num && value.isFinite;
   bool rectangle(String key) {
     final values = raw[key];
-    if (values is! List || values.length != 4 || !values.every(finite) ||
-        (values[2] as num) < 0 || (values[3] as num) < 0) {
+    if (values is! List ||
+        values.length != 4 ||
+        !values.every(finite) ||
+        (values[2] as num) < 0 ||
+        (values[3] as num) < 0) {
       return false;
     }
     out[key] = List<num>.unmodifiable(values.cast<num>());
     return true;
   }
+
   switch (event) {
     case 'willShow' || 'willHide' || 'didShow' || 'didHide':
       if (!rectangle('begin') || !rectangle('end')) return null;

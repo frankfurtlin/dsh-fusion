@@ -266,10 +266,8 @@ String _fnv(String text) {
 }
 
 final artifactFilesProvider = Provider<ArtifactFiles>(
-  (ref) => ArtifactFiles(
-    connection: ref.watch(activeConnectionProvider).value,
-    channel: ref.watch(filesChannelProvider),
-  ),
+  (ref) =>
+      ArtifactFiles(connection: ref.watch(activeConnectionProvider).value, channel: ref.watch(filesChannelProvider)),
 );
 
 /// [ArtifactFiles.thumbnail], cached per (session, path) while shown.

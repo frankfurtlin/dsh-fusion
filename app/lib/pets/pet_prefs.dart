@@ -43,8 +43,7 @@ enum PetOverlayFraming {
   final double y;
 
   /// The preset [prefs] holds; anything else (set some other way) reads as [full].
-  static PetOverlayFraming of(PetPrefs prefs) =>
-      prefs.floatZoom == half.zoom && prefs.floatY == half.y ? half : full;
+  static PetOverlayFraming of(PetPrefs prefs) => prefs.floatZoom == half.zoom && prefs.floatY == half.y ? half : full;
 }
 
 @immutable
@@ -139,8 +138,19 @@ class PetPrefs {
       other.loaded == loaded;
 
   @override
-  int get hashCode => Object.hash(packId, packExplicit, size, customHeight, quiet, position, hiddenUntil,
-      overlayRenderer, floatZoom, floatY, loaded);
+  int get hashCode => Object.hash(
+    packId,
+    packExplicit,
+    size,
+    customHeight,
+    quiet,
+    position,
+    hiddenUntil,
+    overlayRenderer,
+    floatZoom,
+    floatY,
+    loaded,
+  );
 }
 
 class PetPrefsController extends Notifier<PetPrefs> {
@@ -264,9 +274,12 @@ class PetPrefsController extends Notifier<PetPrefs> {
     if (!zoom.isFinite || zoom <= 0 || zoom > 4 || !y.isFinite || y < -1 || y > 1) {
       throw ArgumentError('Invalid companion framing');
     }
-    return _save((s) => s.copyWith(floatZoom: zoom, floatY: y),
-        (p) => p.setString(keys.framing, jsonEncode({'zoom': zoom, 'y': y})));
+    return _save(
+      (s) => s.copyWith(floatZoom: zoom, floatY: y),
+      (p) => p.setString(keys.framing, jsonEncode({'zoom': zoom, 'y': y})),
+    );
   }
+
   Future<void> setPosition(double v) {
     final x = v.clamp(0.0, 1.0);
     return _save((s) => s.copyWith(position: x), (p) => p.setDouble(keys.position, x));

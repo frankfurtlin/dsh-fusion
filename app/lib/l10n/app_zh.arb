@@ -1648,7 +1648,6 @@
   "botsDiscardTitle": "放弃修改？",
   "botsKeepEditing": "继续编辑",
   "botsDiscard": "放弃",
-  "botsProgress": "进度",
   "botsGlyphRun": "运行",
   "botsGlyphJobOutput": "查看后台任务",
   "botsGlyphJobs": "后台任务",
@@ -2048,7 +2047,6 @@
     }
   },
   "botsEveryone": "所有人",
-  "botsActivelyRunning": "正在运行",
   "botsListSeparator": "，",
   "botsNameSeparator": "、",
   "botsGlyphSubagent": "子代理",
@@ -5179,7 +5177,6 @@
   "harmonyPluginRefusedHint": "可以开关随包插件，或连接电脑管理插件",
   "harmonyPasswordStorageHelp": "只保存在这台手机上，由系统密钥库加密",
   "harmonyKeyStorageHelp": "只保存在这台手机上，由系统密钥库加密。支持 Ed25519、RSA、ECDSA",
-  "harmonyUsageNotSent": "鸿蒙版暂不发送使用统计",
   "harmonyVoiceSystemHint": "使用系统的语音识别",
   "harmonyVoiceSystemHintChinese": "使用系统的语音识别，只认中文",
   "harmonyVoiceAutoHint": "系统识别，或下面选的云端转写接口",
@@ -5679,12 +5676,6 @@
   "localeZh": "简体中文",
   "localeEn": "English",
   "marketInstallRefused": "这个引擎不能安装市场插件",
-  "marketSectionOfficial": "官方",
-  "marketSectionAdapted": "适配 DSH Pocket",
-  "marketSectionAll": "全部",
-  "marketSectionLoading": "正在载入…",
-  "marketSectionFailed": "官方目录没打开",
-  "marketSectionEmpty": "暂无",
   "marketTierOfficial": "官方",
   "marketTierAdapted": "适配 DSH Pocket",
   "marketRiskMedium": "中风险",
@@ -5764,8 +5755,6 @@
       }
     }
   },
-  "marketSubmit": "提交插件",
-  "marketSubmitHint": "在 GitHub 提交，通过自动检查即上架",
   "marketLinkNotFound": "插件市场里没有 {name}",
   "@marketLinkNotFound": {
     "placeholders": {
@@ -5776,14 +5765,6 @@
   },
   "marketVerificationUnavailableTitle": "暂时无法核对版本",
   "marketVerificationUnavailableBody": "没能取得 npm 的版本校验信息，尚未开始安装。请检查网络后重试。",
-  "marketCombinedCount": "{count} 个插件",
-  "@marketCombinedCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "mediaGenerateTile": "生成",
   "mediaAiGenerated": "AI 生成",
   "mediaCostEstimate": "约 {amount}",
@@ -7221,45 +7202,7 @@
     }
   },
   "pluginsSearch": "搜索插件",
-  "pluginsMarketLoading": "正在载入插件目录…",
-  "pluginsMarketLoadFailed": "插件目录没打开",
   "pluginsMarketInvalid": "目录格式有误",
-  "pluginsAll": "全部",
-  "pluginsMarketCount": "{count} 个插件 · 来自 dshfind",
-  "@pluginsMarketCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "pluginsHideWeb": "隐藏网页版插件",
-  "pluginsShowWebCount": "显示 {count} 个网页版插件",
-  "@pluginsShowWebCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "pluginsNoCategoryPlugins": "这个分类下没有插件",
-  "pluginsNoSearchResults": "没有找到「{query}」",
-  "@pluginsNoSearchResults": {
-    "placeholders": {
-      "query": {
-        "type": "String"
-      }
-    }
-  },
-  "pluginsFailureDetails": "{title} · 点开查看",
-  "@pluginsFailureDetails": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "pluginsFeatured": "推荐",
   "pluginsInstalledRemoteRestart": "已安装「{name}」，重启{host}上的 DSH 后生效",
   "@pluginsInstalledRemoteRestart": {
     "placeholders": {
@@ -8833,26 +8776,6 @@
       }
     }
   },
-  "remoteRelayProvider": "服务由 {project} 提供",
-  "@remoteRelayProvider": {
-    "description": "Under the DSH Remote card; project is the upstream GitHub project (liguobao/ds-harness-remote), drawn as a link.",
-    "placeholders": {
-      "project": {
-        "type": "String"
-      }
-    }
-  },
-  "remoteRelayProviderServer": "服务由 {project} 提供 · 当前服务器 {server}",
-  "@remoteRelayProviderServer": {
-    "placeholders": {
-      "project": {
-        "type": "String"
-      },
-      "server": {
-        "type": "String"
-      }
-    }
-  },
   "remoteQuotedHostName": "「{name}」",
   "@remoteQuotedHostName": {
     "placeholders": {
@@ -8920,10 +8843,6 @@
   "remoteErrHistoryModeChanged": "主机已不支持精简历史，请切换到其他主机后再连回来，或重启 App，重新加载历史",
   "remoteCompactHistoryHint": "支持的 DSH Remote 主机会精简历史工具详情，实时回复和审批不变。切换主机或重启 App 后生效；旧主机仍传输完整历史。",
   "searchKwRemoteCompactHistory": "精简 简洁 历史 工具 传输 流量 远程 compact slim lite",
-  "remotePairTitle": "扫码配对电脑",
-  "remotePairSubtitle": "不用注册 Remote 账号，也不会传 DeepSeek 密码或登录凭据",
-  "remotePairNeedsDeepSeek": "先登录 DeepSeek 账号",
-  "remotePairNeedsDeepSeekBody": "扫码配对要先在 DSH Pocket 里登录 DeepSeek 账号。配对时只附带账号 ID 用来标记这台手机，不传密码、Cookie 或 Token。",
   "remotePairErrInvalidCode": "这不是 DSH Pocket 的配对二维码",
   "remotePairErrOtherServer": "这个二维码来自另一个 Remote 服务器",
   "remotePairErrUnsupported": "这个 Remote 服务器还不支持扫码配对",
@@ -10014,7 +9933,6 @@
   "stateStoragePermission": "没有存储权限，存不进「下载」",
   "stateDiagnosticsStorageFull": "存储空间不足，没能生成诊断包",
   "stateDiagnosticsExportFailed": "没能导出诊断包",
-  "stateBrowserOpenFailed": "没能打开浏览器",
   "stateFileOpenFailed": "无法打开这个文件",
   "stateLinkOpenFailed": "无法打开这个链接",
   "stateAlertPublicDone": "有一轮完成了",
@@ -10940,8 +10858,6 @@
       }
     }
   },
-  "usageStatsSection": "改进 DSH Pocket",
-  "usageStatsFooter": "这个开关只控制 dsh-go 自身的统计：各功能使用次数（含伙伴小屋、语音通话）、模型回复报告的 token 数、版本、手机品牌和型号、系统版本，不含对话、文件和账号；它不控制 Google ML Kit SDK 的统计。",
   "viewArtifactSaved": "已存到 {value}",
   "@viewArtifactSaved": {
     "placeholders": {

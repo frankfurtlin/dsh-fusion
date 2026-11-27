@@ -70,18 +70,30 @@ class SkillUseActions extends ConsumerWidget {
       ),
     );
     if (!RegExp(r'^phone-task-[a-f0-9]{32}$').hasMatch(skill.name)) return actions;
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      actions,
-      TextButton(onPressed: () async {
-        final prepared = await preparePhoneSkillUse(context, skillId: skill.name, sessionId: sessionId);
-        if (prepared == null) return;
-        if (!context.mounted) { unawaited(prepared.discard()); return; }
-        final container = ProviderScope.containerOf(context, listen: false);
-        if (!prepared.origin.current(container)) { unawaited(prepared.discard()); return; }
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        container.read(composerInsertProvider.notifier).request(ComposerInsert.phoneRoute(prepared));
-      }, child: Text(l10n.phoneSkillReplayReview)),
-    ]);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        actions,
+        TextButton(
+          onPressed: () async {
+            final prepared = await preparePhoneSkillUse(context, skillId: skill.name, sessionId: sessionId);
+            if (prepared == null) return;
+            if (!context.mounted) {
+              unawaited(prepared.discard());
+              return;
+            }
+            final container = ProviderScope.containerOf(context, listen: false);
+            if (!prepared.origin.current(container)) {
+              unawaited(prepared.discard());
+              return;
+            }
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            container.read(composerInsertProvider.notifier).request(ComposerInsert.phoneRoute(prepared));
+          },
+          child: Text(l10n.phoneSkillReplayReview),
+        ),
+      ],
+    );
   }
 }
 

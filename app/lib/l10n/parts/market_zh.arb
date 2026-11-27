@@ -1,10 +1,4 @@
 {
-  "marketSectionOfficial": "官方",
-  "marketSectionAdapted": "适配 DSH Pocket",
-  "marketSectionAll": "全部",
-  "marketSectionLoading": "正在载入…",
-  "marketSectionFailed": "官方目录没打开",
-  "marketSectionEmpty": "暂无",
   "marketTierOfficial": "官方",
   "marketTierAdapted": "适配 DSH Pocket",
   "marketRiskMedium": "中风险",
@@ -84,8 +78,6 @@
       }
     }
   },
-  "marketSubmit": "提交插件",
-  "marketSubmitHint": "在 GitHub 提交，通过自动检查即上架",
   "marketLinkNotFound": "插件市场里没有 {name}",
   "@marketLinkNotFound": {
     "placeholders": {
@@ -95,13 +87,5 @@
     }
   },
   "marketVerificationUnavailableTitle": "暂时无法核对版本",
-  "marketVerificationUnavailableBody": "没能取得 npm 的版本校验信息，尚未开始安装。请检查网络后重试。",
-  "marketCombinedCount": "{count} 个插件",
-  "@marketCombinedCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "marketVerificationUnavailableBody": "没能取得 npm 的版本校验信息，尚未开始安装。请检查网络后重试。"
 }

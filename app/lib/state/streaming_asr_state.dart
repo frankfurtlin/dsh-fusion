@@ -22,7 +22,12 @@ final ohosStreamingAsrReadyProvider = FutureProvider.autoDispose<SystemAsrReadin
   if (OhosStreamingAsr.hasActiveSession) return SystemAsrReadiness.ready;
   final probe = OhosStreamingAsr.forReadiness();
   Object? failure;
-  final events = probe.events.listen((_) {}, onError: (Object error) { failure = error; });
+  final events = probe.events.listen(
+    (_) {},
+    onError: (Object error) {
+      failure = error;
+    },
+  );
   Future<void>? closing;
   Future<void> close() => closing ??= probe.dispose();
   ref.onDispose(() => unawaited(close().catchError((Object _) {})));
@@ -30,10 +35,12 @@ final ohosStreamingAsrReadyProvider = FutureProvider.autoDispose<SystemAsrReadin
     // recognitionMode=1 uses supplied PCM and never opens the microphone.
     await probe.start(const StreamingAsrModel.system());
     if (failure case final error?) throw error;
-    return probe.active || OhosStreamingAsr.hasActiveSession
-        ? SystemAsrReadiness.ready : SystemAsrReadiness.busy;
+    return probe.active || OhosStreamingAsr.hasActiveSession ? SystemAsrReadiness.ready : SystemAsrReadiness.busy;
   } finally {
-    try { await close(); }
-    finally { await events.cancel(); }
+    try {
+      await close();
+    } finally {
+      await events.cancel();
+    }
   }
 }, retry: (_, _) => null);

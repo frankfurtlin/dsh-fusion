@@ -2,10 +2,19 @@ import '../workshop/workshop_models.dart';
 import '../workshop/workshop_repository.dart';
 
 class WorkshopPublicationInput {
-  WorkshopPublicationInput({this.id = '', this.version = '1.0.0', this.minApp = '1.0.0',
-    this.titleZh = '', this.titleEn = '', this.author = '', this.license = '',
-    this.source = '', this.description = '', List<String> tags = const [],
-    this.rightsConfirmed = false}) : tags = List.unmodifiable(tags);
+  WorkshopPublicationInput({
+    this.id = '',
+    this.version = '1.0.0',
+    this.minApp = '1.0.0',
+    this.titleZh = '',
+    this.titleEn = '',
+    this.author = '',
+    this.license = '',
+    this.source = '',
+    this.description = '',
+    List<String> tags = const [],
+    this.rightsConfirmed = false,
+  }) : tags = List.unmodifiable(tags);
 
   final String id, version, minApp, titleZh, titleEn, author, license, source, description;
   final List<String> tags;
@@ -27,24 +36,44 @@ class WorkshopPublicationInput {
   });
 
   Map<String, Object?> declaration(String kind) => {
-    'kind': kind, 'id': id, 'version': version, 'minApp': minApp,
-    'title': {'zh': titleZh, 'en': titleEn}, 'author': author,
-    'license': license, 'source': source,
+    'kind': kind,
+    'id': id,
+    'version': version,
+    'minApp': minApp,
+    'title': {'zh': titleZh, 'en': titleEn},
+    'author': author,
+    'license': license,
+    'source': source,
     if (description.isNotEmpty) 'description': description,
     if (tags.isNotEmpty) 'tags': tags,
   };
 
-  WorkshopPublication publication(String kind, {String? previewSource}) => WorkshopPublication({
-    ...declaration(kind), 'previewSource': ?previewSource,
-  });
+  WorkshopPublication publication(String kind, {String? previewSource}) =>
+      WorkshopPublication({...declaration(kind), 'previewSource': ?previewSource});
 
-  WorkshopPublicationInput copyWith({String? id, String? version, String? minApp,
-    String? titleZh, String? titleEn, String? author, String? license, String? source,
-    String? description, List<String>? tags, bool? rightsConfirmed}) => WorkshopPublicationInput(
-    id: id ?? this.id, version: version ?? this.version, minApp: minApp ?? this.minApp,
-    titleZh: titleZh ?? this.titleZh, titleEn: titleEn ?? this.titleEn,
-    author: author ?? this.author, license: license ?? this.license, source: source ?? this.source,
-    description: description ?? this.description, tags: tags ?? this.tags,
+  WorkshopPublicationInput copyWith({
+    String? id,
+    String? version,
+    String? minApp,
+    String? titleZh,
+    String? titleEn,
+    String? author,
+    String? license,
+    String? source,
+    String? description,
+    List<String>? tags,
+    bool? rightsConfirmed,
+  }) => WorkshopPublicationInput(
+    id: id ?? this.id,
+    version: version ?? this.version,
+    minApp: minApp ?? this.minApp,
+    titleZh: titleZh ?? this.titleZh,
+    titleEn: titleEn ?? this.titleEn,
+    author: author ?? this.author,
+    license: license ?? this.license,
+    source: source ?? this.source,
+    description: description ?? this.description,
+    tags: tags ?? this.tags,
     rightsConfirmed: rightsConfirmed ?? this.rightsConfirmed,
   );
 
@@ -75,9 +104,16 @@ class WorkshopPublicationInput {
   static const workshopDefaultLicense = 'LicenseRef-Author-Permission';
 
   factory WorkshopPublicationInput.fromMetadata(WorkshopMetadata metadata) => WorkshopPublicationInput(
-    id: metadata.id, version: metadata.version, minApp: metadata.minApp,
-    titleZh: metadata.title['zh']!, titleEn: metadata.title['en']!, author: metadata.author,
-    license: metadata.license, source: metadata.source, description: metadata.description,
-    tags: metadata.tags, rightsConfirmed: true,
+    id: metadata.id,
+    version: metadata.version,
+    minApp: metadata.minApp,
+    titleZh: metadata.title['zh']!,
+    titleEn: metadata.title['en']!,
+    author: metadata.author,
+    license: metadata.license,
+    source: metadata.source,
+    description: metadata.description,
+    tags: metadata.tags,
+    rightsConfirmed: true,
   );
 }

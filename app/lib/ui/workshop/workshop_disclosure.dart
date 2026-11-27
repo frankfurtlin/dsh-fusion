@@ -83,18 +83,14 @@ class WorkshopDisclosureView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Semantics(
-                header: true,
-                child: Text(l10n.workshopDisclosureTitle, style: theme.textTheme.titleLarge),
-              ),
+              Semantics(header: true, child: Text(l10n.workshopDisclosureTitle, style: theme.textTheme.titleLarge)),
               const SizedBox(height: 8),
               Text(l10n.workshopDisclosureLead, style: body),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        if (stale)
-          WorkshopNote(l10n.workshopDisclosureStale, tone: WorkshopNoteTone.warning),
+        if (stale) WorkshopNote(l10n.workshopDisclosureStale, tone: WorkshopNoteTone.warning),
         ListPageCard(
           children: [
             _Party(label: l10n.workshopDisclosureWorker, host: workshopHostText(offer.worker)),

@@ -57,9 +57,9 @@ class PrivacyPage extends ConsumerWidget {
           children: [
             ListTile(
               title: Text(l10n.phoneLocalOcrTitle),
-              onTap: () => unawaited(Navigator.of(context).push<void>(
-                MaterialPageRoute<void>(builder: (_) => const PhoneControlScreen()),
-              )),
+              onTap: () => unawaited(
+                Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const PhoneControlScreen())),
+              ),
             ),
           ],
         ),

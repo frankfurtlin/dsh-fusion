@@ -311,7 +311,11 @@ PluginConfigFailure pluginConfigFailureOf(Object error) {
       'apply-failed' => failure(PluginConfigFailureKind.reloadFailed, appL10n.pluginConfigRestored),
       'invalid-config' => failure(PluginConfigFailureKind.rejected, appL10n.stateSettingsInvalidValue),
       'host-unavailable' => failure(PluginConfigFailureKind.unreachable, appL10n.commonEngineUnreachable),
-      'recovery-failed' => failure(PluginConfigFailureKind.reloadFailed, appL10n.pluginConfigStopped, rolledBack: false),
+      'recovery-failed' => failure(
+        PluginConfigFailureKind.reloadFailed,
+        appL10n.pluginConfigStopped,
+        rolledBack: false,
+      ),
       _ => failure(PluginConfigFailureKind.rejected, appL10n.stateSettingsRejected),
     };
   }

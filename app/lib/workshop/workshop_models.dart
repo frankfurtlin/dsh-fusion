@@ -8,19 +8,32 @@ const workshopPreviewPixels = 262144;
 const workshopPreviewBytes = 2 * 1024 * 1024;
 const workshopPreviewSources = {'pet': 'pet-idle', 'companion': 'companion-preview'};
 const workshopLicenses = {
-  'CC0-1.0', 'CC-BY-4.0', 'CC-BY-SA-4.0', 'MIT', 'Apache-2.0',
-  'BSD-2-Clause', 'BSD-3-Clause', 'LicenseRef-Author-Permission',
+  'CC0-1.0',
+  'CC-BY-4.0',
+  'CC-BY-SA-4.0',
+  'MIT',
+  'Apache-2.0',
+  'BSD-2-Clause',
+  'BSD-3-Clause',
+  'LicenseRef-Author-Permission',
 };
 
 /// Stable codes only: never put a key, server body or local path in an error.
 class WorkshopException implements Exception {
-  const WorkshopException(this.code, {this.status, this.retryAfter, this.resultUnknown = false,
-    this.mutationNotSent = false});
+  const WorkshopException(
+    this.code, {
+    this.status,
+    this.retryAfter,
+    this.resultUnknown = false,
+    this.mutationNotSent = false,
+  });
   final String code;
   final int? status;
   final Duration? retryAfter;
+
   /// A write may have reached the server. Reconcile before claiming failure.
   final bool resultUnknown;
+
   /// Preflight proved this mutation call did not reach the HTTP transport.
   /// Earlier attempts with the same requestId may still have reached the server.
   final bool mutationNotSent;
@@ -30,15 +43,22 @@ class WorkshopException implements Exception {
 
 Never workshopInvalid([String code = 'workshop_bad_response']) => throw WorkshopException(code);
 
-bool workshopId(Object? value) => value is String && value.length <= 40 &&
-    RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(value);
+bool workshopId(Object? value) =>
+    value is String && value.length <= 40 && RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(value);
 bool workshopHash(Object? value) => value is String && RegExp(r'^[a-f0-9]{64}$').hasMatch(value);
-bool workshopText(Object? value, int cap) => value is String && value.trim().isNotEmpty &&
-    value.runes.length <= cap && !value.runes.any((r) => r < 32 || r >= 0xd800 && r <= 0xdfff);
+bool workshopText(Object? value, int cap) =>
+    value is String &&
+    value.trim().isNotEmpty &&
+    value.runes.length <= cap &&
+    !value.runes.any((r) => r < 32 || r >= 0xd800 && r <= 0xdfff);
 
 Uri workshopOrigin(Uri value) {
-  if (value.scheme != 'https' || value.host.isEmpty || value.userInfo.isNotEmpty ||
-      value.hasQuery || value.hasFragment || value.path.isNotEmpty && value.path != '/') {
+  if (value.scheme != 'https' ||
+      value.host.isEmpty ||
+      value.userInfo.isNotEmpty ||
+      value.hasQuery ||
+      value.hasFragment ||
+      value.path.isNotEmpty && value.path != '/') {
     workshopInvalid('workshop_untrusted_origin');
   }
   return Uri(scheme: 'https', host: _workshopOriginHost(value.host), port: value.hasPort ? value.port : null);
@@ -98,6 +118,7 @@ class WorkshopVersion implements Comparable<WorkshopVersion> {
     if (match == null) return null;
     return WorkshopVersion._(value, [match[1]!, match[2]!, match[3]!], match[4]?.split('.') ?? const []);
   }
+
   static int _digits(String a, String b) => a.length == b.length ? a.compareTo(b) : a.length.compareTo(b.length);
   @override
   int compareTo(WorkshopVersion other) {
@@ -111,7 +132,11 @@ class WorkshopVersion implements Comparable<WorkshopVersion> {
     for (var i = 0; i < pre.length && i < other.pre.length; i++) {
       final a = pre[i], b = other.pre[i];
       final an = RegExp(r'^[0-9]+$').hasMatch(a), bn = RegExp(r'^[0-9]+$').hasMatch(b);
-      final n = an && bn ? _digits(a, b) : an != bn ? (an ? -1 : 1) : a.compareTo(b);
+      final n = an && bn
+          ? _digits(a, b)
+          : an != bn
+          ? (an ? -1 : 1)
+          : a.compareTo(b);
       if (n != 0) return n;
     }
     return pre.length.compareTo(other.pre.length);
@@ -128,7 +153,8 @@ DateTime workshopTime(Object? value) {
     workshopInvalid();
   }
   final time = DateTime.tryParse(value);
-  if (time == null || time.toUtc().toIso8601String() != (value.contains('.') ? value : value.replaceFirst('Z', '.000Z'))) {
+  if (time == null ||
+      time.toUtc().toIso8601String() != (value.contains('.') ? value : value.replaceFirst('Z', '.000Z'))) {
     workshopInvalid();
   }
   return time;
@@ -148,10 +174,17 @@ class WorkshopFeatures {
 
 class WorkshopMetadata {
   WorkshopMetadata._(Map<String, Object?> value)
-    : kind = value['kind'] as String, id = value['id'] as String, version = value['version'] as String,
-      minApp = value['minApp'] as String, title = Map.unmodifiable((value['title'] as Map).cast<String, String>()),
-      author = value['author'] as String, license = value['license'] as String, source = value['source'] as String,
-      sha256 = value['sha256'] as String, size = value['size'] as int, description = value['description'] as String,
+    : kind = value['kind'] as String,
+      id = value['id'] as String,
+      version = value['version'] as String,
+      minApp = value['minApp'] as String,
+      title = Map.unmodifiable((value['title'] as Map).cast<String, String>()),
+      author = value['author'] as String,
+      license = value['license'] as String,
+      source = value['source'] as String,
+      sha256 = value['sha256'] as String,
+      size = value['size'] as int,
+      description = value['description'] as String,
       tags = List.unmodifiable((value['tags'] as List).cast<String>()),
       previewSource = value['previewSource'] as String?;
 
@@ -163,21 +196,38 @@ class WorkshopMetadata {
     // Unknown public kinds retain their existing unsupported-kind projection;
     // this client does not interpret their future preview source modes.
     final previewSource = supported ? m['previewSource'] : null;
-    if (!workshopId(m['kind']) || !workshopId(m['id']) || WorkshopVersion.tryParse(m['version']) == null ||
-        WorkshopVersion.tryParse(m['minApp']) == null || title is! Map ||
-        !workshopText(title['zh'], 120) || !workshopText(title['en'], 120) ||
-        !workshopText(m['author'], 256) || !workshopText(m['license'], 100) || !workshopSource(m['source']) ||
-        !workshopHash(m['sha256']) || m['size'] is! int || (m['size'] as int) < 1 ||
-        (m['size'] as int) > 9007199254740991 || supported &&
-        (!workshopLicenses.contains(m['license']) || submission && (m['size'] as int) > workshopArchiveBytes) || submission &&
-        (m['rightsConfirmed'] != true || !supported) ||
-        description != '' && !workshopText(description, 512) || tags is! List || tags.length > 8 ||
-        tags.any((tag) => !workshopText(tag, 32)) || tags.toSet().length != tags.length ||
+    if (!workshopId(m['kind']) ||
+        !workshopId(m['id']) ||
+        WorkshopVersion.tryParse(m['version']) == null ||
+        WorkshopVersion.tryParse(m['minApp']) == null ||
+        title is! Map ||
+        !workshopText(title['zh'], 120) ||
+        !workshopText(title['en'], 120) ||
+        !workshopText(m['author'], 256) ||
+        !workshopText(m['license'], 100) ||
+        !workshopSource(m['source']) ||
+        !workshopHash(m['sha256']) ||
+        m['size'] is! int ||
+        (m['size'] as int) < 1 ||
+        (m['size'] as int) > 9007199254740991 ||
+        supported &&
+            (!workshopLicenses.contains(m['license']) || submission && (m['size'] as int) > workshopArchiveBytes) ||
+        submission && (m['rightsConfirmed'] != true || !supported) ||
+        description != '' && !workshopText(description, 512) ||
+        tags is! List ||
+        tags.length > 8 ||
+        tags.any((tag) => !workshopText(tag, 32)) ||
+        tags.toSet().length != tags.length ||
         supported && m.containsKey('previewSource') && previewSource != workshopPreviewSources[m['kind']]) {
       workshopInvalid(submission ? 'workshop_bad_metadata' : 'workshop_bad_catalog');
     }
-    return WorkshopMetadata._({...m, 'title': {'zh': title['zh'], 'en': title['en']}, 'description': description,
-      'tags': tags, 'previewSource': previewSource});
+    return WorkshopMetadata._({
+      ...m,
+      'title': {'zh': title['zh'], 'en': title['en']},
+      'description': description,
+      'tags': tags,
+      'previewSource': previewSource,
+    });
   }
   final String kind, id, version, minApp, author, license, source, sha256, description;
   final Map<String, String> title;
@@ -189,8 +239,16 @@ class WorkshopMetadata {
   bool get supported => kind == 'pet' || kind == 'companion';
   String get archivePath => '/market/workshop/$release/$sha256.zip';
   Map<String, Object?> toJson({bool submission = true}) => {
-    'kind': kind, 'id': id, 'version': version, 'minApp': minApp, 'title': title,
-    'author': author, 'license': license, 'source': source, 'sha256': sha256, 'size': size,
+    'kind': kind,
+    'id': id,
+    'version': version,
+    'minApp': minApp,
+    'title': title,
+    'author': author,
+    'license': license,
+    'source': source,
+    'sha256': sha256,
+    'size': size,
     if (description.isNotEmpty) 'description': description,
     if (tags.isNotEmpty) 'tags': tags,
     if (previewSource != null) 'previewSource': previewSource,
@@ -204,9 +262,16 @@ class WorkshopPreview {
   factory WorkshopPreview.fromJson(Object? value, {required WorkshopMetadata metadata}) {
     final m = workshopMap(value), hash = m['sha256'];
     final size = m['size'], width = m['width'], height = m['height'];
-    if (!workshopHash(hash) || size is! int || size < 1 || size > workshopPreviewBytes ||
-        width is! int || width < 1 || width > workshopPreviewSide ||
-        height is! int || height < 1 || height > workshopPreviewSide ||
+    if (!workshopHash(hash) ||
+        size is! int ||
+        size < 1 ||
+        size > workshopPreviewBytes ||
+        width is! int ||
+        width < 1 ||
+        width > workshopPreviewSide ||
+        height is! int ||
+        height < 1 ||
+        height > workshopPreviewSide ||
         width * height > workshopPreviewPixels ||
         m['path'] != '/market/workshop/${metadata.release}/${metadata.sha256}/preview/$hash.png') {
       workshopInvalid();
@@ -221,34 +286,61 @@ class WorkshopPreview {
 class WorkshopEntry {
   WorkshopEntry._(this.metadata, this.blockedVersions, this.preview);
   factory WorkshopEntry.fromJson(Object? value) {
-    final m = workshopMap(value), meta = WorkshopMetadata.fromJson(value, submission: false), blocked = m['blockedVersions'];
-    if (m['url'] != meta.archivePath || blocked is! List || blocked.length > 4000 ||
-        blocked.any((v) => WorkshopVersion.tryParse(v) == null) || blocked.toSet().length != blocked.length) {
+    final m = workshopMap(value),
+        meta = WorkshopMetadata.fromJson(value, submission: false),
+        blocked = m['blockedVersions'];
+    if (m['url'] != meta.archivePath ||
+        blocked is! List ||
+        blocked.length > 4000 ||
+        blocked.any((v) => WorkshopVersion.tryParse(v) == null) ||
+        blocked.toSet().length != blocked.length) {
       workshopInvalid('workshop_bad_catalog');
     }
-    return WorkshopEntry._(meta, Set.unmodifiable(blocked.cast<String>()),
-      meta.supported && m.containsKey('preview') ? WorkshopPreview.fromJson(m['preview'], metadata: meta) : null);
+    return WorkshopEntry._(
+      meta,
+      Set.unmodifiable(blocked.cast<String>()),
+      meta.supported && m.containsKey('preview') ? WorkshopPreview.fromJson(m['preview'], metadata: meta) : null,
+    );
   }
   final WorkshopMetadata metadata;
   final Set<String> blockedVersions;
   final WorkshopPreview? preview;
-  Map<String, Object?> toJson() => {...metadata.toJson(submission: false), 'url': metadata.archivePath,
-    'blockedVersions': blockedVersions.toList(), if (preview != null) 'preview': preview!.toJson()};
+  Map<String, Object?> toJson() => {
+    ...metadata.toJson(submission: false),
+    'url': metadata.archivePath,
+    'blockedVersions': blockedVersions.toList(),
+    if (preview != null) 'preview': preview!.toJson(),
+  };
 }
 
 class WorkshopWithdrawal {
   WorkshopWithdrawal._(this.kind, this.id, this.version, this.reason, this.at);
   factory WorkshopWithdrawal.fromJson(Object? value) {
     final m = workshopMap(value);
-    if (!workshopId(m['kind']) || !workshopId(m['id']) || WorkshopVersion.tryParse(m['version']) == null || !workshopText(m['reason'], 2000)) {
+    if (!workshopId(m['kind']) ||
+        !workshopId(m['id']) ||
+        WorkshopVersion.tryParse(m['version']) == null ||
+        !workshopText(m['reason'], 2000)) {
       workshopInvalid('workshop_bad_catalog');
     }
-    return WorkshopWithdrawal._(m['kind'] as String, m['id'] as String, m['version'] as String, m['reason'] as String, workshopTime(m['at']));
+    return WorkshopWithdrawal._(
+      m['kind'] as String,
+      m['id'] as String,
+      m['version'] as String,
+      m['reason'] as String,
+      workshopTime(m['at']),
+    );
   }
   final String kind, id, version, reason;
   final DateTime at;
   String get release => '$kind/$id/$version';
-  Map<String, Object?> toJson() => {'kind': kind, 'id': id, 'version': version, 'reason': reason, 'at': at.toUtc().toIso8601String()};
+  Map<String, Object?> toJson() => {
+    'kind': kind,
+    'id': id,
+    'version': version,
+    'reason': reason,
+    'at': at.toUtc().toIso8601String(),
+  };
 }
 
 class WorkshopCatalog {
@@ -256,24 +348,41 @@ class WorkshopCatalog {
   factory WorkshopCatalog.fromJson(Object? value) {
     // Entries over 20 MiB come in largeEntries, which apps from before the
     // 50 MiB cap ignore (one such entry made their whole catalog invalid).
-    final m = workshopMap(value), small = m['entries'], large = m['largeEntries'] ?? const <Object?>[], gone = m['withdrawn'];
-    if (m['schema'] != 1 || small is! List || large is! List || small.length + large.length > 1000 || gone is! List || gone.length > 4000) {
+    final m = workshopMap(value),
+        small = m['entries'],
+        large = m['largeEntries'] ?? const <Object?>[],
+        gone = m['withdrawn'];
+    if (m['schema'] != 1 ||
+        small is! List ||
+        large is! List ||
+        small.length + large.length > 1000 ||
+        gone is! List ||
+        gone.length > 4000) {
       workshopInvalid('workshop_bad_catalog');
     }
     final rows = [...small, ...large];
-    final entries = rows.map(WorkshopEntry.fromJson).toList(), withdrawals = gone.map(WorkshopWithdrawal.fromJson).toList();
+    final entries = rows.map(WorkshopEntry.fromJson).toList(),
+        withdrawals = gone.map(WorkshopWithdrawal.fromJson).toList();
     if (entries.map((e) => e.metadata.identity).toSet().length != entries.length ||
         withdrawals.map((e) => e.release).toSet().length != withdrawals.length) {
       workshopInvalid('workshop_bad_catalog');
     }
-    return WorkshopCatalog._(workshopTime(m['generatedAt']), WorkshopFeatures.fromJson(m['features']), List.unmodifiable(entries), List.unmodifiable(withdrawals));
+    return WorkshopCatalog._(
+      workshopTime(m['generatedAt']),
+      WorkshopFeatures.fromJson(m['features']),
+      List.unmodifiable(entries),
+      List.unmodifiable(withdrawals),
+    );
   }
   final DateTime generatedAt;
   final WorkshopFeatures features;
   final List<WorkshopEntry> entries;
   final List<WorkshopWithdrawal> withdrawn;
-  WorkshopEntry? find(String kind, String id) => entries.where((e) => e.metadata.kind == kind && e.metadata.id == id).firstOrNull;
-  bool blocked(String kind, String id, String version) => withdrawn.any((e) => e.release == '$kind/$id/$version') || (find(kind, id)?.blockedVersions.contains(version) ?? false);
+  WorkshopEntry? find(String kind, String id) =>
+      entries.where((e) => e.metadata.kind == kind && e.metadata.id == id).firstOrNull;
+  bool blocked(String kind, String id, String version) =>
+      withdrawn.any((e) => e.release == '$kind/$id/$version') ||
+      (find(kind, id)?.blockedVersions.contains(version) ?? false);
   String? unavailable(WorkshopEntry entry, String appVersion) {
     final m = entry.metadata;
     if (!m.supported) return 'workshop_unsupported_kind';
@@ -287,17 +396,28 @@ class WorkshopCatalog {
     if (m.size > workshopArchiveBytes) return 'workshop_app_too_old';
     return null;
   }
-  Map<String, Object?> toJson() => {'schema': 1, 'generatedAt': generatedAt.toUtc().toIso8601String(), 'features': features.toJson(), 'entries': entries.map((e) => e.toJson()).toList(), 'withdrawn': withdrawn.map((e) => e.toJson()).toList()};
+
+  Map<String, Object?> toJson() => {
+    'schema': 1,
+    'generatedAt': generatedAt.toUtc().toIso8601String(),
+    'features': features.toJson(),
+    'entries': entries.map((e) => e.toJson()).toList(),
+    'withdrawn': withdrawn.map((e) => e.toJson()).toList(),
+  };
 }
 
 class WorkshopPreviewCapabilities {
   WorkshopPreviewCapabilities._(this.sources);
   factory WorkshopPreviewCapabilities.fromJson(Object? value) {
     final m = workshopMap(value), sources = m['sources'];
-    if (m['schema'] != 1 || m['format'] != 'png' ||
-        m['maxWidth'] != workshopPreviewSide || m['maxHeight'] != workshopPreviewSide ||
-        m['maxPixels'] != workshopPreviewPixels || m['maxBytes'] != workshopPreviewBytes ||
-        sources is! List || sources.any((source) => !workshopId(source)) ||
+    if (m['schema'] != 1 ||
+        m['format'] != 'png' ||
+        m['maxWidth'] != workshopPreviewSide ||
+        m['maxHeight'] != workshopPreviewSide ||
+        m['maxPixels'] != workshopPreviewPixels ||
+        m['maxBytes'] != workshopPreviewBytes ||
+        sources is! List ||
+        sources.any((source) => !workshopId(source)) ||
         sources.toSet().length != sources.length) {
       workshopInvalid();
     }
@@ -312,8 +432,8 @@ class WorkshopAccountCapabilities {
   WorkshopAccountCapabilities._(this.origin, this.clientId);
   factory WorkshopAccountCapabilities.fromJson(Object? value) {
     final m = workshopMap(value), origin = m['origin'], clientId = m['clientId'];
-    if (origin is! String || clientId != null && (clientId is! String ||
-        !RegExp(r'^[A-Za-z0-9._-]{1,64}$').hasMatch(clientId))) {
+    if (origin is! String ||
+        clientId != null && (clientId is! String || !RegExp(r'^[A-Za-z0-9._-]{1,64}$').hasMatch(clientId))) {
       workshopInvalid();
     }
     final parsed = Uri.tryParse(origin);
@@ -325,20 +445,42 @@ class WorkshopAccountCapabilities {
 }
 
 class WorkshopCapabilities {
-  WorkshopCapabilities._(this.features, this.kinds, this.licenses, this.account, this.archiveBytes,
-    this.expandedBytes, this.maxMocVersion, this.preview);
+  WorkshopCapabilities._(
+    this.features,
+    this.kinds,
+    this.licenses,
+    this.account,
+    this.archiveBytes,
+    this.expandedBytes,
+    this.maxMocVersion,
+    this.preview,
+  );
   factory WorkshopCapabilities.fromJson(Object? value) {
     final m = workshopMap(value), limits = workshopMap(m['limits']);
     final kinds = m['kinds'], licenses = m['licenses'];
-    if (m['schema'] != 1 || kinds is! List || kinds.any((k) => !workshopId(k)) || licenses is! List ||
-        licenses.any((k) => !workshopText(k, 100)) || limits['archiveBytes'] is! int ||
-        (limits['archiveBytes'] as int) < 1 || limits['expandedBytes'] is! int || (limits['expandedBytes'] as int) < 1 ||
-        m['maxMocVersion'] is! int || (m['maxMocVersion'] as int) < 1) {
+    if (m['schema'] != 1 ||
+        kinds is! List ||
+        kinds.any((k) => !workshopId(k)) ||
+        licenses is! List ||
+        licenses.any((k) => !workshopText(k, 100)) ||
+        limits['archiveBytes'] is! int ||
+        (limits['archiveBytes'] as int) < 1 ||
+        limits['expandedBytes'] is! int ||
+        (limits['expandedBytes'] as int) < 1 ||
+        m['maxMocVersion'] is! int ||
+        (m['maxMocVersion'] as int) < 1) {
       workshopInvalid();
     }
-    return WorkshopCapabilities._(WorkshopFeatures.fromJson(m['features']), Set.unmodifiable(kinds.cast<String>()), Set.unmodifiable(licenses.cast<String>()),
-      WorkshopAccountCapabilities.fromJson(m['account']), limits['archiveBytes'] as int, limits['expandedBytes'] as int, m['maxMocVersion'] as int,
-      m.containsKey('preview') ? WorkshopPreviewCapabilities.fromJson(m['preview']) : null);
+    return WorkshopCapabilities._(
+      WorkshopFeatures.fromJson(m['features']),
+      Set.unmodifiable(kinds.cast<String>()),
+      Set.unmodifiable(licenses.cast<String>()),
+      WorkshopAccountCapabilities.fromJson(m['account']),
+      limits['archiveBytes'] as int,
+      limits['expandedBytes'] as int,
+      m['maxMocVersion'] as int,
+      m.containsKey('preview') ? WorkshopPreviewCapabilities.fromJson(m['preview']) : null,
+    );
   }
   final WorkshopFeatures features;
   final Set<String> kinds, licenses;
@@ -350,13 +492,29 @@ class WorkshopCapabilities {
 enum WorkshopSubmissionStatus { draft, pending, approved, rejected, withdrawn }
 
 class WorkshopSubmission {
-  WorkshopSubmission._(this.id, this.metadata, this.status, this.createdAt, this.updatedAt, this.ownerOrigin,
-      this.ownerId, this.username, this.reviewReason, this.withdrawalReason, this.preview);
+  WorkshopSubmission._(
+    this.id,
+    this.metadata,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.ownerOrigin,
+    this.ownerId,
+    this.username,
+    this.reviewReason,
+    this.withdrawalReason,
+    this.preview,
+  );
   factory WorkshopSubmission.fromJson(Object? value) {
     final m = workshopMap(value), owner = workshopMap(m['owner']);
     final id = m['submissionId'], status = WorkshopSubmissionStatus.values.asNameMap()[m['status']];
-    if (id is! String || !RegExp(r'^[a-f0-9]{32}$').hasMatch(id) || status == null ||
-        owner['accountId'] is! int || (owner['accountId'] as int) < 1 || !workshopText(owner['username'], 256) || owner['accountOrigin'] is! String) {
+    if (id is! String ||
+        !RegExp(r'^[a-f0-9]{32}$').hasMatch(id) ||
+        status == null ||
+        owner['accountId'] is! int ||
+        (owner['accountId'] as int) < 1 ||
+        !workshopText(owner['username'], 256) ||
+        owner['accountOrigin'] is! String) {
       workshopInvalid();
     }
     String? reason(Object? v) {
@@ -365,12 +523,23 @@ class WorkshopSubmission {
       if (!workshopText(r, 2000)) workshopInvalid();
       return r as String;
     }
+
     final origin = Uri.tryParse(owner['accountOrigin'] as String);
     if (origin == null) workshopInvalid();
     final metadata = WorkshopMetadata.fromJson(m['metadata']);
-    return WorkshopSubmission._(id, metadata, status, workshopTime(m['createdAt']), workshopTime(m['updatedAt']),
-      workshopOrigin(origin), owner['accountId'] as int, owner['username'] as String, reason(m['review']), reason(m['withdrawal']),
-      m.containsKey('preview') ? WorkshopPreview.fromJson(m['preview'], metadata: metadata) : null);
+    return WorkshopSubmission._(
+      id,
+      metadata,
+      status,
+      workshopTime(m['createdAt']),
+      workshopTime(m['updatedAt']),
+      workshopOrigin(origin),
+      owner['accountId'] as int,
+      owner['username'] as String,
+      reason(m['review']),
+      reason(m['withdrawal']),
+      m.containsKey('preview') ? WorkshopPreview.fromJson(m['preview'], metadata: metadata) : null,
+    );
   }
   final String id;
   final WorkshopMetadata metadata;

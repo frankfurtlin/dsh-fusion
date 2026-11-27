@@ -484,9 +484,7 @@ final activeHostProvider = NotifierProvider<ActiveHostController, HostRef>(Activ
 
 /// Whether the saved host has been restored: the first page waits for it, so a
 /// phone that saved a remote host never shows 连接电脑或服务器 for a frame.
-final activeHostRestoredProvider = FutureProvider<void>(
-  (ref) => ref.read(activeHostProvider.notifier).ready,
-);
+final activeHostRestoredProvider = FutureProvider<void>((ref) => ref.read(activeHostProvider.notifier).ready);
 
 // ── DSH Remote (relay) account ───────────────────────────────────────────────
 

@@ -82,9 +82,11 @@ class CompanionServer {
   void _listen() {
     _server.listen((request) {
       late final Future<void> pending;
-      pending = _handle(request).catchError((Object _) {
-          // The page went away mid-response.
-        }).whenComplete(() => _requests.remove(pending));
+      pending = _handle(request)
+          .catchError((Object _) {
+            // The page went away mid-response.
+          })
+          .whenComplete(() => _requests.remove(pending));
       _requests.add(pending);
     });
   }

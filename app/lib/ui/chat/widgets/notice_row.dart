@@ -108,9 +108,9 @@ class _NoticeRowState extends State<NoticeRow> {
       final pi = item.failure!.message.startsWith('llm-pi-ai');
       action = (
         label: l10n.chatGoToSettings,
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => pi ? const ProvidersPage() : const ApiKeyPage()),
-        ),
+        onPressed: () =>
+            Navigator.of(context)
+                .push(MaterialPageRoute<void>(builder: (_) => pi ? const ProvidersPage() : const ApiKeyPage())),
       );
     } else {
       action = widget.action;

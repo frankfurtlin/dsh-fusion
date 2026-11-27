@@ -72,11 +72,7 @@ class _DigestPageState extends State<DigestPage> {
     await DigestApi.setEnabled(enabled);
     if (!mounted) return;
     setState(() {
-      _snapshot = DigestSnapshot(
-        items: _snapshot.items,
-        enabled: enabled,
-        generatedAt: _snapshot.generatedAt,
-      );
+      _snapshot = DigestSnapshot(items: _snapshot.items, enabled: enabled, generatedAt: _snapshot.generatedAt);
     });
   }
 
@@ -89,16 +85,15 @@ class _DigestPageState extends State<DigestPage> {
         actions: [
           IconButton(
             tooltip: l10n.digestHistory,
-            onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute<void>(builder: (_) => const DigestHistoryPage())),
+            onPressed: () =>
+                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const DigestHistoryPage())),
             icon: const Icon(AppIcons.time),
           ),
           IconButton(
             tooltip: l10n.digestRefresh,
             onPressed: _refreshing ? null : _refresh,
             icon: _refreshing
-                ? const SizedBox(
-                    width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.refresh),
           ),
         ],
@@ -120,18 +115,12 @@ class _DigestPageState extends State<DigestPage> {
                   if (_error != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Text(
-                        l10n.digestError,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      child: Text(l10n.digestError, style: Theme.of(context).textTheme.bodySmall),
                     ),
                   if (_snapshot.items.isEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 40),
-                      child: EmptyView(
-                        title: l10n.digestEmptyTitle,
-                        message: l10n.digestEmptyDetail,
-                      ),
+                      child: EmptyView(title: l10n.digestEmptyTitle, message: l10n.digestEmptyDetail),
                     )
                   else
                     for (final item in _snapshot.items) DigestTile(item: item),

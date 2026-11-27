@@ -30,7 +30,11 @@ import 'workshop_text.dart';
 import 'workshop_widgets.dart';
 
 /// Opens [item]'s detail. [onReport] shows 举报 in the title row.
-Future<void> showWorkshopItemSheet(BuildContext context, WorkshopItemState item, {ValueChanged<WorkshopEntry>? onReport}) {
+Future<void> showWorkshopItemSheet(
+  BuildContext context,
+  WorkshopItemState item, {
+  ValueChanged<WorkshopEntry>? onReport,
+}) {
   return showAppSheet<void>(
     context,
     heightFactor: 0.82,

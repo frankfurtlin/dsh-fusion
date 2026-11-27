@@ -47,9 +47,8 @@ class DiagnosticsPage extends ConsumerWidget {
       _ => l10n.pluginsConnecting,
     };
     Future<void> copyReport() async {
-      final json = const JsonEncoder.withIndent('  ').convert(
-        redactJson(report(settings: settings, connection: connection)),
-      );
+      final json = const JsonEncoder.withIndent('  ')
+          .convert(redactJson(report(settings: settings, connection: connection)));
       await Clipboard.setData(ClipboardData(text: json));
       if (context.mounted) {
         showBriefNotice(context, l10n.pluginsDiagnosticsCopied);
@@ -116,16 +115,10 @@ class PerfSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: SelectableText(
               text,
-              style: AppType.monoLabel(
-                color: theme.colorScheme.onSurfaceVariant,
-              ).copyWith(height: 1.6),
+              style: AppType.monoLabel(color: theme.colorScheme.onSurfaceVariant).copyWith(height: 1.6),
             ),
           ),
-          ListPageRow(
-            icon: AppIcons.copy,
-            title: l10n.perfCopy,
-            onTap: copy,
-          ),
+          ListPageRow(icon: AppIcons.copy, title: l10n.perfCopy, onTap: copy),
         ],
       ],
     );

@@ -451,7 +451,8 @@ final deepSeekSpeechProvider = Provider<DeepSeekSpeechResolver>((ref) {
 /// Why [deepSeekSpeechProvider] has nothing to offer.
 /// 手机本地引擎与 DeepSeek 账号已删除：现在只有「没有可用凭据」这一种原因。
 final deepSeekSpeechGapProvider = Provider<DeepSeekSpeechFailure Function()>(
-  (ref) => () => DeepSeekSpeechFailure.noCredential,
+  (ref) =>
+      () => DeepSeekSpeechFailure.noCredential,
 );
 
 /// Adds a WAV header to DeepSeek's PCM, for players and tools that want a file.
