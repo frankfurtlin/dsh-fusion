@@ -3505,6 +3505,9 @@ class L10nEn extends L10n {
   String get botsTerminalInput => 'Terminal input';
 
   @override
+  String get botsTerminalKeyboardInput => 'Keyboard input';
+
+  @override
   String get brandXiaomi => 'Xiaomi / Redmi';
 
   @override

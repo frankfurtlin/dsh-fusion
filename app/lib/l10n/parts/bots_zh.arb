@@ -1036,5 +1036,6 @@
   "botsMobileApiRequired": "可先在网页版中使用",
   "botsMobileApiMissing": "手机端暂不支持，可先在网页版中使用",
   "botsCreationConnectionChanged": "连接已变化，请重新打开创建页面后再操作。",
-  "botsTerminalInput": "终端输入"
+  "botsTerminalInput": "终端输入",
+  "botsTerminalKeyboardInput": "键盘输入"
 }

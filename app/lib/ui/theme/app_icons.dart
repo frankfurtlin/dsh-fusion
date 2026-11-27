@@ -327,6 +327,9 @@ abstract final class AppIcons {
 
   // ── 功能 ────────────────────────────────────────────────────
   static const terminal = DshGlyphs.terminalWindow;
+
+  /// 终端「键盘输入」键:显式把 IME 叫到屏读输入框上(与 [enterPath] 共用一个字形:都是往输入框里打字)。
+  static const keyboardInput = DshGlyphs.cursorText;
   static const plugin = DshGlyphs.puzzlePiece;
   static const pluginInventory = DshGlyphs.listBullets;
   static const skill = DshGlyphs.bookOpen;

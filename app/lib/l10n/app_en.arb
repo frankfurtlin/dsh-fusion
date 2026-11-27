@@ -1006,6 +1006,7 @@
   "botsMobileApiMissing": "Not on mobile yet. Use it in DSH Web for now",
   "botsCreationConnectionChanged": "The connection changed. Reopen this form to create on the current host.",
   "botsTerminalInput": "Terminal input",
+  "botsTerminalKeyboardInput": "Keyboard input",
   "brandXiaomi": "Xiaomi / Redmi",
   "brandHuawei": "Huawei",
   "brandHonor": "Honor",

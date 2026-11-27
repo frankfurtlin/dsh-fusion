@@ -409,7 +409,7 @@ export function createTools(phones) {
     {
       name: 'phone_type',
       description:
-        'Type text into the input field that currently has keyboard focus on the phone. When the focus is not on a text field but the screen has exactly one editable field (a drawn app like the terminal keeps its input box there), that field is focused first and the text retried once. Tap the field first (phone_find then phone_tap); an empty string clears it.',
+        'Type text into the input field that currently has keyboard focus on the phone. When the focus is not on a text field but the screen has exactly one editable field (a drawn app like the terminal keeps its input box there), that field is focused first and the text retried once. The field\'s own text is then read back: a field that accepted the write and dropped it is pasted into instead (the clipboard is put back afterwards), and ok:false means neither the set-text nor the paste landed. A drawn field that takes neither only accepts text while its keyboard is open — on the terminal page tap 「键盘输入」 first. Tap the field first (phone_find then phone_tap); an empty string clears it.',
       inputSchema: {
         type: 'object',
         properties: { ...DEVICE_PROPERTY, text: { type: 'string', description: 'Text to put in the focused field; an empty string clears it.' } },
