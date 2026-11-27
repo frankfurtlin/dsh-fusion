@@ -41,7 +41,7 @@ Nothing needs to be public except the host you already run.
 Download the APK (self-hosted, served from Tencent COS behind EdgeOne):
 
 ```bash
-curl -LO https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.1.3-8-arm64.apk
+curl -LO https://static.frankfurtlin.top/apps/pocket/apk/dsh-pocket-1.2.1-19-arm64.apk
 ```
 
 Android 8.0+ (`minSdk 26`), arm64, package name `top.frankfurtlin.dshfusion`.
