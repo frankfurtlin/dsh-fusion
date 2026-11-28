@@ -1,0 +1,41 @@
+name: rewrite-history
+
+# 一次性任务：把历史里那批已删除的 golden 截图/死工具从所有提交中抹掉，
+# 让仓库体积从 ~360MB 降到 ~60MB。跑完把本文件删掉。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rewrite-history
+  cancel-in-progress: false
+
+jobs:
+  rewrite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect removed paths from the cleanup commit
+        run: |
+          git show --name-status 329b562 --format= | awk '$1=="D"{print $2}' > /tmp/removed.txt
+          echo "paths: $(wc -l < /tmp/removed.txt)"
+          head -3 /tmp/removed.txt
+
+      - name: Rewrite history without those paths
+        run: |
+          python3 -m pip install --quiet git-filter-repo
+          git filter-repo --invert-paths --paths-from-file /tmp/removed.txt --force
+          git count-objects -vH | head -3
+
+      - name: Force push main and tags
+        run: |
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --force origin main
+          git push --force origin --tags
